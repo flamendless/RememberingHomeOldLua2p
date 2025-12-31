@@ -8,7 +8,7 @@ GAME_BASE_SIZE = {x = 128, y = 32}
 
 HALF_PI = math.pi * 0.5
 TWO_PI = math.pi * 2
-T_H_PI = 3 * _HALF_PI
+T_H_PI = 3 * HALF_PI
 CULL_PAD = 32
 
 local args = love.arg.parseGameArguments(arg)
@@ -35,8 +35,6 @@ end
 
 --LOAD LIBRARIES/MODULES
 UTF8 = require("utf8")
-
-require("modules.sdf").mount()
 
 Anim8 = require("modules.anim8.anim8")
 local Batteries = require("modules.batteries")

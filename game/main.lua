@@ -9,6 +9,8 @@ Room Designer: Piolo Maurice Laudencia @piotato
 
 Start Date: Tue Mar 17 18:42:00 PST 2020
 --]]
+--
+require("modules.sdf").mount()
 
 function love.load()
 	Log.info("Game Version:", GAME_VERSION)

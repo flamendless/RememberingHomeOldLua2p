@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu -o pipefail
+
 lua=luajit
 os=$(uname)
 lpp_path=./libs/LPP/preprocess-cl.lua
@@ -8,10 +10,10 @@ data=dev
 handler=handler.lua
 padding=4
 
-dir_modules=modules
+dir_modules="modules"
 dir_res=res
 dir_output=output_dev
-dir_source=src
+dir_source=game
 
 dir_sub=(assemblages components shaders states systems)
 appdata=~/.local/share/love/goinghomerevisited
@@ -36,34 +38,37 @@ function create_output_dir()
 
 function process_src()
 {
-	for file in "$1"/*; do
+	local src="$1"
+	local rel="$2"
+	for file in "$src"/*; do
 		if [ -d "$file" ]; then
-			local subd=$(echo "$file" | rev | cut -d'/' -f-1 | rev)
-			if [ ! -d "$dir_output"/"$subd" ]; then
-				mkdir "$dir_output"/"$subd"
-			fi
-			process_src "$file" "$subd"
+			local subd
+			subd=$(basename "$file")
+			mkdir -p "$dir_output"/$rel/"$subd"
+			process_src "$file" "$rel/$subd"
 		elif [ -f "$file" ]; then
-			process_file "$file" "$2"
+			process_file "$file" "$rel"
 		fi
 	done
 }
 
 function process_file()
 {
-	local filename="${1##*/}"
+	local src="$1"
+	local rel="$2"
+	local filename="${src##*/}"
 	local file=$(basename "$filename" .lua2p)
 	local ext="${filename##*.}"
-	local out=$dir_output/$2/$file
+	local out=$dir_output/$rel/$file
 
 	if [ "$ext" == "lua2p" ]; then
-		$lua "$lpp_path" --handler="$handler" --data="$data $gv $padding" --outputpaths "$1" "$out".lua --silent;
+		$lua "$lpp_path" --handler="$handler" --data="$data $gv $padding" --outputpaths "$src" "$out".lua --silent;
 		if [ $? -ne 0 ]; then
-			echo "error in $1"
+			echo "error in $src"
 			exit;
 		fi
 	else
-		cp "$1" "$out"
+		cp "$src" "$out"
 	fi
 }
 
@@ -148,7 +153,7 @@ function clean_logs()
 function init()
 {
 	create_output_dir
-	process_src "$dir_source"
+	process_src "$dir_source" ""
 	create_atlas
 	copy_modules
 	copy_res
@@ -164,10 +169,13 @@ function rebuild()
 function run()
 {
 	echo "Running build.sh"
-	process_src "$dir_source"
+	process_src "$dir_source" ""
 	if [ $(uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/ip') ]; then
 		echo "This is Windows WSL!"
 		./build_win.sh run
+	elif [[ $(uname) == "Darwin" ]]; then
+		echo "This is MacOS!"
+		love "$dir_output"
 	else
 		echo "This is Linux"
 		love "$dir_output"
