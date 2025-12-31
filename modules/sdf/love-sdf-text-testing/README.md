@@ -1,1 +1,0 @@
-# love-sdf-text-testing

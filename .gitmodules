@@ -54,9 +54,6 @@
 [submodule "libs/LPP"]
 	path = libs/LPP
 	url = https://github.com/ReFreezed/LuaPreprocess/
-[submodule "modules/hump"]
-	path = modules/hump
-	url = https://github.com/vrld/hump
 [submodule "modules/slab"]
 	path = modules/slab
 	url = https://github.com/flamendless/Slab
