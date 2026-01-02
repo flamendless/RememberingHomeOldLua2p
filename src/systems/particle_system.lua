@@ -53,10 +53,10 @@ function ParticleSystem:set_particle_system(id_or_ids, mode, ...)
 			ps.system[mode](ps.system, ...)
 		end
 	end
-	local id = is_str and id_or_ids or table.concat(id_or_ids, ", ")
-	if not false then
-		error(string.format("particle system id '%s' not found", id))
-	end
+	-- local id = is_str and id_or_ids or table.concat(id_or_ids, ", ")
+	-- if not false then
+	-- 	error(string.format("particle system id '%s' not found", id))
+	-- end
 end
 
 function ParticleSystem:update_particle_system(dt)

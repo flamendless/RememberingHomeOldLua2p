@@ -33,3 +33,5 @@ res/exported/keys
 backup_*
 res/images/atlases
 *.Identifier
+*.love
+*.DS_Store

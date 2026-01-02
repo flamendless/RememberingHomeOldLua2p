@@ -19,7 +19,9 @@ local Assemblages = {
 	UI = require("assemblages.ui"),
 }
 
-local PS = { RainIntro = require("particle_systems/rain_intro") }
+local PS = {
+	RainIntro = require("particle_systems/rain_intro"),
+}
 
 local Intro = Concord.system({
 	pool_intro_text = { "intro_text" },

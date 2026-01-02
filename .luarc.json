@@ -1,24 +1,30 @@
 {
     "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
     "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.path": [
+	"?.lua",
+        "?/init.lua",
+        "modules/?.lua",
+        "modules/?/init.lua"
+    ],
     "Lua.workspace.checkThirdParty": false,
     "Lua.workspace.library": [
-        "${3rd}/love2d/library"
+        "${3rd}/love2d/library",
+	"${workspaceFolder}/modules"
     ],
     "Lua.workspace.ignoreDir": [
 	"scripts/atlas_template.lua",
 	"handler.lua",
-	"modules/"
     ],
     "Lua.diagnostics.globals": [
-		"vec2",
-		"vec3",
-		"unique_mapping",
-		"class",
-		"mathx",
-		"stringx",
-		"tablex",
-		"functional",
-		"toLua"
-    ],
+	"vec2",
+	"vec3",
+	"unique_mapping",
+	"class",
+	"mathx",
+	"stringx",
+	"tablex",
+	"functional",
+	"toLua"
+    ]
 }
