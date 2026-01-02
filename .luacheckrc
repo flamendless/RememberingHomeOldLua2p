@@ -11,5 +11,5 @@ return {
 		"functional",
 		"toLua",
 	},
-	ignore = {'212'},
+	ignore = { '212' },
 }

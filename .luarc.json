@@ -5,5 +5,20 @@
     "Lua.workspace.library": [
         "${3rd}/love2d/library"
     ],
-	"Lua.diagnostics.globals": ["toLua"]
+    "Lua.workspace.ignoreDir": [
+	"scripts/atlas_template.lua",
+	"handler.lua",
+	"modules/"
+    ],
+    "Lua.diagnostics.globals": [
+		"vec2",
+		"vec3",
+		"unique_mapping",
+		"class",
+		"mathx",
+		"stringx",
+		"tablex",
+		"functional",
+		"toLua"
+    ],
 }
