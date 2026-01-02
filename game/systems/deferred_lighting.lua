@@ -441,7 +441,7 @@ if DEV then
 					end
 				end
 
-				local pos = e.pos
+				local pos = e.pos.pos
 				local pl = e.point_light
 				local diffuse = e.diffuse.value
 				local dir = e.light_dir and e.light_dir.value

@@ -252,7 +252,7 @@ function Transform:debug_update(dt)
 		local id = e.id.value
 		if Slab.BeginTree(id, {Title = id}) then
 			Slab.Indent()
-			local pos = e.pos
+			local pos = e.pos.pos
 			local t = e.transform or e.quad_transform
 			pos.x = UIWrapper.edit_number("x", pos.x, true)
 			pos.y = UIWrapper.edit_number("y", pos.y, true)
@@ -262,12 +262,12 @@ function Transform:debug_update(dt)
 			end
 			if t then
 				t.rotation = UIWrapper.edit_number("r", t.rotation)
-				t.sx = UIWrapper.edit_number("sx", t.sx)
-				t.sy = UIWrapper.edit_number("sy", t.sy)
-				t.ox = UIWrapper.edit_number("ox", t.ox)
-				t.oy = UIWrapper.edit_number("oy", t.oy)
-				t.kx = UIWrapper.edit_number("kx", t.kx)
-				t.ky = UIWrapper.edit_number("ky", t.ky)
+				t.scale.x = UIWrapper.edit_number("sx", t.scale.x)
+				t.scale.y = UIWrapper.edit_number("sy", t.scale.y)
+				t.offset.x = UIWrapper.edit_number("ox", t.offset.x)
+				t.offset.y = UIWrapper.edit_number("oy", t.offset.y)
+				t.shear.x = UIWrapper.edit_number("kx", t.shear.x)
+				t.shear.y = UIWrapper.edit_number("ky", t.shear.y)
 			end
 			if e.point_light then
 				self.world:emit("update_light_pos", e)

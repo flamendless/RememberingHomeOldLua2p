@@ -71,7 +71,7 @@ function PlayerController:update(dt)
 	end
 
 	if within_int and self.player.can_interact and Inputs.pressed("interact") then
-		local other = within_int.entity
+		local other = within_int.key
 		local req = other.req_col_dir
 		local proceed = true
 

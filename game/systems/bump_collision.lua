@@ -57,7 +57,7 @@ function BumpCollision:update_body(e)
 	local body = e.body
 	local pos = e.pos.pos
 
-	pos:vadd(body.vel)
+	pos:vaddi(body.vel)
 	local x, y, cols, len = self.pool:move(e, pos.x, pos.y, filter)
 	pos:scalar_set(x, y)
 
