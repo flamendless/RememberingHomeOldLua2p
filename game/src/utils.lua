@@ -20,7 +20,7 @@ end
 
 function Utils.file.write(filename, data)
 	ASSERT(type(filename) == "string")
-	ASSERT(type(data) == "table")
+	ASSERT(type(data) == "string")
 	love.filesystem.write(filename, data)
 	Log.info(filename, "written")
 end

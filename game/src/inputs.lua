@@ -1,4 +1,4 @@
-local Settings = require("settings")
+local Settings = require("src.settings")
 
 local maps = {
 	--map_wasd
@@ -48,7 +48,7 @@ local Inputs = {
 }
 local map_names = {"WASD", "Arrows"}
 
-!if _DEV then
+
 local Slab = require("modules.slab")
 Inputs.dev_map = {
 	m = "play",
@@ -57,16 +57,16 @@ Inputs.dev_map = {
 	j = "camera_left",
 	l = "camera_right",
 }
-!end
+
 
 function Inputs.init(key_map)
-	@@sassert(key_map, type(key_map) == "number")
+	if key_map then if not (type(key_map) == "number") then error("Assertion failed: type(key_map) == \"number\"") end end
 	local n = key_map or Settings.current.key_map
-	@@assert(maps[n])
+	if not (maps[n]) then error("Assertion failed: maps[n]") end
 	Inputs.map = maps[n]
-	!if _DEV then
+
 	tablex.overlay(Inputs.map, Inputs.dev_map)
-	!end
+
 	tablex.clear(Inputs.previous)
 	tablex.clear(Inputs.current)
 	tablex.clear(Inputs.rev_map)
@@ -85,38 +85,38 @@ function Inputs.init(key_map)
 end
 
 function Inputs.pressed(key)
-	@@assert(type(key) == "string")
-	@@assert(Inputs.current[key] ~= nil)
+	if not (type(key) == "string") then error("Assertion failed: type(key) == \"string\"") end
+	if not (Inputs.current[key] ~= nil) then error("Assertion failed: Inputs.current[key] ~= nil") end
 	return Inputs.current[key] and not Inputs.previous[key]
 end
 
 function Inputs.released(key)
-	@@assert(type(key) == "string")
-	@@assert(Inputs.current[key] ~= nil)
+	if not (type(key) == "string") then error("Assertion failed: type(key) == \"string\"") end
+	if not (Inputs.current[key] ~= nil) then error("Assertion failed: Inputs.current[key] ~= nil") end
 	return not Inputs.current[key] and Inputs.previous[key]
 end
 
 function Inputs.down(key)
-	@@assert(type(key) == "string")
-	@@assert(Inputs.current[key] ~= nil)
+	if not (type(key) == "string") then error("Assertion failed: type(key) == \"string\"") end
+	if not (Inputs.current[key] ~= nil) then error("Assertion failed: Inputs.current[key] ~= nil") end
 	return Inputs.current[key]
 end
 
 function Inputs.keypressed(_, scancode)
-	@@assert(type(scancode) == "string")
+	if not (type(scancode) == "string") then error("Assertion failed: type(scancode) == \"string\"") end
 	if not Inputs.map[scancode] then return end
-	!if _DEV then
+
 	if Slab.IsAnyInputFocused() then return end
-	!end
+
 	Inputs.current[Inputs.map[scancode]] = true
 end
 
 function Inputs.keyreleased(_, scancode)
-	@@assert(type(scancode) == "string")
+	if not (type(scancode) == "string") then error("Assertion failed: type(scancode) == \"string\"") end
 	if not Inputs.map[scancode] then return end
-	!if _DEV then
+
 	if Slab.IsAnyInputFocused() then return end
-	!end
+
 	Inputs.current[Inputs.map[scancode]] = false
 end
 

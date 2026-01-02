@@ -1,8 +1,0 @@
-local Notes = {}
-
-!for i = 1, 10 do
-	local id = "test" .. !(i)
-	Notes[id] = { title = "Test Note" .. !(i), contents = "Test Note Content" .. !(i) }
-!end
-
-return Notes

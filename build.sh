@@ -61,8 +61,10 @@ function process_file()
 	local ext="${filename##*.}"
 	local out=$dir_output/$rel/$file
 
+	set -x
 	if [ "$ext" == "lua2p" ]; then
 		$lua "$lpp_path" --handler="$handler" --data="$data $gv $padding" --outputpaths "$src" "$out".lua --silent;
+
 		if [ $? -ne 0 ]; then
 			echo "error in $src"
 			exit;
@@ -70,6 +72,21 @@ function process_file()
 	else
 		cp "$src" "$out"
 	fi
+	set +x
+}
+
+function process_single_file()
+{
+	local src="$1"
+	local out="$2"
+
+	set -x
+	$lua "$lpp_path" --handler="$handler" --data="$data $gv $padding" --outputpaths "$src" "$out".lua --silent;
+	if [ $? -ne 0 ]; then
+		echo "error in $src"
+		exit;
+	fi
+	set +x
 }
 
 function check()
@@ -128,14 +145,21 @@ function create_atlas()
 function copy_modules()
 {
 	echo "copying modules..."
-	rsync -a "$dir_modules" "$dir_output" "${exclude_modules[@]}" && echo "copied modules"
+	set -x
+	# rsync -a "$dir_modules" "$dir_output" "${exclude_modules[@]}" && echo "copied modules"
+	rsync -a "$dir_modules" "$dir_source" "${exclude_modules[@]}" && echo "copied modules"
+	set +x
 }
 
 function copy_res()
 {
 	echo "copying resources..."
-	rsync -a "$dir_res" "$dir_output" && echo "copied resources"
-	rsync -a "slab.style" "$dir_output" && echo "copied slab.style"
+	set -x
+	# rsync -a "$dir_res" "$dir_output" && echo "copied resources"
+	# rsync -a "slab.style" "$dir_output" && echo "copied slab.style"
+	rsync -a "$dir_res" "$dir_source" && echo "copied resources"
+	rsync -a "slab.style" "$dir_source" && echo "copied slab.style"
+	set +x
 }
 
 function clean()
@@ -166,7 +190,7 @@ function rebuild()
 	cp slab.style $dir_output
 }
 
-function run()
+function run2p()
 {
 	echo "Running build.sh"
 	process_src "$dir_source" ""
@@ -176,6 +200,22 @@ function run()
 	elif [[ $(uname) == "Darwin" ]]; then
 		echo "This is MacOS!"
 		love "$dir_output"
+	else
+		echo "This is Linux"
+		love "$dir_output"
+	fi
+	echo "Completed build.sh"
+}
+
+function run()
+{
+	echo "Running build.sh"
+	if [ $(uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/ip') ]; then
+		echo "This is Windows WSL!"
+		./build_win.sh run
+	elif [[ $(uname) == "Darwin" ]]; then
+		echo "This is MacOS!"
+		love "$dir_source" "dev"
 	else
 		echo "This is Linux"
 		love "$dir_output"

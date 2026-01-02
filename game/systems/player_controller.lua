@@ -1,0 +1,238 @@
+local PlayerController = Concord.system({
+	pool = {"player_controller", "body", "collider"},
+})
+
+local function get_spawn_points(current_id, prev_id)
+	local d = PlayerSpawnPoints[current_id][prev_id or "default"]
+	if not (d) then error("Assertion failed: d") end
+	if not d[3] then
+		d[3] = Enums.face_dir.left
+	end
+	if not (type(d[3]) == "string" and
+		(d[3] == Enums.face_dir.left or d[3] == Enums.face_dir.right)) then error("Assertion failed: type(d[3]) == \"string\" and\
+\9\9(d[3] == Enums.face_dir.left or d[3] == Enums.face_dir.right)") end
+	return unpack(d)
+end
+
+function PlayerController:init(world)
+	self.world = world
+
+	self.pool.onAdded = function(_, e)
+		local e_player = self.world:getResource("e_player")
+		if not e_player then
+			self.world:setResource("e_player", e)
+		end
+	end
+end
+
+function PlayerController:on_toggle_equip_flashlight()
+	local has_f = Items.is_equipped("flashlight")
+	self.player:remove("multi_animation_data")
+		:give("multi_animation_data", Enums.anim_state.idle,
+		Assemblages.Player.get_multi_anim_data(has_f, self.player.can_open_door))
+	local tag = (self.player.body.dir == -1) and Enums.anim_state.idle_left or Enums.anim_state.idle
+	self.player:give("change_animation_tag", tag, true)
+end
+
+function PlayerController:spawn_player(fn)
+	if fn then if not (type(fn) == "function") then error("Assertion failed: type(fn) == \"function\"") end end
+	if not (self.player == nil) then error("Player already exists") end
+	local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
+	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
+	self.world:__flush()
+	if face == Enums.face_dir.left then
+		self.world:emit("anim_face_left", self.player)
+	elseif face == Enums.face_dir.right then
+		self.world:emit("anim_face_right", self.player)
+	end
+	if fn then
+		fn(self.player)
+	end
+end
+
+function PlayerController:update(dt)
+	if not self.player then return end
+	if self.player.override_animation then return end
+	if not self.player.can_move then return end
+	local within_int = self.player.within_interactive
+	local body = self.player.body
+	body.dx = 0
+
+	if self.player.can_run then
+		self.player.is_running.value = Inputs.down("run_mod")
+	end
+
+	if Inputs.down("left") then
+		body.dir = -1
+		body.dx = -1
+	elseif Inputs.down("right") then
+		body.dir = 1
+		body.dx = 1
+	end
+
+	if within_int and self.player.can_interact and Inputs.pressed("interact") then
+		local other = within_int.entity
+		local req = other.req_col_dir
+		local proceed = true
+
+		if req and (body.dir ~= req.value) then
+			proceed = false
+		end
+
+		if proceed then
+			if other.dialogue_meta then
+				self:on_player_interact(self.player, other)
+			elseif other.is_door then
+				self.world:emit("on_interact_door", self.player, other)
+			end
+		end
+	end
+
+	local anim_name = self:player_update_animation()
+	self.world:emit("update_speed_data", self.player, anim_name)
+end
+
+function PlayerController:player_update_animation(override_name, override_variant)
+	local anim_name = override_name
+	local anim_variant = override_variant or ""
+	local body = self.player.body
+
+	if not anim_name then
+		if body.dx ~= 0 and not self.player.hit_wall then
+			if self.player.is_running.value then
+				anim_name = Enums.anim_state.run
+			else
+				anim_name = Enums.anim_state.walk
+			end
+		else
+			anim_name = Enums.anim_state.idle
+		end
+	end
+
+	if body.dir == -1 then
+		anim_variant = "_left"
+	end
+
+	self.world:emit("switch_animation_tag", self.player, anim_name .. anim_variant, anim_name)
+
+	return anim_name
+end
+
+function PlayerController:on_player_interact(player, interactive)
+	if not (player.__isEntity and player.player) then error("Assertion failed: player.__isEntity and player.player") end
+	if not (interactive.__isEntity and interactive.interactive) then error("Assertion failed: interactive.__isEntity and interactive.interactive") end
+	self.player.is_interacting.value = true
+	-- self.world:emit("on_interact_or_inventory")
+	-- self.world:emit("create_speech_bubble", player)
+	local d = interactive.dialogue_meta
+	local dialogues_t = Dialogues.get(d.main, d.sub)
+	self.world:emit("spawn_dialogue", dialogues_t, d.main, d.sub)
+end
+
+function PlayerController:on_interact_or_inventory()
+	if not self.player.prev_can then
+		self.player:give("prev_can", self.player)
+		self.world:emit("anim_idle", self.player, true)
+	end
+	self.world:emit("toggle_component", self.player, "can_move", false)
+	self.world:emit("toggle_component", self.player, "can_interact", false)
+	self.world:emit("toggle_component", self.player, "can_run", false)
+end
+
+function PlayerController:on_leave_interact_or_inventory()
+	local prev_can = self.player.prev_can and self.player.prev_can.value
+	if not prev_can then return end
+	if prev_can.move then
+		self.player:give("can_move")
+	end
+	if prev_can.run then
+		self.player:give("can_run")
+	end
+	if prev_can.interact then
+		Timer.after(0.5, function()
+			self.player:give("can_interact")
+			self.player.is_interacting.value = false
+		end)
+	end
+	self.player:remove("prev_can")
+	-- self.world:emit("remove_speech_bubble")
+end
+
+
+local function view_number(id, value, sl)
+	Slab.Text(id)
+	Slab.SameLine()
+	Slab.Input(id, {Text = value, ReadOnly = true, NumbersOnly = true})
+	if sl then
+		Slab.SameLine()
+	end
+end
+
+function PlayerController:debug_update(dt)
+	if not self.debug_show then return end
+	self.debug_show = Slab.BeginWindow("player", {
+		Title = "PlayerController",
+		IsOpen = self.debug_show
+	})
+
+	local pos = self.player.pos
+	Slab.Text("Pos")
+	Slab.Indent()
+	view_number("x", pos.x, true)
+	view_number("y", pos.y)
+	Slab.Unindent()
+
+	local transform = self.player.transform
+	Slab.Text("Transform")
+	Slab.Indent()
+	view_number("sx", transform.sx, true)
+	view_number("sy", transform.sy)
+	view_number("ox", transform.ox, true)
+	view_number("oy", transform.oy)
+	Slab.Unindent()
+
+	local qt = self.player.quad_transform
+	if qt then
+		Slab.Text("Quad Transform")
+		Slab.Indent()
+		view_number("qsx", qt.sx, true)
+		view_number("qsy", qt.sy)
+		view_number("qox", qt.ox, true)
+		view_number("qoy", qt.oy)
+		Slab.Unindent()
+	end
+
+	local current_frame = self.player.current_frame
+	Slab.Text("animation")
+	Slab.Indent()
+	Slab.Input("anim_tag", {Text = self.player.animation.current_tag, ReadOnly = true})
+	Slab.SameLine()
+	view_number("frame", current_frame.value)
+	Slab.Unindent()
+
+	local quad = self.player.quad
+	local qx, qy, qw, qh = quad.quad:getViewport()
+	local qsw, qsh = quad.quad:getTextureDimensions()
+	Slab.Text("quad")
+	Slab.Indent()
+	view_number("x", qx, true)
+	view_number("y", qy)
+	view_number("w", qw, true)
+	view_number("h", qh)
+	view_number("rw", qsw, true)
+	view_number("rh", qsh)
+	Slab.Unindent()
+
+	Slab.CheckBox(self.player.can_move, "move")
+	Slab.SameLine()
+	Slab.CheckBox(self.player.can_run, "run")
+	Slab.SameLine()
+	Slab.CheckBox(self.player.can_interact, "interact")
+	Slab.SameLine()
+	Slab.CheckBox(self.player.can_open_door, "open_door")
+
+	Slab.EndWindow()
+end
+
+
+return PlayerController

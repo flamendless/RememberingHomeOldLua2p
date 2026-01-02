@@ -26,7 +26,7 @@ Shaders.paths = {
 }
 
 function Shaders.init()
-	local is_mobile = !(_PLATFORM ~= "desktop")
+	local is_mobile = false
 	Log.debug("Validating shaders... GL ES:", is_mobile)
 	for k, path in pairs(Shaders.paths) do
 		if type(path) == "string" and not stringx.starts_with(k, "ngrading_") then

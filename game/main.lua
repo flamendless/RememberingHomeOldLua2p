@@ -10,7 +10,10 @@ Room Designer: Piolo Maurice Laudencia @piotato
 Start Date: Tue Mar 17 18:42:00 PST 2020
 --]]
 --
-require("modules.sdf").mount()
+
+-- INFO: (Brandon) these require love API to be initialized
+-- that's why it can't be in boot.lua
+require("globals")
 
 function love.load()
 	Log.info("Game Version:", GAME_VERSION)
@@ -42,7 +45,6 @@ function love.load()
 		GameStates.switch("LivingRoom")
 
 		DevTools.init()
-		Shaders.NGrading.dev_init()
 	else
 		GameStates.switch("Splash")
 	end

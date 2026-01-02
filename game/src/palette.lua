@@ -77,7 +77,7 @@ Palette.diffuse = {
 
 function Palette.get(color, alpha)
 	ASSERT(type(color) == "string")
-	ASSERT(Palette.colors[color])
+	ASSERT(Palette.colors[color] ~= nil, color)
 	SASSERT(alpha, type(alpha) == "number")
 	local c = Palette.colors[color]
 	local a = alpha or 1
@@ -86,7 +86,7 @@ end
 
 function Palette.get_diffuse(color)
 	ASSERT(type(color) == "string")
-	ASSERT(Palette.diffuse[color])
+	ASSERT(Palette.diffuse[color], color)
 	return {unpack(Palette.diffuse[color])}
 end
 

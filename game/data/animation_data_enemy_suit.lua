@@ -1,0 +1,41 @@
+local AnimationDataEnemySuit = {}
+
+AnimationDataEnemySuit.idle = {
+	resource_id = "sheet_enemy_suit_idle",
+	frames = {"1-1", 1},
+	delay = 0.25,
+	rows_count = 1,
+	columns_count = 1,
+	n_frames = 1,
+}
+
+AnimationDataEnemySuit.walk = {
+	resource_id = "sheet_enemy_suit_walk",
+	frames = {"1-3", 1, "1-3", 2, "1-2", 3},
+	delay = 0.25,
+	rows_count = 3,
+	columns_count = 3,
+	n_frames = 8
+}
+
+AnimationDataEnemySuit.lean_back = {
+	resource_id = "sheet_enemy_suit_lean_back",
+	frames = {"1-3", 1, "1-3", 2, "1-2", 3},
+	delay = 0.25,
+	rows_count = 3,
+	columns_count = 3,
+	n_frames = 8,
+	pause_at = Enums.pause_at.last,
+}
+
+AnimationDataEnemySuit.lean_return_back = {
+	resource_id = "sheet_enemy_suit_lean_return_back",
+	frames = {"1-3", 1, "1-3", 2, "1-2", 3},
+	delay = 0.25,
+	rows_count = 3,
+	columns_count = 3,
+	n_frames = 8,
+	pause_at = Enums.pause_at.last,
+}
+
+return AnimationDataEnemySuit

@@ -1,0 +1,48 @@
+local lg = love.graphics
+
+local RainOutsideParticles = class({
+	name = "PSRainOutside"
+})
+
+function RainOutsideParticles:new(image, buffer, w)
+	if not (image:type() == "Image") then error("Assertion failed: image:type() == \"Image\"") end
+	if not (type(buffer) == "number") then error("Assertion failed: type(buffer) == \"number\"") end
+	if not (type(w) == "number") then error("Assertion failed: type(w) == \"number\"") end
+	local ps = lg.newParticleSystem(image, buffer)
+
+	ps:setColors(1, 1, 1, 0.60000002384186)
+	ps:setDirection(1.5707963705063)
+	ps:setEmissionArea("borderrectangle", w, 8, 0, false)
+	ps:setEmissionRate(500)
+	ps:setEmitterLifetime(-1)
+	ps:setInsertMode("random")
+	ps:setLinearAcceleration(0, 0, 0, 0)
+	ps:setLinearDamping(0, 0)
+	ps:setOffset(16, 0)
+	ps:setParticleLifetime(0.5, 1)
+	ps:setRadialAcceleration(0, 0)
+	ps:setRelativeRotation(false)
+	ps:setRotation(0, 0)
+	ps:setSizes(1.5, 2)
+	ps:setSizeVariation(0.5)
+	ps:setSpeed(708, 1012)
+	ps:setSpin(0, 0)
+	ps:setSpinVariation(0)
+	ps:setSpread(0)
+	ps:setTangentialAcceleration(0, 0)
+	ps:setQuads(lg.newQuad(0, 0, 32, 32, 96, 32), lg.newQuad(32, 0, 32, 32, 96, 32), lg.newQuad(64, 0, 32, 32, 96, 32))
+
+	self.system = ps
+	self.blend_mode = "alpha"
+end
+
+function RainOutsideParticles:update(dt)
+	self.system:update(dt)
+end
+
+function RainOutsideParticles:draw(x, y)
+	lg.setBlendMode(self.blend_mode)
+	lg.draw(self.system, x, y)
+end
+
+return RainOutsideParticles

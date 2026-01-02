@@ -34,3 +34,7 @@ backup_*
 res/images/atlases
 *.Identifier
 *.DS_Store
+game/modules
+game/res
+game/slab.style
+game2p

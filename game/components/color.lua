@@ -17,6 +17,14 @@ Concord.component("color_fade_in", function(c, duration, count)
 	c.count = count or 0
 end)
 
+--TODO: (Brandon)
+Concord.component("color_fade_in_out", function(c, duration, count)
+	ASSERT(type(duration) == "number")
+	SASSERT(count, type(count) == "number")
+	c.duration = duration
+	c.count = count or 0
+end)
+
 Concord.component("fade_to_black", function(c, duration, delay)
 	ASSERT(type(duration) == "number")
 	SASSERT(delay, type(delay) == "number")
@@ -60,13 +68,6 @@ Concord.component("target_color", function(c, target, duration, delay)
 	ASSERT(type(duration) == "number")
 	SASSERT(delay, type(delay) == "number")
 	c.target = {unpack(target)}
-	c.duration = duration
-	c.delay = delay or 0
-end)
-
-Concord.component("color_fade_in", function(c, duration, delay)
-	ASSERT(type(duration) == "number")
-	SASSERT(delay, type(delay) == "number")
 	c.duration = duration
 	c.delay = delay or 0
 end)

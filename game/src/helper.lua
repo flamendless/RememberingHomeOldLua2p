@@ -1,0 +1,136 @@
+local Helper = {}
+
+function Helper.check_point_rect(px, py, x, y, w, h)
+	return px > x and px < x + w and py > y and py < y + h
+end
+
+function Helper.get_real_size(e)
+	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
+	local box = e.bounding_box
+	local bw, bh = box.w, box.h
+	local t = e.transform
+	if t then
+		bw = bw * t.sx
+		bh = bh * t.sy
+	end
+	return bw, bh
+end
+
+function Helper.get_offset(e)
+	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
+	local transform = e.transform
+	local anim_data = e.animation_data
+	local sprite = e.sprite
+	local ox = transform.ox
+	local oy = transform.oy
+
+	if anim_data then
+		if transform.ox == 0.5 then
+			ox = anim_data.frame_width * 0.5
+		elseif transform.ox == 1 then
+			ox = anim_data.frame_width
+		end
+
+		if transform.oy == 0.5 then
+			oy = anim_data.frame_height * 0.5
+		elseif transform.oy == 1 then
+			oy = anim_data.frame_height
+		end
+	elseif sprite then
+		local iw, ih = sprite.iw, sprite.ih
+
+		if transform.ox == 0.5 then
+			ox = iw * 0.5
+		elseif transform.ox == 1 then
+			ox = iw
+		end
+
+		if transform.oy == 0.5 then
+			oy = ih * 0.5
+		elseif transform.oy == 1 then
+			oy = ih
+		end
+	end
+
+	return ox, oy
+end
+
+function Helper.get_real_pos_box(e)
+	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
+	local box = e.bounding_box
+	local pos = e.pos
+	local transform = e.transform
+	local camera = e.camera
+
+	local x = pos.x
+	local y = pos.y
+
+	if camera then
+		x = box.screen_pos.x
+		y = box.screen_pos.y
+	end
+
+	if transform then
+		local ox, oy = Helper.get_offset(e)
+		x = x - ox * transform.orig_sx
+		y = y - oy * transform.orig_sy
+	end
+
+	return x, y
+end
+
+function Helper.get_ltwh(e)
+	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
+	--get the size
+	local sprite = e.sprite
+	local w, h = sprite.iw, sprite.ih
+	local collider = e.collider
+	local anim_data = e.animation_data
+
+	if collider then
+		w = collider.w
+		h = collider.h
+	elseif anim_data then
+		w = anim_data.frame_width
+		h = anim_data.frame_height
+	end
+
+	--get the scale
+	local sx, sy = 1, 1
+	local t = e.transform
+	if t then
+		sx = t.orig_sx
+		sy = t.orig_sy
+	end
+
+	--get the offset
+	local ox, oy = 0, 0
+	if t and not collider then
+		ox = t.ox
+		oy = t.oy
+		if ox == 0.5 then
+			ox = w * 0.5
+		elseif ox == 1 then
+			ox = w
+		end
+		if oy == 0.5 then
+			ox = h * 0.5
+		elseif oy == 1 then
+			oy = h
+		end
+	end
+
+	--get the pos
+	local pos = e.pos
+	local x, y = pos.x, pos.y
+
+	--calculate
+	x = x - ox * sx
+	y = y - oy * sy
+	w = w * sx
+	h = h * sy
+
+	return x, y, w, h
+end
+
+return Helper

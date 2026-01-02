@@ -71,7 +71,7 @@ function SystemInfo.init()
 		table.concat(supported),
 
 		"Other Info:",
-		string.format("Developer Mode: %s", !(_DEV)),
+		string.format("Developer Mode: %s", DEV),
 	}
 
 	local to_write = table.concat(str, "\n")
@@ -90,7 +90,7 @@ end
 
 function SystemInfo.validate_file(content, to_write)
 	ASSERT(type(content) == "string")
-	ASSERT(type(to_write) == "table")
+	ASSERT(type(to_write) == "string")
 	local same = Utils.hash.compare(content, to_write)
 	if same then
 		Log.info(FILENAME, "untouched")
