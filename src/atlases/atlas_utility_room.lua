@@ -2,41 +2,35 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["ironing_board"] = {
-			x = 79,
-			y = 4,
-			w = 30,
-			h = 57
-		},
-		["wood3"] = {
-			x = 184,
-			y = 39,
-			w = 36,
-			h = 17
-		},
-		["basket"] = {
-			x = 184,
-			y = 4,
-			w = 27,
-			h = 27
-		},
-		["bulb"] = {
-			x = 252,
-			y = 39,
-			w = 5,
-			h = 18
-		},
 		["washing_machine"] = {
 			x = 117,
 			y = 4,
 			w = 33,
 			h = 36
 		},
+		["shelf"] = {
+			x = 4,
+			y = 4,
+			w = 67,
+			h = 55
+		},
+		["wood2"] = {
+			x = 228,
+			y = 39,
+			w = 16,
+			h = 17
+		},
 		["broom"] = {
 			x = 158,
 			y = 4,
 			w = 18,
 			h = 52
+		},
+		["bulb"] = {
+			x = 252,
+			y = 39,
+			w = 5,
+			h = 18
 		},
 		["light_switch"] = {
 			x = 241,
@@ -50,16 +44,22 @@ local Data = {
 			w = 17,
 			h = 16
 		},
-		["shelf"] = {
-			x = 4,
+		["ironing_board"] = {
+			x = 79,
 			y = 4,
-			w = 67,
-			h = 55
+			w = 30,
+			h = 57
 		},
-		["wood2"] = {
-			x = 228,
+		["basket"] = {
+			x = 184,
+			y = 4,
+			w = 27,
+			h = 27
+		},
+		["wood3"] = {
+			x = 184,
 			y = 39,
-			w = 16,
+			w = 36,
 			h = 17
 		},
 		["electrical_box"] = {
