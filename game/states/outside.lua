@@ -112,7 +112,7 @@ function Outside:state_init()
 	if Save.data.outside_intro_done then return end
 
 	--TEST
-	
+
 	-- self.world:emit("spawn_player", function(e_player)
 	-- 	e_player:give("color_fade_in", 0.25)
 	-- 	self.world:emit("player_can_move", true, e_player)
@@ -121,12 +121,12 @@ function Outside:state_init()
 	-- 	self.camera:setScale(3)
 	-- 	self.camera:setPosition(e_player.pos.x, e_player.pos.y)
 	-- end)
-	
+
 
 	self.timeline = TLE.Do(function()
-		
+
 		self.timeline:Pause()
-		
+
 
 		Fade.set_alpha(0)
 		self.is_raining = true
@@ -212,7 +212,7 @@ end
 
 function Outside:state_update(dt)
 	self.world:emit("preupdate", dt)
-	
+
 	if Inputs.pressed("play") then
 		self.timeline:Unpause()
 	elseif Inputs.pressed("inventory") then
@@ -220,7 +220,7 @@ function Outside:state_update(dt)
 			Items.add("flashlight")
 		end
 	end
-	
+
 	self.world:emit("update", dt)
 
 	if self.is_raining then

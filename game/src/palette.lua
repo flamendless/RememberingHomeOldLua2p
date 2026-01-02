@@ -8,7 +8,7 @@ local function hex_to_rgb(hex)
 	local r = rshift(band(hex, 0x00ff0000), 16) / 255.0
 	local g = rshift(band(hex, 0x0000ff00), 8)  / 255.0
 	local b = rshift(band(hex, 0x000000ff), 0)  / 255.0
-	return string.format("{%f, %f, %f}", r, g, b)
+	return {r, g, b}
 end
 
 Palette.colors = {

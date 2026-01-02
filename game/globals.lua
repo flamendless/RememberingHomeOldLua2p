@@ -118,3 +118,18 @@ Beehive = {
 Ecs = require("src.ecs")
 love.errhand = ErrorHandler.callback
 require("modules.strict")
+
+function Gamera:attach()
+	love.graphics.setScissor(self:getWindow())
+	love.graphics.push()
+	local scale = self.scale
+	love.graphics.scale(scale)
+	love.graphics.translate((self.w2 + self.l) / scale, (self.h2 + self.t) / scale)
+	love.graphics.rotate(-self.angle)
+	love.graphics.translate(-self.x, -self.y)
+end
+
+function Gamera:detach()
+	love.graphics.pop()
+	love.graphics.setScissor()
+end

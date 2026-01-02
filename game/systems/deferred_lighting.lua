@@ -34,7 +34,7 @@ local MAX_LIGHTS = 96
 
 function DeferredLighting:init(world)
 	self.world = world
-	self.timer = Timer.new()
+	self.timer = timer()
 
 	self.lighting_pass = love.graphics.newShader(Shaders.paths.df_lighting)
 	self.ambiance = {1, 1, 1, 1}

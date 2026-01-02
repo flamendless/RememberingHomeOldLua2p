@@ -59,7 +59,6 @@ end
 
 function BoundingBox.render(e, camera)
 	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
-	if camera then if not (camera.__camera) then error("Assertion failed: camera.__camera") end end
 	local w, h = 0, 0
 	local sprite = e.sprite
 	local quad = e.quad
@@ -105,7 +104,7 @@ function BoundingBox.render(e, camera)
 	local ox, oy = 0, 0
 	local transform = e.transform
 	if transform then
-		sx, sy = transform.sx, transform.sy
+		sx, sy = transform.scale.x, transform.scale.y
 		rotation = transform.rotation
 		ox, oy = Helper.get_offset(e)
 	end
@@ -116,7 +115,7 @@ function BoundingBox.render(e, camera)
 		sy = sy/scale
 	end
 
-	local pos = e.pos
+	local pos = e.pos.pos
 	local x, y = pos.x, pos.y
 	if camera then
 		x, y = camera:toWorld(x, y)

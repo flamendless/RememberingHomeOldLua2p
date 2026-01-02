@@ -142,7 +142,7 @@ vec4 effect( vec4 col, Image texture, vec2 texturePos, vec2 screenPos )
     - min(min(sign(alpha), 0.) * texture2D(texture, texturePos), zero);
 ]])
   end
-  shader = love.graphics.newShader(str_shader)
+  local shader = love.graphics.newShader(str_shader)
 
 
   local result = {

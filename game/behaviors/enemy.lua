@@ -80,7 +80,7 @@ local function get_distance(world, e, other_e)
 	if not (e.__isEntity and e.behavior_tree and e.ref_e_key) then error("Assertion failed: e.__isEntity and e.behavior_tree and e.ref_e_key") end
 	if other_e then if not (other_e.__isEntity) then error("Assertion failed: other_e.__isEntity") end end
 	other_e = other_e or world:getEntityByKey(e.ref_e_key.value)
-	return e.controller_origin.vec2:distance(other_e.controller_origin.vec2)
+	return e.controller_origin.value:distance(other_e.controller_origin.value)
 end
 
 local function is_other_behind(world, e)

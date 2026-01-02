@@ -2,8 +2,8 @@ local function calc_e_controller_origin(e)
 	ASSERT(e.__isEntity)
 	local anim_data = e.animation_data
 	local transform = e.transform
-	local pos = e.pos
-	local x = pos.x + anim_data.frame_size.x * 0.5 - transform.ox
+	local pos = e.pos.pos
+	local x = pos.x + anim_data.frame_size.x * 0.5 - transform.offset.x
 	local y = pos.y
 	return x, y
 end
@@ -238,10 +238,7 @@ function Transform:update(dt)
 	for _, e in ipairs(self.pool_controller) do
 		local x, y = calc_e_controller_origin(e)
 		local controller_origin = e.controller_origin
-		controller_origin.x = x
-		controller_origin.y = y
-		controller_origin.vec2.x = x
-		controller_origin.vec2.y = y
+		controller_origin.value:scalar_set(x, y)
 	end
 end
 

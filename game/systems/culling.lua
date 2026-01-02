@@ -33,7 +33,7 @@ function Culling:update(dt)
 	for _, e in ipairs(self.pool_sprite) do
 		local cullable = e.cullable
 		local pos, size = Utils.math.get_ltwh(e)
-		size:smul_inplace(0.5)
+		size:scalar_mul_inplace(0.5)
 		local a_pos = pos
 		local a_hs = size
 		local b_pos = vec2(x + w2, y + h2)

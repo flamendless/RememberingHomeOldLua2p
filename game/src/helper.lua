@@ -21,8 +21,8 @@ function Helper.get_offset(e)
 	local transform = e.transform
 	local anim_data = e.animation_data
 	local sprite = e.sprite
-	local ox = transform.ox
-	local oy = transform.oy
+	local ox = transform.offset.x
+	local oy = transform.offset.y
 
 	if anim_data then
 		if transform.ox == 0.5 then
@@ -72,8 +72,8 @@ function Helper.get_real_pos_box(e)
 
 	if transform then
 		local ox, oy = Helper.get_offset(e)
-		x = x - ox * transform.orig_sx
-		y = y - oy * transform.orig_sy
+		x = x - ox * transform.orig_scale.x
+		y = y - oy * transform.orig_scale.y
 	end
 
 	return x, y
@@ -99,8 +99,8 @@ function Helper.get_ltwh(e)
 	local sx, sy = 1, 1
 	local t = e.transform
 	if t then
-		sx = t.orig_sx
-		sy = t.orig_sy
+		sx = t.orig_scale.x
+		sy = t.orig_scale.y
 	end
 
 	--get the offset
@@ -121,7 +121,7 @@ function Helper.get_ltwh(e)
 	end
 
 	--get the pos
-	local pos = e.pos
+	local pos = e.pos.pos
 	local x, y = pos.x, pos.y
 
 	--calculate

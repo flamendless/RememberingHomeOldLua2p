@@ -186,10 +186,8 @@ function Utils.math.get_ltwh(e)
 	end
 
 	local pos = e.pos.pos:copy()
-
-	--calculate
 	local dt = offset:vector_mul_inplace(scale)
-	pos:scalar_sub_inplace(dt, dt)
+	pos:vector_sub_inplace(dt)
 	size:vector_mul_inplace(scale)
 	return pos, size
 end

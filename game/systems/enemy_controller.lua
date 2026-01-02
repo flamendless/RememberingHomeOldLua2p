@@ -95,8 +95,8 @@ function EnemyController:debug_draw()
 			local line_of_sight = e.line_of_sight.value
 			local dir = e.body.dir
 			local controller_origin = e.controller_origin
-			local x = controller_origin.x
-			local y = controller_origin.y
+			local x = controller_origin.value.x
+			local y = controller_origin.value.y
 			love.graphics.line(x, y, x + line_of_sight * dir, y)
 		end
 

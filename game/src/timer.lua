@@ -3,7 +3,6 @@ local Timer = {}
 local instances = {}
 
 function Timer.new(cron)
-	if cron == nil then return end
 	ASSERT(type(cron) == "table")
 	table.insert(instances, cron)
 end

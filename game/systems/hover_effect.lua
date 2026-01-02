@@ -8,8 +8,8 @@ function HoverEffect:init(world)
 
 	self.pool_change_scale.onRemoved = function(pool, e)
 		local transform = e.transform
-		transform.sx = transform.orig_sx
-		transform.sy = transform.orig_sy
+		transform.sx = transform.orig_scale.x
+		transform.sy = transform.orig_scale.y
 	end
 end
 
@@ -45,11 +45,11 @@ function HoverEffect:hover_change_scale(mx, my)
 		local hcs = e.hover_change_scale
 
 		if hoverable.is_hovered then
-			transform.sx = mathx.lerp(transform.sx, hcs.target, hcs.step)
-			transform.sy = mathx.lerp(transform.sy, hcs.target, hcs.step)
+			transform.sx = mathx.lerp(transform.scale.x, hcs.target, hcs.step)
+			transform.sy = mathx.lerp(transform.scale.y, hcs.target, hcs.step)
 		else
-			transform.sx = mathx.lerp(transform.sx, transform.orig_sx, hcs.step)
-			transform.sy = mathx.lerp(transform.sy, transform.orig_sy, hcs.step)
+			transform.sx = mathx.lerp(transform.scale.x, transform.orig_scale.x, hcs.step)
+			transform.sy = mathx.lerp(transform.scale.y, transform.orig_scale.y, hcs.step)
 		end
 	end
 end

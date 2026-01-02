@@ -19,8 +19,8 @@ function Depth:tween_depth_zoom(dur, factor, ease)
 		local zf = e.depth_zoom.value
 		local t = e.transform or e.quad_transform
 		Flux.to(t, dur, {
-			sx = math.max(t.orig_sx, t.orig_sx + zf * factor),
-			sy = math.max(t.orig_sy, t.orig_sy + zf * factor),
+			sx = math.max(t.orig_scale.x, t.orig_scale.x + zf * factor),
+			sy = math.max(t.orig_scale.y, t.orig_scale.y + zf * factor),
 		}):ease(ease or "linear")
 	end
 end
@@ -30,8 +30,8 @@ function Depth:debug_wheelmoved(wx, wy)
 	for _, e in ipairs(self.pool) do
 		local zf = e.depth_zoom.value
 		local t = e.transform or e.quad_transform
-		t.sx = math.max(t.orig_sx, t.orig_sx + zf * wy)
-		t.sy = math.max(t.orig_sy, t.orig_sy + zf * wy)
+		t.sx = math.max(t.orig_scale.x, t.orig_scale.x + zf * wy)
+		t.sy = math.max(t.orig_scale.y, t.orig_scale.y + zf * wy)
 	end
 end
 

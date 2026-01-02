@@ -91,13 +91,13 @@ if DEV then
 
 		for _, e in ipairs(self.pool_dev) do
 			local id = e.id.value
-			local pos, size = Helper.get_ltwh(e)
-			local iw2, ih2 = iw * 0.5, ih * 0.5
-			local a = vec2(px + iw2, py + ih2)
+			local x, y, w, h = Helper.get_ltwh(e)
+			local iw2, ih2 = w * 0.5, h * 0.5
+			local a2 = vec2(x + iw2, y + ih2)
 			local hs = vec2(iw2, ih2)
-			local hovered = intersect.aabb_point_overlap(a, hs, v)
+			local hovered = intersect.aabb_point_overlap(a2, hs, v)
 			if hovered then
-				love.graphics.print(id, px, py)
+				love.graphics.print(id, x, y)
 			end
 		end
 		love.graphics.setColor(r, g, b, a)

@@ -45,15 +45,15 @@ end
 
 function Sprite.render(e)
 	local rot, sx, sy, ox, oy, kx, ky
-	local pos = e.pos
+	local pos = e.pos.pos
 	local sprite = e.sprite
 
 	local transform = e.transform
 	if transform then
 		rot = transform.rotation
-		sx, sy = transform.sx, transform.sy
+		sx, sy = transform.scale.x, transform.scale.y
 		ox, oy = Helper.get_offset(e)
-		kx, ky = transform.kx, transform.ky
+		kx, ky = transform.shear.x, transform.shear.y
 	end
 
 	local quad = e.quad
@@ -61,9 +61,9 @@ function Sprite.render(e)
 		local quad_transform = e.quad_transform
 		if quad_transform then
 			rot = quad_transform.rotation
-			sx, sy = quad_transform.sx, quad_transform.sy
-			ox, oy = quad_transform.ox, quad_transform.oy
-			kx, ky = quad_transform.kx, quad_transform.ky
+			sx, sy = quad_transform.scale.x, quad_transform.scale.y
+			ox, oy = quad_transform.offset.x, quad_transform.offset.y
+			kx, ky = quad_transform.shear.x, quad_transform.shear.y
 		end
 		draw(e, sprite.image, quad.quad, pos.x, pos.y, rot, sx, sy, ox, oy, kx, ky)
 	else

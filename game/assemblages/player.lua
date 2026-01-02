@@ -1,9 +1,9 @@
 local Player = {}
 
-local speed_data = {
-	idle = {x = 0, y = 0},
-	walk = {x = 96, y = 0},
-	run = {x = 148, y = 0},
+local player_speed_data = {
+	idle = vec2(0, 0),
+	walk = vec2(96, 0),
+	run = vec2(148, 0),
 }
 local gravity = 320
 
@@ -70,7 +70,7 @@ function Player.outside_house(e, x, y)
 	if not (type(x) == "number") then error("Assertion failed: type(x) == \"number\"") end
 	if not (type(y) == "number") then error("Assertion failed: type(y) == \"number\"") end
 	e:assemble(Player.base,
-		x, y, speed_data,
+		x, y, player_speed_data,
 		{
 			move = false,
 			run = false,
@@ -87,7 +87,7 @@ function Player.room(e, x, y)
 		Player.base,
 		x,
 		y,
-		speed_data,
+		player_speed_data,
 		{ move = false, run = false, open_door = true }
 	)
 	:give("z_index", 8)

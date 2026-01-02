@@ -24,10 +24,10 @@ function Movement:update(dt)
 		local body = e.body
 
 		if body.dx ~= 0 then
-			vel_x = e.speed.vx * body.dx * dt
+			vel_x = e.speed.value.x * body.dx * dt
 		end
 
-		body.vel_x, body.vel_y = vel_x, vel_y
+		body.vel:scalar_set(vel_x, vel_y)
 	end
 end
 
@@ -37,7 +37,7 @@ function Movement:update_speed_data(e, anim_name)
 	local new_speed = e.speed_data.speed_data[anim_name]
 	if not new_speed then return end
 	local speed = e.speed
-	speed.vx = mathx.lerp(speed.vx, new_speed.x, 0.5)
+	speed.value.x = mathx.lerp(speed.value.x, new_speed.x, 0.5)
 end
 
 
