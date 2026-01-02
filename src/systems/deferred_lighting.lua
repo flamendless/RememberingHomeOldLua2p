@@ -1,0 +1,529 @@
+local Concord = require("modules.concord.concord")
+local Lume = require("modules.lume.lume")
+local Timer = require("modules.hump.timer")
+
+local Canvas = require("canvas")
+local Shaders = require("shaders")
+
+local DeferredLighting = Concord.system({
+	pool = { "id", "point_light", "pos", "diffuse" },
+	pool_disabled = {
+		"id",
+		"light_id",
+		"light_disabled",
+		"point_light",
+		"pos",
+		"diffuse",
+	},
+	pool_fading = {
+		"id",
+		"light_id",
+		"point_light",
+		"pos",
+		"diffuse",
+		"light_fading",
+	},
+	pool_flicker = {
+		"id",
+		"light_id",
+		"point_light",
+		"pos",
+		"diffuse",
+		"d_light_flicker",
+	},
+})
+
+local lvfp = { { "u_lpos", "float", 4 } } -- pos.xyz, scale
+local lvft = { { "u_ldir", "float", 4 } } -- dir.xyz, angle
+local lvfd = { { "u_diffuse", "float", 3 } } -- color
+local RA = { 0.9951847266722, 0.098017140329561 }
+local MAX_LIGHTS = 96
+
+function DeferredLighting:init(world)
+	self.world = world
+	self.timer = Timer.new()
+
+	self.lighting_pass = love.graphics.newShader(Shaders.paths.df_lighting)
+	self.ambiance = { 1, 1, 1, 1 }
+	self.groups = {}
+	self.mesh = self:create_mesh_p()
+	self.buffers = {
+		Canvas.create_main(),
+		Canvas.create_main(),
+	}
+
+	self.pool.onAdded = function(pool, e)
+		local pos = e.pos
+		local pl = e.point_light
+		local diffuse = e.diffuse
+		local ld = e.light_dir
+		local dir = ld and ld.value
+		local id = #pool
+		self.mesh.pos:setVertex(id, { pos.x, pos.y, pos.z, pl.value })
+		self.mesh.diffuse:setVertex(id, diffuse.value)
+		if dir then
+			self.mesh.dir:setVertex(id, dir)
+		end
+		e:give("light_id", id)
+
+		local group_id = e.light_group and e.light_group.value
+		if group_id then
+			if not self.groups[group_id] then
+				self.groups[group_id] = {}
+			end
+			table.insert(self.groups[group_id], e)
+		end
+	end
+
+	self.pool_disabled.onAdded = function(pool, e)
+		self.mesh.diffuse:setVertex(e.light_id.value, { 0, 0, 0 })
+	end
+
+	self.pool_disabled.onRemoved = function(pool, e)
+		local diffuse = e.diffuse
+		self.mesh.diffuse:setVertex(e.light_id.value, diffuse.value)
+	end
+
+	self.pool_flicker.onAdded = function(pool, e)
+		self:start_flicker(e)
+	end
+end
+
+function DeferredLighting:start_flicker(e)
+	local dlf = e.d_light_flicker
+	if not dlf then
+		return
+	end
+	local diff = e.diffuse
+	local orig_diff = diff.orig_value
+	local signal_during = e.on_d_light_flicker_during
+	local signal_after = e.on_d_light_flicker_after
+
+	self.timer:during(dlf.during, function()
+		local c = Lume.weightedchoice({ on = dlf.on_chance, off = dlf.off_chance })
+		if c == "on" then
+			diff.value[1] = orig_diff[1]
+			diff.value[2] = orig_diff[2]
+			diff.value[3] = orig_diff[3]
+		elseif c == "off" then
+			diff.value[1] = 0
+			diff.value[2] = 0
+			diff.value[3] = 0
+		end
+		self:update_light_diffuse(e)
+		if signal_during then
+			self.world:emit(signal_during.signal, unpack(signal_during.args))
+		end
+	end, function()
+		if signal_after then
+			self.world:emit(signal_after.signal, unpack(signal_after.args))
+		end
+		local on_repeat = e.d_light_flicker_repeat
+		if e.d_light_flicker_remove_after then
+			e:remove("d_light_flicker")
+				:remove("d_light_flicker_remove_after")
+				:remove("on_d_light_flicker_during")
+				:remove("on_d_light_flicker_after")
+		elseif on_repeat then
+			on_repeat.count = on_repeat.count - 1
+			if e.d_light_flicker_sure_on_after then
+				diff.value[1] = orig_diff[1]
+				diff.value[2] = orig_diff[2]
+				diff.value[3] = orig_diff[3]
+				self:update_light_diffuse(e)
+				if signal_during then
+					self.world:emit(signal_during.signal, unpack(signal_during.args))
+				end
+			end
+			if on_repeat.count > 0 or on_repeat.inf then
+				if on_repeat.delay ~= 0 then
+					Timer.after(on_repeat.delay, function()
+						self:start_flicker(e)
+					end)
+				else
+					self:start_flicker(e)
+				end
+			else
+				e:remove("d_light_flicker_repeat")
+			end
+		end
+	end)
+end
+
+function DeferredLighting:set_draw(id)
+	if not (type(id) == "string") then
+		error('Assertion failed: type(id) == "string"')
+	end
+	self.ev_draw_main_id = id
+end
+
+function DeferredLighting:set_ambiance(t)
+	if not (type(t) == "table") then
+		error('Assertion failed: type(t) == "table"')
+	end
+	if not self.orig_ambiance then
+		self.orig_ambiance = { unpack(t) }
+	end
+	self.ambiance = { unpack(t) }
+end
+
+function DeferredLighting:update(dt)
+	self.timer:update(dt)
+	self:update_light_fading(dt)
+end
+
+function DeferredLighting:apply_ambiance()
+	love.graphics.setColor(self.ambiance)
+end
+
+function DeferredLighting:light_group_set_disable(group_id, is_d, e)
+	for _, other in ipairs(self.groups[group_id]) do
+		if e ~= other then
+			if is_d then
+				other:give("light_disabled")
+			else
+				other:remove("light_disabled")
+			end
+		end
+	end
+end
+
+function DeferredLighting:update_light_pos(e)
+	if e.light_disabled then
+		return
+	end
+	local pl = e.point_light
+	local pos = e.pos
+	self.mesh.pos:setVertex(e.light_id.value, { pos.x, pos.y, pos.z, pl.value })
+end
+
+function DeferredLighting:update_light_radius_group(group_id, e)
+	local pl = e.point_light
+	for _, other in ipairs(self.groups[group_id]) do
+		local o_id = other.light_id.value
+		local o_pl = other.point_light
+		local o_pos = other.pos
+		if e ~= other then
+			o_pl.value = pl.value
+		end
+		self.mesh.pos:setVertex(o_id, { o_pos.x, o_pos.y, o_pos.z, o_pl.value })
+	end
+end
+
+function DeferredLighting:update_light_pos_group(group_id, e, prop)
+	local pos = e.pos
+	for _, other in ipairs(self.groups[group_id]) do
+		local o_id = other.light_id.value
+		local o_pos = other.pos
+		local o_pl = other.point_light
+		if e ~= other then
+			o_pos[prop] = pos[prop]
+			o_pos.z = pos.z
+		end
+		self.mesh.pos:setVertex(o_id, { o_pos.x, o_pos.y, o_pos.z, o_pl.value })
+	end
+end
+
+function DeferredLighting:update_light_diffuse(e)
+	if e.light_disabled then
+		return
+	end
+	local diffuse = e.diffuse
+	self.mesh.diffuse:setVertex(e.light_id.value, diffuse.value)
+end
+
+function DeferredLighting:update_light_diff_group(group_id, e, prop)
+	local diff = e.diffuse.value
+	for _, other in ipairs(self.groups[group_id]) do
+		local o_id = other.light_id.value
+		local o_diff = other.diffuse.value
+		if e ~= other then
+			o_diff[prop] = diff[prop]
+		end
+		self.mesh.diffuse:setVertex(o_id, o_diff)
+	end
+end
+
+function DeferredLighting:update_light_dir(e)
+	if e.light_disabled then
+		return
+	end
+	local dir = e.light_dir
+	if not dir then
+		return
+	end
+	self.mesh.dir:setVertex(e.light_id.value, dir.value)
+end
+
+function DeferredLighting:update_light_fading(dt)
+	for _, e in ipairs(self.pool_fading) do
+		if not e.light_disabled then
+			local lp = e.point_light
+			local f = e.light_fading
+			if lp.value >= lp.orig_value then
+				f.dir = -1
+			elseif lp.value <= lp.orig_value - f.amount then
+				f.dir = 1
+			end
+			lp.value = lp.value + f.amount * f.dir * dt
+			self:update_light_pos(e)
+		end
+	end
+end
+
+function DeferredLighting:begin_deferred_lighting(camera, canvas)
+	camera:attach()
+	love.graphics.setCanvas(self.buffers[1].canvas, self.buffers[2].canvas)
+	love.graphics.clear()
+	love.graphics.setShader(self.geometry_pass)
+	love.graphics.setColor(1, 1, 1)
+	if self.ev_draw_main_id then
+		self.world:emit(self.ev_draw_main_id)
+	end
+	love.graphics.setShader() --unset geometry_pass
+
+	love.graphics.setCanvas(canvas.canvas)
+	love.graphics.setShader(self.lighting_pass)
+	self.lighting_pass:send("u_cb", self.buffers[1].canvas)
+
+	love.graphics.clear()
+	love.graphics.setBlendMode("add")
+	self.world:emit("draw_lights")
+	love.graphics.setBlendMode("alpha")
+	love.graphics.setShader() --unset lighting_pass
+	camera:detach()
+	love.graphics.setBlendMode("add")
+	self.world:emit("apply_ambiance")
+	love.graphics.draw(self.buffers[1].canvas)
+end
+
+function DeferredLighting:end_deferred_lighting()
+	love.graphics.setBlendMode("alpha")
+	self.world:emit("draw_clip")
+	love.graphics.setCanvas() --unset canvas.canvas
+end
+
+function DeferredLighting:draw_lights()
+	love.graphics.drawInstanced(self.mesh.light, #self.pool)
+end
+
+function DeferredLighting:create_mesh_p()
+	local v = { { 0, 0, 0, 0, 0, 0, 0, 1 }, { 0, 1, 0, 0, 1, 1, 1, 1 } }
+	for _ = 1, 64 do
+		local t = v[#v]
+		v[#v + 1] = {
+			t[1] * RA[1] - t[2] * RA[2],
+			t[1] * RA[2] + t[2] * RA[1],
+			0,
+			0,
+			1,
+			1,
+			1,
+			1,
+		}
+	end
+	local light = love.graphics.newMesh(v, nil, "static")
+	local m_position = love.graphics.newMesh(lvfp, MAX_LIGHTS)
+	local m_diffuse = love.graphics.newMesh(lvfd, MAX_LIGHTS)
+	local m_direction = love.graphics.newMesh(lvft, MAX_LIGHTS)
+	light:attachAttribute("u_lpos", m_position, "perinstance")
+	light:attachAttribute("u_diffuse", m_diffuse, "perinstance")
+	light:attachAttribute("u_ldir", m_direction, "perinstance")
+	return {
+		light = light,
+		pos = m_position,
+		diffuse = m_diffuse,
+		dir = m_direction,
+	}
+end
+
+function DeferredLighting:flicker_sync(main, others)
+	if not main.__isEntity then
+		error("Assertion failed: main.__isEntity")
+	end
+	if not (type(others) == "table") then
+		error('Assertion failed: type(others) == "table"')
+	end
+	local main_diff = main.diffuse.value
+	local is_off = main_diff[1] == 0
+	for _, e in ipairs(others) do
+		local diff = e.diffuse.value
+		local orig = e.diffuse.orig_value
+		local r, g, b
+		if is_off then
+			r, g, b = 0, 0, 0
+		else
+			r, g, b = unpack(orig)
+		end
+		diff[1], diff[2], diff[3] = r, g, b
+		self.world:emit("update_light_diffuse", e)
+	end
+end
+
+function DeferredLighting:cleanup()
+	self.timer:clear()
+end
+
+local Slab = require("modules.slab")
+local UIWrapper = require("ui_wrapper")
+
+local flags = {
+	ambiance = true,
+	group = true,
+}
+local cache = {}
+
+function DeferredLighting:debug_on_toggle()
+	if self.debug_show then
+		self:set_ambiance({ 0, 0, 0, 0 })
+	else
+		self:set_ambiance(self.orig_ambiance)
+	end
+	flags.ambiance = not self.debug_show
+end
+
+function DeferredLighting:debug_update(dt)
+	if not self.debug_show then
+		return
+	end
+	self.debug_show = Slab.BeginWindow("light", {
+		Title = "DeferredLighting",
+		IsOpen = self.debug_show,
+	})
+	Slab.Text("Group")
+	Slab.SameLine()
+	if Slab.CheckBox(flags.group, "group") then
+		flags.group = not flags.group
+	end
+	Slab.SameLine()
+
+	local ac = self.ambiance
+	Slab.Text("Ambiance")
+	Slab.SameLine()
+	if Slab.CheckBox(flags.ambiance, "ambiance") then
+		flags.ambiance = not flags.ambiance
+		if not flags.ambiance then
+			self:set_ambiance({ 0, 0, 0, 0 })
+		else
+			self:set_ambiance(self.orig_ambiance)
+		end
+	end
+	ac[1] = UIWrapper.edit_range("ar", ac[1], 0, 1)
+	ac[2] = UIWrapper.edit_range("ag", ac[2], 0, 1)
+	ac[3] = UIWrapper.edit_range("ab", ac[3], 0, 1)
+	ac[4] = UIWrapper.edit_range("aa", ac[4], 0, 1)
+
+	if Slab.Button("Disable All") then
+		for _, e in ipairs(self.pool) do
+			e:give("light_disabled")
+		end
+	end
+
+	if Slab.Button("Enable All") then
+		for _, e in ipairs(self.pool) do
+			e:remove("light_disabled")
+		end
+	end
+
+	if flags.group then
+		for k, v in pairs(self.groups) do
+			if Slab.BeginTree(k, { Title = k }) then
+				self:debug_edit(v, k)
+				Slab.EndTree()
+			end
+		end
+	else
+		self:debug_edit(self.pool)
+	end
+	Slab.EndWindow()
+end
+
+function DeferredLighting:debug_edit(pool, group_id)
+	for i, e in ipairs(pool) do
+		if group_id and i ~= 1 then
+			return
+		end
+		local id = e.id.value
+		if Slab.BeginTree(id, { Title = id }) then
+			Slab.Indent()
+			local ld = e.light_disabled
+			if Slab.CheckBox(ld, "Disabled") then
+				local is_d
+				if ld then
+					e:remove("light_disabled")
+					is_d = false
+				else
+					e:give("light_disabled")
+					is_d = true
+				end
+				if group_id then
+					self:light_group_set_disable(group_id, is_d, e)
+				end
+			end
+
+			local flicker = e.d_light_flicker
+			if flicker then
+				if not cache[id] then
+					cache[id] = { flicker.during, flicker.on_chance, flicker.off_chance }
+				end
+				Slab.SameLine()
+				if Slab.CheckBox(flicker, "Flicker") then
+					if flicker then
+						e:remove("d_light_flicker")
+					else
+						e:give("d_light_flicker", unpack(cache[id]))
+					end
+				end
+			end
+
+			local pos = e.pos
+			local pl = e.point_light
+			local diffuse = e.diffuse.value
+			local dir = e.light_dir and e.light_dir.value
+			local b_x, b_y, b_z, b_r, b_g, b_b, b_v, b_dx, b_dy, b_dz, b_da
+			pos.x, b_x = UIWrapper.edit_number("x", pos.x, true)
+			pos.y, b_y = UIWrapper.edit_number("y", pos.y, true)
+			pos.z, b_z = UIWrapper.edit_range("z", pos.z, 1, 256, true)
+			pl.value, b_v = UIWrapper.edit_range("s", pl.value, 0, 256, true)
+			if dir then
+				Slab.Separator()
+				dir[1], b_dx = UIWrapper.edit_range("dx", dir[1], -32, 32)
+				dir[2], b_dy = UIWrapper.edit_range("dy", dir[2], -32, 32)
+				dir[3], b_dz = UIWrapper.edit_range("dz", dir[3], -1, 1)
+				dir[4], b_da = UIWrapper.edit_range("angle", dir[4], -1, 1)
+			end
+			Slab.Separator()
+			diffuse[1], b_r = UIWrapper.edit_range("r", diffuse[1], 0, 6)
+			diffuse[2], b_g = UIWrapper.edit_range("g", diffuse[2], 0, 6)
+			diffuse[3], b_b = UIWrapper.edit_range("b", diffuse[3], 0, 6)
+
+			if flags.group then
+				local prop_pos = (b_x and "x") or (b_y and "y") or (b_z and "z")
+				if prop_pos then
+					self:update_light_pos_group(group_id, e, prop_pos)
+				end
+				if b_v then
+					self:update_light_radius_group(group_id, e)
+				end
+				local prop_diff = (b_r and 1) or (b_g and 2) or (b_b and 3)
+				if prop_diff then
+					self:update_light_diff_group(group_id, e, prop_diff)
+				end
+			else
+				if b_x or b_y or b_z or b_v then
+					self:update_light_pos(e)
+				end
+				if b_dx or b_dy or b_dz or b_da then
+					self:update_light_dir(e)
+				end
+				if b_r or b_g or b_b then
+					self:update_light_diffuse(e)
+				end
+			end
+			Slab.EndTree()
+			Slab.Unindent()
+		end
+	end
+end
+
+return DeferredLighting

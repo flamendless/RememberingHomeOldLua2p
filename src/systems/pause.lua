@@ -1,0 +1,135 @@
+local Concord = require("modules.concord.concord")
+local Log = require("modules.log.log")
+local Lume = require("modules.lume.lume")
+
+local Fade = require("fade")
+local Inputs = require("inputs")
+local ListByID = require("ctor.list_by_id")
+local Resources = require("resources")
+
+local Pause = Concord.system({
+	pool_choice = {
+		constructor = ListByID,
+		id = "pause_choices",
+	},
+})
+
+local APause = require("assemblages.pause")
+local opt = { "Resume", "Settings", "Quit" }
+
+local function get_glitch_timer()
+	return love.math.random(4, 6)
+end
+
+function Pause:init(world)
+	self.world = world
+	self.is_paused = false
+	self.prev = {}
+	self.reset_after = 0.25
+
+	local ww, wh = love.graphics.getDimensions()
+	self.canvas = love.graphics.newCanvas(ww, wh)
+	self.timer = timer(get_glitch_timer(), nil, function()
+		self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch", self.reset_after)
+		self.timer:reset(get_glitch_timer())
+	end)
+end
+
+function Pause:create_pause_entities()
+	local ww, wh = love.graphics.getDimensions()
+	local ww2, wh2 = ww * 0.5, wh * 0.5
+	self.e_bg = Concord.entity(self.world):assemble(APause.bg, ww2, wh2)
+	self.e_title = Concord.entity(self.world):assemble(APause.text, ww2, wh2 - 64)
+	self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
+
+	if #self.pool_choice ~= 0 then
+		return
+	end
+	local ww, wh = love.graphics.getDimensions()
+	local ww2, wh2 = ww * 0.5, wh * 0.5
+	local by = wh2 + 16
+	local scale = 0.75
+	local fnt = Resources.data.fonts.ui
+	local fh = fnt:getHeight() * scale + 8
+
+	self.world:emit("create_list_group", "pause_choices", true, #opt)
+	for i, str in ipairs(opt) do
+		local x = ww2
+		local y = by + (i - 1) * fh
+		Concord.entity(self.world):assemble(APause.choice, str, x, y, scale)
+	end
+end
+
+function Pause:update(dt)
+	if self.is_paused then
+		self.timer:update(dt)
+	end
+	if Inputs.pressed("pause") then
+		self:on_pause()
+	end
+end
+
+function Pause:on_pause()
+	if not self.is_paused then
+		for i, v in ipairs(self.world:getSystems()) do
+			self.prev[i] = v:isEnabled()
+			if not v.__unpausable then
+				v:setEnabled(false)
+			end
+		end
+		self:create_pause_entities()
+		self.world:__flush()
+		self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch", self.reset_after)
+	else
+		for i, v in ipairs(self.world:getSystems()) do
+			v:setEnabled(self.prev[i])
+		end
+		tablex.clear(self.prev)
+		self.e_bg:destroy()
+		self.e_title:destroy()
+		self.world:emit("destroy_list", "pause_choices")
+	end
+
+	self.is_paused = not self.is_paused
+	self.world:emit("set_post_process_effect", "Blur", self.is_paused)
+	self.world:emit("set_post_process_effect", "Glitch", self.is_paused)
+	Log.info("Paused:", self.is_paused)
+end
+
+Pause["on_list_cursor_update_" .. "pause_choices"] = function(self, e_hovered)
+	self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch", self.reset_after)
+	for _, e in ipairs(self.pool_choice) do
+		if e ~= e_hovered then
+			local color = e.color.value
+			color[1] = 1
+			color[2] = 1
+			color[3] = 1
+		end
+	end
+	local hovered_color = e_hovered.color.value
+	hovered_color[1] = 1
+	hovered_color[2] = 0
+	hovered_color[3] = 0
+end
+
+Pause["on_list_item_interact_" .. "pause_choices"] = function(self, e_hovered)
+	local text = e_hovered.static_text.value
+	if text == "Resume" then
+		self:on_pause()
+	elseif text == "Settings" then
+		--TODO
+	elseif text == "Quit" then
+		local btn = love.window.showMessageBox(
+			"Alert",
+			"Are you sure you want to exit the game?",
+			{ "Return to Main Menu", "Exit Game", "Cancel", escapebutton = 3 }
+		)
+		if btn == 1 then
+			self.world:emit("switch_state", "Menu")
+		elseif btn == 2 then
+			love.event.quit()
+		end
+	end
+end
+
+return Pause

@@ -1,0 +1,173 @@
+local Slab = require("modules.slab")
+
+local Helper = require("helper")
+
+local BoundingBox = {
+	id = "BoundingBox",
+
+	debug_show = false,
+}
+
+local alpha = 0.7
+local COL_SPRITE = { 1, 0, 0, alpha }
+local COL_RECT = { 0, 1, 0, alpha }
+local COL_QUAD = { 0, 0, 1, alpha }
+local COL_TEXT = { 1, 1, 0, alpha }
+local COL_STATIC_TEXT = { 1, 0, 1, alpha }
+local show_borders, show_borders_ui = true, true
+local mouse_mode = true
+local shows = { quad = true, sprite = true, rect = true, text = true, static_text = true }
+local STR_BORDER = "border_"
+
+function BoundingBox.debug_update(dt)
+	BoundingBox.debug_show = Slab.BeginWindow("bb", {
+		Title = BoundingBox.id,
+		IsOpen = BoundingBox.debug_show,
+	})
+
+	if Slab.CheckBox(mouse_mode, "mouse_mode") then
+		mouse_mode = not mouse_mode
+	end
+
+	if Slab.CheckBox(show_borders, "borders") then
+		show_borders = not show_borders
+	end
+
+	if Slab.CheckBox(show_borders_ui, "borders_ui") then
+		show_borders_ui = not show_borders_ui
+	end
+
+	for k, v in pairs(shows) do
+		if Slab.CheckBox(v, STR_BORDER .. k) then
+			shows[k] = not v
+		end
+	end
+	Slab.EndWindow()
+end
+
+function BoundingBox.debug_draw()
+	if not BoundingBox.debug_show or not show_borders then
+		return
+	end
+	for _, e in ipairs(BoundingBox.list) do
+		BoundingBox.render(e)
+	end
+end
+
+function BoundingBox.debug_draw_ui(camera)
+	if not BoundingBox.debug_show or not show_borders_ui then
+		return
+	end
+	if not camera then
+		error(camera.__camera)
+	end
+	for _, e in ipairs(BoundingBox.list_ui) do
+		BoundingBox.render(e, camera)
+	end
+end
+
+function BoundingBox.render(e, camera)
+	if not e.__isEntity then
+		error("Assertion failed: e.__isEntity")
+	end
+	if camera then
+		if not camera.__camera then
+			error("Assertion failed: camera.__camera")
+		end
+	end
+	local w, h = 0, 0
+	local sprite = e.sprite
+	local quad = e.quad
+	local rect = e.rect
+	local text = e.text
+	local static_text = e.static_text
+	local culled = e.cullable and e.cullable.value
+	local is_not_drawn = e.nf_renderer or e.hidden or culled
+	local mode = is_not_drawn and "fill" or "line"
+
+	if
+		(quad and not shows.quad)
+		or (sprite and not quad and not shows.sprite)
+		or (rect and not shows.rect)
+		or (text and not shows.text)
+		or (static_text and not shows.static_text)
+	then
+		return
+	end
+
+	local color = COL_SPRITE
+	if quad then
+		local quad_info = quad.info
+		w, h = quad_info.w, quad_info.h
+		color = COL_QUAD
+	elseif sprite then
+		w, h = sprite.iw, sprite.ih
+		color = COL_SPRITE
+	elseif rect then
+		w, h = rect.w, rect.h
+		color = COL_RECT
+	elseif text then
+		local font = e.font.value
+		w = font:getWidth(text.value)
+		h = font:getHeight()
+		color = COL_TEXT
+	elseif static_text then
+		w = static_text.obj:getWidth()
+		h = static_text.obj:getHeight()
+		color = COL_STATIC_TEXT
+	end
+
+	local rotation = 0
+	local sx, sy = 1, 1
+	local ox, oy = 0, 0
+	local transform = e.transform
+	if transform then
+		sx, sy = transform.sx, transform.sy
+		rotation = transform.rotation
+		ox, oy = Helper.get_offset(e)
+	end
+
+	if camera then
+		local scale = camera:getScale()
+		sx = sx / scale
+		sy = sy / scale
+	end
+
+	local pos = e.pos
+	local x, y = pos.x, pos.y
+	if camera then
+		x, y = camera:toWorld(x, y)
+		x = x - ox * sx
+		y = y - oy * sy
+	else
+		x = x - ox
+		y = y - oy
+	end
+
+	w = w * sx
+	h = h * sy
+
+	if mouse_mode then
+		local mx, my = love.mouse.getPosition()
+		if camera then
+			mx, my = camera:toWorld(mx, my)
+		end
+		if not (mx >= x and mx <= x + w and my >= y and my <= y + h) then
+			return
+		end
+	end
+
+	love.graphics.setColor(color)
+	if rotation == 0 then
+		love.graphics.rectangle(mode, x, y, w, h)
+	else
+		love.graphics.push()
+		love.graphics.translate(x, y)
+		love.graphics.rotate(rotation)
+		love.graphics.rectangle(mode, 0, 0, w, h)
+		love.graphics.pop()
+	end
+	love.graphics.setColor(1, 1, 1, 1)
+end
+
+return BoundingBox

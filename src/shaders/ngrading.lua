@@ -1,0 +1,235 @@
+-- https://github.com/MikuAuahDark/NPad93/tree/master/ngrading
+-- NPad's Color Grading Library
+--[[---------------------------------------------------------------------------
+-- Copyright (c) 2020 Miku AuahDark
+-- MODIFIED for GH:R by @flamendless
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the "Software"),
+-- to deal in the Software without restriction, including without limitation
+-- the rights to use, copy, modify, merge, publish, distribute, sublicense,
+-- and/or sell copies of the Software, and to permit persons to whom the
+-- Software is furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+-- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+-- DEALINGS IN THE SOFTWARE.
+--]]
+---------------------------------------------------------------------------
+
+local Resources = require("resources")
+local Settings = require("settings")
+local Shaders = require("shaders")
+
+local NGrading = class({
+	name = "NGrading",
+})
+
+local DevTools
+function NGrading.dev_init()
+	DevTools = require("devtools")
+end
+
+local default_setting = { linear = true, dpiscale = 1 }
+
+function NGrading:new(res_id, res_id2, is_active)
+	if is_active then
+		if not (type(is_active) == "boolean") then
+			error('Assertion failed: type(is_active) == "boolean"')
+		end
+	end
+	if not (type(res_id) == "string") then
+		error('Assertion failed: type(res_id) == "string"')
+	end
+	if res_id2 then
+		if not (type(res_id2) == "string") then
+			error('Assertion failed: type(res_id2) == "string"')
+		end
+	end
+	local lut_size = Settings.current.graphics_quality == "low" and 16 or 64
+	local lut_img = Resources.data.image_data[res_id .. "_" .. lut_size]
+	local effect
+
+	if not res_id2 then
+		effect = self:new_single(lut_img, lut_size)
+	else
+		local lut_img2 = Resources.data.image_data[res_id2 .. "_" .. lut_size]
+		effect = self:new_multi(lut_img, lut_img2, lut_size)
+	end
+
+	effect:setup_data()
+	self.is_active = is_active ~= false --default is true
+end
+
+function NGrading:new_single(img, cs)
+	if not (img:type() == "ImageData") then
+		error('Assertion failed: img:type() == "ImageData"')
+	end
+	local data = img
+	local tw = math.floor(data:getWidth() / cs)
+	local th = math.floor(data:getHeight() / cs)
+	local used_shader = love.graphics.getTextureTypes().volume
+	local volume_img, image
+	if used_shader == 0 then
+		used_shader = false
+	end
+	used_shader = used_shader and "volume" or "old"
+	if used_shader == "volume" then
+		local imgs = {}
+		local fmt = data:getFormat()
+
+		for j = 0, th - 1 do
+			for i = 0, tw - 1 do
+				local nimg = love.image.newImageData(cs, cs, fmt)
+
+				nimg:paste(data, 0, 0, i * cs, j * cs, cs, cs)
+				imgs[#imgs + 1] = nimg
+			end
+		end
+
+		volume_img = love.graphics.newVolumeImage(imgs, default_setting)
+		volume_img:setFilter("linear", "linear")
+		volume_img:setWrap("clamp", "clamp", "clamp")
+	else
+		image = love.graphics.newImage(data, default_setting)
+		image:setFilter("linear", "linear")
+		image:setWrap("clamp", "clamp")
+	end
+
+	self.tile_size = { tw, th }
+	self.cell_size = cs
+	self.volume_img = volume_img
+	self.image = image
+	local str = love.filesystem.read(Shaders.paths["ngrading_" .. used_shader]) .. Shaders.paths.ngrading_effect
+	self.shader = love.graphics.newShader(str)
+	self.used_shader = used_shader
+	return self
+end
+
+function NGrading:new_multi(img, img2, cs)
+	if not (img:type() == "ImageData") then
+		error('Assertion failed: img:type() == "ImageData"')
+	end
+	if not (img2:type() == "ImageData") then
+		error('Assertion failed: img2:type() == "ImageData"')
+	end
+	if not (type(cs) == "number") then
+		error('Assertion failed: type(cs) == "number"')
+	end
+	local data = img
+	local data2 = img2
+	local tw = math.floor(data:getWidth() / cs)
+	local th = math.floor(data:getHeight() / cs)
+	local volume_img, image
+	local volume_img2, image2
+	local used_shader = love.graphics.getTextureTypes().volume
+	if used_shader == 0 then
+		used_shader = false
+	end
+	used_shader = used_shader and "volume_multi"
+	if used_shader == "volume_multi" then
+		local imgs = {}
+		local imgs2 = {}
+		local fmt = data:getFormat()
+		local fmt2 = data2:getFormat()
+
+		for j = 0, th - 1 do
+			for i = 0, tw - 1 do
+				local nimg = love.image.newImageData(cs, cs, fmt)
+				local nimg2 = love.image.newImageData(cs, cs, fmt2)
+
+				nimg:paste(data, 0, 0, i * cs, j * cs, cs, cs)
+				nimg2:paste(data2, 0, 0, i * cs, j * cs, cs, cs)
+				imgs[#imgs + 1] = nimg
+				imgs2[#imgs2 + 1] = nimg2
+			end
+		end
+
+		volume_img = love.graphics.newVolumeImage(imgs, default_setting)
+		volume_img:setFilter("linear", "linear")
+		volume_img:setWrap("clamp", "clamp", "clamp")
+
+		volume_img2 = love.graphics.newVolumeImage(imgs2, default_setting)
+		volume_img2:setFilter("linear", "linear")
+		volume_img2:setWrap("clamp", "clamp", "clamp")
+	else
+		image = love.graphics.newImage(data, default_setting)
+		image:setFilter("linear", "linear")
+		image:setWrap("clamp", "clamp")
+
+		image2 = love.graphics.newImage(data2, default_setting)
+		image2:setFilter("linear", "linear")
+		image2:setWrap("clamp", "clamp")
+	end
+
+	self.is_multi = true
+	self.tile_size = { tw, th }
+	self.cell_size = cs
+	self.volume_img = volume_img
+	self.volume_img2 = volume_img2
+	self.image = image
+	self.image2 = image2
+	local str = love.filesystem.read(Shaders.paths["ngrading_" .. used_shader]) .. Shaders.paths.ngrading_effect
+	self.shader = love.graphics.newShader(str)
+	self.used_shader = used_shader
+	return self
+end
+
+function NGrading:get_shader()
+	return love.filesystem.read(Shaders.paths.ngrading[self.used_shader])
+end
+
+function NGrading:set_dt(dt)
+	if self.is_multi and self.is_active then
+		self.shader:send("u_time", dt)
+	end
+end
+
+function NGrading:setup_data(shader)
+	local s = shader or self.shader
+	if self.is_multi then
+		if self.image then
+			s:send("u_lut", self.image)
+			s:send("u_cell_size", self.cell_size)
+			s:send("u_cell_dimensions", self.tile_size)
+		else
+			s:send("u_lut", self.volume_img)
+		end
+
+		if self.image2 then
+			s:send("u_lut2", self.image)
+		else
+			s:send("u_lut2", self.volume_img2)
+		end
+	else
+		if self.image then
+			s:send("u_lut", self.image)
+			s:send("u_cell_size", self.cell_size)
+			s:send("u_cell_dimensions", self.tile_size)
+		else
+			s:send("u_lut", self.volume_img)
+		end
+	end
+end
+
+function NGrading:apply()
+	if DevTools.flags.ngrading then
+		love.graphics.setShader(self.shader)
+	end
+end
+
+function NGrading:get_type()
+	if self.is_multi then
+		return "NGradingMulti"
+	end
+	return self:type()
+end
+
+return NGrading

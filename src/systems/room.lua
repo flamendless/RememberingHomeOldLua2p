@@ -1,0 +1,155 @@
+local Concord = require("modules.concord.concord")
+
+local Enums = require("enums")
+
+local Room = Concord.system()
+
+local ARoom = require("assemblages.room")
+
+function Room:init(world)
+	self.world = world
+end
+
+function Room:parse_room_items(res)
+	if not (type(res) == "string") then
+		error('Assertion failed: type(res) == "string"')
+	end
+	local data = require("atlases.atlas_" .. res)
+	local list = require("atlases." .. res .. "_items")
+	local frames = data.frames
+	local has_group = false
+	local group = {}
+	local group_t = {}
+	local spr_res = "atlas_" .. res .. "_items"
+
+	for _, t in ipairs(list) do
+		if t.grouped then
+			local g_id = t.id
+			if not group[g_id] then
+				group[g_id] = {}
+			end
+			for _, t2 in ipairs(t) do
+				local e = self:create_room_item(frames, spr_res, t2, g_id)
+				table.insert(group[g_id], e)
+			end
+			group_t[g_id] = t
+			has_group = true
+		else
+			self:create_room_item(frames, spr_res, t):give("room_item")
+		end
+	end
+
+	if has_group then
+		self:create_grouped_items(group, group_t, frames, list)
+	end
+end
+
+function Room:create_room_item(frames, spr_res, t, g_id)
+	if not (type(frames) == "table") then
+		error('Assertion failed: type(frames) == "table"')
+	end
+	if not (type(spr_res) == "string") then
+		error('Assertion failed: type(spr_res) == "string"')
+	end
+	if not (type(t) == "table") then
+		error('Assertion failed: type(t) == "table"')
+	end
+	if g_id then
+		if not (type(g_id) == "string") then
+			error('Assertion failed: type(g_id) == "string"')
+		end
+	end
+	local id = g_id or t.id
+	local item = frames[id]
+	if not item then
+		error("no " .. id)
+	end
+	local scale = t.scale or 1
+	local w = math.floor(item.w * scale)
+	local h = math.floor(item.h * scale)
+
+	local e = Concord.entity(self.world)
+		:give("id", t.name or id)
+		:give("sprite", spr_res)
+		:give("pos", t.x, t.y)
+		:give("atlas", item)
+		:give("quad_transform", 0, scale, scale)
+		:give("z_index", t.z or 4, false)
+		:give("outline_val", t.outline_val or 1)
+		:give("cullable")
+
+	if not g_id and not t.no_col then
+		e:give("collider", w, h, Enums.bump_filter.cross):give("bump")
+
+		if not t.not_interactive then
+			e:give("interactive")
+		end
+		if t.dialogue then
+			e:give("dialogue_meta", unpack(t.dialogue))
+		end
+		if t.usable_with_item then
+			e:give("usable_with_item")
+		end
+		if t.is_door then
+			e:give("is_door")
+		end
+		if t.req_col_dir then
+			e:give("req_col_dir", t.req_col_dir)
+		end
+	end
+	return e
+end
+
+function Room:create_grouped_items(group, group_t, frames, list)
+	if not (type(group) == "table") then
+		error('Assertion failed: type(group) == "table"')
+	end
+	if not (type(group_t) == "table") then
+		error('Assertion failed: type(group_t) == "table"')
+	end
+	if not (type(frames) == "table") then
+		error('Assertion failed: type(frames) == "table"')
+	end
+	if not (type(list) == "table") then
+		error('Assertion failed: type(list) == "table"')
+	end
+
+	for id, t in pairs(group) do
+		local x, y = math.huge, math.huge
+		local w, h = -math.huge, -math.huge
+		local frame = frames[id]
+		for _, e in ipairs(t) do
+			local pos = e.pos
+			local scale = e.quad_transform.sx
+			x = math.min(x, pos.x)
+			y = math.min(y, pos.y)
+			w = math.max(w, pos.x + frame.w * scale)
+			h = math.max(h, pos.y + frame.h * scale)
+			e:give("grouped", id)
+		end
+
+		local e_g = Concord.entity(self.world)
+			:give("id", "col_" .. id)
+			:give("pos", x, y)
+			:give("bump")
+			:give("collider", w - x, h - y, Enums.bump_filter.cross)
+			:give("interactive")
+			:give("grouped", id)
+
+		local gt = group_t[id]
+		if gt.dialogue then
+			e_g:give("dialogue_meta", unpack(gt.dialogue))
+		end
+		if gt.usable_with_item then
+			e_g:give("usable_with_item")
+		end
+	end
+end
+
+function Room:create_room_bounds(w, h)
+	for _, v in pairs(ARoom) do
+		Concord.entity(self.world):assemble(v, w, h)
+	end
+end
+
+return Room

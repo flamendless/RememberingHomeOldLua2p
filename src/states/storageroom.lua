@@ -1,0 +1,109 @@
+local Concord = require("modules.concord.concord")
+local Gamera = require("modules.gamera.gamera")
+local TLE = require("modules.tle.timeline")
+
+local Canvas = require("canvas")
+local Dialouges = require("dialogues")
+local Fade = require("fade")
+local Items = require("items")
+local Palette = require("palette")
+local Resources = require("resources")
+local Shaders = require("shaders")
+
+local Assemblages = {
+	Common = require("assemblages.common"),
+	StorageRoom = require("assemblages.storage_room"),
+}
+
+local StorageRoom = Concord.system()
+
+function StorageRoom:init(world)
+	self.world = world
+end
+
+function StorageRoom:state_setup()
+	local w, h = Resources.data.images.storage_room:getDimensions()
+	local ww, wh = love.graphics.getDimensions()
+
+	self.canvas = Canvas.create_main()
+	self.scale = math.min(ww / w, wh / h)
+	self.camera = Gamera.new(0, 0, w, h)
+	self.camera:setWindow(0, 0, ww, wh)
+	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, "storage_room")
+
+	self.world:emit("create_room_bounds", w, h)
+	self.world:emit("parse_room_items", "storage_room")
+	self.world:emit("setup_post_process", {
+		Shaders.NGrading("lut_dusk"),
+		Shaders.FilmGrain(),
+		Shaders.Blur(),
+		Shaders.Glitch(),
+	})
+
+	for _, v in pairs(Assemblages.StorageRoom.lights) do
+		Concord.entity(self.world):assemble(v)
+	end
+	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_storage_room"))
+	self.world:emit("set_draw", "ev_draw_ex")
+end
+
+function StorageRoom:state_init()
+	self.world:emit("spawn_player", function(e_player)
+		self.world:emit("camera_follow", e_player, 0.25)
+		self.world:emit("toggle_component", e_player, "can_move", true)
+		self.world:emit("toggle_component", e_player, "can_interact", true)
+		self.world:emit("toggle_component", e_player, "can_run", true)
+	end)
+
+	-- self.world:emit("generate_ants", 18, vec2(12, 28), vec2(56, 4), true, 32)
+	-- self.world:emit("generate_ants", 18, vec2(88, 102), vec2(108, 4), true, 32)
+	-- self.world:emit("generate_flies", 18, vec2(242, 32), 6)
+
+	self.timeline = TLE.Do(function()
+		Fade.fade_in(nil, 1)
+		self.camera:setScale(4)
+
+		self.timeline:Pause()
+	end)
+end
+
+function StorageRoom:state_update(dt)
+	self.world:emit("preupdate", dt)
+	self.world:emit("update", dt)
+end
+
+function StorageRoom:state_draw()
+	self.world:emit("begin_deferred_lighting", self.camera, self.canvas)
+	self.world:emit("end_deferred_lighting")
+	self.world:emit("apply_post_process", self.canvas)
+	self.world:emit("draw_ui")
+	Fade.draw()
+end
+
+function StorageRoom:ev_draw_ex()
+	self.world:emit("draw_bg")
+	self.world:emit("draw")
+end
+
+function StorageRoom:search_shelf(e, dialogues_t)
+	local can_search = false
+	if not can_search then
+		local t = tablex.copy(Dialouges.get("common", "cant_search_yet"))
+		self.world:emit("spawn_dialogue_ex", t)
+	else
+		--TODO get item
+	end
+end
+
+function StorageRoom:check_drawer_key(e, dialogues_t)
+	local has_key = Items.has("storage_room_drawer_key")
+	if not has_key then
+		local t = tablex.copy(dialogues_t.no_key_yet)
+		self.world:emit("spawn_dialogue_ex", t)
+	else
+		--TODO open and get item
+	end
+end
+
+return StorageRoom

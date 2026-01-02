@@ -1,0 +1,304 @@
+local Concord = require("modules.concord.concord")
+local Log = require("modules.log.log")
+
+local Enums = require("enums")
+local Helper = require("helper")
+local Utils = require("utils")
+local calc_e_controller_origin = Utils.math.calc_e_controller_origin
+
+local Transform = Concord.system({
+	pool = { "transform", "!auto_scale", "!rect" },
+	pool_pos = { "pos", "!pos_vec2" },
+	pool_pos_vec2 = { "pos", "pos_vec2" },
+	pool_atlas = { "quad_transform", "atlas" },
+	pool_anchor = { "pos", "anchor" },
+	pool_camera = { "pos", "camera" },
+	pool_attach = { "pos", "attach_to" },
+	pool_auto_scale = { "transform", "auto_scale" },
+	pool_spawn = { "pos", "attach_to_spawn_point" },
+	pool_controller = { "pos", "controller_origin", "animation_data" },
+})
+
+function Transform:init(world)
+	self.world = world
+	self.pool.onAdded = function(pool, e)
+		if e.quad and e.atlas then
+			local id = e.id.value
+			Log.warn(id, "has quad but uses transform, maybe you want quad_transform?")
+		end
+
+		local t = e.transform
+		local w, h
+		local sprite = e.sprite
+		local text = e.text
+		local textf = e.textf
+		local s_text = e.static_text
+
+		if sprite then
+			w, h = sprite.iw, sprite.ih
+		elseif textf then
+			local font = e.font.value
+			w = textf.limit
+			h = font:getHeight(" ")
+		elseif text then
+			local font = e.font.value
+			local target_text = e.target_text
+			if target_text then
+				w = font:getWidth(target_text.value)
+			else
+				w = font:getWidth(text.value)
+			end
+			h = font:getHeight(" ")
+		elseif s_text then
+			if not s_text then
+				error("renderer first before transform system")
+			end
+			w, h = s_text.obj:getDimensions()
+		end
+
+		if t.ox == 0.5 then
+			t.ox = w * 0.5
+		elseif t.ox == 1 then
+			t.ox = w
+		end
+
+		if t.oy == 0.5 then
+			t.oy = h * 0.5
+		elseif t.oy == 1 then
+			t.oy = h
+		end
+	end
+
+	self.pool_atlas.onAdded = function(pool, e)
+		local frame = e.atlas.value
+		local qt = e.quad_transform
+		if qt.ox == 0.5 then
+			qt.ox = frame.w * 0.5
+		elseif qt.ox == 1 then
+			qt.ox = frame.w
+		end
+
+		if qt.oy == 0.5 then
+			qt.oy = frame.h * 0.5
+		elseif qt.oy == 1 then
+			qt.oy = frame.h
+		end
+	end
+
+	self.pool_anchor.onAdded = function(pool, e)
+		self:update_anchor(e)
+	end
+
+	self.pool_pos_vec2.onAdded = function(pool, e)
+		local pos = e.pos
+		e.pos_vec2.value = vec2(pos.x, pos.y)
+	end
+
+	self.pool_attach.onAdded = function(pool, e)
+		local attach = e.attach_to
+		local target = self.world:getEntityByKey(attach.key)
+		if not target.pos then
+			error("Target entity must have a pos component")
+		end
+	end
+
+	self.pool_auto_scale.onAdded = function(pool, e)
+		local auto_scale = e.auto_scale
+		local transform = e.transform
+		local anim_data = e.animation_data
+		local sprite = e.sprite
+		local dsx, dsy = 1, 1
+
+		if anim_data then
+			dsx = auto_scale.tw / anim_data.frame_width
+			dsy = auto_scale.th / anim_data.frame_height
+		elseif sprite then
+			dsx = auto_scale.tw / sprite.iw
+			dsy = auto_scale.th / sprite.ih
+		end
+		if auto_scale.is_proportion then
+			local scale = math.min(dsx, dsy)
+			transform.sx = transform.sx * scale
+			transform.sy = transform.sy * scale
+		else
+			transform.sx = transform.sx * dsx
+			transform.sy = transform.sy * dsy
+		end
+		if auto_scale.is_floored then
+			transform.sx = math.floor(transform.sx)
+			transform.sy = math.floor(transform.sy)
+		end
+	end
+end
+
+function Transform:update_anchor(e)
+	local anchor = e.anchor
+	local e_target = self.world:getEntityByKey(anchor.key)
+	if not e_target then
+		error("Assertion failed: e_target")
+	end
+	local target_pos = e_target.pos
+	local target_sprite = e_target.sprite
+	if not (target_sprite.image:type() == "Image") then
+		error('Assertion failed: target_sprite.image:type() == "Image"')
+	end
+	local sx, sy, ox, oy = 1, 1, 0, 0
+	local target_transform = e_target.transform
+	if target_transform then
+		sx = target_transform.sx or sx
+		sy = target_transform.sy or sy
+		ox = target_transform.ox or ox
+		oy = target_transform.oy or oy
+	end
+
+	local target_qt = e_target.quad_transform
+	if target_qt then
+		sx = target_qt.sx or sx
+		sy = target_qt.sy or sy
+		ox = target_qt.ox or ox
+		oy = target_qt.oy or oy
+	end
+
+	local w, h = target_sprite.iw * sx, target_sprite.ih * sy
+	local x = target_pos.x - ox * sx
+	local y = target_pos.y - oy * sy
+
+	if anchor.anchor_x == Enums.anchor.center then
+		x = x + w * 0.5
+	elseif anchor.anchor_y == Enums.anchor.right then
+		x = x + w
+	end
+
+	if anchor.anchor_y == Enums.anchor.center then
+		y = y + h * 0.5
+	elseif anchor.anchor_y == Enums.anchor.bottom then
+		y = y + h
+	end
+
+	if anchor.padding_x then
+		x = x + anchor.padding_x
+	end
+	if anchor.padding_y then
+		y = y + anchor.padding_y
+	end
+
+	local pos = e.pos
+	pos.x = x
+	pos.y = y
+	pos.orig_x = pos.x
+	pos.orig_y = pos.y
+end
+
+function Transform:canvas_resize(ww, wh, scale)
+	for _, e in ipairs(self.pool) do
+		local transform = e.transform
+
+		if transform then
+			transform.sx = scale
+			transform.sy = scale
+		end
+	end
+end
+
+function Transform:update_position(l, t)
+	for _, e in ipairs(self.pool_camera) do
+		local pos = e.pos
+		pos.x = pos.x + l
+		pos.y = pos.y + t
+		pos.orig_x = pos.x
+		pos.orig_y = pos.y
+	end
+end
+
+function Transform:update_attachment(e)
+	local attach = e.attach_to
+	local pos = e.pos
+	local offset = e.attach_to_offset
+	local target = self.world:getEntityByKey(attach.key)
+	local tx, ty = target.pos.x, target.pos.y
+
+	if offset then
+		tx = tx + offset.ox
+		ty = ty + offset.oy
+	end
+
+	pos.x = tx
+	pos.y = ty
+end
+
+function Transform:update(dt)
+	for _, e in ipairs(self.pool_pos_vec2) do
+		local pv = e.pos_vec2.value
+		local pos = e.pos
+		pv.x = pos.x
+		pv.y = pos.y
+	end
+
+	for _, e in ipairs(self.pool_anchor) do
+		self:update_anchor(e)
+	end
+
+	for _, e in ipairs(self.pool_attach) do
+		self:update_attachment(e)
+	end
+
+	for _, e in ipairs(self.pool_spawn) do
+		local pos = e.pos
+		local sp = e.attach_to_spawn_point.pos
+		pos.x = sp.x
+		pos.y = sp.y
+	end
+
+	for _, e in ipairs(self.pool_controller) do
+		local x, y = calc_e_controller_origin(e)
+		local controller_origin = e.controller_origin
+		controller_origin.x = x
+		controller_origin.y = y
+		controller_origin.vec2.x = x
+		controller_origin.vec2.y = y
+	end
+end
+
+local Slab = require("modules.slab")
+local UIWrapper = require("ui_wrapper")
+
+function Transform:debug_update(dt)
+	if not self.debug_show then
+		return
+	end
+	self.debug_show = Slab.BeginWindow("transform", {
+		Title = "Transform",
+		IsOpen = self.debug_show,
+	})
+	for _, e in ipairs(self.pool_pos) do
+		local id = e.id.value
+		if Slab.BeginTree(id, { Title = id }) then
+			Slab.Indent()
+			local pos = e.pos
+			local t = e.transform or e.quad_transform
+			pos.x = UIWrapper.edit_number("x", pos.x, true)
+			pos.y = UIWrapper.edit_number("y", pos.y, true)
+			local z_index = e.z_index
+			if z_index and z_index.sortable then
+				z_index.value = UIWrapper.edit_number("z", z_index.value, true)
+			end
+			if t then
+				t.rotation = UIWrapper.edit_number("r", t.rotation)
+				t.sx = UIWrapper.edit_number("sx", t.sx)
+				t.sy = UIWrapper.edit_number("sy", t.sy)
+				t.ox = UIWrapper.edit_number("ox", t.ox)
+				t.oy = UIWrapper.edit_number("oy", t.oy)
+				t.kx = UIWrapper.edit_number("kx", t.kx)
+				t.ky = UIWrapper.edit_number("ky", t.ky)
+			end
+			if e.point_light then
+				self.world:emit("update_light_pos", e)
+			end
+			Slab.EndTree()
+			Slab.Unindent()
+		end
+	end
+	Slab.EndWindow()
+end
+
+return Transform

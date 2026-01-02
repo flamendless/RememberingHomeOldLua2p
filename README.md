@@ -51,7 +51,7 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 * [Slab](https://github.com/flamendless/Slab) - for GUI and in-game editor tools
 * [splashes](https://github.com/love2d-community/splashes) - for löve splash screen
 * [strict.lua](https://github.com/rxi/lite/blob/master/data/core/strict.lua) - tracks accesses and assignments of undefined variables in Lua
-* [TimelineEvents](https://github.com/flamendless/TimelineEvents) - for coroutine based event system
+* [TimelineEvents](https://github.com/babulous/TimelineEvents) - for coroutine based event system
 
 ## Tools:
 

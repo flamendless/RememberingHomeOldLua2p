@@ -161,7 +161,7 @@ function rebuild()
 	cp slab.style $dir_output
 }
 
-function run()
+function run2p()
 {
 	echo "Running build.sh"
 	process_src "$dir_source"
@@ -173,6 +173,11 @@ function run()
 		love "$dir_output"
 	fi
 	echo "Completed build.sh"
+}
+
+function run()
+{
+	love "$dir_source"
 }
 
 function profile()

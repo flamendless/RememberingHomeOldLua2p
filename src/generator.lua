@@ -1,0 +1,109 @@
+local Generator = {}
+
+function Generator.path_points_fireflies(x, y, n)
+	if not (type(x) == "number") then
+		error('Assertion failed: type(x) == "number"')
+	end
+	if not (type(y) == "number") then
+		error('Assertion failed: type(y) == "number"')
+	end
+	if not (type(n) == "number") then
+		error('Assertion failed: type(n) == "number"')
+	end
+	local offset = 8
+	local points = { x = x, y = y }
+	local prev_x = x
+	local prev_y = y
+
+	for _ = 1, n - 1 do
+		local px = love.math.random(prev_x - offset, prev_x + offset)
+		local py = love.math.random(prev_y - offset, prev_y + offset)
+		local p = { x = px, y = py }
+		prev_x = px
+		prev_y = py
+		table.insert(points, p)
+	end
+	return points
+end
+
+function Generator.path_points_ants(x, y, ex, ey, n)
+	if not (type(x) == "number") then
+		error('Assertion failed: type(x) == "number"')
+	end
+	if not (type(y) == "number") then
+		error('Assertion failed: type(y) == "number"')
+	end
+	if not (type(ex) == "number") then
+		error('Assertion failed: type(ex) == "number"')
+	end
+	if not (type(ey) == "number") then
+		error('Assertion failed: type(ey) == "number"')
+	end
+	if not (type(n) == "number") then
+		error('Assertion failed: type(n) == "number"')
+	end
+	local points = {}
+	local dx = 1
+	local dy = (y <= ey) and -1 or 1
+	local offset = 2
+
+	for i = 0, n - 1 do
+		local t = i / n
+		local ox = love.math.random(-offset, offset)
+		local oy = love.math.random(-offset, offset)
+		local px = mathx.lerp(x, ex, t)
+		local py = mathx.lerp(y, ey, t)
+
+		px = px + ox * dx
+		py = py + oy * dy
+		dx = dx * -1
+		dy = dy * -1
+		table.insert(points, { x = px, y = py })
+	end
+	return points
+end
+
+function Generator.path_points_flies(x, y)
+	if not (type(x) == "number") then
+		error('Assertion failed: type(x) == "number"')
+	end
+	if not (type(y) == "number") then
+		error('Assertion failed: type(y) == "number"')
+	end
+	local minx, maxx = 8, 16
+	local miny, maxy = 6, 12
+
+	--[[
+	  b  c  d
+	a    o    e
+	  h  g  f
+	--]]
+
+	local hx = love.math.random(minx, maxx)
+	local hx_h = hx * 0.5
+	local hy = love.math.random(miny, maxy)
+	local hy_h = hy * 0.75
+
+	local o = vec2(x, y)
+	local vecs = {
+		o:sadd(-hx, 0), --a
+		o:sadd(-hx_h, -hy_h), --b
+		o:sadd(0, -hy), --c
+		o:sadd(hx_h, -hy_h), --d
+		o:sadd(hx, 0), --e
+
+		o:sadd(hx_h, hy_h), --f
+		o:sadd(0, hy), --g
+		o:sadd(-hx_h, hy_h), --h
+	}
+
+	local points = {}
+	local r = love.math.random(math.pi / 6, math.pi / 4)
+	for _, v in ipairs(vecs) do
+		v:rotate_around_inplace(r, o)
+		table.insert(points, { x = v.x, y = v.y })
+	end
+	return points
+end
+
+return Generator

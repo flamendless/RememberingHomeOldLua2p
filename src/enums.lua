@@ -1,0 +1,64 @@
+local Enum = require("modules.enum.enum")
+
+local Enums = {
+	bt = {},
+}
+
+Enums.mode = Enum("fill", "line")
+Enums.arc_type = Enum("pie", "open", "closed")
+Enums.bump_filter = Enum("touch", "slide", "cross", "bounce")
+Enums.align_mode = Enum("center", "left", "right", "justify")
+Enums.anchor = Enum("center", "bottom", "right")
+Enums.item = Enum("note", "inventory", "choice")
+Enums.light_shape = Enum("round", "rectangle", "cone", "custom")
+Enums.pause_at = Enum("first", "last")
+Enums.stop_at = Enum("pauseAtStart", "pauseAtEnd")
+Enums.anim8_status = Enum("playing", "paused")
+
+Enums.ease = Enum(
+	"linear",
+	"quadin",
+	"quadout",
+	"quadinout",
+	"cubicin",
+	"cubicout",
+	"cubicinout",
+	"quartin",
+	"quartout",
+	"quartinout",
+	"quintin",
+	"quintout",
+	"quintinout",
+	"expoin",
+	"expoout",
+	"expoinout",
+	"sinein",
+	"sineout",
+	"sineinout",
+	"circin",
+	"circout",
+	"circinout",
+	"backin",
+	"backout",
+	"backinout",
+	"elasticin",
+	"elasticout",
+	"elasticinout"
+)
+
+Enums.splash_state = Enum("love", "wits", "flam")
+Enums.menu_state = Enum("menu", "sub_menu", "play", "settings", "about", "exit")
+Enums.camera_state = Enum("zoomed_in", "zoomed_out")
+Enums.battery_state = Enum("full", "low", "critical", "empty")
+
+Enums.face_dir = Enum("left", "right")
+
+Enums.anim_state =
+	Enum("idle", "idle_left", "walk", "run", "open_door", "open_door_left", "open_locked_door", "open_locked_door_left")
+
+Enums.enemy_type = Enum("suit")
+Enums.enemy_suit_anim = Enum("idle", "walk")
+
+Enums.bt.enemy = Enum("idle", "walk", "chase", "lean_back", "lean_return_back", "caught_other")
+
+return Enums

@@ -1,0 +1,24 @@
+local Concord = require("modules.concord.concord")
+
+Concord.component("auto_scale", function(c, tw, th, is_proportion, is_floored)
+	if not (type(tw) == "number") then
+		error('Assertion failed: type(tw) == "number"')
+	end
+	if not (type(th) == "number") then
+		error('Assertion failed: type(th) == "number"')
+	end
+	if is_proportion then
+		if not (type(is_proportion) == "boolean") then
+			error('Assertion failed: type(is_proportion) == "boolean"')
+		end
+	end
+	if is_floored then
+		if not (type(is_floored) == "boolean") then
+			error('Assertion failed: type(is_floored) == "boolean"')
+		end
+	end
+	c.tw = tw
+	c.th = th
+	c.is_proportion = is_proportion or false
+	c.is_floored = is_floored or false
+end)

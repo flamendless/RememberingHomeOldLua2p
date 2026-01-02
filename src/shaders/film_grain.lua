@@ -1,0 +1,36 @@
+local Shaders = require("shaders")
+
+local FilmGrain = class({
+	name = "FilmGrain",
+})
+
+function FilmGrain:new()
+	local w, h = 128, 128
+	local image_data = love.image.newImageData(w, h)
+	image_data:mapPixel(function(x, y, r, g, b, a)
+		local nr = love.math.noise(x, y)
+		local ng = love.math.noise(x + w, y)
+		local nb = love.math.noise(x, y + h)
+		return nr, ng, nb, a
+	end)
+	local noise_texture = love.graphics.newImage(image_data)
+	noise_texture:setWrap("repeat", "repeat")
+
+	self.random_offset = {}
+	self.shader = love.graphics.newShader(Shaders.paths.film_grain)
+	self.shader:send("u_noise_texture", noise_texture)
+	self.shader:send("u_size", w)
+
+	self.is_active = false
+end
+
+function FilmGrain:update(dt)
+	if not self.is_active then
+		return
+	end
+	self.random_offset[1] = love.math.random()
+	self.random_offset[2] = love.math.random()
+	self.shader:send("u_random_offset", self.random_offset)
+end
+
+return FilmGrain

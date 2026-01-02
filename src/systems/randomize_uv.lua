@@ -1,0 +1,103 @@
+local Concord = require("modules.concord.concord")
+local Log = require("modules.log.log")
+local Timer = require("modules.hump.timer")
+
+local RandomizeUV = Concord.system({
+	pool_room_item = { "room_item", "atlas" },
+})
+
+function RandomizeUV:init(world)
+	self.world = world
+	self.orig_data = {}
+	self.has_randomized = false
+	self.power = 8
+end
+
+function RandomizeUV:update(dt)
+	if not self.has_randomized then
+		return
+	end
+	for _, e in ipairs(self.pool_room_item) do
+		local quad = e.quad
+		local dx = love.math.random() < 0.5 and -self.power or self.power
+		local dy = love.math.random() < 0.5 and -self.power or self.power
+		local x, y = quad.info.x, quad.info.y
+		x = x + dt * dx
+		y = y + dt * dy
+		quad.quad:setViewport(x, y, quad.info.w, quad.info.h)
+	end
+end
+
+function RandomizeUV:randomize_uv()
+	Log.info("Randomizing UV for room items")
+	local choices = {}
+	for i, e in ipairs(self.pool_room_item) do
+		choices[i] = { id = e.id.value, info = e.quad.info }
+	end
+
+	for _, e in ipairs(self.pool_room_item) do
+		local id = e.id.value
+		if not self.orig_data[id] then
+			self.orig_data[id] = tablex.copy(e.quad.info)
+		end
+
+		local other = tablex.take_random(choices)
+		self.world:emit("update_atlas", e, other.info)
+	end
+	self.has_randomized = true
+end
+
+function RandomizeUV:reset_uv()
+	if not self.has_randomized then
+		return
+	end
+	Log.info("Resetting UV for room items")
+	for _, e in ipairs(self.pool_room_item) do
+		local id = e.id.value
+		if not self.orig_data[id] then
+			error(id .. " is missing orig quad data")
+		end
+		self.world:emit("update_atlas", e, self.orig_data[id])
+	end
+	tablex.clear(self.orig_data)
+	self.has_randomized = false
+end
+
+function RandomizeUV:multi_randomize_uv(dur, chance)
+	if not (type(dur) == "number" and dur > 0) then
+		error('Assertion failed: type(dur) == "number" and dur > 0')
+	end
+	if not (type(chance) == "number" and chance > 0) then
+		error('Assertion failed: type(chance) == "number" and chance > 0')
+	end
+	Timer.during(dur, function()
+		local r = love.math.random()
+		if r <= chance then
+			self:randomize_uv()
+		end
+	end)
+end
+
+local Slab = require("modules.slab")
+
+function RandomizeUV:debug_update(dt)
+	if not self.debug_show then
+		return
+	end
+	self.debug_show = Slab.BeginWindow("randomize_uv", {
+		Title = "RandomizeUV",
+		IsOpen = self.debug_show,
+	})
+	if Slab.Button("randomize") then
+		self:randomize_uv()
+	end
+	if Slab.Button("multi randomize") then
+		self:multi_randomize_uv(3, 0.3)
+	end
+	if Slab.Button("reset") then
+		self:reset_uv()
+	end
+	Slab.EndWindow()
+end
+
+return RandomizeUV
