@@ -15,7 +15,7 @@ function Collision:check_circle_to_rect(cpos, rad)
 			rpos:vadd_inplace(offset.value)
 		end
 
-		local hs = col.size:copy():vmul_inplace(0.5)
+		local hs = col.size:copy():vector_mul_inplace(0.5)
 		rpos:vsub_inplace(hs)
 
 		local res = intersect.circle_aabb_overlap(cpos, rad, rpos, hs)
@@ -32,7 +32,7 @@ function Collision:check_rect_to_circle(rpos, rsize)
 	ASSERT(rpos:type() == "vec2")
 	ASSERT(rsize:type() == "vec2")
 	rpos:vsub_inplace(rsize)
-	rsize:vmul_inplace(0.5)
+	rsize:vector_mul_inplace(0.5)
 
 	for _, e in ipairs(self.pool_circle) do
 		local col_c = e.collider_circle

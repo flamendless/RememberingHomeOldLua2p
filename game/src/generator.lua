@@ -42,7 +42,7 @@ function Generator.path_points_ants(start_pos, end_pos, n)
 		local ox = love.math.random(-offset, offset)
 		local oy = love.math.random(-offset, offset)
 		local delta_pos = start_pos:copy():lerp_inplace(end_pos, t)
-		delta_pos:sadd_inplace(ox, oy):vmul_inplace(dir)
+		delta_pos:sadd_inplace(ox, oy):vector_mul_inplace(dir)
 		dir:smul_inplace(-1)
 		table.insert(points, delta_pos)
 	end

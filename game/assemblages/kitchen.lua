@@ -4,7 +4,7 @@ local Kitchen = {
 
 local Light = require("assemblages.light")
 
-local pl = Lights.kitchen.pl
+local pl = Data.Lights.kitchen.pl
 for i, pos in ipairs(pl.pos) do
 	Kitchen.lights["pl" .. i] = function(e)
 		e:assemble(Light.point,
@@ -17,7 +17,7 @@ for i, pos in ipairs(pl.pos) do
 	end
 end
 
-local pl_mid = Lights.kitchen.pl_mid
+local pl_mid = Data.Lights.kitchen.pl_mid
 for i, pos in ipairs(pl_mid.pos) do
 	Kitchen.lights["pl_mid" .. i] = function(e)
 		e:assemble(Light.point,

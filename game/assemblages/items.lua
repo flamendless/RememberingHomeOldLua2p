@@ -6,8 +6,8 @@ function Items.flashlight(e)
 	:give("sprite", "flashlight")
 	:give("item", info.id, info.name, info.desc)
 	:give("color", {1, 1, 1, 1})
-	:give("pos", 0, 0)
-	:give("transform", 0, 1, 1, 0.5, 0.5)
+	:give("pos", vec2(0, 0))
+	:give("transform", 0, vec2(1, 1), vec2(0.5, 0.5))
 	:give("ui_element")
 end
 

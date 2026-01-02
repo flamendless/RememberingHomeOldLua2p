@@ -1,6 +1,6 @@
 local NotesSystem = Concord.system({
 	pool_item = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "notes",
 	},
 })

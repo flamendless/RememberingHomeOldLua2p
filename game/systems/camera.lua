@@ -91,7 +91,7 @@ function Camera:draw_clip()
 		local cam = e.camera.camera
 		local cx, cy, cw, ch = cam:getWindow()
 		local scale = cam:getScale()
-		local diff = (ch - e.camera_clip.h * scale) * 0.5
+		local diff = (ch - e.camera_clip.size.y * scale) * 0.5
 		love.graphics.setColor(e.camera_clip.color)
 		love.graphics.rectangle("fill", cx, cy, cw, diff)
 		love.graphics.rectangle("fill", cx, ch - diff, cw, diff)

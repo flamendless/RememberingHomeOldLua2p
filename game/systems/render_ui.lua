@@ -1,21 +1,21 @@
 local RenderUI = Concord.system({
 	pool_text = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "text",
 		"ui_element",
 	},
 	pool_hold_key = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "hold_key",
 		"ui_element",
 	},
 	pool_dialogue = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "dialogue",
 		"ui_element",
 	},
 	pool_hud = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "hud",
 		"ui_element",
 	},
@@ -31,8 +31,8 @@ function RenderUI:init(world)
 end
 
 function RenderUI:draw_ui_default()
-	
-	
+
+
 	for _, e in ipairs(self.pool_ui) do
 		local hidden = e.hidden
 		local culled = e.cullable and e.cullable.value
@@ -50,11 +50,11 @@ function RenderUI:draw_ui_default()
 			end
 		end
 	end
-	
+
 end
 
 function RenderUI:draw_ui_layers()
-	
+
 	for _, pool in ipairs(self.layers) do
 		for _, e in ipairs(pool) do
 			local hidden = e.hidden
@@ -74,8 +74,8 @@ function RenderUI:draw_ui_layers()
 			end
 		end
 	end
-	
-	
+
+
 end
 
 function RenderUI:draw_ui()

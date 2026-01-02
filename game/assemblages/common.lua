@@ -3,7 +3,7 @@ local Common = {}
 function Common.bg(e, bg_id)
 	if not (type(bg_id) == "string") then error("Assertion failed: type(bg_id) == \"string\"") end
 	e:give("id", "bg")
-	:give("pos", 0, 0)
+	:give("pos", vec2(0, 0))
 	:give("sprite", bg_id)
 	:give("bg")
 end
@@ -27,7 +27,7 @@ end
 function Common.animated_sprite(e, animation_data, x, y, stop_on_last)
 	e:give("id", "animated_sprite")
 	:give("animation_data", animation_data)
-	:give("pos", x, y)
+	:give("pos", vec2(x, y))
 	:give("animation", stop_on_last)
 end
 
@@ -35,7 +35,7 @@ function Common.camera(e, cam, scale, w, h, clip_col)
 	e:give("id", "camera")
 	:give("camera", cam, true)
 	:give("camera_transform", 0, scale)
-	:give("camera_clip", w, h, clip_col or Palette.get("camera_clip"))
+	:give("camera_clip", vec2(w, h), clip_col or Palette.get("camera_clip"))
 end
 
 return Common

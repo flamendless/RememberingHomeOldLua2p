@@ -4,7 +4,7 @@ local StorageRoom = {
 
 local Light = require("assemblages.light")
 
-local pl = Lights.storage_room.pl
+local pl = Data.Lights.storage_room.pl
 for i, pos in ipairs(pl.pos) do
 	StorageRoom.lights["pl" .. i] = function(e)
 		e:assemble(Light.point,

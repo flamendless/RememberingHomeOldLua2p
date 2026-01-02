@@ -25,9 +25,11 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 
 	for _, v in pairs(data) do
 		v.spritesheet = Resources.data.images[v.resource_id]
-		v.sheet_width, v.sheet_height = v.spritesheet:getDimensions()
-		v.frame_width = math.floor(v.sheet_width/v.columns_count)
-		v.frame_height = math.floor(v.sheet_height/v.rows_count)
+		v.sheet_size = vec2(v.spritesheet:getDimensions())
+		v.frame_size = vec2(
+			math.floor(v.sheet_size.x / v.columns_count),
+			math.floor(v.sheet_size.y / v.rows_count)
+		)
 	end
 
 	if modifier then

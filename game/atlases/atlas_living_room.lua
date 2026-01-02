@@ -2,53 +2,11 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["fireplace"] = {
+		["fireplace_inner"] = {
 			x = 4,
-			y = 4,
-			w = 66,
-			h = 107
-		},
-		["table2"] = {
-			x = 4,
-			y = 174,
-			w = 56,
-			h = 48
-		},
-		["door"] = {
-			x = 68,
-			y = 174,
-			w = 38,
-			h = 70
-		},
-		["painting"] = {
-			x = 4,
-			y = 119,
-			w = 71,
-			h = 47
-		},
-		["table"] = {
-			x = 111,
-			y = 252,
-			w = 87,
-			h = 11
-		},
-		["light"] = {
-			x = 114,
-			y = 4,
-			w = 17,
-			h = 23
-		},
-		["plant"] = {
-			x = 83,
-			y = 78,
-			w = 16,
-			h = 29
-		},
-		["stool"] = {
-			x = 83,
-			y = 115,
-			w = 22,
-			h = 16
+			y = 230,
+			w = 34,
+			h = 33
 		},
 		["chair"] = {
 			x = 68,
@@ -56,17 +14,59 @@ local Data = {
 			w = 35,
 			h = 31
 		},
-		["fireplace_inner"] = {
+		["plant"] = {
+			x = 83,
+			y = 78,
+			w = 16,
+			h = 29
+		},
+		["door"] = {
+			x = 68,
+			y = 174,
+			w = 38,
+			h = 70
+		},
+		["table"] = {
+			x = 111,
+			y = 252,
+			w = 87,
+			h = 11
+		},
+		["painting"] = {
 			x = 4,
-			y = 230,
-			w = 34,
-			h = 33
+			y = 119,
+			w = 71,
+			h = 47
+		},
+		["light"] = {
+			x = 114,
+			y = 4,
+			w = 17,
+			h = 23
+		},
+		["stool"] = {
+			x = 83,
+			y = 115,
+			w = 22,
+			h = 16
 		},
 		["clock"] = {
 			x = 83,
 			y = 4,
 			w = 23,
 			h = 66
+		},
+		["table2"] = {
+			x = 4,
+			y = 174,
+			w = 56,
+			h = 48
+		},
+		["fireplace"] = {
+			x = 4,
+			y = 4,
+			w = 66,
+			h = 107
 		}
 	},
 	meta = {

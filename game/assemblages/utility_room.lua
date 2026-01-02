@@ -2,7 +2,7 @@ local UtilityRoom = {
 	lights = {},
 }
 
-local pl = Lights.utility_room.pl
+local pl = Data.Lights.utility_room.pl
 for i, pos in ipairs(pl.pos) do
 	UtilityRoom.lights["pl" .. i] = function(e)
 		e:assemble(Assemblages.Light.point,

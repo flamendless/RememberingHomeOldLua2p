@@ -42,7 +42,6 @@ function GameStates.start(resources)
 
 	if DEV then
 		local sc = Ecs.get_state_class(GameStates.current_id)
-		local DevTools = require("devtools")
 		DevTools.camera = GameStates.world:getSystem(sc).camera
 	end
 	-- @@profe("gs_start")

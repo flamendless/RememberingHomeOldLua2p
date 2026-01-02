@@ -1,5 +1,7 @@
 Concord.component("speed", function(c, vel)
-	SASSERT(vel, vel:type() == "vec2")
+	if vel then
+		ASSERT(vel:type() == "vec2")
+	end
 	c.value = vel or vec2()
 end)
 

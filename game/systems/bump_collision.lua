@@ -1,5 +1,5 @@
 local BumpCollision = Concord.system({
-	pool = {constructor = BumpStorage},
+	pool = {constructor = Ctor.BumpStorage},
 })
 
 local function get_query_rect(self)
@@ -59,14 +59,14 @@ function BumpCollision:update_body(e)
 
 	pos:vadd(body.vel)
 	local x, y, cols, len = self.pool:move(e, pos.x, pos.y, filter)
-	pos:scalar_set_inplace(x, y)
+	pos:scalar_set(x, y)
 
 	for i = 1, len do
 		local c = cols[i]
 		local other = c.other
 		local other_col = other.collider
 		other_col.is_hit = true
-		other_col.normal:scalar_set_inplace(c.normalX, c.normalY)
+		other_col.normal:scalar_set(c.normalX, c.normalY)
 		if other.wall then
 			e:give("hit_wall")
 		end
@@ -84,7 +84,7 @@ function BumpCollision:check_col(e)
 		local c = cols[i]
 		local other = c.other
 		local other_col = other.collider
-		other_col.normal:scalar_set_inplace(c.normalX, c.normalY)
+		other_col.normal:scalar_set(c.normalX, c.normalY)
 		if i == 1 and e.can_interact and other.interactive then
 			local proceed = true
 			local req = other.req_col_dir
@@ -150,7 +150,7 @@ function BumpCollision:update_collider(e)
 	if e.skip_collider_update then return end
 	local id = e.id
 	if id.value ~= "enemy" then return end
-	local new_collider = Colliders[id.value]
+	local new_collider = Data.Colliders[id.value]
 	local sub_id = id.sub_id
 	if sub_id then
 		new_collider = new_collider[sub_id]
@@ -322,7 +322,7 @@ if DEV then
 				local e = items[i]
 				if e.bump.debug_clicked then
 					local _, _, rw, rh = self.pool:getRect(e)
-					e.pos.pos:scalar_set_inplace(math.floor(mx), math.floor(my))
+					e.pos.pos:scalar_set(math.floor(mx), math.floor(my))
 					self.pool:update(e, e.pos.x, e.pos.y, rw, rh)
 				end
 			end
@@ -351,7 +351,7 @@ if DEV then
 				local e = items[i]
 				if e.bump.debug_clicked then
 					local _, _, rw, rh = self.pool:getRect(e)
-					e.pos.pos:scalar_set_inplace(math.floor(mx), math.floor(my))
+					e.pos.pos:scalar_set(math.floor(mx), math.floor(my))
 					e.bump.debug_clicked = false
 					self.pool:update(e, e.pos.x, e.pos.y, rw, rh)
 				end

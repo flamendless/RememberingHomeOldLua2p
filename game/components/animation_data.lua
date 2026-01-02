@@ -5,7 +5,7 @@ local c_anim_data = Concord.component("animation_data", function(c, data)
 	ASSERT(type(data.rows_count) == "number")
 	ASSERT(type(data.columns_count) == "number")
 	SASSERT(data.n_frames, type(data.n_frames) == "number")
-	SASSERT(data.start_frame, data.start_frame >= 1 and data.start_frame <= data.n_frames)
+	SASSERT(data.start_frame, function() return data.start_frame >= 1 and data.start_frame <= data.n_frames end)
 	SASSERT(data.delay, type(data.delay) == "table" or type(data.delay) == "number")
 
 	c.resource_id = data.resource_id
@@ -19,8 +19,8 @@ local c_anim_data = Concord.component("animation_data", function(c, data)
 
 	c.sheet_size = vec2(c.spritesheet:getDimensions())
 	c.frame_size = vec2(
-		math.floor(c.sheet_width/c.columns_count),
-		math.floor(c.sheet_height/c.rows_count)
+		math.floor(c.sheet_size.x/c.columns_count),
+		math.floor(c.sheet_size.y/c.rows_count)
 	)
 
 	c.data = data

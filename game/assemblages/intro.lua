@@ -67,7 +67,7 @@ function Intro.parallax(e, tag, scale)
 		:give("bg_tree")
 	end
 
-	local item = Atlas.frames[tag]
+	local item = Atlases.Intro.frames[tag]
 	if not scale then
 		local ww, wh = love.graphics.getDimensions()
 		local w, h = item.w, item.h
@@ -81,7 +81,7 @@ function Intro.parallax(e, tag, scale)
 	:give("parallax", speed[tag], 0)
 	:give("parallax_multi_sprite", tag)
 	:give("z_index", z_index[tag][1], false)
-	:give("quad_transform", 0, scale, scale)
+	:give("quad_transform", 0, vec2(scale, scale))
 	:give("depth_zoom", z_index[tag][2])
 end
 
@@ -97,7 +97,7 @@ function Intro.post_light(e, tag, scale)
 end
 
 function Intro.bg_tree_cover(e)
-	local item = Atlas.frames.bg_tree_cover
+	local item = Atlases.Intro.frames.bg_tree_cover
 	local ww, wh = love.graphics.getDimensions()
 	local w, h = item.w, item.h
 	local scale = math.min(ww/w, wh/h)
@@ -106,7 +106,7 @@ function Intro.bg_tree_cover(e)
 	:give("sprite", "atlas_intro")
 	:give("atlas", item)
 	:give("pos", love.graphics.getWidth(), 110)
-	:give("quad_transform", 0, scale, scale, item.w * 0.5)
+	:give("quad_transform", 0, vec2(scale, scale), vec2(item.w * 0.5, 0))
 	:give("z_index", z_index.bg_tree_cover[1])
 	:give("depth_zoom", z_index.bg_tree_cover[2])
 	:give("bg_tree", true)
@@ -141,7 +141,7 @@ function Intro.car_light(e, car)
 	:give("color", Palette.get_diffuse("car"))
 	:give("light", "cone", 0.8)
 	:give("sprite", "atlas_intro")
-	:give("atlas", Atlas.frames.car_headlight)
+	:give("atlas", Atlases.Intro.frames.car_headlight)
 	:give("light_flicker", 0.075)
 	:give("attach_to", car)
 	:give("attach_to_offset", 112, 24)
@@ -151,9 +151,9 @@ end
 function Intro.title(e, x, y)
 	e:give("id", "title")
 	:give("sprite", "atlas_intro")
-	:give("atlas", Atlas.frames.title)
+	:give("atlas", Atlases.Intro.frames.title)
 	:give("pos", x, y)
-	:give("quad_transform", 0, 6, 6, 0.5, 0.5)
+	:give("quad_transform", 0, vec2(6, 6), vec2(0.5, 0.5))
 	:give("color", {1, 1, 1, 0})
 	:give("ui_element")
 	:give("hidden")
@@ -162,9 +162,9 @@ end
 function Intro.title_light(e, x, y)
 	e:give("id", "title_light")
 	:give("sprite", "atlas_intro")
-	:give("atlas", Atlas.frames.title_light)
+	:give("atlas", Atlases.Intro.frames.title_light)
 	:give("pos", x, y)
-	:give("quad_transform", 0, 4, 4, 0.5, 0.5)
+	:give("quad_transform", 0, vec2(4, 4), vec2(0.5, 0.5))
 	:give("color", {1, 1, 1})
 	:give("light", Enums.light_shape.custom, 1)
 	:give("light_flicker", 0.075)
@@ -178,7 +178,7 @@ function Intro.fog(e, id, w, h, color, x, y, fsx, fsy, fog_speed)
 	:give("noise_texture", w, h)
 	:give("color", color)
 	:give("pos", x, y)
-	:give("transform", 0, fsx, fsy)
+	:give("transform", 0, vec2(fsx, fsy))
 	:give("fog", fog_speed)
 	:give("z_index", z_index[id][1], false)
 	:give("depth_zoom", z_index[id][2])

@@ -40,7 +40,7 @@ function LivingRoom:state_init()
 		self.world:emit("toggle_component", e_player, "can_interact", true)
 		self.world:emit("toggle_component", e_player, "can_run", true)
 
-		local pos = e_player.pos
+		local pos = e_player.pos.pos
 		local ex = pos.x - 96
 		local ey = pos.y
 		self.world:emit("spawn_enemy", Enums.enemy_type.suit, ex, ey, e_player)
@@ -49,9 +49,7 @@ function LivingRoom:state_init()
 	self.timeline = TLE.Do(function()
 		Fade.fade_in(nil, 1)
 		self.camera:setScale(4)
-
 		self.timeline:Pause()
-
 	end)
 end
 

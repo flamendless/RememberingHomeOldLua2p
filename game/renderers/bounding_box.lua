@@ -84,7 +84,7 @@ function BoundingBox.render(e, camera)
 		w, h = quad_info.w, quad_info.h
 		color = COL_QUAD
 	elseif sprite then
-		w, h = sprite.iw, sprite.ih
+		w, h = sprite.image_size.x, sprite.image_size.y
 		color = COL_SPRITE
 	elseif rect then
 		w, h = rect.w, rect.h

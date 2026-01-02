@@ -19,7 +19,7 @@ local bounds_l_w = 28
 function Outside.bg_house(e, x, y, quad)
 	e:give("id", "bg_house")
 	:give("sprite", "bg_house")
-	:give("pos", x, y)
+	:give("pos", vec2(x, y))
 	:give("quad", quad)
 	:give("z_index", z_index.bg_house, false)
 end
@@ -34,45 +34,45 @@ function Outside.splashes(e)
 	end
 	e:give("id", "splashes")
 	:give("splashes")
-	:give("pos", 0, 4)
+	:give("pos", vec2(0, 4))
 	:give("z_index", z_index.splashes)
 	:give("color", {1, 1, 1, 1})
 	:give("animation")
 	:give("animation_data", Animation.get("outside_" .. resource_id))
 
 	if not is_compatible then
-		e:give("transform", 0, 4, 4)
+		e:give("transform", 0, vec2(4, 4))
 	end
 end
 
 function Outside.firefly(e, x, y, size)
 	e:give("id", "firefly")
 	:give("firefly")
-	:give("pos", x, y, 2)
+	:give("pos", vec2(x, y, 2))
 	:give("point_light", size)
 	:give("diffuse", {0, 0, 0})
 end
 
 function Outside.colliders.ground(e, w, h)
 	e:give("id", "col_ground")
-	:give("pos", 0, h - ground_h)
-	:give("collider", w, ground_h)
+	:give("pos", vec2(0, h - ground_h))
+	:give("collider", vec2(w, ground_h))
 	:give("bump")
 	:give("ground")
 end
 
 function Outside.colliders.left_bound(e, w, h)
 	e:give("id", "col_left_bound")
-	:give("pos", 0, h - ground_h - bounds_h)
-	:give("collider", bounds_l_w, bounds_h)
+	:give("pos", vec2(0, h - ground_h - bounds_h))
+	:give("collider", vec2(bounds_l_w, bounds_h))
 	:give("bump")
 	:give("wall")
 end
 
 function Outside.colliders.right_bound(e, w, h)
 	e:give("id", "col_right_bound")
-	:give("pos", w - bounds_w, h - ground_h - bounds_h)
-	:give("collider", bounds_w, bounds_h)
+	:give("pos", vec2(w - bounds_w, h - ground_h - bounds_h))
+	:give("collider", vec2(bounds_w, bounds_h))
 	:give("bump")
 	:give("wall")
 end

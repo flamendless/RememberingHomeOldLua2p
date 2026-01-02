@@ -3,11 +3,11 @@ local Menu = Concord.system({
 	pool_disabled = {"option_key", "option_disabled"},
 	pool_text = {"menu_text"},
 	pool_main_menu = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "main_menu",
 	},
 	pool_sub_menu = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "sub_menu",
 	},
 })

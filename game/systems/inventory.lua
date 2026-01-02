@@ -1,10 +1,10 @@
 local Inventory = Concord.system({
 	pool_cell = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "inventory_cells",
 	},
 	pool_choice = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "inventory_choices",
 	},
 	pool_border = {"id", "sprite", "textured_line"},

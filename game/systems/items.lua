@@ -36,7 +36,7 @@ function ItemsSystem:initialize_entities()
 	self.e_bg = Concord.entity(self.world)
 		:give("id", "item_preview_bg")
 		:give("sprite", "bg_inventory")
-		:give("transform", 0, 1, 1, 1, 0.5)
+		:give("transform", 0, vec2(1, 1), vec2(1, 0.5))
 		:give("color", {1, 1, 1, 1})
 		:give("item_preview")
 
@@ -61,13 +61,14 @@ function ItemsSystem:create_item_preview(bg_e, item_e)
 	local tw = (img:getWidth() + 16) * scale
 	local th = (img:getHeight() + 16) * scale
 
-	self.e_bg:give("pos", bg_pos.x - bg_sprite.iw * bg_t.sx - pad, bg_pos.y)
+	self.e_bg
+		:give("pos", vec2(bg_pos.x - bg_sprite.image_size.x * bg_t.sx - pad, bg_pos.y))
 		:give("auto_scale", tw, th)
 		:remove("hidden")
 
 	self.e_prev:give("sprite", res_id)
-		:give("pos", bg_pos.x - bg_sprite.iw * bg_t.sx - pad_p, bg_pos.y)
-		:give("transform", 0, scale, scale, 1, 0.5)
+		:give("pos", vec2(bg_pos.x - bg_sprite.image_size.x * bg_t.sx - pad_p, bg_pos.y))
+		:give("transform", 0, vec2(scale, scale), vec2(1, 0.5))
 		:remove("hidden")
 end
 

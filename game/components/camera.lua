@@ -8,7 +8,7 @@ Concord.component("bar_height", function(c, h)
 end)
 
 local c_cam = Concord.component("camera", function(c, camera, is_main)
-	SASSERT(camera, Gamera.isCamera(camera))
+	SASSERT(camera, type(camera) == "table")
 	SASSERT(is_main, type(is_main) == "boolean")
 	c.camera = camera
 	c.is_main = is_main

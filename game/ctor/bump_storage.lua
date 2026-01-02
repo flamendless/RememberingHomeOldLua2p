@@ -15,14 +15,14 @@ end
 
 function BumpStorage:add(e)
 	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
-	local pos = e.pos
+	local pos = e.pos.pos
 	local collider = e.collider
 	local x, y = pos.x, pos.y
-	local w, h = collider.w, collider.h
+	local w, h = collider.size.x, collider.size.y
 	local col_offset = e.collider_offset
 	if col_offset then
-		x = x + col_offset.ox
-		y = y + col_offset.oy
+		x = x + col_offset.value.x
+		y = y + col_offset.value.y
 	end
 	self.super.add(self, e, x, y, w, h)
 end

@@ -26,7 +26,7 @@ function BoundingBox:on_camera_move(camera)
 			bpos = pos:copy()
 			if transform then
 				local offset = Utils.math.get_offset(e)
-				local dt = offset:vmul_inplace(transform.orig_scale)
+				local dt = offset:vector_mul_inplace(transform.orig_scale)
 				bpos:ssub_inplace(dt)
 			end
 		else

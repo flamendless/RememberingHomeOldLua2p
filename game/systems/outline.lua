@@ -28,11 +28,11 @@ function Outline:create_outline(e)
 		return
 	end
 
-	local pos = e.pos
+	local pos = e.pos.pos
 	local x, y = pos.x - "4", pos.y - "4"
 	local outline_e = Concord.entity(self.world)
 		:give("id", id)
-		:give("pos", x, y)
+		:give("pos", vec2(x, y))
 		:give("sprite", sprite.resource_id)
 		:give("outline")
 		:give("outline_val", e.outline_val.value)
@@ -44,7 +44,7 @@ function Outline:create_outline(e)
 		local qsw, qsh = quad.quad:getTextureDimensions()
 		local qt = e.quad_transform
 		if qt then
-			outline_e:give("quad_transform", 0, qt.sx, qt.sy)
+			outline_e:give("quad_transform", 0, vec2(qt.sx, qt.sy))
 		end
 
 		qx = qx - "4"

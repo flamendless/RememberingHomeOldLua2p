@@ -47,7 +47,7 @@ local function fn_sort_z(a, b)
 	local a_z, b_z = a.z_index, b.z_index
 	if a_z == nil or b_z == nil then return end
 	if a_z.sortable and b_z.sortable then
-		return a.pos.y < b.pos.y
+		return a.pos.pos.y < b.pos.pos.y
 	elseif a_z.current and b_z.current then
 		return a_z.current < b_z.current
 	end
@@ -56,7 +56,7 @@ end
 
 function Renderer:init(world)
 	self.world = world
-	self.list, self.list_ui = CustomList(), CustomList()
+	self.list, self.list_ui = Ctor.CustomList(), Ctor.CustomList()
 
 	self.list.__id = "list"
 	self.list_ui.__id = "list_ui"

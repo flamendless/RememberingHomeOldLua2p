@@ -95,6 +95,13 @@ function ECS.load_systems(id, world, prev_id)
 	world:addSystem(main_sys)
 end
 
+function ECS.get_system_class(id)
+	ASSERT(type(id) == "string")
+	local l_id = string.lower(id)
+	ASSERT(systems[l_id], "system " .. id .. " not found")
+	return systems[l_id]
+end
+
 if DEV then
 	function ECS.get_state_class(id)
 		ASSERT(type(id) == "string")

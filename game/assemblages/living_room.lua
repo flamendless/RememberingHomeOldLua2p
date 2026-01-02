@@ -2,7 +2,7 @@ local LivingRoom = {
 	lights = {}
 }
 
-local pl = Lights.living_room.pl
+local pl = Data.Lights.living_room.pl
 for i, pos in ipairs(pl.pos) do
 	LivingRoom.lights["pl" .. i] = function(e)
 		e:assemble(Assemblages.Light.point,
@@ -15,7 +15,7 @@ for i, pos in ipairs(pl.pos) do
 	end
 end
 
-local pl_mid = Lights.living_room.pl_mid
+local pl_mid = Data.Lights.living_room.pl_mid
 for i, pos in ipairs(pl_mid.pos) do
 	LivingRoom.lights["pl_mid" .. i] = function(e)
 		e:assemble(Assemblages.Light.point,

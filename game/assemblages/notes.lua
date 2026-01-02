@@ -5,7 +5,7 @@ function Notes.bg(e, x, y, scale)
 	:give("pos", x, y)
 	:give("sprite", "bg_notes")
 	:give("color", {1, 1, 1, 0.75})
-	:give("transform", 0, scale, scale, 0.5, 0.5)
+	:give("transform", 0, vec2(scale, scale), vec2(0.5, 0.5))
 	:give("ui_element")
 end
 
@@ -17,7 +17,7 @@ function Notes.text(e, i, title, x, y, ox)
 	:give("color", Palette.get("note_list"))
 	:give("list_item")
 	:give("list_group", "notes")
-	:give("transform", 0, 1, 1, ox, 0, -0.25)
+	:give("transform", 0, vec2(1, 1), vec2(ox, 0), vec2(-0.25, 0))
 	:give("ui_element")
 end
 
@@ -26,7 +26,7 @@ function Notes.cursor(e)
 	:give("color", {1, 1, 1, 1})
 	:give("sprite", "note_cursor")
 	:give("pos", 0, 0)
-	:give("transform", 0, 1, 1, 1)
+	:give("transform", 0, vec2(1, 1), vec2(1, 0))
 	:give("ui_element")
 end
 

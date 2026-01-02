@@ -14,17 +14,20 @@ Log.lovesave = true
 LoveSplash = require("modules.splashes.o-ten-one")
 ReflowPrint = require("modules.reflowprint.reflowprint")
 Slab = require("modules.slab")
-Tle = require("modules.tle.timeline")
+TLE = require("modules.tle.timeline")
 UTF8 = require("utf8")
 
 local Batteries = require("modules.batteries")
 class = Batteries.class
 intersect = Batteries.intersect
+functional = Batteries.functional
 mathx = Batteries.mathx
 pretty = Batteries.pretty
 stringx = Batteries.stringx
 tablex = Batteries.tablex
+timer = Batteries.timer
 vec2 = Batteries.vec2
+vec3 = Batteries.vec3
 
 
 Enums = require("src.enums")
@@ -59,17 +62,28 @@ UIWrapper = require("src.ui_wrapper")
 Utils = require("src.utils")
 WindowMode = require("src.window_mode")
 
---OTHERS
-Doors = require("data.doors")
-Colliders = require("data.colliders")
-BTEnemy = require("behaviors.enemy")
-Atlas = require("atlases.atlas_intro")
-Lights = require("data.lights")
-ListByID = require("ctor.list_by_id")
-SortedTable = require("ctor.sorted_table")
-PlayerSpawnPoints = require("data.player_spawn_points")
-CustomList = require("ctor.custom_list")
-AtlasKeys = require("atlases.atlas_keys")
+Atlases = {
+	Intro = require("atlases.atlas_intro"),
+	Keys = require("atlases.atlas_keys"),
+}
+
+Behaviors = {
+	Enemy = require("behaviors.enemy"),
+}
+
+Data = {
+	Colliders = require("data.colliders"),
+	Doors = require("data.doors"),
+	Lights = require("data.lights"),
+	PlayerSpawnPoints = require("data.player_spawn_points"),
+}
+
+Ctor = {
+	BumpStorage = require("ctor.bump_storage"),
+	CustomList = require("ctor.custom_list"),
+	ListByID = require("ctor.list_by_id"),
+	SortedTable = require("ctor.sorted_table"),
+}
 
 Assemblages = {
 	Common = require("assemblages.common"),
@@ -94,10 +108,12 @@ PS = {
 }
 
 --BT
-BT_Fail = require("modules.beehive.beehive.fail")
-BT_Invert = require("modules.beehive.beehive.invert")
-BT_Selector = require("modules.beehive.beehive.selector")
-BT_Sequence = require("modules.beehive.beehive.sequence")
+Beehive = {
+	Fail = require("modules.beehive.beehive.fail"),
+	Invert = require("modules.beehive.beehive.invert"),
+	Selector = require("modules.beehive.beehive.selector"),
+	Sequence = require("modules.beehive.beehive.sequence"),
+}
 
 Ecs = require("src.ecs")
 love.errhand = ErrorHandler.callback

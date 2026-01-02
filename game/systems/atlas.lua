@@ -6,9 +6,12 @@ local function create_quad(e)
 	local sprite = e.sprite
 	local atlas = e.atlas.value
 	return love.graphics.newQuad(
-		atlas.x, atlas.y,
-		atlas.w, atlas.h,
-		sprite.iw, sprite.ih
+		atlas.x,
+		atlas.y,
+		atlas.w,
+		atlas.h,
+		sprite.image_size.x,
+		sprite.image_size.y
 	)
 end
 

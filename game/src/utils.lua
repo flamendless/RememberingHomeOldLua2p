@@ -95,18 +95,18 @@ function Utils.math.get_offset(e)
 
 	if anim_data then
 		if offset.x == 0.5 then
-			ox = anim_data.frame_width * 0.5
+			ox = anim_data.frame_size.x * 0.5
 		elseif offset.x == 1 then
-			ox = anim_data.frame_width
+			ox = anim_data.frame_size.x
 		end
 
 		if offset.y == 0.5 then
-			oy = anim_data.frame_height * 0.5
+			oy = anim_data.frame_size.y * 0.5
 		elseif offset.y == 1 then
-			oy = anim_data.frame_height
+			oy = anim_data.frame_size.y
 		end
 	elseif sprite then
-		local iw, ih = sprite.iw, sprite.ih
+		local iw, ih = sprite.image_size.x, sprite.image_size.y
 
 		if offset.x == 0.5 then
 			ox = iw * 0.5
@@ -137,7 +137,7 @@ function Utils.math.get_real_pos_box(e)
 
 	if transform then
 		local offset = Utils.math.get_offset(e)
-		local dt = offset:vmul_inplace(transform.orig_scale)
+		local dt = offset:vector_mul_inplace(transform.orig_scale)
 		res:vsub_inplace(dt)
 	end
 
@@ -185,15 +185,13 @@ function Utils.math.get_ltwh(e)
 		offset = vec2()
 	end
 
-	--get the pos
 	local pos = e.pos.pos:copy()
 
 	--calculate
-	local dt = offset:vmul_inplace(scale)
-	pos:ssub_inplace(dt)
-	size:vmul_inplace(scale)
+	local dt = offset:vector_mul_inplace(scale)
+	pos:scalar_sub_inplace(dt, dt)
+	size:vector_mul_inplace(scale)
 	return pos, size
 end
-
 
 return Utils

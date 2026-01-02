@@ -1,6 +1,6 @@
 local Pause = Concord.system({
 	pool_choice = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "pause_choices"
 	},
 })

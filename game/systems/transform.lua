@@ -3,7 +3,7 @@ local function calc_e_controller_origin(e)
 	local anim_data = e.animation_data
 	local transform = e.transform
 	local pos = e.pos
-	local x = pos.x + anim_data.frame_width * 0.5 - transform.ox
+	local x = pos.x + anim_data.frame_size.x * 0.5 - transform.ox
 	local y = pos.y
 	return x, y
 end
@@ -37,7 +37,7 @@ function Transform:init(world)
 		local s_text = e.static_text
 
 		if sprite then
-			w, h = sprite.iw, sprite.ih
+			w, h = sprite.image_size.x, sprite.image_size.y
 		elseif textf then
 			local font = e.font.value
 			w = textf.limit
@@ -106,11 +106,12 @@ function Transform:init(world)
 		local dsx, dsy = 1, 1
 
 		if anim_data then
-			dsx = auto_scale.tw/anim_data.frame_width
-			dsy = auto_scale.th/anim_data.frame_height
+			dsx = auto_scale.tw/anim_data.frame_size.x
+			dsy = auto_scale.th/anim_data.frame_size.y
 		elseif sprite then
-			dsx = auto_scale.tw/sprite.iw
-			dsy = auto_scale.th/sprite.ih
+			local iw, ih = sprite.image_size.x, sprite.image_size.y
+			dsx = auto_scale.tw/iw
+			dsy = auto_scale.th/ih
 		end
 		if auto_scale.is_proportion then
 			local scale = math.min(dsx, dsy)
@@ -151,7 +152,7 @@ function Transform:update_anchor(e)
 		oy = target_qt.oy or oy
 	end
 
-	local w, h = target_sprite.iw * sx, target_sprite.ih * sy
+	local w, h = target_sprite.image_size.x * sx, target_sprite.image_size.y * sy
 	local x = target_pos.x - ox * sx
 	local y = target_pos.y - oy * sy
 

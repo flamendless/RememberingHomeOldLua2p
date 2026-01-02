@@ -26,18 +26,18 @@ function Helper.get_offset(e)
 
 	if anim_data then
 		if transform.ox == 0.5 then
-			ox = anim_data.frame_width * 0.5
+			ox = anim_data.frame_size.x * 0.5
 		elseif transform.ox == 1 then
-			ox = anim_data.frame_width
+			ox = anim_data.frame_size.x
 		end
 
 		if transform.oy == 0.5 then
-			oy = anim_data.frame_height * 0.5
+			oy = anim_data.frame_size.y * 0.5
 		elseif transform.oy == 1 then
-			oy = anim_data.frame_height
+			oy = anim_data.frame_size.y
 		end
 	elseif sprite then
-		local iw, ih = sprite.iw, sprite.ih
+		local iw, ih = sprite.image_size.x, sprite.image_size.y
 
 		if transform.ox == 0.5 then
 			ox = iw * 0.5
@@ -83,16 +83,16 @@ function Helper.get_ltwh(e)
 	if not (e.__isEntity) then error("Assertion failed: e.__isEntity") end
 	--get the size
 	local sprite = e.sprite
-	local w, h = sprite.iw, sprite.ih
+	local w, h = sprite.image_size.x, sprite.image_size.y
 	local collider = e.collider
 	local anim_data = e.animation_data
 
 	if collider then
-		w = collider.w
-		h = collider.h
+		w = collider.size.x
+		h = collider.size.y
 	elseif anim_data then
-		w = anim_data.frame_width
-		h = anim_data.frame_height
+		w = anim_data.frame_size.x
+		h = anim_data.frame_size.y
 	end
 
 	--get the scale

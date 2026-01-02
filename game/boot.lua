@@ -47,7 +47,11 @@ if DEV then
 	end
 	function SASSERT(var, cond, msg)
 		if var == nil then return end
-		ASSERT(cond, msg)
+		if type(cond) == "function" then
+			ASSERT(cond(), msg)
+		else
+			ASSERT(cond, msg)
+		end
 	end
 else
 	local noop = function() end

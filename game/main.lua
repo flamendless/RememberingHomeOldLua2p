@@ -32,7 +32,7 @@ function love.load()
 		module.init()
 	end
 
-	Tle.Attach()
+	TLE.Attach()
 
 	if DEV then
 		-- GameStates.switch("Splash")

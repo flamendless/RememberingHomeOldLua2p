@@ -3,7 +3,7 @@ local PlayerController = Concord.system({
 })
 
 local function get_spawn_points(current_id, prev_id)
-	local d = PlayerSpawnPoints[current_id][prev_id or "default"]
+	local d = Data.PlayerSpawnPoints[current_id][prev_id or "default"]
 	if not (d) then error("Assertion failed: d") end
 	if not d[3] then
 		d[3] = Enums.face_dir.left

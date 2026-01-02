@@ -9,7 +9,7 @@ function Light.point(e, x, y, z, size, diffuse, dir)
 	if not (type(diffuse) == "table") then error("Assertion failed: type(diffuse) == \"table\"") end
 	if dir then if not (type(dir) == "number") then error("Assertion failed: type(dir) == \"number\"") end end
 	e:give("id", "point_light")
-	:give("pos", x, y, z)
+	:give("pos", vec3(x, y, z))
 	:give("point_light", size)
 	:give("diffuse", diffuse)
 
@@ -27,7 +27,7 @@ function Light.spot(e, x, y, z, dir, size, diffuse)
 	if not (type(size) == "number") then error("Assertion failed: type(size) == \"number\"") end
 	if not (type(diffuse) == "table") then error("Assertion failed: type(diffuse) == \"table\"") end
 	e:give("id", "spot_light")
-	:give("pos", x, y, z)
+	:give("pos", vec3(x, y, z))
 	:give("point_light", size)
 	:give("diffuse", diffuse)
 	:give("light_dir", dir)

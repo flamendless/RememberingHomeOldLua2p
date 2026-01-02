@@ -17,7 +17,7 @@ local c_quad = Concord.component("quad", function(c, quad, info)
 		c.info = info
 	else
 		local x, y, w, h = quad:getViewport()
-		local sw, sh = quad:getTextureDimensions( )
+		local sw, sh = quad:getTextureDimensions()
 		c.info = {x = x, y = y, w = w, h = h, sw = sw, sh = sh}
 	end
 end)

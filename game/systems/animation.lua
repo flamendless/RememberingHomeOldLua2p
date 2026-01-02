@@ -100,8 +100,8 @@ function Animation:setup_animation(e, data, on_loop)
 	if data.is_flipped then
 		local transform = e.transform
 		if transform then
-			ox = ox - transform.ox
-			oy = oy - transform.oy
+			ox = ox - transform.offset.x
+			oy = oy - transform.offset.y
 		end
 		e:give("quad_transform", r, vec2(sx, sy), vec2(ox, oy))
 	else

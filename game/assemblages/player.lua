@@ -28,13 +28,13 @@ function Player.base(e, x, y, speed_data, can)
 	if can.run then if not (type(can.run) == "boolean") then error("Assertion failed: type(can.run) == \"boolean\"") end end
 	if can.open_door then if not (type(can.open_door) == "boolean") then error("Assertion failed: type(can.open_door) == \"boolean\"") end end
 	local data, mods = Player.get_multi_anim_data(false, can.open_door)
-	local collider = Colliders.player
+	local collider = Data.Colliders.player
 
 	e:give("id", "player")
 	:give("player")
 	:give("pos", vec2(x, y))
-	:give("transform", 0, 1, 1, 18, 0)
-	:give("collider", collider.w, collider.h, Enums.bump_filter.cross)
+	:give("transform", 0, vec2(1, 1), vec2(18, 0))
+	:give("collider", vec2(collider.w, collider.h), Enums.bump_filter.cross)
 	:give("bump")
 	:give("speed")
 	:give("speed_data", speed_data)
@@ -47,7 +47,7 @@ function Player.base(e, x, y, speed_data, can)
 	:give("multi_animation_data", Enums.anim_state.idle, data, mods)
 	:give("current_frame")
 	:give("movement")
-	:give("fl_spawn_offset", 7, -16)
+	:give("fl_spawn_offset", vec2(7, -16))
 	:give("is_running")
 	:give("is_interacting")
 	:give("controller_origin")
@@ -83,13 +83,13 @@ end
 function Player.room(e, x, y)
 	if not (type(x) == "number") then error("Assertion failed: type(x) == \"number\"") end
 	if not (type(y) == "number") then error("Assertion failed: type(y) == \"number\"") end
-	e:assemble(Player.base,
-		x, y, speed_data,
-		{
-			move = false,
-			run = false,
-			open_door = true,
-		})
+	e:assemble(
+		Player.base,
+		x,
+		y,
+		speed_data,
+		{ move = false, run = false, open_door = true }
+	)
 	:give("z_index", 8)
 	:give("color", {1, 1, 1, 1})
 end

@@ -169,7 +169,7 @@ end
 local function caught_other(world, e)
 	if not (world.__isWorld) then error("Assertion failed: world.__isWorld") end
 	if not (e.__isEntity and e.behavior_tree) then error("Assertion failed: e.__isEntity and e.behavior_tree") end
-	return BT_Sequence({
+	return Beehive.Selector({
 		is_current_node_bt(e, bt_enemy.chase, bt_enemy.walk, bt_enemy.caught_other),
 		has_collide_with,
 		set_node_bt(e, bt_enemy.caught_other),
@@ -180,19 +180,19 @@ end
 local function lean_return_back(world, e)
 	if not (world.__isWorld) then error("Assertion failed: world.__isWorld") end
 	if not (e.__isEntity and e.behavior_tree) then error("Assertion failed: e.__isEntity and e.behavior_tree") end
-	return BT_Sequence({
+	return Beehive.Selector({
 		is_current_anim_bt(e, bt_enemy.lean_back),
-		BT_Invert(is_other_behind),
+		Beehive.Invert(is_other_behind),
 		set_node_bt(e, bt_enemy.lean_return_back),
 		is_current_anim_done_bt(e, bt_enemy.lean_return_back),
-		BT_Fail,
+		Beehive.Fail,
 	})
 end
 
 local function lean_back(world, e)
 	if not (world.__isWorld) then error("Assertion failed: world.__isWorld") end
 	if not (e.__isEntity and e.behavior_tree) then error("Assertion failed: e.__isEntity and e.behavior_tree") end
-	return BT_Sequence({
+	return Beehive.Selector({
 		is_other_behind,
 		set_node_bt(e, bt_enemy.lean_back),
 	})
@@ -201,7 +201,7 @@ end
 local function chase(world, e)
 	if not (world.__isWorld) then error("Assertion failed: world.__isWorld") end
 	if not (e.__isEntity and e.behavior_tree) then error("Assertion failed: e.__isEntity and e.behavior_tree") end
-	return BT_Sequence({
+	return Beehive.Selector({
 		sees_other,
 		random({
 			chase_other,
@@ -213,7 +213,7 @@ end
 local function walk(world, e)
 	if not (world.__isWorld) then error("Assertion failed: world.__isWorld") end
 	if not (e.__isEntity and e.behavior_tree) then error("Assertion failed: e.__isEntity and e.behavior_tree") end
-	return BT_Sequence({
+	return Beehive.Selector({
 		has_component_bt(e, "random_walk"),
 	})
 end
@@ -224,7 +224,7 @@ local function wait(world, e)
 	local min = lm_random(0.5, 0.9)
 	local max = min + lm_random(0.5, 0.9)
 
-	return BT_Sequence({
+	return Beehive.Selector({
 		wait_random_bt(e, min, max),
 		random_bt({
 			set_node_bt(e, bt_enemy.idle),
@@ -236,7 +236,7 @@ end
 return function(world, e)
 	if not (world.__isWorld) then error("Assertion failed: world.__isWorld") end
 	if not (e.__isEntity and e.behavior_tree) then error("Assertion failed: e.__isEntity and e.behavior_tree") end
-	return BT_Selector({
+	return Beehive.Selector({
 		caught_other(world, e),
 		lean_return_back(world, e),
 		lean_back(world, e),

@@ -11,6 +11,8 @@ function LoadingScreen.init()
 	canvas = love.graphics.newCanvas()
 end
 
+function LoadingScreen.update(dt) end
+
 function LoadingScreen.draw()
 	local w, h = love.graphics.getDimensions()
 	--TODO improve this

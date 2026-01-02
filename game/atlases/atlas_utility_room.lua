@@ -2,23 +2,17 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["ironing_board"] = {
-			x = 79,
+		["electrical_box"] = {
+			x = 219,
 			y = 4,
-			w = 30,
-			h = 57
+			w = 14,
+			h = 21
 		},
 		["wood3"] = {
 			x = 184,
 			y = 39,
 			w = 36,
 			h = 17
-		},
-		["basket"] = {
-			x = 184,
-			y = 4,
-			w = 27,
-			h = 27
 		},
 		["bulb"] = {
 			x = 252,
@@ -32,29 +26,11 @@ local Data = {
 			w = 33,
 			h = 36
 		},
-		["broom"] = {
-			x = 158,
-			y = 4,
-			w = 18,
-			h = 52
-		},
 		["light_switch"] = {
 			x = 241,
 			y = 4,
 			w = 13,
 			h = 17
-		},
-		["wood"] = {
-			x = 117,
-			y = 48,
-			w = 17,
-			h = 16
-		},
-		["shelf"] = {
-			x = 4,
-			y = 4,
-			w = 67,
-			h = 55
 		},
 		["wood2"] = {
 			x = 228,
@@ -62,11 +38,35 @@ local Data = {
 			w = 16,
 			h = 17
 		},
-		["electrical_box"] = {
-			x = 219,
+		["shelf"] = {
+			x = 4,
 			y = 4,
-			w = 14,
-			h = 21
+			w = 67,
+			h = 55
+		},
+		["ironing_board"] = {
+			x = 79,
+			y = 4,
+			w = 30,
+			h = 57
+		},
+		["broom"] = {
+			x = 158,
+			y = 4,
+			w = 18,
+			h = 52
+		},
+		["wood"] = {
+			x = 117,
+			y = 48,
+			w = 17,
+			h = 16
+		},
+		["basket"] = {
+			x = 184,
+			y = 4,
+			w = 27,
+			h = 27
 		}
 	},
 	meta = {

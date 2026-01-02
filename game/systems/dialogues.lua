@@ -1,7 +1,7 @@
 local DialoguesSystem = Concord.system({
 	pool = {"dialogue_item", "text_t"},
 	pool_choice = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "dialogue_choices",
 	},
 })
@@ -74,10 +74,10 @@ function DialoguesSystem:create_e_dialogue()
 		:give("text", "")
 		:give("dialogue_item")
 		:give("ui_element")
-		:give("transform", 0, 1, 1, 0, 0.5)
+		:give("transform", 0, vec2(1, 1), vec2(0, 0.5))
 		:give("layer", "dialogue", 3)
 		:give("reflowprint", w - PAD * 2, "left")
-		:give("pos", x, y)
+		:give("pos", vec2(x, y))
 	self:create_tle()
 end
 

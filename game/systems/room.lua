@@ -57,15 +57,15 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 	local e = Concord.entity(self.world)
 		:give("id", t.name or id)
 		:give("sprite", spr_res)
-		:give("pos", t.x, t.y)
+		:give("pos", vec2(t.x, t.y))
 		:give("atlas", item)
-		:give("quad_transform", 0, scale, scale)
+		:give("quad_transform", 0, vec2(scale, scale))
 		:give("z_index", t.z or 4, false)
 		:give("outline_val", t.outline_val or 1)
 		:give("cullable")
 
 	if not g_id and not t.no_col then
-		e:give("collider", w, h, Enums.bump_filter.cross)
+		e:give("collider", vec2(w, h), Enums.bump_filter.cross)
 		:give("bump")
 
 		if not t.not_interactive then
@@ -109,9 +109,9 @@ function Room:create_grouped_items(group, group_t, frames, list)
 
 		local e_g = Concord.entity(self.world)
 			:give("id", "col_" .. id)
-			:give("pos", x, y)
+			:give("pos", vec2(x, y))
 			:give("bump")
-			:give("collider", w - x, h - y, Enums.bump_filter.cross)
+			:give("collider", vec2(w - x, h - y), Enums.bump_filter.cross)
 			:give("interactive")
 			:give("grouped", id)
 

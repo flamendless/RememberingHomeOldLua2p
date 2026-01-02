@@ -1,4 +1,4 @@
-Concord.component("enemy", function(c, type)
-	ASSERT(type(type) == "string")
-	c.type = type
+Concord.component("enemy", function(c, t)
+	ASSERT(type(t) == "string", t)
+	c.type = t
 end)

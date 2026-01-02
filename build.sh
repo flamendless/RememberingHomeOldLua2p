@@ -2,18 +2,18 @@
 
 set -eu -o pipefail
 
-lua=luajit
+lua="luajit"
 os=$(uname)
 lpp_path=./libs/LPP/preprocess-cl.lua
 gv=$(git log -1 --format='v%cd.%h' --date=short 2>/dev/null)
-data=dev
-handler=handler.lua
+data="dev"
+handler="handler.lua"
 padding=4
 
 dir_modules="modules"
-dir_res=res
-dir_output=output_dev
-dir_source=game
+dir_res="res"
+dir_output="output_dev"
+dir_source="game"
 
 dir_sub=(assemblages components shaders states systems)
 appdata=~/.local/share/love/goinghomerevisited
@@ -123,7 +123,7 @@ function create_atlas()
 	for cur_dir in "${exported_dirs[@]}"; do
 		in_dir=$source_path/$cur_dir/
 		out_dir=$output_path/$cur_dir.png
-		data_dir=./src/atlases/atlas_$cur_dir.lua
+		data_dir=./game/atlases/atlas_$cur_dir.lua
 		ignore=$source_path/$cur_dir/$cur_dir.png
 		input_dirs+=($in_dir)
 		output_dirs+=($out_dir)
@@ -132,6 +132,7 @@ function create_atlas()
 		echo "gen atlas: '$in_dir' -> '$out_dir' + '$data_dir' !'$ignore'"
 	done
 
+	set -x
 	love $eta_path \
 		-input "${input_dirs[@]}" \
 		-output "${output_dirs[@]}" \
@@ -140,6 +141,7 @@ function create_atlas()
 		-removeFileExtension \
 		-padding $padding \
 		-template "./scripts/atlas_template.lua"
+	set +x
 }
 
 function copy_modules()
