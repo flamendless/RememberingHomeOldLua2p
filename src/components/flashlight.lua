@@ -32,6 +32,7 @@ Concord.component("fl_spawn_offset", function(c, x, y)
 			error('Assertion failed: type(y) == "number"')
 		end
 	end
+
 	c.x = x or 0
 	c.y = y or 0
 	c.dy = 0

@@ -40,11 +40,13 @@ function Flashlight:init(world)
 end
 
 function Flashlight:create_flashlight()
-	Concord.entity(self.world):assemble(Light.fl_spot, self.player, Animation.get_sync_data("flashlight"))
-:give(
-		"battery",
-		100
-	):give("battery_state", Enums.battery_state.full)
+	Concord.entity(self.world):assemble(
+		Light.fl_spot,
+		self.player,
+		Animation.get_sync_data("flashlight")
+	)
+	:give("battery", 100)
+	:give("battery_state", Enums.battery_state.full)
 
 	self.start_l = Concord.entity(self.world):assemble(Light.fl_start)
 	self.end_l = Concord.entity(self.world):assemble(Light.fl_end)
@@ -173,6 +175,10 @@ function Flashlight:debug_update(dt)
 		consumption_rate = UIWrapper.edit_range("consumption rate", consumption_rate, 0, 10)
 		local pl = self.flashlight.point_light
 		UIWrapper.edit_range("power", pl.value, 0, pl.orig_value)
+
+		local fpos = self.player.fl_spawn_offset
+		fpos.x = UIWrapper.edit_number("x", fpos.x, true)
+		fpos.y = UIWrapper.edit_number("y", fpos.y, true)
 	end
 	Slab.EndWindow()
 end

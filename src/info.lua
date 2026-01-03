@@ -88,6 +88,10 @@ function Info.init()
 	local to_write = table.concat(str, "\n")
 	local content, exists = Utils.file.read(filename)
 
+	if DEV then
+		print(to_write)
+	end
+
 	if exists then
 		Info.validate_file(content, to_write)
 	else

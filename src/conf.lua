@@ -1,3 +1,13 @@
+DEV = false
+
+local args = love.arg.parseGameArguments(arg)
+for _, v in pairs(args) do
+	if v == "--dev" then
+		DEV = true
+	end
+end
+print("Running with DEV", DEV)
+
 function love.conf(t)
 	t.modules.audio = true
 	t.modules.data = true

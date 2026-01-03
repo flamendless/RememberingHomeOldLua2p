@@ -177,7 +177,7 @@ function run2p()
 
 function run()
 {
-	love "$dir_source"
+	love "$dir_source" --dev
 }
 
 function profile()

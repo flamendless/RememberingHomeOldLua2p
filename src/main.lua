@@ -91,7 +91,9 @@ function love.update(dt)
 		LoadingScreen.update(dt)
 	end
 
-	DevTools.update(dt)
+	if DEV then
+		DevTools.update(dt)
+	end
 end
 
 function love.draw()
@@ -102,19 +104,21 @@ function love.draw()
 		LoadingScreen.draw()
 	end
 
-	DevTools.draw()
-	love.graphics.setColor(1, 0, 0, 1)
-	if DevTools.show_fps then
-		love.graphics.setFont(font)
-		love.graphics.print(love.timer.getFPS())
-		love.graphics.print("dev", love.graphics.getWidth() - font:getWidth("dev"))
+	if DEV then
+		DevTools.draw()
+		love.graphics.setColor(1, 0, 0, 1)
+		if DevTools.show_fps then
+			love.graphics.setFont(font)
+			love.graphics.print(love.timer.getFPS())
+			love.graphics.print("dev", love.graphics.getWidth() - font:getWidth("dev"))
+		end
+		if DevTools.pause then
+			local ww, wh = love.graphics.getDimensions()
+			love.graphics.setFont(font)
+			love.graphics.printf("PAUSED", 0, wh * 0.5, ww, "center")
+		end
+		DevTools.end_draw()
 	end
-	if DevTools.pause then
-		local ww, wh = love.graphics.getDimensions()
-		love.graphics.setFont(font)
-		love.graphics.printf("PAUSED", 0, wh * 0.5, ww, "center")
-	end
-	DevTools.end_draw()
 end
 
 function love.quit()

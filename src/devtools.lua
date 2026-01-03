@@ -253,16 +253,16 @@ function DevTools.draw_system_list()
 		IsOpen = system_list.show,
 	})
 	Slab.BeginLayout("layout_systems", { Columns = 3 })
-	local i = 1
+	local col = 1
 	for _, v in ipairs(GameStates.world:getSystems()) do
-		Slab.SetLayoutColumn(i)
+		Slab.SetLayoutColumn(col)
 		if Slab.CheckBox(v.debug_enabled, v.debug_title) then
 			v.debug_enabled = not v.debug_enabled
 			v:setEnabled(v.debug_enabled)
 		end
-		i = i + 1
-		if i > 3 then
-			i = 1
+		col = col + 1
+		if col > 3 then
+			col = 1
 		end
 	end
 	Slab.EndLayout()

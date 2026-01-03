@@ -104,6 +104,7 @@ state_systems.Outside = {
 	"fireflies",
 	"text_paint",
 }
+
 state_systems.StorageRoom = {
 	"animation",
 	"atlas",
@@ -139,6 +140,7 @@ state_systems.StorageRoom = {
 	"behavior_tree",
 	"enemy_controller",
 }
+
 state_systems.UtilityRoom = {
 	"animation",
 	"atlas",
@@ -174,6 +176,7 @@ state_systems.UtilityRoom = {
 	"behavior_tree",
 	"enemy_controller",
 }
+
 state_systems.Kitchen = {
 	"animation",
 	"atlas",
@@ -209,6 +212,7 @@ state_systems.Kitchen = {
 	"behavior_tree",
 	"enemy_controller",
 }
+
 state_systems.LivingRoom = {
 	"animation",
 	"atlas",
@@ -243,6 +247,8 @@ state_systems.LivingRoom = {
 	"animation_state",
 	"behavior_tree",
 	"enemy_controller",
+	"flashlight",
+	"animation_sync",
 }
 
 local unpausable_list = {
