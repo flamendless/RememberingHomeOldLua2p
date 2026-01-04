@@ -40,7 +40,7 @@ function Info.init()
 	data.info_os = love.system.getOS()
 	data.processor_count = love.system.getProcessorCount()
 	data.game_version = "0.0.1"
-	data.git_version = "v2026-01-02.020dc1c"
+	data.git_version = GIT_COMMIT
 	data.limits = love.graphics.getSystemLimits()
 	data.canvasformats = love.graphics.getCanvasFormats()
 	data.imageformats = love.graphics.getImageFormats()

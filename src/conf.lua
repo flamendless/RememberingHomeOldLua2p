@@ -1,12 +1,20 @@
 DEV = false
+GIT_COMMIT = ""
 
+local stringx = require("modules.batteries.stringx")
 local args = love.arg.parseGameArguments(arg)
 for _, v in pairs(args) do
-	if v == "--dev" then
-		DEV = true
+	local arg = stringx.split(v, "=")
+	if #arg >= 0 then
+		if arg[1] == "--dev" then
+			DEV = true
+		elseif arg[1] == "--git" then
+			GIT_COMMIT = arg[2]
+		end
 	end
 end
 print("Running with DEV", DEV)
+print("             COMMIT", GIT_COMMIT)
 
 function love.conf(t)
 	t.modules.audio = true

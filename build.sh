@@ -177,7 +177,7 @@ function run2p()
 
 function run()
 {
-	love "$dir_source" --dev
+	love "$dir_source" --dev --git="$(git rev-parse --verify HEAD)"
 }
 
 function profile()

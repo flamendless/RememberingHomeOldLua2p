@@ -12,7 +12,6 @@ Start Date: Tue Mar 17 18:42:00 PST 2020
 
 --love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")
 --require("jit.p").start("lz")
-
 require("modules.batteries"):export()
 
 local Flux = require("modules.flux.flux")
