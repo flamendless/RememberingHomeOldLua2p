@@ -12,7 +12,9 @@ local Flashlight = Concord.system({
 
 local Light = require("assemblages.light")
 
-local min_light_power = 48
+local X_BALANCER = 4
+local END_LIGHT_CLOSENESS = 0.8 --how close should end light be to the start light
+local MIN_LIGHT_POWER = 48
 local consumption_rate = 0.1
 
 function Flashlight:init(world)
@@ -77,7 +79,7 @@ function Flashlight:update(dt)
 			self.flashlight:give("light_disabled")
 			-- self.start_l:give("light_disabled")
 			self.end_l:give("light_disabled")
-			pl.value = min_light_power
+			pl.value = MIN_LIGHT_POWER
 		end
 	end
 
@@ -101,6 +103,11 @@ function Flashlight:update_flashlight_pos()
 	ldir.value[2] = offset.dy
 	fd[1] = ldir.orig_value[1] * body.dir
 	f_pos.x = bx + offset.x * fd[1]
+
+	if body.dir == 1 then
+		f_pos.x = f_pos.x + X_BALANCER
+	end
+
 	f_pos.y = by + offset.y
 
 	local s_pos = self.start_l.pos
@@ -109,7 +116,7 @@ function Flashlight:update_flashlight_pos()
 
 	local strength = self.flashlight.point_light.value
 	local e_pos = self.end_l.pos
-	e_pos.x = f_pos.x + strength * fd[1] * fd[4]
+	e_pos.x = f_pos.x + strength * fd[1] * fd[4] * END_LIGHT_CLOSENESS
 	e_pos.y = f_pos.y
 end
 
@@ -128,7 +135,7 @@ function Flashlight:update_battery(dt)
 		bs:set(Enums.battery_state.empty)
 		self.flashlight:give("light_disabled"):remove("battery"):remove("d_light_flicker")
 		self.end_l:give("light_disabled")
-		self.start_l:give("point_light", min_light_power)
+		self.start_l:give("point_light", MIN_LIGHT_POWER)
 		return
 	end
 
@@ -181,9 +188,18 @@ if DEV then
 			local pl = self.flashlight.point_light
 			UIWrapper.edit_range("power", pl.value, 0, pl.orig_value)
 
-			local fpos = self.player.fl_spawn_offset
-			fpos.x = UIWrapper.edit_number("spawn ox", fpos.x, true)
-			fpos.y = UIWrapper.edit_number("spawn oy", fpos.y, true)
+			local p_pos = self.player.pos
+			local col = self.player.collider
+			local offset = self.player.fl_spawn_offset
+			local ldir = self.flashlight.light_dir
+			local fd = ldir.value
+			local bx = p_pos.x + col.w_h
+			local by = p_pos.y + col.h_h
+			local fx = bx + offset.x * fd[1]
+			local fy = by + offset.y
+			fx = UIWrapper.edit_number("x", fx, true)
+			fy = UIWrapper.edit_number("y", fy, true)
+
 		end
 		Slab.EndWindow()
 	end
@@ -192,6 +208,8 @@ if DEV then
 		if not flags.pos then
 			return
 		end
+
+		local body = self.player.body
 		local p_pos = self.player.pos
 		local col = self.player.collider
 		local offset = self.player.fl_spawn_offset
@@ -201,8 +219,17 @@ if DEV then
 		local by = p_pos.y + col.h_h
 		local fx = bx + offset.x * fd[1]
 		local fy = by + offset.y
+
+		if body.dir == 1 then
+			fx = fx + X_BALANCER
+		end
+
 		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.circle("fill", fx, fy, 2)
+
+		local e_pos = self.end_l.pos
+		love.graphics.setColor(1, 0, 0, 1)
+		love.graphics.circle("fill", e_pos.x, e_pos.y, 2)
 	end
 end
 

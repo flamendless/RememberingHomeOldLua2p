@@ -390,16 +390,12 @@ function DeferredLighting:debug_update(dt)
 		Title = "DeferredLighting",
 		IsOpen = self.debug_show,
 	})
-	Slab.Text("Group")
-	Slab.SameLine()
 	if Slab.CheckBox(flags.group, "group") then
 		flags.group = not flags.group
 	end
 	Slab.SameLine()
 
 	local ac = self.ambiance
-	Slab.Text("Ambiance")
-	Slab.SameLine()
 	if Slab.CheckBox(flags.ambiance, "ambiance") then
 		flags.ambiance = not flags.ambiance
 		if not flags.ambiance then
@@ -494,9 +490,9 @@ function DeferredLighting:debug_edit(pool, group_id)
 				dir[4], b_da = UIWrapper.edit_range("angle", dir[4], -1, 1)
 			end
 			Slab.Separator()
-			diffuse[1], b_r = UIWrapper.edit_range("r", diffuse[1], 0, 6)
-			diffuse[2], b_g = UIWrapper.edit_range("g", diffuse[2], 0, 6)
-			diffuse[3], b_b = UIWrapper.edit_range("b", diffuse[3], 0, 6)
+			diffuse[1], b_r = UIWrapper.edit_range("r", diffuse[1], 0, 100)
+			diffuse[2], b_g = UIWrapper.edit_range("g", diffuse[2], 0, 100)
+			diffuse[3], b_b = UIWrapper.edit_range("b", diffuse[3], 0, 100)
 
 			if flags.group then
 				local prop_pos = (b_x and "x") or (b_y and "y") or (b_z and "z")

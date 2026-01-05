@@ -76,7 +76,8 @@ function Light.fl_spot(e, e_player, sync_data)
 		error('Assertion failed: type(sync_data) == "table"')
 	end
 
-	e:assemble(Light.spot, 0, 0, 7, { 1, 0, 0, 0.85 }, 164, { 4, 4, 4 })
+	local p = 16
+	e:assemble(Light.spot, 0, 0, 1, { 1, 0, 0, 0.85 }, 164, {p, p, p})
 		:give("id", "flashlight_fl")
 		:give("flashlight")
 		:give("anim_sync_with", e_player)
@@ -84,13 +85,15 @@ function Light.fl_spot(e, e_player, sync_data)
 end
 
 function Light.fl_start(e) --near the player
-	e:assemble(Light.point, 0, 0, 7, 32, {1, 1, 1})
+	local p = 1
+	e:assemble(Light.point, 0, 0, 7, 32, {p, p, p})
 		:give("id", "flashlight_start_pl")
 		:give("flashlight_light")
 end
 
 function Light.fl_end(e) --away from the player
-	e:assemble(Light.point, 0, 0, 7, 64, { 1.3, 1.3, 1.3 })
+	local p = 1.3
+	e:assemble(Light.point, 0, 0, 7, 64, {p, p, p})
 		:give("id", "flashlight_end_pl")
 		:give("flashlight_light")
 end
