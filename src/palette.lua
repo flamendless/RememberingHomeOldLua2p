@@ -64,6 +64,8 @@ Palette.diffuse = {
 	ambiance_living_room = { 0.7, 0.7, 0.7, 0.3 },
 	living_room_mid_pl = { 2.28, 1.56, 0.5 },
 	living_room_side = { 1.44, 1.64, 0.2 },
+
+	ambiance_totally_dark_room = { 0.7, 0.7, 0.7, 0.0 },
 }
 
 function Palette.get(color, alpha)

@@ -285,4 +285,6 @@ ResourcesList.LivingRoom = {
 	},
 }
 
+ResourcesList.TotallyDarkRoom = ResourcesList.LivingRoom
+
 return ResourcesList

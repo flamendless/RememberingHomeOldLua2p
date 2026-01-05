@@ -250,6 +250,7 @@ state_systems.LivingRoom = {
 	"flashlight",
 	"animation_sync",
 }
+state_systems.TotallyDarkRoom = state_systems.LivingRoom
 
 local unpausable_list = {
 	"pause",

@@ -38,4 +38,6 @@ PlayerSpawnPoints.LivingRoom = {
 	default = { 360, 64 },
 }
 
+PlayerSpawnPoints.TotallyDarkRoom = PlayerSpawnPoints.LivingRoom
+
 return PlayerSpawnPoints
