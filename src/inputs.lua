@@ -12,6 +12,7 @@ local maps = {
 		t = "inventory",
 		f = "flashlight",
 		lshift = "run_mod",
+		rshift = "run_mod",
 		p = "pause",
 	},
 	--map_arrows
@@ -25,6 +26,7 @@ local maps = {
 		c = "inventory",
 		f = "flashlight",
 		lshift = "run_mod",
+		rshift = "run_mod",
 		p = "pause",
 	},
 }
