@@ -30,6 +30,7 @@ function Info.init()
 	local image_formats = {}
 	local texture_types = {}
 	local supported = {}
+	local graphics = {}
 	local name, version, vendor, device = love.graphics.getRendererInfo()
 	data.renderer = {
 		name = name,
@@ -47,17 +48,27 @@ function Info.init()
 	data.texturetypes = love.graphics.getTextureTypes()
 	data.supported = love.graphics.getSupported()
 
+	local dw, dh = love.window.getDesktopDimensions()
+	local gw, gh = love.graphics.getDimensions()
+	data.graphics = {
+		desktop_width = dw,
+		desktop_height = dh,
+		dpi = love.graphics.getDPIScale(),
+		game_width = gw,
+		game_height = gh,
+	}
+
 	insert_str(data.limits, system_limits)
 	insert_str(data.canvasformats, canvas_formats)
 	insert_str(data.imageformats, image_formats)
 	insert_str(data.texturetypes, texture_types)
 	insert_str(data.supported, supported)
+	insert_str(data.graphics, graphics)
 
 	local str = {
 		string.format("Game Version: %s", data.game_version),
 		string.format("Git Commit Version: %s", data.git_version),
 		string.format("OS: %s", data.info_os),
-
 		string.format("Processor Count: %s", data.processor_count),
 
 		"Renderer Info:",
@@ -65,6 +76,7 @@ function Info.init()
 		string.format("\tVersion: %s", data.renderer.version),
 		string.format("\tVendor: %s", data.renderer.vendor),
 		string.format("\tDevice: %s", data.renderer.device),
+		"\n",
 
 		"System Limits:",
 		table.concat(system_limits),
@@ -80,6 +92,9 @@ function Info.init()
 
 		"Supported:",
 		table.concat(supported),
+
+		"Graphics:",
+		table.concat(graphics),
 
 		"Other Info:",
 		string.format("Developer Mode: %s", true),
