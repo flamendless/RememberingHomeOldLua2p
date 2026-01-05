@@ -1,7 +1,5 @@
 local Dialogues = {}
 
-local DialoguesList = require("data.dialogues")
-
 function Dialogues.get(main, sub)
 	if not (#main ~= 0 and type(main) == "string") then
 		error('Assertion failed: #main ~= 0 and type(main) == "string"')
@@ -9,13 +7,13 @@ function Dialogues.get(main, sub)
 	if not (#sub ~= 0 and type(sub) == "string") then
 		error('Assertion failed: #sub ~= 0 and type(sub) == "string"')
 	end
-	if not DialoguesList[main] then
+	if not Data.Dialogues[main] then
 		error("there is no " .. main .. " in dialogue table")
 	end
-	if not DialoguesList[main][sub] then
+	if not Data.Dialogues[main][sub] then
 		error("there is no " .. sub .. " in dialogue table")
 	end
-	return tablex.copy(DialoguesList[main][sub])
+	return tablex.copy(Data.Dialogues[main][sub])
 end
 
 function Dialogues.check_signal(str)

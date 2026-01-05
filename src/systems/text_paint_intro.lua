@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Lume = require("modules.lume.lume")
-
 local TextPaintIntro = Concord.system()
 
 function TextPaintIntro:init(world)

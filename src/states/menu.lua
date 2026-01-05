@@ -1,35 +1,16 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Gamera = require("modules.gamera.gamera")
-local Log = require("modules.log.log")
-local Timer = require("modules.hump.timer")
-local TLE = require("modules.tle.timeline")
-
-local Canvas = require("canvas")
-local Enums = require("enums")
-local Fade = require("fade")
-local Inputs = require("inputs")
-local ListByID = require("ctor.list_by_id")
-local Palette = require("palette")
-local Resources = require("resources")
-local Save = require("save")
-local Shaders = require("shaders")
-
 local Menu = Concord.system({
 	pool = { "option_key", "color", "pos", "text", "on_enter_menu" },
 	pool_disabled = { "option_key", "option_disabled" },
 	pool_text = { "menu_text" },
 	pool_main_menu = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "main_menu",
 	},
 	pool_sub_menu = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "sub_menu",
 	},
 })
-
-local AMenu = require("assemblages.menu")
 
 local offset_x = 64
 local dur_in = 0.75
@@ -269,16 +250,16 @@ function Menu:setup_menu()
 	local scale_subt = math.min((title_w * scale_title) / subt_w, (title_h * scale) / subt_h)
 	scale_subt = scale_subt * 0.75
 
-	Concord.entity(self.world):assemble(AMenu.bg_door, ww * 1.5, wh * 0.5, scale, bg_door_w * 0.5, bg_door_h * 0.5)
+	Concord.entity(self.world):assemble(Assemblages.Menu.bg_door, ww * 1.5, wh * 0.5, scale, bg_door_w * 0.5, bg_door_h * 0.5)
 
 	Concord.entity(self.world)
-		:assemble(AMenu.bg_hallway, ww * 0.5, wh * 1.5, scale_hallway, bg_hw_w * 0.5, bg_hw_h * 0.5)
+		:assemble(Assemblages.Menu.bg_hallway, ww * 0.5, wh * 1.5, scale_hallway, bg_hw_w * 0.5, bg_hw_h * 0.5)
 
-	self.e_desk = Concord.entity(self.world):assemble(AMenu.desk, ww, wh)
+	self.e_desk = Concord.entity(self.world):assemble(Assemblages.Menu.desk, ww, wh)
 	self.title = Concord.entity(self.world)
-		:assemble(AMenu.title, ww * 0.25, wh * 0.5 - 36, scale_title, title_w * 0.5, title_h * 0.5)
+		:assemble(Assemblages.Menu.title, ww * 0.25, wh * 0.5 - 36, scale_title, title_w * 0.5, title_h * 0.5)
 	self.subtitle = Concord.entity(self.world)
-		:assemble(AMenu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w * 0.5, subt_h * 0.5)
+		:assemble(Assemblages.Menu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w * 0.5, subt_h * 0.5)
 
 	local jamboree_fnt = "res/fonts/Jamboree.fnt"
 	local jamboree_png = "res/fonts/Jamboree.png"
@@ -303,7 +284,7 @@ function Menu:setup_menu()
 		local id = "text_sub_" .. lstr
 
 		local e = Concord.entity(self.world)
-			:assemble(AMenu.option_item, id, str, jamboree_fnt, jamboree_png, x, y, str_scale, i, 2, "sub_menu")
+			:assemble(Assemblages.Menu.option_item, id, str, jamboree_fnt, jamboree_png, x, y, str_scale, i, 2, "sub_menu")
 			:give("on_enter_menu", "on_" .. lstr)
 
 		if not has_save and str == "Continue" then
@@ -320,7 +301,7 @@ function Menu:setup_menu()
 		local id = "text_" .. lstr
 
 		Concord.entity(self.world)
-			:assemble(AMenu.option_item, id, str, jamboree_fnt, jamboree_png, x, y, str_scale, i, 1, "main_menu")
+			:assemble(Assemblages.Menu.option_item, id, str, jamboree_fnt, jamboree_png, x, y, str_scale, i, 1, "main_menu")
 			:give("on_enter_menu", "on_" .. lstr, 0, lstr)
 	end
 	self.world:__flush()
@@ -343,7 +324,7 @@ function Menu:setup_about()
 	local dt_color = false
 	local color = Palette.get("about_normal")
 
-	Concord.entity(self.world):assemble(AMenu.btn_back, 8, base_y):give("on_click", 1, "menu_back")
+	Concord.entity(self.world):assemble(Assemblages.Menu.btn_back, 8, base_y):give("on_click", 1, "menu_back")
 
 	for i, el in ipairs(about) do
 		if type(el[1]) == "string" and el[1] ~= "_IMAGES" then
@@ -381,7 +362,7 @@ function Menu:setup_about()
 					largest = math.max(largest, layout_base_y)
 				end
 				local id = "about_text_" .. i
-				Concord.entity(self.world):assemble(AMenu.about_text, id, resource_id, str, x, y, color)
+				Concord.entity(self.world):assemble(Assemblages.Menu.about_text, id, resource_id, str, x, y, color)
 				if dt_color then
 					color = Palette.get("about_normal")
 					dt_color = false
@@ -406,7 +387,7 @@ function Menu:setup_about()
 				local x = bx + (iw * (i2 - 2)) + pad * 0.5
 				local y = base_y - ih * 0.5 - pad * 0.5
 				Concord.entity(self.world)
-					:assemble(AMenu.about_ext_link, id, resource_id, x, y)
+					:assemble(Assemblages.Menu.about_ext_link, id, resource_id, x, y)
 					:give("on_click", 1, "open_url", about_links[i2])
 			end
 		end
@@ -486,7 +467,7 @@ function Menu:on_newgame()
 		e:give("target_color", Palette.get("white", 0), dur)
 	end
 
-	local e_desk_fast = Concord.entity(self.world):assemble(AMenu.desk_fast, ww, wh)
+	local e_desk_fast = Concord.entity(self.world):assemble(Assemblages.Menu.desk_fast, ww, wh)
 
 	Timer.after(timer, function()
 		-- TODO add sudden static sound

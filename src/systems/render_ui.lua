@@ -1,24 +1,21 @@
-local Concord = require("modules.concord.concord")
-local SortedTable = require("ctor.sorted_table")
-
 local RenderUI = Concord.system({
 	pool_text = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "text",
 		"ui_element",
 	},
 	pool_hold_key = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "hold_key",
 		"ui_element",
 	},
 	pool_dialogue = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "dialogue",
 		"ui_element",
 	},
 	pool_hud = {
-		constructor = SortedTable,
+		constructor = Ctor.SortedTable,
 		layer = "hud",
 		"ui_element",
 	},

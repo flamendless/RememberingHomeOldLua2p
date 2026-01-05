@@ -1,10 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
-local Cache = require("cache")
-local Outliner = require("outliner")
-local Palette = require("palette")
-
 local Outline = Concord.system({
 	pool = { "id", "outline", "outline_val", "sprite", "pos" },
 	pool_grouped = { "grouped" },

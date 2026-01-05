@@ -1,7 +1,3 @@
-local Lily = require("modules.lily.lily")
-
-local UTF8 = require("utf8")
-
 local ErrorHandler = {}
 local font, p
 local pos_x, pos_y = 0, 24

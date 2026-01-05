@@ -1,8 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
-local Inputs = require("inputs")
-
 local List = Concord.system({
 	pool = { "list_item", "list_group" },
 })
@@ -283,8 +278,6 @@ function List:cleanup()
 	tablex.clear(self.focus_stack)
 	self.focused = nil
 end
-
-local Slab = require("modules.slab")
 
 local selected
 

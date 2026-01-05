@@ -1,22 +1,11 @@
-local Concord = require("modules.concord.concord")
-local TLE = require("modules.tle.timeline")
-
-local DialoguesSrc = require("dialogues")
-local Enums = require("enums")
-local Inputs = require("inputs")
-local ListByID = require("ctor.list_by_id")
-local Resources = require("resources")
-local Palette = require("palette")
-
 local Dialogues = Concord.system({
 	pool = { "dialogue_item", "text_t" },
 	pool_choice = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "dialogue_choices",
 	},
 })
 
-local UI = require("assemblages.ui")
 local c_hc = Palette.colors.hovered_choice
 local PAD = 32
 
@@ -41,7 +30,7 @@ function Dialogues:create_tle()
 			if current_line then
 				text_t.current_index = text_t.current_index + 1
 				local should_pause = true
-				local bool, signal, handle_self = DialoguesSrc.check_signal(current_line)
+				local bool, signal, handle_self = Data.Dialogues.check_signal(current_line)
 
 				if bool then
 					self.world:emit(signal, self.e_dialogue, dialogues)
@@ -123,7 +112,7 @@ function Dialogues:spawn_dialogue(dialogues_t, main, sub)
 	end
 	self.e_dialogue:give("dialogue_meta", main, sub):give("text_t", dialogues_t)
 	self:populate_choices(dialogues_t)
-	if DialoguesSrc.validate(dialogues_t) then
+	if Data.Dialogues.validate(dialogues_t) then
 		self.world:emit("on_interact_or_inventory")
 	end
 	self.timeline:Unpause()
@@ -232,7 +221,7 @@ function Dialogues:show_choices()
 		end
 
 		Concord.entity(self.world)
-			:assemble(UI.choice, id, str, choice_t, x, y)
+			:assemble(Assemblages.UI.choice, id, str, choice_t, x, y)
 			:give("reflowprint", fw + PAD * 2, "left")
 			:give("dialogue_meta", d.main, d.sub)
 			:give("list_item")
@@ -288,7 +277,7 @@ Dialogues["on_list_item_interact_" .. "dialogue_choices"] = function(self, e_hov
 		local str = text_t[1]
 		local proceed = true
 		if str then
-			local bool, signal, handle_self = DialoguesSrc.check_signal(str)
+			local bool, signal, handle_self = Data.Dialogues.check_signal(str)
 
 			if bool then
 				proceed = false

@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("ui_element")
 
 Concord.component("layer", function(c, id, n)

@@ -1,4 +1,4 @@
-local Concord = require("modules.concord.concord")
+
 
 Concord.component("can_move")
 Concord.component("can_run")

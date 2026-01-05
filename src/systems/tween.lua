@@ -1,9 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Gamera = require("modules.gamera.gamera")
-
-local Enums = require("enums")
-
 local Tween = Concord.system()
 
 function Tween:init(world)

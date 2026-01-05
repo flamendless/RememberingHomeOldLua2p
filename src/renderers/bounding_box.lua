@@ -1,7 +1,3 @@
-local Slab = require("modules.slab")
-
-local Helper = require("helper")
-
 local BoundingBox = {
 	id = "BoundingBox",
 

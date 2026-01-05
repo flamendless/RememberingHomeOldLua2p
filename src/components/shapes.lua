@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("textured_line")
 
 Concord.component("draw_mode", function(c, draw_mode)

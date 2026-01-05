@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local c_anchor = Concord.component("anchor", function(c, entity, ax, ay, padding_x, padding_y)
 	if not entity.__isEntity then
 		error("Assertion failed: entity.__isEntity")

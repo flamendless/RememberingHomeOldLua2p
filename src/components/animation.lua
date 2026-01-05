@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("override_animation")
 
 local c_anim = Concord.component("animation", function(c, stop_on_last)

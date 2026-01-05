@@ -1,20 +1,10 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-local Lume = require("modules.lume.lume")
-
-local Fade = require("fade")
-local Inputs = require("inputs")
-local ListByID = require("ctor.list_by_id")
-local Resources = require("resources")
-
 local Pause = Concord.system({
 	pool_choice = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "pause_choices",
 	},
 })
 
-local APause = require("assemblages.pause")
 local opt = { "Resume", "Settings", "Quit" }
 
 local function get_glitch_timer()
@@ -38,8 +28,8 @@ end
 function Pause:create_pause_entities()
 	local ww, wh = love.graphics.getDimensions()
 	local ww2, wh2 = ww * 0.5, wh * 0.5
-	self.e_bg = Concord.entity(self.world):assemble(APause.bg, ww2, wh2)
-	self.e_title = Concord.entity(self.world):assemble(APause.text, ww2, wh2 - 64)
+	self.e_bg = Concord.entity(self.world):assemble(Assemblages.Pause.bg, ww2, wh2)
+	self.e_title = Concord.entity(self.world):assemble(Assemblages.Pause.text, ww2, wh2 - 64)
 	self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
 
 	if #self.pool_choice ~= 0 then
@@ -56,7 +46,7 @@ function Pause:create_pause_entities()
 	for i, str in ipairs(opt) do
 		local x = ww2
 		local y = by + (i - 1) * fh
-		Concord.entity(self.world):assemble(APause.choice, str, x, y, scale)
+		Concord.entity(self.world):assemble(Assemblages.Pause.choice, str, x, y, scale)
 	end
 end
 

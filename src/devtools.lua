@@ -1,7 +1,3 @@
-local Slab = require("modules.slab")
-
-local GameStates = require("gamestates")
-
 local DevTools = {
 	show = false,
 	show_fps = true,

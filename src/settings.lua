@@ -1,8 +1,3 @@
-local Log = require("modules.log.log")
-
-local Info = require("info")
-local Utils = require("utils")
-
 local defaults = {
 	key_map = 1,
 	window_mode = 1,

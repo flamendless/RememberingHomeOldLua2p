@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Doors = require("data.doors")
-
 local Door = Concord.system({
 	pool = { "id", "is_door" },
 })
@@ -23,7 +19,7 @@ function Door:on_interact_door(e_player, e_door)
 
 	local door_id = e_door.id.value
 	local current_id = self.world.current_id
-	local next_room = Doors.get_next(current_id, door_id)
+	local next_room = Data.Doors.get_next(current_id, door_id)
 	self.world:emit("switch_state", next_room, 1.5, 0.5)
 end
 

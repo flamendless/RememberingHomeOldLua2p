@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Helper = require("helper")
-
 local MouseHover = Concord.system({
 	pool_bb = { "bounding_box", "hoverable", "pos" },
 	pool_bb_ui = { "bounding_box", "hoverable", "pos", "ui_element" },

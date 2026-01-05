@@ -1,24 +1,15 @@
-local Concord = require("modules.concord.concord")
-
-local Inputs = require("inputs")
-local ListByID = require("ctor.list_by_id")
-local Notes = require("notes")
-local Resources = require("resources")
-
 local Inventory = Concord.system({
 	pool_cell = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "inventory_cells",
 	},
 	pool_choice = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "inventory_choices",
 	},
 	pool_border = { "id", "sprite", "textured_line" },
 	pool_item = { "item" },
 })
-
-local AInventory = require("assemblages.inventory")
 
 function Inventory:init(world)
 	self.world = world
@@ -94,7 +85,6 @@ local added = false
 function Inventory:update(dt)
 	if not self.is_open and Inputs.pressed("inventory") then
 		if not added then
-			local Items = require("items")
 			Items.add("flashlight")
 			Notes.add("test1")
 			Notes.add("test2")
@@ -133,7 +123,7 @@ function Inventory:create_inventory()
 	local bg_h = ih * scale
 	local orig_x = x - bg_w * 0.5
 	local orig_y = y - bg_h * 0.5
-	self.entities.bg = Concord.entity(self.world):assemble(AInventory.bg, x, y, scale)
+	self.entities.bg = Concord.entity(self.world):assemble(Assemblages.Inventory.bg, x, y, scale)
 	self.world:emit("create_list_group", "inventory_choices", true, 3)
 
 	local c_bx = orig_x + bg_w - pad
@@ -142,7 +132,7 @@ function Inventory:create_inventory()
 	for i, str in ipairs(choices) do
 		local c_oy = pad * (0.5 + (i - 1) * 1.2)
 		local c_y = c_by + c_oy
-		Concord.entity(self.world):assemble(AInventory.choice, str, c_bx, c_y)
+		Concord.entity(self.world):assemble(Assemblages.Inventory.choice, str, c_bx, c_y)
 	end
 
 	self.world:emit("create_list_group_grid", "inventory_cells", rows, cols)
@@ -155,22 +145,22 @@ function Inventory:create_inventory()
 	local cw = rw / cols
 	local ch = rh / rows
 
-	Concord.entity(self.world):assemble(AInventory.border, 1, rx, ry, rw, rh, b_ih, false)
-	Concord.entity(self.world):assemble(AInventory.border, 2, rx + rw, ry, rw, rh, b_ih, false)
-	Concord.entity(self.world):assemble(AInventory.border, 3, rx, ry, rw, rh, b_ih, true)
-	Concord.entity(self.world):assemble(AInventory.border, 4, rx, ry + rh, rw, rh, b_ih, true)
-	Concord.entity(self.world):assemble(AInventory.border, 5, rx + cw, ry, rw, rh, b_ih, false)
-	Concord.entity(self.world):assemble(AInventory.border, 6, rx + cw * 2, ry, rw, rh, b_ih, false)
-	Concord.entity(self.world):assemble(AInventory.border, 7, rx, ry + ch, rw, rh, b_ih, true)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 1, rx, ry, rw, rh, b_ih, false)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 2, rx + rw, ry, rw, rh, b_ih, false)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 3, rx, ry, rw, rh, b_ih, true)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 4, rx, ry + rh, rw, rh, b_ih, true)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 5, rx + cw, ry, rw, rh, b_ih, false)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 6, rx + cw * 2, ry, rw, rh, b_ih, false)
+	Concord.entity(self.world):assemble(Assemblages.Inventory.border, 7, rx, ry + ch, rw, rh, b_ih, true)
 
 	for r = 1, rows do
 		for c = 1, cols do
 			local cx = rx + (c - 1) * cw
 			local cy = ry + (r - 1) * ch
 			local i = (r - 1) * cols + c
-			local l1 = Concord.entity(self.world):assemble(AInventory.dline, i .. "a", cx, cy, cx + cw, cy + ch)
-			local l2 = Concord.entity(self.world):assemble(AInventory.dline, i .. "b", cx, cy + ch, cx + cw, cy)
-			Concord.entity(self.world):assemble(AInventory.cell, i, cx, cy, cw, ch):give("refs", l1, l2)
+			local l1 = Concord.entity(self.world):assemble(Assemblages.Inventory.dline, i .. "a", cx, cy, cx + cw, cy + ch)
+			local l2 = Concord.entity(self.world):assemble(Assemblages.Inventory.dline, i .. "b", cx, cy + ch, cx + cw, cy)
+			Concord.entity(self.world):assemble(Assemblages.Inventory.cell, i, cx, cy, cw, ch):give("refs", l1, l2)
 		end
 	end
 end

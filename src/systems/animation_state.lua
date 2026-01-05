@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Enums = require("enums")
 local ANIM_STATE = Enums.anim_state
 
 local AnimationState = Concord.system()

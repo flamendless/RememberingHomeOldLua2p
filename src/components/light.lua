@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("light", function(c, light_shape, power)
 	if not (type(power) == "number") then
 		error('Assertion failed: type(power) == "number"')

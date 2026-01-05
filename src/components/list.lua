@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("list_item_skip")
 
 Concord.component("list_item", function(c)

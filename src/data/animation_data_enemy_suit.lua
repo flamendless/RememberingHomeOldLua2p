@@ -1,5 +1,3 @@
-local Enums = require("enums")
-
 local AnimationDataEnemySuit = {}
 
 AnimationDataEnemySuit.idle = {

@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
 local Systems = Concord.system()
 
 local classes = { "dialogues", "inventory", "notes" }
@@ -8,7 +5,6 @@ local system_classes = {}
 
 function Systems:init(world)
 	self.world = world
-	local ECS = require("ecs")
 	for _, class in ipairs(classes) do
 		system_classes[class] = ECS.get_system_class(class)
 	end

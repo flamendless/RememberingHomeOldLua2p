@@ -1,10 +1,3 @@
-local Concord = require("modules.concord")
-
-local Log = require("modules.log.log")
-
-local Generator = require("generator")
-local Utils = require("utils")
-
 local Ants = Concord.system({
 	pool = { "id", "bug", "ant" },
 })
@@ -80,8 +73,6 @@ function Ants:move_ants()
 	end
 end
 
-local Slab = require("modules.slab")
-local UIWrapper = require("ui_wrapper")
 local flags = {
 	path = true,
 	show = false,

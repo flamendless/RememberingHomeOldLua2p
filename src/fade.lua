@@ -1,5 +1,3 @@
-local Flux = require("modules.flux.flux")
-
 local Fade = {}
 
 local f_duration = 1

@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("alpha_range", function(c, min, max)
 	if not (type(min) == "number") then
 		error('Assertion failed: type(min) == "number"')

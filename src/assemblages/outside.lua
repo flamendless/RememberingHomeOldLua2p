@@ -1,16 +1,7 @@
-local Log = require("modules.log.log")
-
-local Animation = require("animation")
-local Info = require("info")
-local Palette = require("palette")
-local Resources = require("resources")
-
 local Outside = {
 	colliders = {},
 	lights = {},
 }
-
-local Light = require("assemblages.light")
 
 local z_index = {
 	bg_house = 0,
@@ -77,29 +68,29 @@ function Outside.colliders.right_bound(e, w, h)
 end
 
 function Outside.lights.pl_car_headlight(e, id)
-	e:assemble(Light.point, 733, 296, 4, 24, Palette.get_diffuse("car_headlight_pl")):give("id", id):give("car_lights")
+	e:assemble(Assemblages.Light.point, 733, 296, 4, 24, Palette.get_diffuse("car_headlight_pl")):give("id", id):give("car_lights")
 end
 
 function Outside.lights.sl_car_headlight(e, id)
-	e:assemble(Light.spot, 751, 290, 6, { -1, 0.25, 0, 0.95 }, 256, Palette.get_diffuse("car_headlight_sl"))
+	e:assemble(Assemblages.Light.spot, 751, 290, 6, { -1, 0.25, 0, 0.95 }, 256, Palette.get_diffuse("car_headlight_sl"))
 		:give("id", id)
 		:give("car_lights")
 end
 
 function Outside.lights.pl_backdoor(e, id)
-	e:assemble(Light.point, 446, 292, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
+	e:assemble(Assemblages.Light.point, 446, 292, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
 end
 
 function Outside.lights.sl_backdoor(e, id)
-	e:assemble(Light.spot, 446, 241, 4, { 0, 1, -0.8, 0.77 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
+	e:assemble(Assemblages.Light.spot, 446, 241, 4, { 0, 1, -0.8, 0.77 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
 end
 
 function Outside.lights.pl_frontdoor(e, id)
-	e:assemble(Light.point, 316, 262, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
+	e:assemble(Assemblages.Light.point, 316, 262, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
 end
 
 function Outside.lights.sl_frontdoor(e, id)
-	e:assemble(Light.spot, 316, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
+	e:assemble(Assemblages.Light.spot, 316, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
 end
 
 return Outside

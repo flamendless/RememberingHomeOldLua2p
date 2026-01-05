@@ -1,5 +1,3 @@
-local Semver = require("modules.semver.semver")
-
 local Config = {}
 
 Config.this_version = "0.0.1"

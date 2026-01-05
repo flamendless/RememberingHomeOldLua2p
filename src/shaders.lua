@@ -1,5 +1,3 @@
-local Log = require("modules.log.log")
-
 local Shaders = {}
 
 Shaders.paths = {

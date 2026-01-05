@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local c_attach_to = Concord.component("attach_to", function(c, e_target)
 	if not e_target.__isEntity then
 		error("Assertion failed: e_target.__isEntity")

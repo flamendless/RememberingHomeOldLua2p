@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local HoverEffect = Concord.system({
 	pool_change_color = { "bounding_box", "hoverable", "color", "hover_change_color" },
 	pool_change_scale = { "bounding_box", "hoverable", "transform", "hover_change_scale" },

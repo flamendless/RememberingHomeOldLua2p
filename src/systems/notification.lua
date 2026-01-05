@@ -1,13 +1,7 @@
-local Concord = require("modules.concord.concord")
-
 --TODO this is unused, maybe remove completely?
 local Notification = Concord.system({
 	pool = { "notification" },
 })
-
-local Assemblages = {
-	UI = require("assemblages.ui"),
-}
 
 function Notification:init(world)
 	self.world = world
@@ -35,7 +29,7 @@ function Notification:create_speech_bubble(e_player)
 		error("Assertion failed: e_player.__isEntity and e_player.player")
 	end
 	local pos = e_player.pos
-	local e = Concord.entity(self.world):assemble(Assemblages.UI.speech_bubble, e_player, pos.x, pos.y)
+	local e = Concord.entity(self.world):assemble(Assemblages.ui.speech_bubble, e_player, pos.x, pos.y)
 end
 
 function Notification:remove_speech_bubble()

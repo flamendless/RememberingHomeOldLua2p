@@ -1,7 +1,3 @@
-local Preloader = require("preloader")
-local Shaders = require("shaders")
-local Utils = require("utils")
-
 local LoadingScreen = {}
 
 local font_preload = love.graphics.newFont("res/fonts/Jamboree.ttf", 48)
@@ -47,7 +43,7 @@ function LoadingScreen.draw()
 
 	local str_loading = string.format("LOADING: %i%%", Preloader.percent)
 	local ox = font_preload:getWidth(str_loading) * 0.5
-	local oy = font_preload:getHeight(str_loading) * 0.5
+	local oy = font_preload:getHeight() * 0.5
 	love.graphics.setFont(font_preload)
 
 	love.graphics.setColor(1, 1, 1, 0.75)

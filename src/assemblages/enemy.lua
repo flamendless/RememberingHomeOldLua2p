@@ -1,12 +1,6 @@
-local Animation = require("animation")
-local Colliders = require("data.colliders")
-local Enums = require("enums")
-
-local BTEnemy = require("behaviors.enemy")
-
 local Enemy = {}
 
-local speed_data = {
+local enemy_speed_data = {
 	idle = { x = 0, y = 0 },
 	walk = { x = 16, y = 0 },
 	chase = { x = 32, y = 0 },
@@ -32,7 +26,7 @@ function Enemy.base(e, enemy_type, x, y)
 		error('Assertion failed: type(x) == "number" and type(y) == "number"')
 	end
 	local data, mods = Enemy.get_multi_anim_data(enemy_type)
-	local collider = Colliders.enemy[enemy_type].idle
+	local collider = Data.Colliders.enemy[enemy_type].idle
 
 	e:give("id", "enemy", "suit")
 		:give("enemy", enemy_type)
@@ -49,11 +43,11 @@ function Enemy.base(e, enemy_type, x, y)
 		:give("current_frame")
 		:give("movement")
 		:give("z_index", 10)
-		:give("behavior_tree", BTEnemy, Enums.bt.enemy)
+		:give("behavior_tree", Behaviors.Enemy, Enums.bt.enemy)
 		:give("line_of_sight", 96)
 		:give("controller_origin")
 		:give("speed")
-		:give("speed_data", speed_data)
+		:give("speed_data", enemy_speed_data)
 		:give("gravity", 320)
 		:give("can_move")
 

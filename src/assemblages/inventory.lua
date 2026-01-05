@@ -1,7 +1,3 @@
-local Cache = require("cache")
-local Enums = require("enums")
-local Palette = require("palette")
-
 local Inventory = {}
 
 local CACHE_ID = "calculated"

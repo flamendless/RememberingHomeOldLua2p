@@ -1,9 +1,3 @@
-local Animation = require("animation")
-local Enums = require("enums")
-local Palette = require("palette")
-
-local Atlas = require("atlases.atlas_intro")
-
 local Intro = {}
 
 local speed = {
@@ -82,7 +76,7 @@ function Intro.parallax(e, tag, scale)
 		e:give("parallax_stop"):give("bg_tree")
 	end
 
-	local item = Atlas.frames[tag]
+	local item = Atlases.AtlasIntro.frames[tag]
 	if not scale then
 		local ww, wh = love.graphics.getDimensions()
 		local w, h = item.w, item.h
@@ -112,7 +106,7 @@ function Intro.post_light(e, tag, scale)
 end
 
 function Intro.bg_tree_cover(e)
-	local item = Atlas.frames.bg_tree_cover
+	local item = Atlases.AtlasIntro.frames.bg_tree_cover
 	local ww, wh = love.graphics.getDimensions()
 	local w, h = item.w, item.h
 	local scale = math.min(ww / w, wh / h)
@@ -156,7 +150,7 @@ function Intro.car_light(e, car)
 		:give("color", Palette.get_diffuse("car"))
 		:give("light", "cone", 0.8)
 		:give("sprite", "atlas_intro")
-		:give("atlas", Atlas.frames.car_headlight)
+		:give("atlas", Atlases.AtlasIntro.frames.car_headlight)
 		:give("light_flicker", 0.075)
 		:give("attach_to", car)
 		:give("attach_to_offset", 112, 24)
@@ -166,7 +160,7 @@ end
 function Intro.title(e, x, y)
 	e:give("id", "title")
 		:give("sprite", "atlas_intro")
-		:give("atlas", Atlas.frames.title)
+		:give("atlas", Atlases.AtlasIntro.frames.title)
 		:give("pos", x, y)
 		:give("quad_transform", 0, 6, 6, 0.5, 0.5)
 		:give("color", { 1, 1, 1, 0 })
@@ -177,7 +171,7 @@ end
 function Intro.title_light(e, x, y)
 	e:give("id", "title_light")
 		:give("sprite", "atlas_intro")
-		:give("atlas", Atlas.frames.title_light)
+		:give("atlas", Atlases.AtlasIntro.frames.title_light)
 		:give("pos", x, y)
 		:give("quad_transform", 0, 4, 4, 0.5, 0.5)
 		:give("color", { 1, 1, 1 })

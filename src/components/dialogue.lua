@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Dialogues = require("dialogues")
-
 Concord.component("text_can_proceed")
 Concord.component("text_skipped")
 

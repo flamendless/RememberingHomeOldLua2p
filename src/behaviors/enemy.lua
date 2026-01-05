@@ -1,13 +1,6 @@
 local get_dt = love.timer.getDelta
 local lm_random = love.math.random
 
-local Fail = require("modules.beehive.beehive.fail")
-local Invert = require("modules.beehive.beehive.invert")
-local Repeat = require("modules.beehive.beehive.repeat")
-local Selector = require("modules.beehive.beehive.selector")
-local Sequence = require("modules.beehive.beehive.sequence")
-
-local Enums = require("enums")
 local bt_enemy = Enums.bt.enemy
 
 local function set_node(e, tag)
@@ -260,7 +253,7 @@ local function caught_other(world, e)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	return Sequence({
+	return Beehive.Sequence({
 		is_current_node_bt(e, bt_enemy.chase, bt_enemy.walk, bt_enemy.caught_other),
 		has_collide_with,
 		set_node_bt(e, bt_enemy.caught_other),
@@ -275,12 +268,12 @@ local function lean_return_back(world, e)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	return Sequence({
+	return Beehive.Sequence({
 		is_current_anim_bt(e, bt_enemy.lean_back),
-		Invert(is_other_behind),
+		Beehive.Invert(is_other_behind),
 		set_node_bt(e, bt_enemy.lean_return_back),
 		is_current_anim_done_bt(e, bt_enemy.lean_return_back),
-		Fail,
+		Beehive.Fail,
 	})
 end
 
@@ -291,7 +284,7 @@ local function lean_back(world, e)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	return Sequence({
+	return Beehive.Sequence({
 		is_other_behind,
 		set_node_bt(e, bt_enemy.lean_back),
 	})
@@ -304,7 +297,7 @@ local function chase(world, e)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	return Sequence({
+	return Beehive.Sequence({
 		sees_other,
 		random({
 			chase_other,
@@ -320,7 +313,7 @@ local function walk(world, e)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	return Sequence({
+	return Beehive.Sequence({
 		has_component_bt(e, "random_walk"),
 	})
 end
@@ -335,7 +328,7 @@ local function wait(world, e)
 	local min = lm_random(0.5, 0.9)
 	local max = min + lm_random(0.5, 0.9)
 
-	return Sequence({
+	return Beehive.Sequence({
 		wait_random_bt(e, min, max),
 		random_bt({
 			set_node_bt(e, bt_enemy.idle),
@@ -351,7 +344,7 @@ return function(world, e)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	return Selector({
+	return Beehive.Selector({
 		caught_other(world, e),
 		lean_return_back(world, e),
 		lean_back(world, e),

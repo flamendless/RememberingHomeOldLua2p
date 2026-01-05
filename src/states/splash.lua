@@ -1,22 +1,6 @@
-local Concord = require("modules.concord.concord")
-local LoveSplash = require("modules.splashes.o-ten-one")
-local Lume = require("modules.lume.lume")
-local TLE = require("modules.tle.timeline")
-local Timer = require("modules.hump.timer")
-
-local Animation = require("animation")
-local Canvas = require("canvas")
-local Enums = require("enums")
-local Fade = require("fade")
-local Inputs = require("inputs")
-local Palette = require("palette")
-local Save = require("save")
-local Shaders = require("shaders")
-
-local Common = require("assemblages.common")
-local delay_skip = 0.5
-
 local Splash = Concord.system()
+
+local DELAY_SKIP = 0.5
 
 function Splash:init(world)
 	self.world = world
@@ -63,7 +47,7 @@ end
 function Splash:set_skippable_timer()
 	if Save.data.splash_done then
 		self.timer_skip = Timer()
-		self.timer_skip:after(delay_skip, function()
+		self.timer_skip:after(DELAY_SKIP, function()
 			self.skippable = true
 		end)
 	end
@@ -80,7 +64,7 @@ function Splash:create_splash_wits()
 	self.world:emit("set_post_process_effect", "Glitch", false)
 	local ww, wh = love.graphics.getDimensions()
 	self.splash_wits = Concord.entity(self.world)
-		:assemble(Common.animated_sprite, Animation.get("wits"), ww * 0.5, wh * 0.5)
+		:assemble(Assemblages.Common.animated_sprite, Animation.get("wits"), ww * 0.5, wh * 0.5)
 		:give("id", "splash_wits")
 		:give("color", { 1, 1, 1, 1 })
 		:give("transform", 0, 1, 1, 0.5, 0.5)

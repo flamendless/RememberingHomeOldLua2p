@@ -1,15 +1,7 @@
-local Concord = require("modules.concord.concord")
-
-local AtlasKeys = require("atlases.atlas_keys")
-local Enums = require("enums")
-local Inputs = require("inputs")
-local Palette = require("palette")
-local Settings = require("settings")
-
 local ShowKeys = Concord.system()
 
 local function Assemble(e, key)
-	e:give("atlas", AtlasKeys.frames[key]):give("sprite", "atlas_keys"):give("ui_element")
+	e:give("atlas", Atlases.AtlasKeys.frames[key]):give("sprite", "atlas_keys"):give("ui_element")
 end
 
 function ShowKeys:init(world)

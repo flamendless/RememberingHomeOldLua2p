@@ -1,19 +1,11 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
+local GameStatesSystem = Concord.system()
 
-local Fade = require("fade")
-local Save = require("save")
-local GS
-
-local GameStates = Concord.system()
-
-function GameStates:init(world)
-	GS = require("gamestates")
+function GameStatesSystem:init(world)
 	self.world = world
 	self.is_switching = false
 end
 
-function GameStates:switch_state(next_state, dur, delay)
+function GameStatesSystem:switch_state(next_state, dur, delay)
 	if not (type(next_state) == "string") then
 		error('Assertion failed: type(next_state) == "string"')
 	end
@@ -30,32 +22,30 @@ function GameStates:switch_state(next_state, dur, delay)
 	if self.is_switching then
 		return
 	end
-	if GS.current_id == next_state then
+	if GameStates.current_id == next_state then
 		return
 	end
 	Log.info("switching state to", next_state)
 	self.is_switching = true
 	Fade.fade_out(function()
-		if GS.current_id == "Splash" then
+		if GameStates.current_id == "Splash" then
 			Save.set_flag("splash_done", true, true)
 		end
-		GS.switch(next_state)
+		GameStates.switch(next_state)
 		Log.info("switched state to", next_state)
 		self.is_switching = false
 	end, dur, delay)
 end
 
-function GameStates:save_game()
+function GameStatesSystem:save_game()
 	-- local data = self.world:serialize()
 	-- Utils.serial.write($_SAVESTATE_FILENAME, data)
 end
 
-function GameStates:load_game()
+function GameStatesSystem:load_game()
 	-- local data = Utils.serial.read($_SAVESTATE_FILENAME)
 	-- self.world:deserialize(data, true)
 end
-
-local Slab = require("modules.slab")
 
 local states = {
 	"Menu",
@@ -65,14 +55,15 @@ local states = {
 	"UtilityRoom",
 	"Kitchen",
 	"LivingRoom",
+	"TotallyDarkRoom",
 }
 
-function GameStates:debug_update(dt)
+function GameStatesSystem:debug_update(dt)
 	if not self.debug_show then
 		return
 	end
 	self.debug_show = Slab.BeginWindow("gs", {
-		Title = "GameStates",
+		Title = "GameStatesSystem",
 		IsOpen = self.debug_show,
 	})
 	if Slab.BeginComboBox("cb_gs", { Selected = self.world.current_id }) then
@@ -87,7 +78,7 @@ function GameStates:debug_update(dt)
 	Slab.EndWindow()
 end
 
-function GameStates:state_keypressed(key)
+function GameStatesSystem:state_keypressed(key)
 	if not love.keyboard.isDown("lshift") then
 		return
 	end
@@ -101,4 +92,4 @@ function GameStates:state_keypressed(key)
 	end
 end
 
-return GameStates
+return GameStatesSystem

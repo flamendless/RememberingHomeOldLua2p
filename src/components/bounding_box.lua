@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("bounding_box", function(c, x, y, w, h)
 	if not (type(x) == "number") then
 		error('Assertion failed: type(x) == "number"')

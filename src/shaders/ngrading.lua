@@ -24,18 +24,9 @@
 --]]
 ---------------------------------------------------------------------------
 
-local Resources = require("resources")
-local Settings = require("settings")
-local Shaders = require("shaders")
-
 local NGrading = class({
 	name = "NGrading",
 })
-
-local DevTools
-function NGrading.dev_init()
-	DevTools = require("devtools")
-end
 
 local default_setting = { linear = true, dpiscale = 1 }
 

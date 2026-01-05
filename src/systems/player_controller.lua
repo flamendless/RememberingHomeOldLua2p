@@ -1,19 +1,9 @@
-local Concord = require("modules.concord.concord")
-local Timer = require("modules.hump.timer")
-
-local Dialogues = require("dialogues")
-local Enums = require("enums")
-local Inputs = require("inputs")
-local Items = require("items")
-local PlayerSpawnPoints = require("data.player_spawn_points")
-local AssemPlayer = require("assemblages.player")
-
 local PlayerController = Concord.system({
 	pool = { "player_controller", "body", "collider" },
 })
 
 local function get_spawn_points(current_id, prev_id)
-	local d = PlayerSpawnPoints[current_id][prev_id or "default"]
+	local d = Data.PlayerSpawnPoints[current_id][prev_id or "default"]
 	if not d then
 		error("Assertion failed: d")
 	end
@@ -43,7 +33,7 @@ function PlayerController:on_toggle_equip_flashlight()
 	self.player:remove("multi_animation_data"):give(
 		"multi_animation_data",
 		Enums.anim_state.idle,
-		AssemPlayer.get_multi_anim_data(has_f, self.player.can_open_door)
+		Assemblages.Player.get_multi_anim_data(has_f, self.player.can_open_door)
 	)
 	local tag = (self.player.body.dir == -1) and Enums.anim_state.idle_left or Enums.anim_state.idle
 	self.player:give("change_animation_tag", tag, true)
@@ -59,7 +49,7 @@ function PlayerController:spawn_player(fn)
 		error("Player already exists")
 	end
 	local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
-	self.player = Concord.entity(self.world):assemble(AssemPlayer.room, x, y)
+	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
 	self.world:__flush()
 	if face == Enums.face_dir.left then
 		self.world:emit("anim_face_left", self.player)
@@ -190,8 +180,6 @@ function PlayerController:on_leave_interact_or_inventory()
 	self.player:remove("prev_can")
 	-- self.world:emit("remove_speech_bubble")
 end
-
-local Slab = require("modules.slab")
 
 local function view_number(id, value, sl)
 	Slab.Text(id)

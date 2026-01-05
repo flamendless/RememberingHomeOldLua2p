@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Enums = require("enums")
-
 Concord.component("target_text", function(c, text)
 	if not (type(text) == "string") then
 		error('Assertion failed: type(text) == "string"')

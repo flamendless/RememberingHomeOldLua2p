@@ -1,9 +1,7 @@
-local Items = {}
+local AsmItems = {}
 
-local ItemsInfo = require("items")
-
-function Items.flashlight(e)
-	local info = ItemsInfo.get_info("flashlight")
+function AsmItems.flashlight(e)
+	local info = Items.get_info("flashlight")
 	e:give("id", "item_flashlight")
 		:give("sprite", "flashlight")
 		:give("item", info.id, info.name, info.desc)
@@ -13,4 +11,4 @@ function Items.flashlight(e)
 		:give("ui_element")
 end
 
-return Items
+return AsmItems

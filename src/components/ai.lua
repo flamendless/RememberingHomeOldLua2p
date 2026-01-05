@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("line_of_sight", function(c, value)
 	if not (type(value) == "number") then
 		error('Assertion failed: type(value) == "number"')

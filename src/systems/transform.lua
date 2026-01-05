@@ -1,9 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
-local Enums = require("enums")
-local Helper = require("helper")
-local Utils = require("utils")
 local calc_e_controller_origin = Utils.math.calc_e_controller_origin
 
 local Transform = Concord.system({
@@ -258,9 +252,6 @@ function Transform:update(dt)
 		controller_origin.vec2.y = y
 	end
 end
-
-local Slab = require("modules.slab")
-local UIWrapper = require("ui_wrapper")
 
 function Transform:debug_update(dt)
 	if not self.debug_show then

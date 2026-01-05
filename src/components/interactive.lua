@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("interactive")
 Concord.component("locked")
 Concord.component("is_door")

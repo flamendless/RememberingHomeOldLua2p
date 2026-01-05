@@ -1,5 +1,3 @@
-local Shaders = require("shaders")
-
 local FilmGrain = class({
 	name = "FilmGrain",
 })

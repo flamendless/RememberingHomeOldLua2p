@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Inputs = require("inputs")
-
 local Typewriter = Concord.system({
 	pool = { "text", "reflowprint" },
 })

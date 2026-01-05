@@ -1,5 +1,3 @@
-local Palette = require("palette")
-
 local Notes = {}
 
 function Notes.bg(e, x, y, scale)

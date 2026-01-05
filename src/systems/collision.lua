@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Collision = Concord.system({
 	pool = { "pos", "collider" },
 	pool_circle = { "pos", "collider_circle" },

@@ -1,14 +1,7 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-
-local Generator = require("generator")
-local Palette = require("palette")
-
 local Fireflies = Concord.system({
 	pool = { "firefly" },
 })
 
-local Outside = require("assemblages.outside")
 local col_target = Palette.get_diffuse("firefly")
 
 function Fireflies:init(world)
@@ -26,7 +19,7 @@ function Fireflies:generate_fireflies()
 		local size = love.math.random(12, 20)
 		local points = Generator.path_points_fireflies(x, y, 64)
 		local e = Concord.entity(self.world)
-			:assemble(Outside.firefly, x, y, size, points)
+			:assemble(Assemblages.Outside.firefly, x, y, size, points)
 			:give("light_disabled")
 			:give("path", points, love.math.random(2, 6))
 			:give("path_speed", love.math.random(4, 8))
@@ -98,7 +91,6 @@ function Fireflies:stop_fireflies()
 	self.debug_move = false
 end
 
-local Slab = require("modules.slab")
 local flags = {
 	path = false,
 }

@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("movement")
 
 Concord.component("random_walk", function(c, dir, distance, x, y)

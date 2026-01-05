@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("bump")
 Concord.component("wall")
 Concord.component("ground")

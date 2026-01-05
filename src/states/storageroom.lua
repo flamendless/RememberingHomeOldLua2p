@@ -1,20 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Gamera = require("modules.gamera.gamera")
-local TLE = require("modules.tle.timeline")
-
-local Canvas = require("canvas")
-local Dialouges = require("dialogues")
-local Fade = require("fade")
-local Items = require("items")
-local Palette = require("palette")
-local Resources = require("resources")
-local Shaders = require("shaders")
-
-local Assemblages = {
-	Common = require("assemblages.common"),
-	StorageRoom = require("assemblages.storage_room"),
-}
-
 local StorageRoom = Concord.system()
 
 function StorageRoom:init(world)
@@ -89,7 +72,7 @@ end
 function StorageRoom:search_shelf(e, dialogues_t)
 	local can_search = false
 	if not can_search then
-		local t = tablex.copy(Dialouges.get("common", "cant_search_yet"))
+		local t = tablex.copy(Dialogues.get("common", "cant_search_yet"))
 		self.world:emit("spawn_dialogue_ex", t)
 	else
 		--TODO get item

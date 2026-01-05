@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Timer = require("modules.hump.timer")
-
 local Color = Concord.system({
 	pool = { "id", "color" },
 	pool_fade_to_black = { "color", "fade_to_black" },

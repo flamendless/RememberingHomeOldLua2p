@@ -1,5 +1,3 @@
-local Enum = require("modules.enum.enum")
-
 local Enums = {
 	bt = {},
 }

@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local DevTools
-
 local ECS = {}
 
 local components = {}
@@ -247,8 +243,6 @@ state_systems.LivingRoom = {
 	"animation_state",
 	"behavior_tree",
 	"enemy_controller",
-	"flashlight",
-	"animation_sync",
 }
 state_systems.TotallyDarkRoom = state_systems.LivingRoom
 
@@ -280,8 +274,6 @@ function ECS.load_systems(id, world, prev_id)
 	if not states[l_id] then
 		error(l_id .. " state system does not exist")
 	end
-
-	DevTools = require("devtools")
 
 	systems.id.debug_show = DevTools.flags.id
 	systems.id.debug_enabled = DevTools.flags.id

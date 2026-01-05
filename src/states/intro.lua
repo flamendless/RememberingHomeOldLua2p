@@ -1,28 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Gamera = require("modules.gamera.gamera")
-local Flux = require("modules.flux.flux")
-local Lume = require("modules.lume.lume")
-local TLE = require("modules.tle.timeline")
-
-local Animation = require("animation")
-local Canvas = require("canvas")
-local Fade = require("fade")
-local Inputs = require("inputs")
-local Resources = require("resources")
-local Palette = require("palette")
-local Save = require("save")
-local Shaders = require("shaders")
-
-local Assemblages = {
-	Common = require("assemblages.common"),
-	Intro = require("assemblages.intro"),
-	UI = require("assemblages.ui"),
-}
-
-local PS = {
-	RainIntro = require("particle_systems/rain_intro"),
-}
-
 local Intro = Concord.system({
 	pool_intro_text = { "intro_text" },
 	pool_light = { "intro_light" },
@@ -48,8 +23,8 @@ function Intro:state_setup()
 	Concord.entity(self.world):assemble(Assemblages.Common.bg, "intro")
 
 	self.world:emit("setup_particle_system", {
-		PS.RainIntro(Resources.data.images.rain_drop_tilted, 128, w),
-		PS.RainIntro(Resources.data.images.rain_drop_tilted2, 128, w),
+		ParticleSystems.RainIntro(Resources.data.images.rain_drop_tilted, 128, w),
+		ParticleSystems.RainIntro(Resources.data.images.rain_drop_tilted2, 128, w),
 	})
 	self.world:emit("setup_post_process", {
 		Shaders.NGrading("lut_afternoon"),

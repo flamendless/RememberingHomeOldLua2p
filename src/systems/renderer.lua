@@ -1,18 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
-local CustomList = require("ctor.custom_list")
-
-local Renderers = {
-	sprite = require("renderers.sprite"),
-	text = require("renderers.text"),
-	rect = require("renderers.rect"),
-	circle = require("renderers.circle"),
-	point = require("renderers.point"),
-
-	bounding_box = require("renderers.bounding_box"),
-}
-
 local Renderer = Concord.system({
 	pool_circle = { "circle", "draw_mode", "pos" },
 	pool_point = { "point", "pos" },
@@ -26,15 +11,15 @@ local Renderer = Concord.system({
 })
 
 local renderer_per_pool = {
-	pool_circle = Renderers.circle,
-	pool_point = Renderers.point,
-	pool_rect = Renderers.rect,
-	pool_text = Renderers.text,
-	pool_static_text = Renderers.text,
-	pool_bg = Renderers.sprite,
-	pool_sprite = Renderers.sprite,
+	pool_circle = Renderers.Circle,
+	pool_point = Renderers.Point,
+	pool_rect = Renderers.Rect,
+	pool_text = Renderers.Text,
+	pool_static_text = Renderers.Text,
+	pool_bg = Renderers.Sprite,
+	pool_sprite = Renderers.Sprite,
 
-	pool_layer = Renderers.sprite,
+	pool_layer = Renderers.Sprite,
 }
 
 for k in pairs(renderer_per_pool) do
@@ -43,7 +28,7 @@ for k in pairs(renderer_per_pool) do
 	end
 end
 
-Renderer.draw_bg = Renderers.sprite.render_bg
+Renderer.draw_bg = Renderers.Sprite.render_bg
 
 local function get_list(self, e_or_bool)
 	if e_or_bool then
@@ -70,7 +55,7 @@ end
 
 function Renderer:init(world)
 	self.world = world
-	self.list, self.list_ui = CustomList(), CustomList()
+	self.list, self.list_ui = Ctor.CustomList(), Ctor.CustomList()
 
 	self.list.__id = "list"
 	self.list_ui.__id = "list_ui"
@@ -81,9 +66,9 @@ function Renderer:init(world)
 		end
 	end
 
-	Renderers.sprite.debug_list = self.list
-	Renderers.bounding_box.list = self.list
-	Renderers.bounding_box.list_ui = self.list_ui
+	Renderers.Sprite.debug_list = self.list
+	Renderers.BB.list = self.list
+	Renderers.BB.list_ui = self.list_ui
 
 	for pool_id in pairs(self.__definition) do
 		local pool = self[pool_id]
@@ -113,10 +98,10 @@ end
 function Renderer:pool_on_added(pool, e)
 	local should_sort = false
 	if pool == self.pool_layer or pool == self.pool_sprite then
-		Renderers.sprite.setup_sprite(e)
+		Renderers.Sprite.setup_sprite(e)
 		should_sort = e.z_index ~= nil
 	elseif pool == self.pool_bg then
-		Renderers.sprite.set_bg(e)
+		Renderers.Sprite.set_bg(e)
 	elseif pool == self.pool_text and e.sdf then
 		if not e.font_sdf then
 			error("sdf must have font_sdf")
@@ -162,7 +147,7 @@ function Renderer:draw(is_ui)
 	end
 
 	if not is_ui then
-		Renderers.sprite.debug_batching()
+		Renderers.Sprite.debug_batching()
 	end
 
 	local list = get_list(self, is_ui)
@@ -189,8 +174,8 @@ function Renderer:draw(is_ui)
 				e.renderer.render(e)
 			end
 
-			if not is_ui and e.renderer == Renderers.sprite then
-				Renderers.sprite.debug_batching_update(e)
+			if not is_ui and e.renderer == Renderers.Sprite then
+				Renderers.Sprite.debug_batching_update(e)
 			end
 
 			if no_shader then
@@ -210,7 +195,7 @@ function Renderer:cleanup()
 	end
 end
 
-local Slab = require("modules.slab")
+
 
 local search = ""
 

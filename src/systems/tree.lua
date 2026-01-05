@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Tree = Concord.system({
 	pool_bg_tree = { "bg_tree", "pos", "!hspeed" },
 })

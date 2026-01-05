@@ -1,8 +1,4 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Gamera = require("modules.gamera.gamera")
 
-local Enums = require("enums")
 
 local Camera = Concord.system({
 	pool = { "camera" },
@@ -217,8 +213,7 @@ function Camera:hide_bars()
 	end)
 end
 
-local Slab = require("modules.slab")
-local Inputs = require("inputs")
+
 local format = string.format
 local flags = {
 	center = true,

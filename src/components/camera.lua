@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Gamera = require("modules.gamera.gamera")
-
 Concord.component("cullable", function(c)
 	c.value = false
 end)

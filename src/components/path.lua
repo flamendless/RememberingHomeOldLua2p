@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("path", function(c, points, max)
 	if not (type(points) == "table") then
 		error('Assertion failed: type(points) == "table"')

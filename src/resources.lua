@@ -1,7 +1,3 @@
-local Log = require("modules.log.log")
-
-local Cache = require("cache")
-
 local Resources = {
 	meta = {},
 	data = {},
@@ -19,7 +15,7 @@ mt.__index = function(t, i)
 	error(i .. " is invalid key for Resources:" .. id)
 end
 
-Resources.meta = require("data.resources_list")
+Resources.meta = Data.ResourcesList
 
 function Resources.get_meta(key)
 	if not (type(key) == "string") then

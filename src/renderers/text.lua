@@ -1,5 +1,3 @@
-local ReflowPrint = require("modules.reflowprint.reflowprint")
-
 local Text = {
 	id = "Text",
 }
@@ -43,15 +41,15 @@ function Text.render(e)
 			elseif textf then
 				local lines = current_font:getWidth(str) / textf.limit
 				lines = math.ceil(lines)
-				oy = current_font:getHeight(str) * 0.5 * lines
+				oy = current_font:getHeight() * 0.5 * lines
 			else
-				oy = current_font:getHeight(str) * 0.5
+				oy = current_font:getHeight() * 0.5
 			end
 		elseif transform.oy == 1 then
 			if static_text then
 				oy = static_text.obj:getHeight()
 			else
-				oy = current_font:getHeight(str)
+				oy = current_font:getHeight()
 			end
 		end
 	end

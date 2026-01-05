@@ -1,5 +1,3 @@
-local Bump = require("modules.bump.bump-niji")
-
 local meta = getmetatable(Bump.newWorld(128))
 local BumpStorage = setmetatable({ super = meta.__index }, meta)
 

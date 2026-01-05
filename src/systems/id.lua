@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
 local ID = Concord.system({
 	pool = { "id" },
 
@@ -45,9 +42,6 @@ function ID:init(world)
 		Log.info("Removed entity:", id or tostring(e))
 	end
 end
-
-local Slab = require("modules.slab")
-local Helper = require("helper")
 
 local flags = {
 	right_clicked = false,

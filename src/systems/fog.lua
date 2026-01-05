@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Fog = Concord.system({
 	pool = { "id", "fog", "noise_texture", "pos", "color", "transform" },
 })

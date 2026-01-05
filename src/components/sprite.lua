@@ -1,7 +1,4 @@
-local Concord = require("modules.concord.concord")
 
-local Image = require("image")
-local Resources = require("resources")
 
 Concord.component("bg")
 Concord.component("array_image")

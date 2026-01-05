@@ -1,5 +1,3 @@
-local Helper = require("helper")
-
 local Sprite = {
 	id = "Sprite",
 	e_bg = nil,
@@ -80,8 +78,6 @@ function Sprite.cleanup()
 
 	tablex.clear(Sprite.debug_batched)
 end
-
-local Slab = require("modules.slab")
 
 function Sprite.debug_batching()
 	for _, v in pairs(Sprite.debug_batched) do

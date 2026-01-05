@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("typewriter_timer")
 
 Concord.component("typewriter", function(c, every)

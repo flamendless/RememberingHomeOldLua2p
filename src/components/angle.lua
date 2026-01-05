@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("angle", function(c, radius, angle)
 	if not (type(radius) == "number") then
 		error('Assertion failed: type(radius) == "number"')

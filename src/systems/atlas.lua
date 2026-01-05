@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Atlas = Concord.system({
 	pool = { "atlas", "sprite" },
 })

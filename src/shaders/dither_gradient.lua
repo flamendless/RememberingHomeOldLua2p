@@ -1,6 +1,3 @@
-local Resources = require("resources")
-local Shaders = require("shaders")
-
 local DitherGradient = class({
 	name = "DitherGradient",
 })
@@ -73,8 +70,6 @@ function DitherGradient:update_values()
 	self.shader:send("u_contrast", self.contrast)
 	self.shader:send("u_offset", self.offset)
 end
-
-local Slab = require("modules.slab")
 
 local opt_slider_int = {
 	ReturnOnText = false,

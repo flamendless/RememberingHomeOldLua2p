@@ -1,14 +1,6 @@
-local Concord = require("modules.concord.concord")
-
-local Dialogues = require("dialogues")
-local ItemsList = require("items")
-local Resources = require("resources")
-
-local Items = Concord.system({
+local ItemsSystem = Concord.system({
 	pool = { "item" },
 })
-
-local AItems = require("assemblages.items")
 
 local list = {
 	flashlight = {
@@ -20,25 +12,25 @@ local list = {
 	},
 }
 
-function Items:init(world)
+function ItemsSystem:init(world)
 	self.world = world
 	self:initialize_entities()
 end
 
-function Items:create_items()
-	local t = ItemsList.get_acquired()
+function ItemsSystem:create_items()
+	local t = Items.get_acquired()
 	for _, v in ipairs(t) do
-		Concord.entity(self.world):assemble(AItems[v.id])
+		Concord.entity(self.world):assemble(Assemblages.Items[v.id])
 	end
 end
 
-function Items:destroy_items()
+function ItemsSystem:destroy_items()
 	for _, e in ipairs(self.pool) do
 		e:destroy()
 	end
 end
 
-function Items:initialize_entities()
+function ItemsSystem:initialize_entities()
 	if self.e_bg and self.e_prev then
 		return
 	end
@@ -53,7 +45,7 @@ function Items:initialize_entities()
 		Concord.entity(self.world):give("id", "item_preview"):give("color", { 1, 1, 1, 1 }):give("item_preview")
 end
 
-function Items:create_item_preview(bg_e, item_e)
+function ItemsSystem:create_item_preview(bg_e, item_e)
 	if not (bg_e.__isEntity and bg_e.cell_bg) then
 		error("Assertion failed: bg_e.__isEntity and bg_e.cell_bg")
 	end
@@ -81,7 +73,7 @@ function Items:create_item_preview(bg_e, item_e)
 		:remove("hidden")
 end
 
-function Items:item_response(dialogue_t, main, sub)
+function ItemsSystem:item_response(dialogue_t, main, sub)
 	if not (type(dialogue_t) == "table") then
 		error('Assertion failed: type(dialogue_t) == "table"')
 	end
@@ -96,7 +88,7 @@ function Items:item_response(dialogue_t, main, sub)
 	self.world:emit("spawn_dialogue", dialogue_t, main, sub)
 end
 
-function Items:on_item_use_with(item, other)
+function ItemsSystem:on_item_use_with(item, other)
 	if not (item.__isEntity and item.item) then
 		error("Assertion failed: item.__isEntity and item.item")
 	end
@@ -129,7 +121,7 @@ function Items:on_item_use_with(item, other)
 	end
 end
 
-function Items:on_item_equip(item_e)
+function ItemsSystem:on_item_equip(item_e)
 	if not (item_e.__isEntity and item_e.item) then
 		error("Assertion failed: item_e.__isEntity and item_e.item")
 	end
@@ -138,13 +130,13 @@ function Items:on_item_equip(item_e)
 		self.world:emit("set_system_to", "dialogues", true)
 		self.world:emit("set_system_to", "inventory", false)
 		if not item.has_batteries then
-			local dialogue_t = Dialogues.get("items", "no_batteries")
+			local dialogue_t = Dialogues.get("ItemsSystem", "no_batteries")
 			self.world:emit("spawn_dialogue_ex", dialogue_t, "dialogue_to_inventory")
 		else
-			ItemsList.toggle_equip(item.id)
+			Items.toggle_equip(item.id)
 			self.world:emit("on_toggle_equip_flashlight")
 		end
 	end
 end
 
-return Items
+return ItemsSystem

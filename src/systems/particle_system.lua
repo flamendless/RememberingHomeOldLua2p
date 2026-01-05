@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
 local ParticleSystem = Concord.system()
 
 function ParticleSystem:init(world)

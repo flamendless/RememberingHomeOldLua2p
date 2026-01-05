@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Entity = Concord.system()
 
 function Entity:hide_entity(e)

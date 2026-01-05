@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Interactive = Concord.system({
 	pool = { "id", "interactive", "collider", "bump" },
 })

@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("hover_emit")
 
 Concord.component("hoverable", function(c)

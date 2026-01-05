@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 --filled in systems/transform
 Concord.component("pos_vec2")
 

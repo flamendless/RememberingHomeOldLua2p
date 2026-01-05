@@ -1,6 +1,3 @@
-local Lily = require("modules.lily.lily")
-local Log = require("modules.log.log")
-
 local Preloader = {
 	percent = 0,
 }

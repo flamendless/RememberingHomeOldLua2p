@@ -1,5 +1,3 @@
-local Settings = require("settings")
-
 local Audio = {
 	volume = 100,
 }

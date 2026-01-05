@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 --TODO make parallax stop system signal?
 Concord.component("parallax_stop")
 

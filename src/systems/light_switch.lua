@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local LightSwitch = Concord.system({
 	pool_lights = { "id", "point_light", "pos", "diffuse", "light_switch_id" },
 })

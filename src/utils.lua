@@ -1,6 +1,3 @@
-local Bitser = require("modules.bitser.bitser")
-local Log = require("modules.log.log")
-
 local Utils = {
 	file = {},
 	serial = {},

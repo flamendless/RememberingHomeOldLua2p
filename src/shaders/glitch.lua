@@ -1,6 +1,3 @@
-local Resources = require("resources")
-local Shaders = require("shaders")
-
 local Glitch = class({
 	name = "Glitch",
 })
@@ -84,8 +81,6 @@ function Glitch:update(dt)
 		self.timer:update(dt)
 	end
 end
-
-local Slab = require("modules.slab")
 
 local opt_slider = {
 	ReturnOnText = false,

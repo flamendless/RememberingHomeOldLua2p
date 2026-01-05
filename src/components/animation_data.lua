@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Resources = require("resources")
-
 local c_anim_data = Concord.component("animation_data", function(c, data)
 	if not (type(data) == "table") then
 		error('Assertion failed: type(data) == "table"')

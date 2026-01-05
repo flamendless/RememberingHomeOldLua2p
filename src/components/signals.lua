@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local function ctor_single(c, signal, delay, ...)
 	if not (type(signal) == "string") then
 		error('Assertion failed: type(signal) == "string"')

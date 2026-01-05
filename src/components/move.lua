@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("move_by", function(c, x, y, duration, delay)
 	if not (type(x) == "number") then
 		error('Assertion failed: type(x) == "number"')

@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("outline")
 
 Concord.component("outline_val", function(c, size)

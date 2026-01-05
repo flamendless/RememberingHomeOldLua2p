@@ -1,18 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Gamera = require("modules.gamera.gamera")
-local TLE = require("modules.tle.timeline")
-
-local Canvas = require("canvas")
-local Fade = require("fade")
-local Palette = require("palette")
-local Resources = require("resources")
-local Shaders = require("shaders")
-
-local Assemblages = {
-	Common = require("assemblages.common"),
-	UtilityRoom = require("assemblages.utility_room"),
-}
-
 local UtilityRoom = Concord.system()
 
 function UtilityRoom:init(world)

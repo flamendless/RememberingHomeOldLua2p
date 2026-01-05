@@ -1,4 +1,4 @@
-local RendererUI = {
+local UI = {
 	id = "UI",
 	main_renderer = nil,
 }

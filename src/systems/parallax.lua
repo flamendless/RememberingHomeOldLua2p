@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Utils = require("utils")
-
 local Parallax = Concord.system({
 	pool = {
 		"parallax",
@@ -108,7 +104,6 @@ function Parallax:parallax_move_x(dt, dir)
 	end
 end
 
-local Slab = require("modules.slab")
 local is_running = true
 
 function Parallax:debug_update(dt)

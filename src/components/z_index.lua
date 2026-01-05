@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("z_index", function(c, z, sortable)
 	if not (type(z) == "number") then
 		error('Assertion failed: type(z) == "number"')

@@ -1,5 +1,3 @@
-local Shaders = require("shaders")
-
 local Dissolve = class({
 	name = "Dissolve",
 })

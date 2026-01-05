@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-
 local Move = Concord.system({
 	pool = { "pos", "move_by" },
 	pool_move_x = { "pos", "move_to_x" },

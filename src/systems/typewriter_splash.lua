@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Timer = require("modules.hump.timer")
-
 local TypewriterSplash = Concord.system({
 	pool = { "text", "target_text", "typewriter", "pos", "typewriter_timer" },
 })

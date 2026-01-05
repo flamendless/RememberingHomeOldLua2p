@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("ref_e_key", function(c, e)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")

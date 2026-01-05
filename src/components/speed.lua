@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("speed", function(c, vx, vy)
 	if vx then
 		if not (type(vx) == "number") then

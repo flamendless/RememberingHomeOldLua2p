@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("bg_tree", function(c, is_cover)
 	if is_cover then
 		if not (type(is_cover) == "boolean") then

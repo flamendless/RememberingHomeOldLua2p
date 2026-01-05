@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Enums = require("enums")
-
 Concord.component("usable_with_item")
 Concord.component("item_preview")
 Concord.component("room_item")

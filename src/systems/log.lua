@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Slab = require("modules.slab")
-
 local Log = Concord.system()
 
 function Log:init(world)

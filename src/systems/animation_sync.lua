@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Log = require("modules.log.log")
-
 local AnimationSync = Concord.system({
 	pool = { "anim_sync_with", "anim_sync_data" },
 })

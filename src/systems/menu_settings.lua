@@ -1,13 +1,4 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-local Slab = require("modules.slab")
 local Style = Slab.GetStyle()
-
-local Audio = require("audio")
-local Inputs = require("inputs")
-local Resources = require("resources")
-local Settings = require("settings")
-local WindowMode = require("window_mode")
 
 local MenuSettings = Concord.system({})
 

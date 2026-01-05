@@ -1,15 +1,6 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
-local Canvas = require("canvas")
-
-local DevTools
-
 local PostProcessing = Concord.system()
 
 function PostProcessing:init(world)
-	DevTools = require("devtools")
-
 	self.world = world
 	self.buffer1 = Canvas.create_main()
 	self.buffer2 = Canvas.create_main()
@@ -103,8 +94,6 @@ function PostProcessing:apply_post_process(canvas)
 
 	self.buffer1:render_n()
 end
-
-local Slab = require("modules.slab")
 
 function PostProcessing:debug_update(dt)
 	if not self.debug_show then

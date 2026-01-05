@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Resources = require("resources")
-
 local c_font = Concord.component("font", function(c, resource_id)
 	if not (type(resource_id) == "string") then
 		error('Assertion failed: type(resource_id) == "string"')

@@ -1,5 +1,3 @@
-local Palette = require("palette")
-
 local Common = {}
 
 function Common.bg(e, bg_id)

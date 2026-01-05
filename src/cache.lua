@@ -1,9 +1,6 @@
-local Log = require("modules.log.log")
-
 local Cache = {
 	entities = {},
 	calculated = {},
-
 	resources = {},
 }
 

@@ -1,7 +1,3 @@
-local Enums = require("enums")
-local Palette = require("palette")
-local Resources = require("resources")
-
 local Menu = {}
 
 function Menu.desk_fast(e, ww, wh)

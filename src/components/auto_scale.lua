@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("auto_scale", function(c, tw, th, is_proportion, is_floored)
 	if not (type(tw) == "number") then
 		error('Assertion failed: type(tw) == "number"')

@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("light_disabled")
 
 Concord.component("light_id", function(c, n)

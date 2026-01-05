@@ -1,5 +1,3 @@
-local Shaders = require("shaders")
-
 local Blur = class({
 	name = "Blur",
 })

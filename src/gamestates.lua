@@ -1,11 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-
-local Cache = require("cache")
-local ECS = require("ecs")
-local Preloader = require("preloader")
-local Resources = require("resources")
-
 local GameStates = {
 	type_id = "GameStates",
 	is_ready = false,
@@ -47,7 +39,7 @@ function GameStates.start(resources)
 	GameStates.world:emit("state_init")
 
 	local sc = ECS.get_state_class(GameStates.current_id)
-	local DevTools = require("devtools")
+
 	DevTools.camera = GameStates.world:getSystem(sc).camera
 end
 

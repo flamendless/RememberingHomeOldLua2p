@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Resources = require("resources")
-
 local c = Concord.component("multi_animation_data", function(c, first, data, modifier)
 	if not (type(first) == "string") then
 		error('Assertion failed: type(first) == "string"')

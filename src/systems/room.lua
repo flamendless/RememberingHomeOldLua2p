@@ -1,10 +1,4 @@
-local Concord = require("modules.concord.concord")
-
-local Enums = require("enums")
-
 local Room = Concord.system()
-
-local ARoom = require("assemblages.room")
 
 function Room:init(world)
 	self.world = world
@@ -147,7 +141,7 @@ function Room:create_grouped_items(group, group_t, frames, list)
 end
 
 function Room:create_room_bounds(w, h)
-	for _, v in pairs(ARoom) do
+	for _, v in pairs(Assemblages.Room) do
 		Concord.entity(self.world):assemble(v, w, h)
 	end
 end

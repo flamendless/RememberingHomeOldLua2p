@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("notification", function(c, id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')

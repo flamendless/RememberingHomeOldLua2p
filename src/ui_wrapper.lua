@@ -1,5 +1,3 @@
-local Slab = require("modules.slab")
-
 local UIWrapper = {}
 
 function UIWrapper.edit_number(id, value, is_int)

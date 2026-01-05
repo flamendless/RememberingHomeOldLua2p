@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-local Timer = require("modules.hump.timer")
-
 local RandomizeUV = Concord.system({
 	pool_room_item = { "room_item", "atlas" },
 })
@@ -77,8 +73,6 @@ function RandomizeUV:multi_randomize_uv(dur, chance)
 		end
 	end)
 end
-
-local Slab = require("modules.slab")
 
 function RandomizeUV:debug_update(dt)
 	if not self.debug_show then

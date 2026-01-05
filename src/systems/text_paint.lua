@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Lume = require("modules.lume.lume")
-
 local TextPaint = Concord.system({
 	pool_text = { "text_with_paint" },
 	pool_paint = { "paint" },

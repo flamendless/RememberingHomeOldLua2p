@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Helper = require("helper")
-
 local Culling = Concord.system({
 	pool_sprite = {
 		"cullable",
@@ -46,8 +42,6 @@ function Culling:update(dt)
 		cullable.value = not within
 	end
 end
-
-local Slab = require("modules.slab")
 
 function Culling:debug_update(dt)
 	if not self.debug_show then

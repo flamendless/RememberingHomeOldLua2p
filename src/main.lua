@@ -12,32 +12,11 @@ Start Date: Tue Mar 17 18:42:00 PST 2020
 
 --love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")
 --require("jit.p").start("lz")
-require("modules.batteries"):export()
+require("global")
 
-local Flux = require("modules.flux.flux")
-local Lily = require("modules.lily.lily")
-local Log = require("modules.log.log")
 Log.lovesave = true
-require("modules.sdf").mount()
-local Timer = require("modules.hump.timer")
-local TLE = require("modules.tle.timeline")
-
-local Audio = require("audio")
-local Config = require("config")
-local ErrorHandler = require("error_handler")
-love.errhand = ErrorHandler.callback
-local GameStates = require("gamestates")
-local Info = require("info")
-local Inputs = require("inputs")
-local LoadingScreen = require("loading_screen")
-local Save = require("save")
-local Settings = require("settings")
-local Shaders = require("shaders")
 Shaders.load_shaders()
-local WindowMode = require("window_mode")
-
-require("modules.strict")
-local DevTools = require("devtools")
+love.errhand = ErrorHandler.callback
 local font = love.graphics.newFont("res/fonts/Jamboree.ttf", 32)
 font:setFilter("nearest", "nearest")
 
@@ -70,11 +49,10 @@ function love.load()
 	-- GameStates.switch("StorageRoom")
 	-- GameStates.switch("UtilityRoom")
 	-- GameStates.switch("Kitchen")
-	-- GameStates.switch("LivingRoom")
-	GameStates.switch("TotallyDarkRoom")
+	GameStates.switch("LivingRoom")
+	-- GameStates.switch("TotallyDarkRoom")
 
 	DevTools.init()
-	Shaders.NGrading.dev_init()
 end
 
 function love.update(dt)

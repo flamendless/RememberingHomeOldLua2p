@@ -1,7 +1,3 @@
-local Log = require("modules.log.log")
-
-local Utils = require("utils")
-
 local Save = {
 	data = {
 		splash_done = false,
@@ -33,7 +29,7 @@ function Save.init()
 			Save.data = data
 			validate_checkpoints(data)
 		else
-			local error_msg = format(
+			local error_msg = string.format(
 				"Data integrity is not valid.\n\
 				Please do not modify the files: '%s' and '%s'.\n\
 				Please delete the files in '%s' and restart the game",

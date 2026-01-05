@@ -1,16 +1,8 @@
-local Concord = require("modules.concord")
-
-local Animation = require("animation")
-local Enums = require("enums")
-local Inputs = require("inputs")
-
 local Flashlight = Concord.system({
 	pool = { "id", "light_id", "point_light", "pos", "diffuse", "flashlight" },
 	pool_flashlight = { "id", "flashlight_light" },
 	pool_player = { "player_controller", "body", "collider" },
 })
-
-local Light = require("assemblages.light")
 
 local X_BALANCER = 4
 local END_LIGHT_CLOSENESS = 0.8 --how close should end light be to the start light
@@ -44,15 +36,15 @@ end
 
 function Flashlight:create_flashlight()
 	Concord.entity(self.world):assemble(
-		Light.fl_spot,
+		Assemblages.light.fl_spot,
 		self.player,
 		Animation.get_sync_data("flashlight")
 	)
 	:give("battery", 100)
 	:give("battery_state", Enums.battery_state.full)
 
-	self.start_l = Concord.entity(self.world):assemble(Light.fl_start)
-	self.end_l = Concord.entity(self.world):assemble(Light.fl_end)
+	self.start_l = Concord.entity(self.world):assemble(Assemblages.light.fl_start)
+	self.end_l = Concord.entity(self.world):assemble(Assemblages.light.fl_end)
 	table.insert(self.pool_flashlight, self.start_l)
 	table.insert(self.pool_flashlight, self.end_l)
 end
@@ -160,8 +152,6 @@ function Flashlight:update_battery(dt)
 end
 
 if DEV then
-	local Slab = require("modules.slab")
-	local UIWrapper = require("ui_wrapper")
 	local flags = {
 		pos = true,
 	}

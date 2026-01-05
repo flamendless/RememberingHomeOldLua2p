@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("clickable")
 
 Concord.component("on_click", function(c, mb, signal, ...)

@@ -1,28 +1,19 @@
-local Concord = require("modules.concord.concord")
-
-local Inputs = require("inputs")
-local ListByID = require("ctor.list_by_id")
-local NotesList = require("notes")
-local Palette = require("palette")
-local Resources = require("resources")
-
-local Notes = Concord.system({
+local NotesSystem = Concord.system({
 	pool_item = {
-		constructor = ListByID,
+		constructor = Ctor.ListByID,
 		id = "notes",
 	},
 })
 
-local AssemNotes = require("assemblages.notes")
 local c_on_hovered = Palette.get("note_on_hovered")
 
-function Notes:init(world)
+function NotesSystem:init(world)
 	self.world = world
 	self.is_open = false
 	self:setEnabled(false)
 end
 
-function Notes:open_notes()
+function NotesSystem:open_notes()
 	self.world:emit("set_system_to", "dialogues", false)
 	self.is_open = true
 	self.world:emit("set_post_process_effect", "Blur", true)
@@ -30,7 +21,7 @@ function Notes:open_notes()
 	self.world:emit("create_note_items")
 end
 
-function Notes:close_notes(not_close)
+function NotesSystem:close_notes(not_close)
 	if not_close then
 		if not (type(not_close) == "boolean") then
 			error('Assertion failed: type(not_close) == "boolean"')
@@ -52,7 +43,7 @@ function Notes:close_notes(not_close)
 	self.world:emit("inventory_to_notes", true)
 end
 
-function Notes:update(dt)
+function NotesSystem:update(dt)
 	if self.is_open then
 		if Inputs.pressed("inventory") then
 			Inputs.flush()
@@ -64,7 +55,7 @@ function Notes:update(dt)
 	end
 end
 
-function Notes:create_notes()
+function NotesSystem:create_notes()
 	local camera = self.world:getResource("camera")
 	local _, _, w, h = camera:getWindow()
 	local img = Resources.data.images.bg_notes
@@ -76,7 +67,7 @@ function Notes:create_notes()
 	local scale = math.min(w / iw, nh / ih)
 	local x, y = w * 0.5, h * 0.5
 
-	self.e_bg = Concord.entity(self.world):assemble(AssemNotes.bg, x, y, scale)
+	self.e_bg = Concord.entity(self.world):assemble(Assemblages.Notes.bg, x, y, scale)
 
 	local font = Resources.data.fonts.note_list
 	local fh = font:getHeight(" ")
@@ -89,7 +80,7 @@ function Notes:create_notes()
 	self.rows_per_page = rows
 	self.world:emit("create_list_group", "notes", true, rows * 2)
 
-	local acquired_notes = NotesList.get_acquired()
+	local acquired_notes = Notes.get_acquired()
 	for i, note in ipairs(acquired_notes) do
 		local index = (i - 1) % rows
 		local offset_x = (i - 1) * 2
@@ -104,14 +95,14 @@ function Notes:create_notes()
 			ox = 1
 		end
 		local ny = row_y + row_h * index + padq
-		Concord.entity(self.world):assemble(AssemNotes.text, i, note.title, nx, ny, ox)
+		Concord.entity(self.world):assemble(Assemblages.Notes.text, i, note.title, nx, ny, ox)
 	end
 
-	self.e_cursor = Concord.entity(self.world):assemble(AssemNotes.cursor)
+	self.e_cursor = Concord.entity(self.world):assemble(Assemblages.Notes.cursor)
 	self.world:emit("create_notes_key", "notes")
 end
 
-Notes["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
+NotesSystem["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
 	if not (self.pool_item:has(e_hovered)) then
 		error("Assertion failed: self.pool_item:has(e_hovered)")
 	end
@@ -127,7 +118,7 @@ Notes["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
 	self.world:emit("lerp_color", e_hovered, c_on_hovered, 0.25, "circin")
 end
 
-Notes["on_list_cursor_remove_" .. "notes"] = function(self, e_hovered)
+NotesSystem["on_list_cursor_remove_" .. "notes"] = function(self, e_hovered)
 	if not (self.pool_item:has(e_hovered)) then
 		error("Assertion failed: self.pool_item:has(e_hovered)")
 	end
@@ -135,8 +126,8 @@ Notes["on_list_cursor_remove_" .. "notes"] = function(self, e_hovered)
 	self.world:emit("lerp_color", e_hovered, e_hovered.color.original, 0.25, "circin")
 end
 
-Notes["on_list_item_interact_" .. "notes"] = function(self, e_hovered)
+NotesSystem["on_list_item_interact_" .. "notes"] = function(self, e_hovered)
 	print(e_hovered.id.value)
 end
 
-return Notes
+return NotesSystem

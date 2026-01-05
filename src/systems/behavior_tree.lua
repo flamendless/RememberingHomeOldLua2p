@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Enums = require("enums")
-
 local BehaviorTree = Concord.system({
 	pool = { "id", "behavior_tree" },
 })
@@ -21,8 +17,6 @@ function BehaviorTree:update(dt)
 		bt.result = bt.beehive(self.world, e)
 	end
 end
-
-local Slab = require("modules.slab")
 
 function BehaviorTree:debug_update()
 	if not self.debug_show then

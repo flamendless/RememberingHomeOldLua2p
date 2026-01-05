@@ -1,7 +1,3 @@
-local Concord = require("modules.concord")
-
-local Log = require("modules.log.log")
-
 local Flies = Concord.system({
 	pool = { "id", "bug", "fly" },
 })

@@ -1,16 +1,11 @@
-local Palette = require("palette")
-local Lights = require("data.lights")
-
 local LivingRoom = {
 	lights = {},
 }
 
-local Light = require("assemblages.light")
-
-local pl = Lights.living_room.pl
+local pl = Data.Lights.living_room.pl
 for i, pos in ipairs(pl.pos) do
 	LivingRoom.lights["pl" .. i] = function(e)
-		e:assemble(Light.point, pos.x, pos.y, pl.lz, pl.ls, Palette.get_diffuse("living_room_side"))
+		e:assemble(Assemblages.Light.point, pos.x, pos.y, pl.lz, pl.ls, Palette.get_diffuse("living_room_side"))
 			:give("id", "pl" .. i)
 			:give("light_group", "side_pl")
 			:give("light_switch_id", "top")
@@ -18,10 +13,10 @@ for i, pos in ipairs(pl.pos) do
 	end
 end
 
-local pl_mid = Lights.living_room.pl_mid
+local pl_mid = Data.Lights.living_room.pl_mid
 for i, pos in ipairs(pl_mid.pos) do
 	LivingRoom.lights["pl_mid" .. i] = function(e)
-		e:assemble(Light.point, pos.x, pos.y, pl_mid.lz, pl_mid.ls, Palette.get_diffuse("living_room_mid_pl"))
+		e:assemble(Assemblages.Light.point, pos.x, pos.y, pl_mid.lz, pl_mid.ls, Palette.get_diffuse("living_room_mid_pl"))
 			:give("id", "pl_mid" .. i)
 			:give("light_group", "pl_mid")
 			:give("light_switch_id", "bottom")

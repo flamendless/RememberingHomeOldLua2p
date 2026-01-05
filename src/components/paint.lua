@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("paint")
 
 local c_twp = Concord.component("text_with_paint", function(c)

@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-
 local Depth = Concord.system({
 	pool = { "depth_zoom", "z_index" },
 })

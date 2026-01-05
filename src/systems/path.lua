@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Path = Concord.system({
 	pool = { "path", "pos" },
 	pool_move = { "path", "pos", "path_move", "path_speed" },
@@ -96,7 +94,6 @@ function Path:update(dt)
 	end
 end
 
-local Slab = require("modules.slab")
 local flags = {
 	path = true,
 	bezier = false,

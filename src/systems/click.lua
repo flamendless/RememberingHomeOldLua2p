@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Helper = require("helper")
-
 local Click = Concord.system({
 	pool = { "bounding_box", "clickable", "on_click" },
 	pool_ui = { "bounding_box", "clickable", "on_click", "ui_element" },

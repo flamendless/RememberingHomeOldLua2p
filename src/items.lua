@@ -1,15 +1,12 @@
-local Log = require("modules.log.log")
-
 local Items = {}
 
-local list = require("data.items")
 local acquired = {}
 
 local function get_item(id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not list[id] then
+	if not Data.Items[id] then
 		error("no " .. id .. " in data.items")
 	end
 	for _, item in ipairs(acquired) do
@@ -17,14 +14,14 @@ local function get_item(id)
 			return item
 		end
 	end
-	return nil
+	assert(false, "should not be reached")
 end
 
 function Items.add(id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not list[id] then
+	if not Data.Items[id] then
 		error("no " .. id .. " in data.items")
 	end
 	if not (Items.has(id) == false) then
@@ -38,10 +35,10 @@ function Items.get_info(id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not list[id] then
-		error("Assertion failed: list[id]")
+	if not Data.Items[id] then
+		error("Assertion failed: Data.items[id]")
 	end
-	return list[id]
+	return Data.Items[id]
 end
 
 function Items.get_acquired()
@@ -52,7 +49,7 @@ function Items.has(id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not list[id] then
+	if not Data.Items[id] then
 		error("no " .. id .. " in data.items")
 	end
 	local has = get_item(id)
@@ -63,7 +60,7 @@ function Items.toggle_equip(id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not list[id] then
+	if not Data.Items[id] then
 		error("no " .. id .. " in data.items")
 	end
 	local item = get_item(id)
@@ -74,7 +71,7 @@ function Items.is_equipped(id)
 	if not (type(id) == "string") then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not list[id] then
+	if not Data.Items[id] then
 		error("no " .. id .. " in data.items")
 	end
 	local item = get_item(id)

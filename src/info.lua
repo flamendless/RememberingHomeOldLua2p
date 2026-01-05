@@ -1,7 +1,3 @@
-local Log = require("modules.log.log")
-
-local Utils = require("utils")
-
 local Info = {
 	data = {},
 	options = {},

@@ -1,7 +1,3 @@
-local Animation = require("animation")
-local Enums = require("enums")
-local Palette = require("palette")
-
 local UI = {}
 
 function UI.ui_text(e, text, resource_id, x, y)

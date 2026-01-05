@@ -1,5 +1,3 @@
-local Settings = require("settings")
-
 local maps = {
 	--map_wasd
 	{
@@ -50,7 +48,6 @@ local Inputs = {
 }
 local map_names = { "WASD", "Arrows" }
 
-local Slab = require("modules.slab")
 Inputs.dev_map = {
 	m = "play",
 	k = "camera_down",

@@ -1,8 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Gamera = require("modules.gamera.gamera")
-
-local Helper = require("helper")
-
 local BoundingBox = Concord.system({
 	pool = { "bounding_box", "pos" },
 })
@@ -45,8 +40,6 @@ function BoundingBox:on_camera_move(camera)
 		box.screen_pos.y = by
 	end
 end
-
-local Slab = require("modules.slab")
 
 function BoundingBox:debug_update(dt)
 	if not self.debug_show then

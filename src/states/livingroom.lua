@@ -1,19 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Gamera = require("modules.gamera.gamera")
-local TLE = require("modules.tle.timeline")
-
-local Canvas = require("canvas")
-local Enums = require("enums")
-local Fade = require("fade")
-local Palette = require("palette")
-local Resources = require("resources")
-local Shaders = require("shaders")
-
-local Assemblages = {
-	Common = require("assemblages.common"),
-	LivingRoom = require("assemblages.living_room"),
-}
-
 local LivingRoom = Concord.system()
 
 function LivingRoom:init(world)

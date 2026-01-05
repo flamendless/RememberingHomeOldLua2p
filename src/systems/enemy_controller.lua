@@ -1,9 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Enemy = require("assemblages.enemy")
-local Enums = require("enums")
-local bt_enemy = Enums.bt.enemy
-
 local EnemyController = Concord.system({
 	pool = { "id", "enemy_controller", "behavior_tree" },
 })
@@ -37,7 +31,7 @@ function EnemyController:spawn_enemy(enemy_type, x, y)
 	if not (type(y) == "number") then
 		error('Assertion failed: type(y) == "number"')
 	end
-	Concord.entity(self.world):assemble(Enemy.base, enemy_type, x, y)
+	Concord.entity(self.world):assemble(Assemblages.Enemy.base, enemy_type, x, y)
 end
 
 function EnemyController:update(dt)
@@ -46,7 +40,7 @@ function EnemyController:update(dt)
 		body.dx = 0
 
 		local current_node = e.behavior_tree.current_node
-		if current_node == bt_enemy.walk then
+		if current_node == Enums.bt.enemy.walk then
 			local random_walk = e.random_walk
 			if not random_walk then
 				local line_of_sight = e.line_of_sight.value
@@ -55,7 +49,7 @@ function EnemyController:update(dt)
 				local pos = e.pos
 				e:give("random_walk", dir, distance, pos.x, pos.y)
 			end
-		elseif current_node == bt_enemy.chase then
+		elseif current_node == Enums.bt.enemy.chase then
 			local other_e = self.world:getEntityByKey(e.ref_e_key.value)
 			local collide_with = e.collide_with
 			if (not collide_with) or (collide_with.value ~= other_e.key.value) then
@@ -72,8 +66,6 @@ function EnemyController:update(dt)
 		self.world:emit("update_speed_data", e, current_node or anim_name)
 	end
 end
-
-local Slab = require("modules.slab")
 
 local cb_line_of_sight = true
 

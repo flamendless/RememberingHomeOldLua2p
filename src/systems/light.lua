@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Enums = require("enums")
-
 local Light = Concord.system({
 	pool = { "id", "pos", "transform", "color", "light", "sprite" },
 })
@@ -205,8 +201,6 @@ function Light:cleanup()
 		self.light_map:release()
 	end
 end
-
-local Slab = require("modules.slab")
 
 function Light:debug_update(dt)
 	if not self.debug_show then

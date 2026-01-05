@@ -1,7 +1,3 @@
-local Concord = require("modules.concord.concord")
-
-local Shaders = require("shaders")
-
 --TODO maybe this is not needed anymore
 Concord.component("no_shader")
 

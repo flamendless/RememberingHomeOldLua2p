@@ -1,29 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Flux = require("modules.flux.flux")
-local Gamera = require("modules.gamera.gamera")
-local Log = require("modules.log.log")
-local Timer = require("modules.hump.timer")
-local TLE = require("modules.tle.timeline")
-
-local Canvas = require("canvas")
-local Fade = require("fade")
-local Inputs = require("inputs")
-local Items = require("items")
-local Palette = require("palette")
-local Resources = require("resources")
-local Save = require("save")
-local Shaders = require("shaders")
-
-local Assemblages = {
-	Common = require("assemblages.common"),
-	Light = require("assemblages.light"),
-	Outside = require("assemblages.outside"),
-}
-
-local ParticleSystems = {
-	RainOutside = require("particle_systems/rain_outside"),
-}
-
 local Outside = Concord.system({
 	pool_splashes = { "splashes" },
 	pool_bump = { "bump" },
@@ -400,6 +374,9 @@ function Outside:check_backdoor(e, dialogues_t)
 	if not (e.__isEntity and e.dialogue_meta) then
 		error("Assertion failed: e.__isEntity and e.dialogue_meta")
 	end
+	if not (e.__isEntity and e.player) then
+		error("Assertion failed: e.player")
+	end
 	if not (type(dialogues_t) == "table") then
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
@@ -409,9 +386,9 @@ function Outside:check_backdoor(e, dialogues_t)
 		self.world:emit("spawn_dialogue_ex", t)
 	else
 		self.world:emit("wait_dialogue", true)
-		self.world:emit("toggle_component", e_player, "can_move", true)
-		self.world:emit("toggle_component", e_player, "can_interact", true)
-		self.world:emit("anim_open_door", e_player)
+		self.world:emit("toggle_component", e, "can_move", true)
+		self.world:emit("toggle_component", e, "can_interact", true)
+		self.world:emit("anim_open_door", e)
 		self.world:emit("switch_state", "StorageRoom", 3, 2)
 	end
 end

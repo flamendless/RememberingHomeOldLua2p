@@ -1,11 +1,5 @@
-local Concord = require("modules.concord.concord")
-
-local BumpStorage = require("ctor.bump_storage")
-local Colliders = require("data.colliders")
-local Enums = require("enums")
-
 local BumpCollision = Concord.system({
-	pool = { constructor = BumpStorage },
+	pool = { constructor = Ctor.BumpStorage },
 })
 
 local function get_query_rect(self)
@@ -166,7 +160,7 @@ function BumpCollision:update_collider(e)
 	if id.value ~= "enemy" then
 		return
 	end
-	local new_collider = Colliders[id.value]
+	local new_collider = Data.Colliders[id.value]
 	local sub_id = id.sub_id
 	if sub_id then
 		new_collider = new_collider[sub_id]
@@ -201,7 +195,6 @@ function BumpCollision:update_collider(e)
 	self.pool:update(e, pos.x, pos.y, w, h)
 end
 
-local Slab = require("modules.slab")
 local flags = {
 	ids = false,
 	bodies = true,

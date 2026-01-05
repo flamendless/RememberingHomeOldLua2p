@@ -1,10 +1,3 @@
-local Concord = require("modules.concord.concord")
-local Lume = require("modules.lume.lume")
-local Timer = require("modules.hump.timer")
-
-local Canvas = require("canvas")
-local Shaders = require("shaders")
-
 local DeferredLighting = Concord.system({
 	pool = { "id", "point_light", "pos", "diffuse" },
 	pool_disabled = {
@@ -363,9 +356,6 @@ end
 function DeferredLighting:cleanup()
 	self.timer:clear()
 end
-
-local Slab = require("modules.slab")
-local UIWrapper = require("ui_wrapper")
 
 local flags = {
 	ambiance = true,

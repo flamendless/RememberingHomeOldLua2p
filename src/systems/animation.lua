@@ -1,10 +1,3 @@
-local Anim8 = require("modules.anim8.anim8")
-local Concord = require("modules.concord.concord")
-local Log = require("modules.log.log")
-local Timer = require("modules.hump.timer")
-
-local Enums = require("enums")
-
 local Animation = Concord.system({
 	pool = { "animation", "animation_data" },
 	pool_multi = { "multi_animation_data", "animation" },
@@ -293,7 +286,6 @@ function Animation:anim_pause_at_end(e, signal)
 	end
 end
 
-local Slab = require("modules.slab")
 local selected
 local selected_e
 local selected_anim

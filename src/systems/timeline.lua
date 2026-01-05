@@ -1,6 +1,3 @@
-local Concord = require("modules.concord.concord")
-local TLE = require("modules.tle.timeline")
-
 local Timeline = Concord.system()
 
 function Timeline:init(world)

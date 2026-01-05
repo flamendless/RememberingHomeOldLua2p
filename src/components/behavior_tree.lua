@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 Concord.component("behavior_tree", function(c, beehive, nodes)
 	if not (type(beehive) == "function") then
 		error('Assertion failed: type(beehive) == "function"')

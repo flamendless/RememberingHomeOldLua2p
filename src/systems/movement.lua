@@ -1,5 +1,3 @@
-local Concord = require("modules.concord.concord")
-
 local Movement = Concord.system({
 	pool = { "speed", "gravity", "body", "movement", "can_move" },
 	pool_walk = { "speed", "body", "movement", "can_move", "random_walk" },
@@ -48,7 +46,6 @@ function Movement:update_speed_data(e, anim_name)
 	speed.vx = mathx.lerp(speed.vx, new_speed.x, 0.5)
 end
 
-local Slab = require("modules.slab")
 local flags = {
 	gravity = true,
 }

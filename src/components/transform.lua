@@ -1,4 +1,4 @@
-local Concord = require("modules.concord.concord")
+
 
 Concord.component("transform", function(c, rotation, sx, sy, ox, oy, kx, ky)
 	if rotation then
