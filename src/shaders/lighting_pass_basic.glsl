@@ -40,7 +40,8 @@ vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc)
 
 	vec3 lpos = vec3(u_ndc_p, u_w_p.z);
 
-	if ((length(tl)/u_scale > 1.0) || (dot(-l, u_dir) < u_angle)) discard;
+	// thanks to @Jookia over at Discord!
+	if ((ld / u_scale > 1.0) || (u_angle != 0 && (dot(-l, u_dir) < u_angle))) discard;
 	c = c * l.z * max(1.0 - ld * ld, 0.0) * u_diff;
 
 	return vec4(c, 1.0);
