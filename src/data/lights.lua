@@ -48,7 +48,7 @@ Lights.kitchen = {
 
 Lights.living_room = {
 	pl = {
-		lz = 64,
+		lz = 90,
 		ls = 128,
 		fade = 8,
 		pos = {

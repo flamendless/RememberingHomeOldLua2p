@@ -12,7 +12,7 @@ local Flashlight = Concord.system({
 
 local Light = require("assemblages.light")
 
-local min_light_power = 24
+local min_light_power = 48
 local consumption_rate = 0.1
 
 function Flashlight:init(world)
@@ -23,6 +23,7 @@ function Flashlight:init(world)
 		if not (self.flashlight == nil) then
 			error("Flashlight was already added")
 		end
+
 		self.flashlight = e
 		e:give("d_light_flicker", 0.5, 0.75, 0.25)
 			:give("on_d_light_flicker_during", "flicker_sync", 0, self.flashlight, self.pool_flashlight)
@@ -59,8 +60,9 @@ function Flashlight:update(dt)
 		return
 	end
 
+	self:update_flashlight_pos()
+
 	if not self.flashlight.light_disabled then
-		self:update_flashlight()
 		self:update_battery(dt)
 	end
 
@@ -68,10 +70,12 @@ function Flashlight:update(dt)
 		local pl = self.start_l.point_light
 		if self.flashlight.light_disabled then
 			self.flashlight:remove("light_disabled")
+			-- self.start_l:remove("light_disabled")
 			self.end_l:remove("light_disabled")
 			pl.value = pl.orig_value
 		else
 			self.flashlight:give("light_disabled")
+			-- self.start_l:give("light_disabled")
 			self.end_l:give("light_disabled")
 			pl.value = min_light_power
 		end
@@ -83,7 +87,7 @@ function Flashlight:update(dt)
 	self.world:emit("update_light_pos", self.end_l)
 end
 
-function Flashlight:update_flashlight()
+function Flashlight:update_flashlight_pos()
 	local body = self.player.body
 	local p_pos = self.player.pos
 	local col = self.player.collider
@@ -99,11 +103,11 @@ function Flashlight:update_flashlight()
 	f_pos.x = bx + offset.x * fd[1]
 	f_pos.y = by + offset.y
 
-	local strength = self.flashlight.point_light.value
 	local s_pos = self.start_l.pos
 	s_pos.x = f_pos.x
 	s_pos.y = f_pos.y
 
+	local strength = self.flashlight.point_light.value
 	local e_pos = self.end_l.pos
 	e_pos.x = f_pos.x + strength * fd[1] * fd[4]
 	e_pos.y = f_pos.y
@@ -148,56 +152,58 @@ function Flashlight:update_battery(dt)
 	end
 end
 
-local Slab = require("modules.slab")
-local UIWrapper = require("ui_wrapper")
-local flags = {
-	pos = false,
-}
+if DEV then
+	local Slab = require("modules.slab")
+	local UIWrapper = require("ui_wrapper")
+	local flags = {
+		pos = true,
+	}
 
-function Flashlight:debug_update(dt)
-	if not self.debug_show then
-		return
-	end
-	self.debug_show = Slab.BeginWindow("fl", {
-		Title = "Flashlight",
-		IsOpen = self.debug_show,
-	})
-	if Slab.CheckBox(flags.pos, "draw") then
-		flags.pos = not flags.pos
+	function Flashlight:debug_update(dt)
+		if not self.debug_show then
+			return
+		end
+		self.debug_show = Slab.BeginWindow("fl", {
+			Title = "Flashlight",
+			IsOpen = self.debug_show,
+		})
+		if Slab.CheckBox(flags.pos, "draw") then
+			flags.pos = not flags.pos
+		end
+
+		local battery = self.flashlight and self.flashlight.battery
+		if battery then
+			Slab.Text("state: " .. self.flashlight.battery_state.value)
+			Slab.Text("battery")
+			Slab.SameLine()
+			UIWrapper.edit_range("battery", battery.pct, 0, 100)
+			consumption_rate = UIWrapper.edit_range("consumption rate", consumption_rate, 0, 10)
+			local pl = self.flashlight.point_light
+			UIWrapper.edit_range("power", pl.value, 0, pl.orig_value)
+
+			local fpos = self.player.fl_spawn_offset
+			fpos.x = UIWrapper.edit_number("spawn ox", fpos.x, true)
+			fpos.y = UIWrapper.edit_number("spawn oy", fpos.y, true)
+		end
+		Slab.EndWindow()
 	end
 
-	local battery = self.flashlight and self.flashlight.battery
-	if battery then
-		Slab.Text("state: " .. self.flashlight.battery_state.value)
-		Slab.Text("battery")
-		Slab.SameLine()
-		UIWrapper.edit_range("battery", battery.pct, 0, 100)
-		consumption_rate = UIWrapper.edit_range("consumption rate", consumption_rate, 0, 10)
-		local pl = self.flashlight.point_light
-		UIWrapper.edit_range("power", pl.value, 0, pl.orig_value)
-
-		local fpos = self.player.fl_spawn_offset
-		fpos.x = UIWrapper.edit_number("x", fpos.x, true)
-		fpos.y = UIWrapper.edit_number("y", fpos.y, true)
+	function Flashlight:debug_draw()
+		if not flags.pos then
+			return
+		end
+		local p_pos = self.player.pos
+		local col = self.player.collider
+		local offset = self.player.fl_spawn_offset
+		local ldir = self.flashlight.light_dir
+		local fd = ldir.value
+		local bx = p_pos.x + col.w_h
+		local by = p_pos.y + col.h_h
+		local fx = bx + offset.x * fd[1]
+		local fy = by + offset.y
+		love.graphics.setColor(1, 0, 0, 1)
+		love.graphics.circle("fill", fx, fy, 2)
 	end
-	Slab.EndWindow()
-end
-
-function Flashlight:debug_draw()
-	if not flags.pos then
-		return
-	end
-	local p_pos = self.player.pos
-	local col = self.player.collider
-	local offset = self.player.fl_spawn_offset
-	local ldir = self.flashlight.light_dir
-	local fd = ldir.value
-	local bx = p_pos.x + col.w_h
-	local by = p_pos.y + col.h_h
-	local fx = bx + offset.x * fd[1]
-	local fy = by + offset.y
-	love.graphics.setColor(1, 0, 0, 1)
-	love.graphics.circle("fill", fx, fy, 2)
 end
 
 return Flashlight

@@ -9,7 +9,7 @@ local DevTools = {
 	pause = false,
 	flags = {
 		animation = false,
-		deferred_lighting = false,
+		deferred_lighting = true,
 		bounding_box = false,
 		bump_collision = true,
 		camera = true,
@@ -26,7 +26,7 @@ local DevTools = {
 		render_sprite = false,
 		transform = false,
 		randomize_uv = false,
-		behavior_tree = true,
+		behavior_tree = false,
 	},
 }
 

@@ -443,6 +443,7 @@ function DeferredLighting:debug_edit(pool, group_id)
 		if group_id and i ~= 1 then
 			return
 		end
+
 		local id = e.id.value
 		if Slab.BeginTree(id, { Title = id }) then
 			Slab.Indent()
@@ -509,6 +510,7 @@ function DeferredLighting:debug_edit(pool, group_id)
 				if prop_diff then
 					self:update_light_diff_group(group_id, e, prop_diff)
 				end
+
 			else
 				if b_x or b_y or b_z or b_v then
 					self:update_light_pos(e)
