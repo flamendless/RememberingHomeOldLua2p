@@ -109,13 +109,16 @@ function Intro:state_setup()
 end
 
 function Intro:state_init()
+	Fade.set_color({ 0, 0, 0, 1 })
 	local img_bg = Resources.data.images.intro
 	local ww = love.graphics.getWidth()
 	local w, h = img_bg:getDimensions()
 
 	self.world:emit("start_timeline", function()
 		self.world:emit("set_ambiance", { 0.5, 0.5, 0.5 })
-		self.world:emit("pause_timeline")
+		TLE.Event.Wait(1)
+		Fade.fade_in(nil, 2, 1)
+
 
 		--how many times we will scale/move the camera for this cutscene
 		local ambient_color = Palette.get_diffuse("ambiance_intro")
