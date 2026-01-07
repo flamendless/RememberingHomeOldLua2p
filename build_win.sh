@@ -1,13 +1,13 @@
 #!/bin/bash
 
-love_title=GoingHomeRevisited.love
+love_title=RememberingHome.love
 dir_source=src
 dir_output=output_dev
 file_makelove=makelove.toml
 cmd="/mnt/c/Windows/System32/cmd.exe"
 path_love="C:\Program Files\LOVE"
-path_game='Z:\home\flamendless\GoingHomeRevisited\release\love\'${love_title}
-path_prof_viewer="Z:\home\flamendless\GoingHomeRevisited\modules\jprof"
+path_game='Z:\home\flamendless\RememberingHome\release\love\'${love_title}
+path_prof_viewer="Z:\home\flamendless\RememberingHome\modules\jprof"
 echo $path_game
 
 function win32()
@@ -30,7 +30,7 @@ function love_only()
 
 function prof_viewer()
 {
-	$cmd /c "cd $path_love & lovec.exe $path_prof_viewer goinghomerevisited prof.mpack"
+	$cmd /c "cd $path_love & lovec.exe $path_prof_viewer rememberinghome prof.mpack"
 }
 
 function run()

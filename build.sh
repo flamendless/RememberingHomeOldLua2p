@@ -14,7 +14,7 @@ dir_output=output_dev
 dir_source=src
 
 dir_sub=(assemblages components shaders states systems)
-appdata=~/.local/share/love/goinghomerevisited
+appdata=~/.local/share/love/rememberinghome
 
 meta_exclude_modules=(
 	spec docs example test love-sdf-text-testing rockspecs main.lua .travis
@@ -194,7 +194,7 @@ function prof_viewer()
 		./build_win.sh prof_viewer
 	else
 		echo "This is Linux"
-		love modules/jprof goinghomerevisited prof.mpack
+		love modules/jprof rememberinghome prof.mpack
 	fi
 }
 

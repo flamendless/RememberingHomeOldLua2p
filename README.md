@@ -6,7 +6,7 @@ is private for now.
 
 ---
 
-# Going Home: Revisited
+# Remembering Home
 
 ![](https://img.shields.io/badge/lua-on%20development-green.svg)
 ![Lua](https://img.shields.io/badge/Lua-JIT%2C%205.1-blue.svg)

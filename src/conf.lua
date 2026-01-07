@@ -36,14 +36,14 @@ function love.conf(t)
 	t.modules.video = false
 	t.modules.window = true
 
-	t.window.title = "Going Home: Revisited"
+	t.window.title = "Remembering Home"
 	t.window.width = 1024
 	t.window.height = 640
 	t.window.resizable = false
 	t.window.icon = "res/icon.png"
 
-	t.identity = "goinghomerevisited"
-	t.version = "11.3"
+	t.identity = "rememberinghome"
+	t.version = "11.5"
 
 	t.console = true
 end

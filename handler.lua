@@ -64,7 +64,7 @@ elseif args[1] == "prof" then
 	_PROF = true
 end
 
-_IDENTITY = toLua("goinghomerevisited")
+_IDENTITY = toLua("rememberinghome")
 _LOVE_VERSION = toLua("11.3")
 _GAME_VERSION = toLua("0.0.1")
 _COMMIT_VERSION = toLua(args[2])
@@ -77,7 +77,7 @@ _GLSL_NORMALS = false
 
 _OS = "Linux"
 _PLATFORM = "desktop" --mobile
-_GAME_TITLE  = toLua("Going Home: Revisited")
+_GAME_TITLE  = toLua("Remembering Home")
 _GAME_SIZE = {x = 1024, y = 640}
 _GAME_BASE_SIZE = toLua({x = 128, y = 32})
 
@@ -108,7 +108,7 @@ else
 end
 
 _EMAIL = "flamendless.studio@gmail.com"
-_GITHUB_URL = "https://github.com/flamendless/GoingHomeRevisited"
+_GITHUB_URL = "https://github.com/flamendless/RememberingHome"
 _GITHUB_URL_RELEASE = ""
 
 _LOG_OUTPUT = toLua("log")
