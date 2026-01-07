@@ -34,8 +34,38 @@ function GameStates.start(resources)
 	GameStates.world.current_id = GameStates.current_id
 	ECS.load_systems(GameStates.current_id, GameStates.world, GameStates.prev_id)
 
-	GameStates.world:emit("state_setup")
+	if DEV then
+		local blacklisted = {
+			apply_ambiance = true,
+			apply_post_process = true,
+			begin_deferred_lighting = true,
+			check_mouse_hover = true,
+			draw = true,
+			end_deferred_lighting = true,
+			ev_draw_ex = true,
+			ev_pp_invoke = true,
+			hover_effects = true,
+			parallax_move_x = true,
+			preupdate = true,
+			set_ambiance = true,
+			update = true,
+			update_particle_system = true,
+		}
 
+		GameStates.world.beforeEmit = function(world, event)
+			if
+				blacklisted[event] or
+				stringx.starts_with(event, "debug_") or
+				stringx.starts_with(event, "state_") or
+				stringx.starts_with(event, "draw_")
+			then
+				return
+			end
+			Log.info("Emitted", event)
+		end
+	end
+
+	GameStates.world:emit("state_setup")
 	GameStates.world:emit("state_init")
 
 	local sc = ECS.get_state_class(GameStates.current_id)
