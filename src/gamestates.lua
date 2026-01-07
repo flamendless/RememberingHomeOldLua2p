@@ -150,6 +150,9 @@ function GameStates.exit()
 	for _, e in ipairs(GameStates.world:getEntities()) do
 		e:destroy()
 	end
+	if DEV then
+		Fade.dev_reset()
+	end
 end
 
 return GameStates

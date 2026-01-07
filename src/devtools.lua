@@ -56,6 +56,10 @@ local debug_list = {
 	show = true,
 	title = "Debug List",
 }
+local fade = {
+	show = true,
+	title = "Fade",
+}
 
 local list = {
 	stats,
@@ -64,6 +68,7 @@ local list = {
 	system_list,
 	component_list,
 	debug_list,
+	fade,
 }
 
 local getFPS = love.timer.getFPS
@@ -120,6 +125,7 @@ function DevTools.update(dt)
 	DevTools.draw_system_list()
 	DevTools.draw_component_list()
 	DevTools.draw_debug_list()
+	DevTools.draw_fade()
 	GameStates.world:emit("debug_update", dt)
 end
 
@@ -320,6 +326,26 @@ function DevTools.draw_debug_list()
 		end
 	end
 	Slab.EndLayout()
+	Slab.EndWindow()
+end
+
+function DevTools.draw_fade()
+	if not fade.show then
+		return
+	end
+	fade.show = Slab.BeginWindow("fade", {
+		Title = fade.title,
+		IsOpen = fade.show,
+	})
+	local f = Fade.getColor()
+	f[1] = UIWrapper.edit_range("r", f[1], 0, 1)
+	f[2] = UIWrapper.edit_range("g", f[2], 0, 1)
+	f[3] = UIWrapper.edit_range("b", f[3], 0, 1)
+	f[4] = UIWrapper.edit_range("a", f[4], 0, 1)
+
+	Slab.Text("State: " .. Fade.state)
+	Slab.Text("Duration: " .. Fade.duration)
+	Slab.Text("Delay: " .. Fade.delay)
 	Slab.EndWindow()
 end
 

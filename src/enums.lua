@@ -60,5 +60,6 @@ Enums.enemy_suit_anim = Enum("idle", "walk")
 Enums.bt.enemy = Enum("idle", "walk", "chase", "lean_back", "lean_return_back", "caught_other")
 
 Enums.timeline = Enum("created", "playing", "paused", "killed")
+Enums.fade = Enum("none", "fade_in", "fade_out")
 
 return Enums

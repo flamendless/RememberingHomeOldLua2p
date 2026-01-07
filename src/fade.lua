@@ -1,10 +1,28 @@
 local Fade = {}
 
+if DEV then
+	function Fade.dev_reset()
+		Fade.state = Enums.fade.none
+		Fade.duration = 0
+		Fade.delay = 0
+	end
+	function Fade.dev_set(state, dur, delay)
+		Fade.state = state
+		Fade.duration = dur or 0
+		Fade.delay = delay or 0
+	end
+	Fade.dev_reset()
+end
+
 local f_duration = 1
 local f_delay = 0.5
 local f_color = { 0, 0, 0, 0 }
 
 function Fade.fade_out(on_complete, duration, delay)
+	if DEV then
+		Fade.dev_set(Enums.fade.fade_out, duration, delay)
+	end
+
 	if on_complete then
 		if not (type(on_complete) == "function") then
 			error('Assertion failed: type(on_complete) == "function"')
@@ -28,6 +46,10 @@ function Fade.fade_out(on_complete, duration, delay)
 end
 
 function Fade.fade_in(on_complete, duration, delay)
+	if DEV then
+		Fade.dev_set(Enums.fade.fade_in, duration, delay)
+	end
+
 	if on_complete then
 		if not (type(on_complete) == "function") then
 			error('Assertion failed: type(on_complete) == "function"')
@@ -43,7 +65,11 @@ function Fade.fade_in(on_complete, duration, delay)
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
-	local f = Flux.to(f_color, duration or f_duration, { [4] = 0 }):delay(delay or f_delay)
+	local f = Flux.to(
+		f_color,
+		duration or f_duration,
+		{ [4] = 0 }
+	):delay(delay or f_delay)
 
 	if on_complete then
 		f:oncomplete(on_complete)
