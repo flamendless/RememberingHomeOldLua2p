@@ -146,8 +146,10 @@ function Renderer:draw(is_ui)
 		end
 	end
 
-	if not is_ui then
-		Renderers.Sprite.debug_batching()
+	if DEV then
+		if not is_ui then
+			Renderers.Sprite.debug_batching()
+		end
 	end
 
 	local list = get_list(self, is_ui)
@@ -156,8 +158,8 @@ function Renderer:draw(is_ui)
 		local is_not_drawn = e.nf_renderer or e.hidden or culled
 
 		if not is_not_drawn then
-			local no_shader, temp_shader = e.no_shader
-			if no_shader then
+			local temp_shader
+			if e.no_shader then
 				temp_shader = love.graphics.getShader()
 				love.graphics.setShader()
 			end
@@ -178,7 +180,7 @@ function Renderer:draw(is_ui)
 				Renderers.Sprite.debug_batching_update(e)
 			end
 
-			if no_shader then
+			if e.no_shader then
 				love.graphics.setShader(temp_shader)
 			end
 		end

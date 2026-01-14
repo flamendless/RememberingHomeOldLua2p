@@ -329,6 +329,34 @@ function DevTools.draw_debug_list()
 	Slab.EndWindow()
 end
 
+function DevTools.draw_z_index(e)
+	if not e.z_index then return end
+	local id = e.id.value
+	local z_index = e.z_index
+	if Slab.CheckBox(z_index.sortable, id .. ".sortable") then
+		z_index.sortable = not z_index.sortable
+	end
+	z_index.value = UIWrapper.edit_number(id .. ".z_index", z_index.value, true)
+end
+
+function DevTools.draw_sprite(e)
+	if not e.sprite then return end
+	local sprite = e.sprite
+	local subx, suby, subw, subh
+	if e.quad then
+		subx, suby, subw, subh = e.quad.quad:getViewport()
+	end
+	local size = 128
+	Slab.Image(e.id.value,
+		{
+			Image = sprite.image,
+			SubX = subx, SubY = suby,
+			SubW = subw, SubH = subh,
+			W = size, H = size,
+		}
+	)
+end
+
 function DevTools.draw_fade()
 	if not fade.show then
 		return
@@ -338,10 +366,7 @@ function DevTools.draw_fade()
 		IsOpen = fade.show,
 	})
 	local f = Fade.getColor()
-	f[1] = UIWrapper.edit_range("r", f[1], 0, 1)
-	f[2] = UIWrapper.edit_range("g", f[2], 0, 1)
-	f[3] = UIWrapper.edit_range("b", f[3], 0, 1)
-	f[4] = UIWrapper.edit_range("a", f[4], 0, 1)
+	UIWrapper.color(f)
 
 	Slab.Text("State: " .. Fade.state)
 	Slab.Text("Duration: " .. Fade.duration)

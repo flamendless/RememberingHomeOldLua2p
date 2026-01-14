@@ -20,8 +20,8 @@ function Sprite.init()
 end
 
 function Sprite.setup_sprite(e)
+	if not DEV then return end
 	local sprite = e.sprite
-
 	local s_id = sprite.resource_id
 	if not Sprite.debug_batched[s_id] then
 		Sprite.debug_batched[s_id] = { highest = 0, total = 0, current = 0 }
@@ -79,71 +79,81 @@ function Sprite.cleanup()
 	tablex.clear(Sprite.debug_batched)
 end
 
-function Sprite.debug_batching()
-	for _, v in pairs(Sprite.debug_batched) do
-		v.highest = 0
-		v.total = 0
-	end
-end
-
-function Sprite.debug_batching_update(e)
-	local resource_id = e.sprite.resource_id
-	local db = Sprite.debug_batched[resource_id]
-	if not db then
-		return
-	end
-	local prev_id = Sprite.debug_prev_id
-	if prev_id then
-		if prev_id == resource_id then
-			db.current = db.current + 1
-		else
-			db.highest = math.max(db.highest, db.current)
-			db.current = 0
+if DEV then
+	function Sprite.debug_batching()
+		for _, v in pairs(Sprite.debug_batched) do
+			v.highest = 0
+			v.total = 0
 		end
 	end
-	db.total = db.total + 1
-	Sprite.debug_prev_id = resource_id
-end
 
-function Sprite.debug_update(dt)
-	if not Sprite.debug_show then
-		return
-	end
-	Sprite.debug_show = Slab.BeginWindow("renderer_sprite", {
-		Title = "Sprite",
-		IsOpen = Sprite.debug_show,
-	})
-
-	Slab.Text("Atlas Batching (highest : total)")
-	Slab.Indent()
-	for k, v in pairs(Sprite.debug_batched) do
-		local str = string.format("%s = %d/%d", k, v.highest + 1, v.total + 1)
-		Slab.Text(str)
-	end
-	Slab.Unindent()
-
-	if Sprite.debug_list then
-		if Slab.BeginTree("z_index") then
-			for _, e in ipairs(Sprite.debug_list) do
-				local z_index = e.z_index
-				local id = e.id.value
-				if z_index and Slab.BeginTree(id) then
-					Slab.Indent()
-					Slab.Indent()
-					if Slab.CheckBox(z_index.sortable, id .. ".sortable") then
-						z_index.sortable = not z_index.sortable
-					end
-					z_index.value = UIWrapper.edit_number(id .. ".z_index", z_index.value, true)
-					Slab.EndTree()
-					Slab.Unindent()
-					Slab.Unindent()
-				end
+	function Sprite.debug_batching_update(e)
+		local resource_id = e.sprite.resource_id
+		local db = Sprite.debug_batched[resource_id]
+		if not db then
+			return
+		end
+		local prev_id = Sprite.debug_prev_id
+		if prev_id then
+			if prev_id == resource_id then
+				db.current = db.current + 1
+			else
+				db.highest = math.max(db.highest, db.current)
+				db.current = 0
 			end
-			Slab.EndTree()
 		end
+		db.total = db.total + 1
+		Sprite.debug_prev_id = resource_id
 	end
 
-	Slab.EndWindow()
+	function Sprite.debug_update(dt)
+		if not Sprite.debug_show then
+			return
+		end
+		Sprite.debug_show = Slab.BeginWindow("renderer_sprite", {
+			Title = "Sprite",
+			IsOpen = Sprite.debug_show,
+		})
+
+		Slab.Text("Atlas Batching (highest : total)")
+		Slab.Indent()
+		for k, v in pairs(Sprite.debug_batched) do
+			local str = string.format("%s = %d/%d", k, v.highest + 1, v.total + 1)
+			Slab.Text(str)
+		end
+		Slab.Unindent()
+
+		if Sprite.debug_list then
+			if Slab.BeginTree("Entities") then
+				for _, e in ipairs(Sprite.debug_list) do
+					if Slab.BeginTree(e.id.value) then
+						Slab.Indent()
+						Slab.Indent()
+
+						if e.color and Slab.BeginTree("color") then
+							UIWrapper.color(e.color.value)
+							Slab.EndTree()
+						end
+						if Slab.BeginTree("z index") then
+							DevTools.draw_z_index(e)
+							Slab.EndTree()
+						end
+						if Slab.BeginTree("sprite") then
+							DevTools.draw_sprite(e)
+							Slab.EndTree()
+						end
+
+						Slab.Unindent()
+						Slab.Unindent()
+						Slab.EndTree()
+					end
+				end
+				Slab.EndTree()
+			end
+		end
+
+		Slab.EndWindow()
+	end
 end
 
 return Sprite

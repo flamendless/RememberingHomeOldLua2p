@@ -36,4 +36,14 @@ function UIWrapper.edit_range(id, value, min, max, is_int)
 	return value, bool
 end
 
+if DEV then
+	function UIWrapper.color(color)
+		assert(type(color) == "table" and #color == 4)
+		color[1] = UIWrapper.edit_range("r", color[1], 0, 1)
+		color[2] = UIWrapper.edit_range("g", color[2], 0, 1)
+		color[3] = UIWrapper.edit_range("b", color[3], 0, 1)
+		color[4] = UIWrapper.edit_range("a", color[4], 0, 1)
+	end
+end
+
 return UIWrapper
