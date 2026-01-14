@@ -124,32 +124,7 @@ if DEV then
 		Slab.Unindent()
 
 		if Sprite.debug_list then
-			if Slab.BeginTree("Entities") then
-				for _, e in ipairs(Sprite.debug_list) do
-					if Slab.BeginTree(e.id.value) then
-						Slab.Indent()
-						Slab.Indent()
-
-						if e.color and Slab.BeginTree("color") then
-							UIWrapper.color(e.color.value)
-							Slab.EndTree()
-						end
-						if Slab.BeginTree("z index") then
-							DevTools.draw_z_index(e)
-							Slab.EndTree()
-						end
-						if Slab.BeginTree("sprite") then
-							DevTools.draw_sprite(e)
-							Slab.EndTree()
-						end
-
-						Slab.Unindent()
-						Slab.Unindent()
-						Slab.EndTree()
-					end
-				end
-				Slab.EndTree()
-			end
+			Slab.Text("Use the Component List instead")
 		end
 
 		Slab.EndWindow()

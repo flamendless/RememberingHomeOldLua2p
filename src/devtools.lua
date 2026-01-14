@@ -26,6 +26,8 @@ local DevTools = {
 	},
 }
 
+local slab_components
+
 local stats = {
 	show = false,
 	exclude_slab = true,
@@ -288,9 +290,15 @@ function DevTools.draw_component_list()
 				Slab.Indent()
 				local i = 1
 				for k in pairs(components) do
-					Slab.Text(i .. " " .. k)
-					i = i + 1
+					if not slab_components[k] then
+						Slab.Text(i .. " " .. k)
+						i = i + 1
+					elseif Slab.BeginTree(k) then
+						slab_components[k](e)
+						Slab.EndTree()
+					end
 				end
+
 				Slab.Unindent()
 				Slab.EndTree()
 			end
@@ -329,7 +337,18 @@ function DevTools.draw_debug_list()
 	Slab.EndWindow()
 end
 
-function DevTools.draw_z_index(e)
+function DevTools.slab_id(e)
+	if not e.id then return end
+	Slab.Text("id:", e.id.value)
+	Slab.Text("sub id:", e.id.sub_id)
+end
+
+function DevTools.slab_color(e)
+	if not e.color then return end
+	UIWrapper.color(e.color.value)
+end
+
+function DevTools.slab_z_index(e)
 	if not e.z_index then return end
 	local id = e.id.value
 	local z_index = e.z_index
@@ -339,7 +358,7 @@ function DevTools.draw_z_index(e)
 	z_index.value = UIWrapper.edit_number(id .. ".z_index", z_index.value, true)
 end
 
-function DevTools.draw_sprite(e)
+function DevTools.slab_sprite(e)
 	if not e.sprite then return end
 	local sprite = e.sprite
 	local subx, suby, subw, subh
@@ -356,6 +375,13 @@ function DevTools.draw_sprite(e)
 		}
 	)
 end
+
+slab_components = {
+	color = DevTools.slab_color,
+	z_index = DevTools.slab_z_index,
+	sprite = DevTools.slab_sprite,
+	id = DevTools.slab_id,
+}
 
 function DevTools.draw_fade()
 	if not fade.show then
