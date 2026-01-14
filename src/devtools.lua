@@ -63,6 +63,14 @@ local fade = {
 	title = "Fade",
 }
 
+local image_viewer = {
+	show = true,
+	title = "Image Viewer",
+	e = nil,
+	mode = nil, -- quad or full
+	scale = 1,
+}
+
 local list = {
 	stats,
 	mouse,
@@ -71,6 +79,7 @@ local list = {
 	component_list,
 	debug_list,
 	fade,
+	image_viewer,
 }
 
 local getFPS = love.timer.getFPS
@@ -128,6 +137,7 @@ function DevTools.update(dt)
 	DevTools.draw_component_list()
 	DevTools.draw_debug_list()
 	DevTools.draw_fade()
+	DevTools.draw_image_viewer()
 	GameStates.world:emit("debug_update", dt)
 end
 
@@ -290,13 +300,14 @@ function DevTools.draw_component_list()
 				Slab.Indent()
 				local i = 1
 				for k in pairs(components) do
+					local key = i .. " " .. k
 					if not slab_components[k] then
-						Slab.Text(i .. " " .. k)
-						i = i + 1
-					elseif Slab.BeginTree(k) then
+						Slab.Text(key)
+					elseif Slab.BeginTree(key) then
 						slab_components[k](e)
 						Slab.EndTree()
 					end
+					i = i + 1
 				end
 
 				Slab.Unindent()
@@ -339,8 +350,10 @@ end
 
 function DevTools.slab_id(e)
 	if not e.id then return end
-	Slab.Text("id:", e.id.value)
-	Slab.Text("sub id:", e.id.sub_id)
+	Slab.Text("id: " .. e.id.value)
+	if e.id.sub_id then
+		Slab.Text("sub id: " .. e.id.sub_id)
+	end
 end
 
 function DevTools.slab_color(e)
@@ -360,20 +373,15 @@ end
 
 function DevTools.slab_sprite(e)
 	if not e.sprite then return end
-	local sprite = e.sprite
-	local subx, suby, subw, subh
-	if e.quad then
-		subx, suby, subw, subh = e.quad.quad:getViewport()
+	if Slab.Button("Show Sprite") then
+		image_viewer.e = e
+		image_viewer.mode = "quad"
 	end
-	local size = 128
-	Slab.Image(e.id.value,
-		{
-			Image = sprite.image,
-			SubX = subx, SubY = suby,
-			SubW = subw, SubH = subh,
-			W = size, H = size,
-		}
-	)
+	Slab.SameLine()
+	if Slab.Button("Show Full") then
+		image_viewer.e = e
+		image_viewer.mode = "full"
+	end
 end
 
 slab_components = {
@@ -384,10 +392,8 @@ slab_components = {
 }
 
 function DevTools.draw_fade()
-	if not fade.show then
-		return
-	end
-	fade.show = Slab.BeginWindow("fade", {
+	if not fade.show then return end
+	fade.show = Slab.BeginWindow("Fade", {
 		Title = fade.title,
 		IsOpen = fade.show,
 	})
@@ -397,6 +403,48 @@ function DevTools.draw_fade()
 	Slab.Text("State: " .. Fade.state)
 	Slab.Text("Duration: " .. Fade.duration)
 	Slab.Text("Delay: " .. Fade.delay)
+	Slab.EndWindow()
+end
+
+function DevTools.draw_image_viewer()
+	if not image_viewer.show then return end
+	image_viewer.show = Slab.BeginWindow("Image Viewer", {
+		Title = image_viewer.title,
+		IsOpen = image_viewer.show,
+	})
+	local e = image_viewer.e
+	if e then
+		local sprite = e.sprite
+		Slab.Text("Mode: " .. image_viewer.mode)
+		image_viewer.scale = UIWrapper.edit_range(
+			"scale",
+			image_viewer.scale,
+			0,
+			1,
+			false
+		)
+		if image_viewer.mode == "quad" then
+			local subx, suby, subw, subh = e.quad.quad:getViewport()
+			local w, h = e.quad.quad:getTextureDimensions()
+			Slab.Image(e.id.value,
+				{
+					Image = sprite.image,
+					SubX = subx, SubY = suby,
+					SubW = subw, SubH = subh,
+					W = w, H = h,
+					Scale = image_viewer.scale,
+				}
+			)
+		elseif image_viewer.mode == "full" then
+			Slab.Image(e.id.value, {
+				Image = sprite.image,
+				W = sprite.iw, sprite.ih,
+				Scale = image_viewer.scale,
+			})
+		else
+			error("unknown mode: " .. image_viewer.mode)
+		end
+	end
 	Slab.EndWindow()
 end
 
