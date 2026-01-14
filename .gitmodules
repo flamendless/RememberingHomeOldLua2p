@@ -51,6 +51,7 @@
 [submodule "libs/ExportTextureAtlas"]
 	path = libs/ExportTextureAtlas
 	url = https://github.com/EngineerSmith/Export-TextureAtlas
+	branch = main
 [submodule "modules/beehive"]
 	path = modules/beehive
 	url = https://github.com/drhayes/beehive.lua
