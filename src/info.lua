@@ -7,10 +7,10 @@ local filename = "info.txt"
 
 local function insert_str(src, dest)
 	if not (type(src) == "table") then
-		error('Assertion failed: type(src) == "table"')
+		error('Assertion failed: type(src) == "table". Got ' .. type(src))
 	end
 	if not (type(dest) == "table") then
-		error('Assertion failed: type(dest) == "table"')
+		error('Assertion failed: type(dest) == "table". Got ' .. type(dest))
 	end
 	for k, v in pairs(src) do
 		local str = string.format("\t%s: %s\n", k, v)
@@ -21,6 +21,7 @@ end
 function Info.init()
 	Log.info("System information checking...")
 	local data = Info.data
+	local renderer = {}
 	local system_limits = {}
 	local canvas_formats = {}
 	local image_formats = {}
@@ -54,6 +55,7 @@ function Info.init()
 		game_height = gh,
 	}
 
+	insert_str(data.renderer, renderer)
 	insert_str(data.limits, system_limits)
 	insert_str(data.canvasformats, canvas_formats)
 	insert_str(data.imageformats, image_formats)
@@ -68,11 +70,7 @@ function Info.init()
 		string.format("Processor Count: %s", data.processor_count),
 
 		"Renderer Info:",
-		string.format("\tName: %s", data.renderer.name),
-		string.format("\tVersion: %s", data.renderer.version),
-		string.format("\tVendor: %s", data.renderer.vendor),
-		string.format("\tDevice: %s", data.renderer.device),
-		"\n",
+		table.concat(renderer),
 
 		"System Limits:",
 		table.concat(system_limits),
