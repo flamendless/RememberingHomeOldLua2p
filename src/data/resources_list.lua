@@ -39,7 +39,7 @@ ResourcesList.Menu = {
 ResourcesList.Intro = {
 	images = {
 		{ "intro", "res/images/intro/bg.png" },
-		{ "atlas_intro", "res/images/intro/atlas_intro.png" },
+		{ "atlas_intro", "res/images/atlases/intro.png" },
 		{ "sheet_car", "res/images/intro/sheet_car.png" },
 		{ "sheet_car_reflect", "res/images/intro/sheet_car_reflect.png" },
 		{ "sheet_splat", "res/ui/sheet_splat.png" },

@@ -30,6 +30,7 @@ function Intro:state_setup()
 		Shaders.NGrading("lut_afternoon"),
 		Shaders.NGrading("lut_afternoon", "lut_dusk", false),
 	})
+
 	-- self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_intro"))
 	self.world:emit("set_draw", "ev_draw_ex")
 
@@ -115,6 +116,11 @@ function Intro:state_init()
 	local w, h = img_bg:getDimensions()
 
 	self.world:emit("start_timeline", function()
+		if DEV then
+			Fade.set_alpha(0)
+			self.world:emit("pause_timeline")
+		end
+
 		self.world:emit("set_ambiance", { 0.5, 0.5, 0.5 })
 		TLE.Event.Wait(1)
 		Fade.fade_in(nil, 2, 1)

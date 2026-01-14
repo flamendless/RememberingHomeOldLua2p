@@ -85,12 +85,12 @@ function Intro.parallax(e, tag, scale)
 
 	e:give("id", tag)
 		:give("sprite", "atlas_intro")
-		:give("atlas", item)
 		:give("pos", x, y)
+		:give("atlas", item)
+		:give("quad_transform", 0, scale, scale)
+		:give("z_index", z_index[tag][1], false)
 		:give("parallax", speed[tag], 0)
 		:give("parallax_multi_sprite", tag)
-		:give("z_index", z_index[tag][1], false)
-		:give("quad_transform", 0, scale, scale)
 		:give("depth_zoom", z_index[tag][2])
 end
 
