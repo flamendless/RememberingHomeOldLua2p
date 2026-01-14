@@ -123,13 +123,15 @@ function create_atlas()
 function copy_modules()
 {
 	echo "copying modules..."
-	rsync -a "$dir_modules" "$dir_output" "${exclude_modules[@]}" && echo "copied modules"
+	rsync -a "$dir_modules" "$dir_output" "${exclude_modules[@]}" && echo "copied modules to ${dir_output}"
+	rsync -a "$dir_modules" "$dir_source" "${exclude_modules[@]}" && echo "copied modules to ${dir_source}"
 }
 
 function copy_res()
 {
 	echo "copying resources..."
-	rsync -a "$dir_res" "$dir_output" && echo "copied resources"
+	rsync -a "$dir_res" "$dir_output" && echo "copied resources to ${dir_output}"
+	rsync -a "$dir_res" "$dir_source" && echo "copied resources to ${dir_source}"
 	rsync -a "slab.style" "$dir_output" && echo "copied slab.style"
 }
 
