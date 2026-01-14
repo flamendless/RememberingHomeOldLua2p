@@ -33,7 +33,7 @@ local stats = {
 	title = "Stats",
 }
 local mouse = {
-	show = true,
+	show = false,
 	title = "Mouse Info",
 }
 local entity_list = {

@@ -126,11 +126,17 @@ function Sprite.debug_update(dt)
 		if Slab.BeginTree("z_index") then
 			for _, e in ipairs(Sprite.debug_list) do
 				local z_index = e.z_index
-				if z_index then
-					local id = e.id.value
-					Slab.CheckBox(z_index.sortable, z_index.value)
-					Slab.SameLine()
-					Slab.Text(id)
+				local id = e.id.value
+				if z_index and Slab.BeginTree(id) then
+					Slab.Indent()
+					Slab.Indent()
+					if Slab.CheckBox(z_index.sortable, id .. ".sortable") then
+						z_index.sortable = not z_index.sortable
+					end
+					z_index.value = UIWrapper.edit_number(id .. ".z_index", z_index.value, true)
+					Slab.EndTree()
+					Slab.Unindent()
+					Slab.Unindent()
 				end
 			end
 			Slab.EndTree()

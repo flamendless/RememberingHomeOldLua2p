@@ -33,6 +33,7 @@ function ParticleSystem:set_particle_system(id_or_ids, mode, ...)
 \9\9or mode == "setEmissionRate"\
 \9)')
 	end
+
 	for _, ps in ipairs(self.ps) do
 		local ps_id = ps:type()
 		local valid = false
