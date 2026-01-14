@@ -208,7 +208,7 @@ function Intro:state_init()
 				Save.toggle_flag("intro_done", true)
 				self.is_raining = false
 				self.is_switching = true
-				self.world:emit("setup_particle_system", "PSRainIntro", "stop")
+				self.world:emit("set_particle_system", "PSRainIntro", "stop")
 				self.world:emit("switch_state", "Outside")
 			end, 2)
 		end
