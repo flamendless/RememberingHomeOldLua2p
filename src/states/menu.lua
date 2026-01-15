@@ -186,7 +186,7 @@ function Menu:state_init()
 			self:menu_unpause()
 		end)
 		self.timeline:Pause()
-		self.subtitle:remove("anchor")
+		-- self.subtitle:remove("anchor")
 		self:show_main_menu()
 		self.timeline:Pause()
 		self.world:emit("set_focus_list", "main_menu")
@@ -236,19 +236,19 @@ function Menu:setup_menu()
 	local ww, wh = love.graphics.getDimensions()
 	local bg_door = Resources.data.images.bg_door
 	local bg_hallway = Resources.data.images.bg_hallway
-	local title = Resources.data.images.title
-	local subtitle = Resources.data.images.subtitle
+	local sheet_title = Resources.data.images.sheet_title
+	-- local subtitle = Resources.data.images.subtitle
 
 	local bg_hw_w, bg_hw_h = bg_hallway:getDimensions()
 	local bg_door_w, bg_door_h = bg_door:getDimensions()
-	local title_w, title_h = title:getDimensions()
-	local subt_w, subt_h = subtitle:getDimensions()
+	local title_w, title_h = sheet_title:getDimensions()
+	-- local subt_w, subt_h = subtitle:getDimensions()
 
 	local scale = math.min(ww / bg_door_w, wh / bg_door_h)
 	local scale_hallway = math.min(ww / bg_hw_w, wh / bg_hw_h)
 	local scale_title = math.min((bg_door_w * scale) / title_w, (bg_door_h * scale) / title_h)
-	local scale_subt = math.min((title_w * scale_title) / subt_w, (title_h * scale) / subt_h)
-	scale_subt = scale_subt * 0.75
+	-- local scale_subt = math.min((title_w * scale_title) / subt_w, (title_h * scale) / subt_h)
+	-- scale_subt = scale_subt * 0.75
 
 	Concord.entity(self.world):assemble(Assemblages.Menu.bg_door, ww * 1.5, wh * 0.5, scale, bg_door_w * 0.5, bg_door_h * 0.5)
 
@@ -256,10 +256,9 @@ function Menu:setup_menu()
 		:assemble(Assemblages.Menu.bg_hallway, ww * 0.5, wh * 1.5, scale_hallway, bg_hw_w * 0.5, bg_hw_h * 0.5)
 
 	self.e_desk = Concord.entity(self.world):assemble(Assemblages.Menu.desk, ww, wh)
-	self.title = Concord.entity(self.world)
-		:assemble(Assemblages.Menu.title, ww * 0.25, wh * 0.5 - 36, scale_title, title_w * 0.5, title_h * 0.5)
-	self.subtitle = Concord.entity(self.world)
-		:assemble(Assemblages.Menu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w * 0.5, subt_h * 0.5)
+	self.e_title = Concord.entity(self.world):assemble(Assemblages.Menu.sheet_title, ww, wh)
+	-- self.subtitle = Concord.entity(self.world)
+	-- 	:assemble(Assemblages.Menu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w * 0.5, subt_h * 0.5)
 
 	local jamboree_fnt = "res/fonts/Jamboree.fnt"
 	local jamboree_png = "res/fonts/Jamboree.png"
@@ -507,7 +506,7 @@ function Menu:on_exit()
 	)
 
 	if btn == 1 then
-		self:hide_main_menu()
+		love.event.quit(0)
 	elseif btn == 2 then
 		self.current_state = Enums.menu_state.menu
 		Log.info("Switched Menu State to:", self.current_state)

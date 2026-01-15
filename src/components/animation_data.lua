@@ -25,8 +25,11 @@ local c_anim_data = Concord.component("animation_data", function(c, data)
 		end
 	end
 	if data.delay then
-		if not (type(data.delay) == "table" or type(data.delay) == "number") then
-			error('Assertion failed: type(data.delay) == "table" or type(data.delay) == "number"')
+		if not (
+			type(data.delay) == "table" or
+			type(data.delay) == "number"
+		) then
+			error('Assertion failed: type(data.delay) == "table" or "number"')
 		end
 	end
 
