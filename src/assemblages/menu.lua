@@ -43,14 +43,14 @@ function Menu.bg_hallway(e, x, y, scale, ox, oy)
 end
 
 --INFO: Single frame title
-function Menu.title(e, x, y, scale, ox, oy)
-	e:give("id", "title")
-		:give("sprite", "title")
-		:give("pos", x, y)
-		:give("transform", 0, scale, scale, ox, oy)
-		:give("color", Palette.get("white", 0.75))
-		:give("menu_text")
-end
+-- function Menu.title(e, x, y, scale, ox, oy)
+-- 	e:give("id", "title")
+-- 		:give("sprite", "title")
+-- 		:give("pos", x, y)
+-- 		:give("transform", 0, scale, scale, ox, oy)
+-- 		:give("color", Palette.get("white", 0.75))
+-- 		:give("menu_text")
+-- end
 
 function Menu.sheet_title(e, ww, wh)
 	e:give("id", "title")

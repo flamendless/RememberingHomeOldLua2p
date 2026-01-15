@@ -39,7 +39,7 @@ end
 
 Palette.diffuse = {
 	--intro
-	ambiance_intro = { 0.9, 0.9, 0.9, 0.4 },
+	ambiance_intro = {1, 1, 1, 1},
 	car = { 1, 1, 1 },
 	post = { 1, 1, 1 },
 

@@ -34,50 +34,50 @@ function Intro:state_setup()
 	-- self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_intro"))
 	self.world:emit("set_draw", "ev_draw_ex")
 
-	local asm_intro = Assemblages.Intro
-	local asm_parallax = asm_intro.parallax
 	for i = 1, 2 do
-		Concord.entity(self.world):assemble(asm_parallax, "clouds")
-		Concord.entity(self.world):assemble(asm_parallax, "buildings")
-		Concord.entity(self.world):assemble(asm_parallax, "road")
-		Concord.entity(self.world):assemble(asm_parallax, "grass")
-		Concord.entity(self.world):assemble(asm_parallax, "grass2")
-		Concord.entity(self.world):assemble(asm_parallax, "grass_back")
-		Concord.entity(self.world):assemble(asm_parallax, "grass_front")
-		local e_tree = Concord.entity(self.world):assemble(asm_parallax, "trees_bg")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "clouds")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "buildings")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "road")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "grass")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "grass2")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "grass_back")
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "grass_front")
+		local e_tree = Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "trees_bg")
 		if i == 1 then
-			Concord.entity(self.world):assemble(asm_intro.bg_tree_cover):give("attach_to", e_tree)
+			Concord.entity(self.world):assemble(Assemblages.Intro.bg_tree_cover):give("attach_to", e_tree)
 		end
-		Concord.entity(self.world):assemble(asm_parallax, "trees_fg", 4)
-		local e_post_light =
-			Concord.entity(self.world):assemble(Assemblages.Intro.post_light, "post_light", 2):give("parallax_gap", w)
+		Concord.entity(self.world):assemble(Assemblages.Intro.parallax, "trees_fg", 4)
+		local e_post_light = Concord.entity(self.world)
+			:assemble(Assemblages.Intro.post_light, "post_light", 2)
+			:give("parallax_gap", w)
 		Concord.entity(self.world)
-			:assemble(asm_parallax, "post", 2)
+			:assemble(Assemblages.Intro.parallax, "post", 2)
 			:give("attach_to", e_post_light)
 			:give("attach_to_offset", 108, 0)
 	end
 
-	self.e_car = Concord.entity(self.world):assemble(asm_intro.car)
-	Concord.entity(self.world):assemble(asm_intro.car_light, self.e_car)
+	self.e_car = Concord.entity(self.world):assemble(Assemblages.Intro.car)
+	Concord.entity(self.world)
+		:assemble(Assemblages.Intro.car_light, self.e_car)
 		:give("light_disabled")
 		:give("intro_light")
 	self.e_car_reflect = Concord.entity(self.world)
-		:assemble(asm_intro.car_reflect, self.e_car)
+		:assemble(Assemblages.Intro.car_reflect, self.e_car)
 		:give("animation_on_loop", "car_reflection_flicker")
 
 	local fw, fh = 512, 128
 	local fsx = ww2 * 4 / fw
 	local fsy = 2
 	Concord.entity(self.world)
-		:assemble(asm_intro.fog, "fog1", fw, fh, { 0.6, 0.6, 0.6, 1 }, 0, 250, fsx, fsy * 0.45, 0.05)
+		:assemble(Assemblages.Intro.fog, "fog1", fw, fh, { 0.6, 0.6, 0.6, 1 }, 0, 250, fsx, fsy * 0.45, 0.05)
 	Concord.entity(self.world)
-		:assemble(asm_intro.fog, "fog2", fw, fh, { 0.75, 0.75, 0.75, 0.55 }, 0, 290, fsx, fsy * 0.35, 3)
+		:assemble(Assemblages.Intro.fog, "fog2", fw, fh, { 0.75, 0.75, 0.75, 0.55 }, 0, 290, fsx, fsy * 0.35, 3)
 	Concord.entity(self.world)
-		:assemble(asm_intro.fog, "fog3", fw, fh, { 0.9, 0.9, 0.9, 0 }, 0, 340, fsx, fsy * 0.5, 4)
+		:assemble(Assemblages.Intro.fog, "fog3", fw, fh, { 0.9, 0.9, 0.9, 0 }, 0, 340, fsx, fsy * 0.5, 4)
 		:give("fade_in_target_alpha", 0.45)
 		:give("hidden")
 	Concord.entity(self.world)
-		:assemble(asm_intro.fog, "fog4", fw, fh, { 0.6, 0.6, 0.6, 0 }, 0, 290, fsx, fsy * 0.35, 2)
+		:assemble(Assemblages.Intro.fog, "fog4", fw, fh, { 0.6, 0.6, 0.6, 0 }, 0, 290, fsx, fsy * 0.35, 2)
 		:give("fade_in_target_alpha", 0.45)
 		:give("hidden")
 
@@ -101,10 +101,7 @@ function Intro:state_setup()
 		:give("intro_text")
 		:give("animation_data", Animation.get("splat"))
 
-	self.e_title_light =
-		Concord.entity(self.world):assemble(asm_intro.title_light, ww * 0.5, wh * 0.5):give("intro_text")
-
-	self.e_title = Concord.entity(self.world):assemble(asm_intro.title, ww * 0.5, wh * 0.5):give("intro_text")
+	self.e_title_sheet = Concord.entity(self.world):assemble(Assemblages.Intro.sheet_title, ww, wh)
 
 	if Save.data.intro_done or true then
 		self.world:emit("show_skip")
@@ -123,10 +120,8 @@ function Intro:state_init()
 			self.world:emit("pause_timeline")
 		end
 
-		self.world:emit("set_ambiance", { 0.5, 0.5, 0.5 })
 		TLE.Event.Wait(1)
 		Fade.fade_in(nil, 2, 1)
-
 
 		--how many times we will scale/move the camera for this cutscene
 		local ambient_color = Palette.get_diffuse("ambiance_intro")
@@ -164,9 +159,10 @@ function Intro:state_init()
 			e:remove("light_disabled")
 		end
 		Flux.to(ambient_color, 15, {
-			[1] = 0.3,
-			[2] = 0.3,
-			[3] = 0.3,
+			[1] = 0.6,
+			[2] = 0.6,
+			[3] = 0.6,
+			[4] = 0.8,
 		}):onupdate(function()
 			self.world:emit("set_ambiance", ambient_color)
 		end)
@@ -201,9 +197,12 @@ function Intro:state_init()
 		self.world:emit("destroy_key", "skip")
 
 		TLE.Event.Wait(1)
-		self.e_title_light:remove("hidden")
-		self.e_title_light:remove("light_disabled")
-		self.e_title:remove("hidden"):give("color_fade_in", 4):give("color_fade_in_finish", "resume_timeline")
+		-- self.e_title_light:remove("hidden")
+		-- self.e_title_light:remove("light_disabled")
+		self.e_title_sheet
+			:remove("hidden")
+			:give("color_fade_in", 4)
+			:give("color_fade_in_finish", "resume_timeline")
 		self.world:emit("pause_timeline")
 
 		TLE.Event.Wait(2)

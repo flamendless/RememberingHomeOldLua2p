@@ -46,6 +46,7 @@ ResourcesList.Intro = {
 		{ "rain_drop_tilted2", "res/images/rain/rain_drop_tilted2.png" },
 		{ "dummy", "res/textures/dummy.png" },
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		{ "sheet_title", "res/images/intro/sheet_title.png" },
 	},
 	image_data = {
 		{ "lut_afternoon_16", "res/lut/lut_afternoon_16.png" },

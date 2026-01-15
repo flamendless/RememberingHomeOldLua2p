@@ -157,27 +157,51 @@ function Intro.car_light(e, car)
 		:give("z_index", z_index.car[1])
 end
 
-function Intro.title(e, x, y)
-	e:give("id", "title")
-		:give("sprite", "atlas_intro")
-		:give("atlas", Atlases.AtlasIntro.frames.title)
-		:give("pos", x, y)
-		:give("quad_transform", 0, 6, 6, 0.5, 0.5)
-		:give("color", { 1, 1, 1, 0 })
-		:give("ui_element")
-		:give("hidden")
-end
+--INFO: Single frame title
+-- function Intro.title(e, x, y)
+-- 	e:give("id", "title")
+-- 		:give("sprite", "atlas_intro")
+-- 		:give("atlas", Atlases.AtlasIntro.frames.title)
+-- 		:give("pos", x, y)
+-- 		:give("quad_transform", 0, 6, 6, 0.5, 0.5)
+-- 		:give("color", { 1, 1, 1, 0 })
+-- 		:give("ui_element")
+-- 		:give("hidden")
+-- end
 
-function Intro.title_light(e, x, y)
-	e:give("id", "title_light")
-		:give("sprite", "atlas_intro")
-		:give("atlas", Atlases.AtlasIntro.frames.title_light)
-		:give("pos", x, y)
-		:give("quad_transform", 0, 4, 4, 0.5, 0.5)
-		:give("color", { 1, 1, 1 })
-		:give("light", Enums.light_shape.custom, 1)
-		:give("light_flicker", 0.075)
-		:give("light_disabled")
+-- function Intro.title_light(e, x, y)
+-- 	e:give("id", "title_light")
+-- 		:give("sprite", "atlas_intro")
+-- 		:give("atlas", Atlases.AtlasIntro.frames.title_light)
+-- 		:give("pos", x, y)
+-- 		:give("quad_transform", 0, 4, 4, 0.5, 0.5)
+-- 		:give("color", { 1, 1, 1 })
+-- 		:give("light", Enums.light_shape.custom, 1)
+-- 		:give("light_flicker", 0.075)
+-- 		:give("light_disabled")
+-- 		:give("hidden")
+-- end
+
+function Intro.sheet_title(e, ww, wh)
+	e:give("id", "title")
+		:give("animation_data", {
+			resource_id = "sheet_title",
+			frames = { "1-3", 1, "1-3", 1, "1-1", 1 },
+			delay = { 1, 0.1, 1, 0.1, 0.1, 0.1, 1 },
+
+			rows_count = 1,
+			columns_count = 3,
+			n_frames = 3,
+		})
+		:give("pos", ww/2, wh/2)
+		:give("animation", false)
+		:give("animation_pause_at", Enums.pause_at.first)
+		:give("transform", 0, 1, 1, 0.5, 0.5)
+		:give("auto_scale", ww/2, wh/2, true)
+		:give("color", Palette.get("white", 0))
+		:give("fade_in_target_alpha", 0.5)
+		:give("intro_text")
+		:give("ui_element")
 		:give("hidden")
 end
 
