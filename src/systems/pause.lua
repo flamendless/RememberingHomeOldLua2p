@@ -107,7 +107,7 @@ Pause["on_list_item_interact_" .. "pause_choices"] = function(self, e_hovered)
 	if text == "Resume" then
 		self:on_pause()
 	elseif text == "Settings" then
-		--TODO
+		--TODO: (Brandon)
 	elseif text == "Quit" then
 		local btn = love.window.showMessageBox(
 			"Alert",

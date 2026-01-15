@@ -1,4 +1,4 @@
---TODO maybe this is not needed anymore
+--TODO: (Brandon) maybe this is not needed anymore
 Concord.component("no_shader")
 
 Concord.component("fog", function(c, speed)

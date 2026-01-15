@@ -1,4 +1,4 @@
---TODO this is unused, maybe remove completely?
+--TODO: (Brandon) this is unused, maybe remove completely?
 local Notification = Concord.system({
 	pool = { "notification" },
 })

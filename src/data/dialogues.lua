@@ -55,7 +55,7 @@ Dialogues.outside = {
 				},
 				door_unlocked = {
 					"the door is unlocked",
-					--TODO remove dialogue component
+					--TODO: (Brandon) remove dialogue component
 				},
 			},
 			{ "do nothing" },

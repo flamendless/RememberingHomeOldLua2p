@@ -8,7 +8,7 @@ local function error_printer(msg, layer)
 end
 
 local function draw()
-	--TODO improve this
+	--TODO: (Brandon) improve this
 	love.graphics.clear()
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.printf(p, pos_x, pos_y, love.graphics.getWidth(), "center")

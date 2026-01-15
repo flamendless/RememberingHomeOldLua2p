@@ -29,7 +29,7 @@ function c_sprite:deserialize(data)
 	self:__populate(data.resource_id, data.container)
 end
 
---TODO remove with fog?
+--TODO: (Brandon) remove with fog?
 local c_noise_tex = Concord.component("noise_texture", function(c, w, h)
 	if not (type(w) == "number") then
 		error('Assertion failed: type(w) == "number"')

@@ -8,7 +8,7 @@ end
 
 function Splash:state_setup()
 	self.canvas = Canvas.create_main()
-	--TODO maybe add glitch effect to other sub-splash screens?
+	--TODO: (Brandon) maybe add glitch effect to other sub-splash screens?
 	self.world:emit("setup_post_process", {
 		Shaders.Glitch(),
 	})

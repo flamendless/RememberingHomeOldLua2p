@@ -121,7 +121,7 @@ function Light:update_light(dt)
 				if light.power < max_power then
 					light.power = (max_power * timer.value) / speed
 				else
-					--TODO do not remove the entity
+					--TODO: (Brandon) do not remove the entity
 					e:remove()
 				end
 			elseif flicker then
@@ -212,7 +212,7 @@ function Light:debug_update(dt)
 	})
 	local t = { self.ambient[1], self.ambient[2], self.ambient[3], 1 }
 	local ret = Slab.ColorPicker({ Color = t })
-	--TODO replace this when Slab got updated
+	--TODO: (Brandon) replace this when Slab got updated
 	if ret.Button == 1 then
 		self.ambient[1] = ret.Color[1]
 		self.ambient[2] = ret.Color[2]

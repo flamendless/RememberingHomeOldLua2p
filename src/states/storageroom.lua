@@ -75,7 +75,7 @@ function StorageRoom:search_shelf(e, dialogues_t)
 		local t = tablex.copy(Dialogues.get("common", "cant_search_yet"))
 		self.world:emit("spawn_dialogue_ex", t)
 	else
-		--TODO get item
+		--TODO: (Brandon) get item
 	end
 end
 
@@ -85,7 +85,7 @@ function StorageRoom:check_drawer_key(e, dialogues_t)
 		local t = tablex.copy(dialogues_t.no_key_yet)
 		self.world:emit("spawn_dialogue_ex", t)
 	else
-		--TODO open and get item
+		--TODO: (Brandon) open and get item
 	end
 end
 

@@ -320,7 +320,7 @@ function Outside:get_flashlight(e, dialogues_t)
 end
 
 function Outside:toggle_car_power(ent)
-	--TODO play sound
+	--TODO: (Brandon) play sound
 	self.world:emit("wait_dialogue", true)
 	self.world:emit("remove_choices")
 	local mcl = self.main_car_light.light_disabled

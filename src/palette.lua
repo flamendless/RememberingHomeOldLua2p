@@ -1,6 +1,6 @@
 local Palette = {}
 
--- TODO finalize colors
+-- TODO: (Brandon) finalize colors
 
 Palette.colors = {
 	white = { 1, 1, 1 },

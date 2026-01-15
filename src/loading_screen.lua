@@ -35,7 +35,7 @@ function LoadingScreen.update(dt)
 end
 
 function LoadingScreen.draw()
-	--TODO improve this
+	--TODO: (Brandon) improve this
 	love.graphics.setCanvas(canvas)
 	love.graphics.clear()
 	love.graphics.setColor(0, 0, 0, 1)

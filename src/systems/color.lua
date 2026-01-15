@@ -9,7 +9,7 @@ local Color = Concord.system({
 	pool_blink = { "color", "blink" },
 })
 
---TODO implement checking for alpha_range
+--TODO: (Brandon) implement checking for alpha_range
 
 local function lerp_colors(lc, color)
 	local duration = lc.duration

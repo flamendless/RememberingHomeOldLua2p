@@ -1,4 +1,4 @@
---TODO make parallax stop system signal?
+--TODO: (Brandon) make parallax stop system signal?
 Concord.component("parallax_stop")
 
 Concord.component("parallax", function(c, vx, vy)

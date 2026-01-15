@@ -469,7 +469,7 @@ function Menu:on_newgame()
 	local e_desk_fast = Concord.entity(self.world):assemble(Assemblages.Menu.desk_fast, ww, wh)
 
 	Timer.after(timer, function()
-		-- TODO add sudden static sound
+		-- TODO: (Brandon) add sudden static sound
 		e_desk_fast:give("hidden")
 		Timer.after(timer, function()
 			self.world:emit("switch_state", "Intro")

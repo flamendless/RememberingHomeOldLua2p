@@ -15,7 +15,7 @@ function LightSwitch:toggle_light_switch(_, _, choice)
 		end
 
 		if valid then
-			--TODO play sound
+			--TODO: (Brandon) play sound
 			if e.light_disabled then
 				e:remove("light_disabled")
 			else

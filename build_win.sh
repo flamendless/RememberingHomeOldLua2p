@@ -36,7 +36,7 @@ function prof_viewer()
 function run()
 {
 	echo "Running build_win.sh"
-	# TODO change this when in RELEASE mode
+	# TODO: (Brandon) change this when in RELEASE mode
 	# win64
 	love_only
 	$cmd /c start cmd.exe /c "cd $path_love && lovec.exe $path_game & pause"

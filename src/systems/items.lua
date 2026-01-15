@@ -5,7 +5,7 @@ local ItemsSystem = Concord.system({
 local list = {
 	flashlight = {
 		car = {
-			--TODO
+			--TODO: (Brandon)
 			-- "_play_sound_item_unusable",
 			"I got this flashlight from the car",
 		},

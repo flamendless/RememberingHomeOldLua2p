@@ -192,7 +192,7 @@ end
 
 Inventory["on_list_item_interact_" .. "inventory_cells"] = function(self, e_hovered)
 	if not self:get_selected_item() then
-		--TODO play invalid sound
+		--TODO: (Brandon) play invalid sound
 		return
 	end
 	for _, e in ipairs(self.pool_choice) do
