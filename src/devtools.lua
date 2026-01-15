@@ -12,7 +12,7 @@ local DevTools = {
 		culling = false,
 		fireflies = false,
 		flashlight = true,
-		fog = false,
+		fog = true,
 		gamestates = false,
 		id = true,
 		light = false,
@@ -64,7 +64,7 @@ local fade = {
 }
 
 local image_viewer = {
-	show = true,
+	show = false,
 	title = "Image Viewer",
 	e = nil,
 	mode = nil, -- quad or full
@@ -297,20 +297,15 @@ function DevTools.draw_component_list()
 		if id then
 			if Slab.BeginTree(id) then
 				local components = e:getComponents()
-				Slab.Indent()
-				local i = 1
 				for k in pairs(components) do
-					local key = i .. " " .. k
-					if not slab_components[k] then
-						Slab.Text(key)
-					elseif Slab.BeginTree(key) then
-						slab_components[k](e)
+					if Slab.BeginTree(k) then
+						if slab_components[k] then
+							slab_components[k](e)
+						end
 						Slab.EndTree()
 					end
-					i = i + 1
 				end
 
-				Slab.Unindent()
 				Slab.EndTree()
 			end
 		end
@@ -374,21 +369,71 @@ end
 function DevTools.slab_sprite(e)
 	if not e.sprite then return end
 	if Slab.Button("Show Sprite") then
+		image_viewer.show = true
 		image_viewer.e = e
 		image_viewer.mode = "quad"
 	end
 	Slab.SameLine()
 	if Slab.Button("Show Full") then
+		image_viewer.show = true
 		image_viewer.e = e
 		image_viewer.mode = "full"
 	end
 end
 
+function DevTools.slab_attach_to(e)
+	if not e.attach_to then return end
+	local e_other = GameStates.world:getEntityByKey(e.attach_to.key)
+	Slab.Text("Attached to ID: " .. e_other.id.value)
+	if e.attach_to_offset and Slab.BeginTree("Attach to offset") then
+		local ato = e.attach_to_offset
+		ato.ox = UIWrapper.edit_number("ox", ato.ox, true)
+		ato.oy = UIWrapper.edit_number("oy", ato.oy, true)
+		Slab.EndTree()
+	end
+end
+
+function DevTools.slab_pos(e)
+	if not e.pos then return end
+	local pos = e.pos
+	pos.x = UIWrapper.edit_number("x", pos.x, true)
+	pos.y = UIWrapper.edit_number("y", pos.y, true)
+end
+
+function DevTools.slab_transform(e)
+	local transform = e.transform
+	if transform and Slab.BeginTree("Transform") then
+		transform.rotation = UIWrapper.edit_range("r", transform.rotation, 0, 1, false)
+		transform.sx = UIWrapper.edit_number("sx", transform.sx, false)
+		transform.sy = UIWrapper.edit_number("sy", transform.sy, false)
+		transform.ox = UIWrapper.edit_number("ox", transform.ox, false)
+		transform.oy = UIWrapper.edit_number("oy", transform.oy, false)
+		transform.kx = UIWrapper.edit_number("kx", transform.kx, false)
+		transform.ky = UIWrapper.edit_number("ky", transform.ky, false)
+		Slab.EndTree()
+	end
+
+	local quad = e.quad
+	local quad_transform = e.quad_transform
+	if quad and quad_transform and Slab.BeginTree("Quad Transform") then
+		quad_transform.rotation = UIWrapper.edit_range("r", quad_transform.rotation, 0, 1, false)
+		quad_transform.sx = UIWrapper.edit_number("sx", quad_transform.sx, false)
+		quad_transform.sy = UIWrapper.edit_number("sy", quad_transform.sy, false)
+		quad_transform.ox = UIWrapper.edit_number("ox", quad_transform.ox, false)
+		quad_transform.oy = UIWrapper.edit_number("oy", quad_transform.oy, false)
+		Slab.EndTree()
+	end
+end
+
 slab_components = {
+	attach_to = DevTools.slab_attach_to,
+	attach_to_offset = DevTools.slab_attach_to,
 	color = DevTools.slab_color,
-	z_index = DevTools.slab_z_index,
-	sprite = DevTools.slab_sprite,
 	id = DevTools.slab_id,
+	pos = DevTools.slab_pos,
+	sprite = DevTools.slab_sprite,
+	transform = DevTools.slab_transform,
+	z_index = DevTools.slab_z_index,
 }
 
 function DevTools.draw_fade()
@@ -412,8 +457,14 @@ function DevTools.draw_image_viewer()
 		Title = image_viewer.title,
 		IsOpen = image_viewer.show,
 	})
+	if Slab.Button("Close") then
+		image_viewer.show = false
+		image_viewer.e = nil
+	end
+
 	local e = image_viewer.e
 	if e then
+		Slab.SameLine()
 		local sprite = e.sprite
 		Slab.Text("Mode: " .. image_viewer.mode)
 		image_viewer.scale = UIWrapper.edit_range(
