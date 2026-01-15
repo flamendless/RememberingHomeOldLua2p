@@ -73,6 +73,7 @@ function Animation:setup_animation(e, data, on_loop)
 	if not multi then
 		obj_grid = Anim8.newGrid(data.frame_width, data.frame_height, data.sheet_width, data.sheet_height)
 		obj_animation = Anim8.newAnimation(obj_grid(unpack(data.frames)), data.delay, on_loop)
+
 	else
 		local cache = self.cache_multi_animation[e.id.value]
 		if cache[current_tag] then
@@ -234,6 +235,7 @@ function Animation:update(dt)
 					Timer.after(on_finish.delay, function()
 						self.world:emit(on_finish.signal, unpack(on_finish.args))
 					end)
+					Log.info("animation on finish done")
 				end
 			end
 

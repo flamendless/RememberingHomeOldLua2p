@@ -152,7 +152,7 @@ end
 
 function DeferredLighting:set_ambiance(t)
 	if not (type(t) == "table") then
-		error('Assertion failed: type(t) == "table"')
+		error('Assertion failed: type(t) == "table". Got ' .. type(t))
 	end
 	if not self.orig_ambiance then
 		self.orig_ambiance = { unpack(t) }
@@ -364,11 +364,6 @@ local flags = {
 local cache = {}
 
 function DeferredLighting:debug_on_toggle()
-	if self.debug_show then
-		self:set_ambiance({ 0, 0, 0, 0 })
-	else
-		self:set_ambiance(self.orig_ambiance)
-	end
 	flags.ambiance = not self.debug_show
 end
 
@@ -391,7 +386,7 @@ function DeferredLighting:debug_update(dt)
 		if not flags.ambiance then
 			self:set_ambiance({ 0, 0, 0, 0 })
 		else
-			self:set_ambiance(self.orig_ambiance)
+			self:set_ambiance(self.orig_ambiance or ac)
 		end
 	end
 	ac[1] = UIWrapper.edit_range("ar", ac[1], 0, 1)

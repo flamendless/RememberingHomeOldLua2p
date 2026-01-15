@@ -20,8 +20,8 @@ function Fog:update()
 end
 
 function Fog:draw_fog(e)
-	if DEV then
-		if not DevTools.flags.fog then return end
+	if DEV and DevTools.show and not DevTools.flags.fog then
+		return
 	end
 
 	if not e.__isEntity then

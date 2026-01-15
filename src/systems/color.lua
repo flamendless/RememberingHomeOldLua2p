@@ -37,6 +37,7 @@ local function lerp_colors(lc, color)
 			end
 
 			lerp_colors(lc, color)
+			Log.info("lerp colors oncomplete done")
 		end)
 
 	local ease = lc.ease
@@ -56,14 +57,17 @@ function Color:init(world)
 			target = f_in.value
 		end
 
-		local f = Flux.to(e.color.value, c.duration, { [4] = target }):delay(c.delay):oncomplete(function()
-			local on_complete = e.color_fade_in_finish
-			if on_complete then
-				self.world:emit(on_complete.signal, unpack(on_complete.args))
-				-- e:remove("color_fade_in_finish")
-			end
-			e:remove("color_fade_in")
-		end)
+		local f = Flux.to(e.color.value, c.duration, { [4] = target })
+			:delay(c.delay)
+			:oncomplete(function()
+				local on_complete = e.color_fade_in_finish
+				if on_complete then
+					self.world:emit(on_complete.signal, unpack(on_complete.args))
+					-- e:remove("color_fade_in_finish")
+				end
+				e:remove("color_fade_in")
+				Log.info("color fade in oncomplete done")
+			end)
 
 		local ease = e.ease
 		if ease then
@@ -81,6 +85,7 @@ function Color:init(world)
 					-- e:remove("color_fade_out_finish")
 				end
 				e:remove("color_fade_out")
+				Log.info("color fade out oncomplete done")
 			end)
 
 		local ease = e.ease
@@ -156,6 +161,7 @@ function Color:init(world)
 						self.world:emit(on_finish.signal, unpack(on_finish.args))
 					end)
 					e:remove("lerp_on_finish")
+					Log.info("lerp on finish done")
 				elseif on_finish_multi then
 					for _, t in ipairs(on_finish_multi.values) do
 						Timer.after(t.delay or 0, function()
@@ -163,6 +169,7 @@ function Color:init(world)
 						end)
 					end
 					e:remove("lerp_on_finish_multi")
+					Log.info("lerp on finish multi done")
 				end
 				e:remove("target_color")
 			end)
@@ -196,6 +203,7 @@ function Color:setup_blink(e)
 				e:remove("blink"):remove("remove_blink_on_end"):remove("on_blink_end")
 			end
 		end
+		Log.info("blink oncomplete done")
 	end)
 end
 
