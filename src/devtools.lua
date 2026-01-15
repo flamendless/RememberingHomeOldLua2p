@@ -24,6 +24,10 @@ local DevTools = {
 		randomize_uv = false,
 		behavior_tree = false,
 	},
+	metrics = {
+		give = {},
+		remove = {},
+	},
 }
 
 local slab_components
@@ -177,6 +181,31 @@ function DevTools.draw_stats()
 	for k, v in pairs(stats.stats) do
 		Slab.Text(k .. ": " .. v)
 	end
+	Slab.Separator()
+	if Slab.BeginTree("Give") then
+		Slab.BeginLayout("layout_give", {Columns = 2})
+		for k, v in pairs(DevTools.metrics.give) do
+			Slab.SetLayoutColumn(1)
+			Slab.Text(k)
+			Slab.SetLayoutColumn(2)
+			Slab.Text(v)
+		end
+		Slab.EndLayout()
+		Slab.EndTree()
+	end
+
+	if Slab.BeginTree("Remove") then
+		Slab.BeginLayout("layout_remove", {Columns = 2})
+		for k, v in pairs(DevTools.metrics.remove) do
+			Slab.SetLayoutColumn(1)
+			Slab.Text(k)
+			Slab.SetLayoutColumn(2)
+			Slab.Text(v)
+		end
+		Slab.EndLayout()
+		Slab.EndTree()
+	end
+
 	Slab.EndWindow()
 end
 
@@ -559,6 +588,11 @@ function DevTools.wheelmoved(wx, wy)
 		return
 	end
 	GameStates.world:emit("debug_wheelmoved", wx, wy)
+end
+
+function DevTools.clear()
+	tablex.clear(DevTools.metrics.give)
+	tablex.clear(DevTools.metrics.remove)
 end
 
 return DevTools

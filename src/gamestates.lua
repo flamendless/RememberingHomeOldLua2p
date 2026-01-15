@@ -83,6 +83,8 @@ function GameStates.switch(next_id)
 		GameStates.prev_world = GameStates.world
 		GameStates.prev_id = GameStates.current_id
 		GameStates.exit()
+
+		if DEV then DevTools.clear() end
 	end
 
 	Log.info("Switching to:", next_id)

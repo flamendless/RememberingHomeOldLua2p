@@ -161,3 +161,27 @@ GameStates = require("gamestates")
 require("modules.batteries"):export()
 require("modules.sdf").mount()
 require("modules.strict")
+
+if DEV then
+	local old_give = Concord.entity.give
+	function Concord.entity:give(...)
+		local t = {...}
+		if not DevTools.metrics.give[t[1]] then
+			DevTools.metrics.give[t[1]] = 0
+		end
+		DevTools.metrics.give[t[1]] = DevTools.metrics.give[t[1]] + 1
+
+		return old_give(self, ...)
+	end
+
+	local old_remove = Concord.entity.remove
+	function Concord.entity:remove(...)
+		local t = {...}
+		if not DevTools.metrics.remove[t[1]] then
+			DevTools.metrics.remove[t[1]] = 0
+		end
+		DevTools.metrics.remove[t[1]] = DevTools.metrics.remove[t[1]] + 1
+
+		return old_remove(self, ...)
+	end
+end
