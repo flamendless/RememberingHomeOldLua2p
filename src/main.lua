@@ -10,8 +10,6 @@ Room Designer: Piolo Maurice Laudencia @piotato
 Start Date: Tue Mar 17 18:42:00 PST 2020
 --]]
 
---love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")
---require("jit.p").start("lz")
 require("global")
 
 Log.lovesave = true

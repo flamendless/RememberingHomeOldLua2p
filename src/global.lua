@@ -1,3 +1,15 @@
+if DEV then
+	love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")
+	local os = love.system.getOS()
+	print("Loading luajit modules for ", os)
+	if os == "Linux" then
+		print("Loaded luajit modules for Linux")
+	elseif os == "OS X" then
+		require("jit_mac.p").start("lz")
+	end
+	print("Loaded luajit modules for ", os)
+end
+
 UTF8 = require("utf8")
 FFI = require("ffi")
 Socket = require("socket")
