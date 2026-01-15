@@ -12,7 +12,7 @@ local DevTools = {
 		culling = false,
 		fireflies = false,
 		flashlight = true,
-		fog = false,
+		fog = true,
 		gamestates = false,
 		id = false,
 		light = false,
@@ -68,7 +68,6 @@ local image_viewer = {
 	title = "Image Viewer",
 	e = nil,
 	mode = nil, -- quad or full
-	scale = 1,
 }
 
 local list = {
@@ -343,6 +342,17 @@ function DevTools.draw_debug_list()
 	Slab.EndWindow()
 end
 
+function DevTools.slab_hidden(e)
+	if not e.hidden and not e.dev_hidden then return end
+	if Slab.CheckBox(e.hidden ~= nil, "hidden") then
+		if e:has("hidden") then
+			e:remove("hidden"):give("dev_hidden")
+		else
+			e:give("hidden"):remove("dev_hidden")
+		end
+	end
+end
+
 function DevTools.slab_id(e)
 	if not e.id then return end
 	Slab.Text("id: " .. e.id.value)
@@ -429,6 +439,8 @@ slab_components = {
 	attach_to = DevTools.slab_attach_to,
 	attach_to_offset = DevTools.slab_attach_to,
 	color = DevTools.slab_color,
+	dev_hidden = DevTools.slab_hidden,
+	hidden = DevTools.slab_hidden,
 	id = DevTools.slab_id,
 	pos = DevTools.slab_pos,
 	sprite = DevTools.slab_sprite,
@@ -465,35 +477,23 @@ function DevTools.draw_image_viewer()
 	local e = image_viewer.e
 	if e then
 		Slab.SameLine()
-		local sprite = e.sprite
 		Slab.Text("Mode: " .. image_viewer.mode)
-		image_viewer.scale = UIWrapper.edit_range(
-			"scale",
-			image_viewer.scale,
-			0,
-			1,
-			false
-		)
+		local sprite = e.sprite
 		if image_viewer.mode == "quad" then
 			local subx, suby, subw, subh = e.quad.quad:getViewport()
-			local w, h = e.quad.quad:getTextureDimensions()
 			Slab.Image(e.id.value,
 				{
 					Image = sprite.image,
 					SubX = subx, SubY = suby,
 					SubW = subw, SubH = subh,
-					W = w, H = h,
-					Scale = image_viewer.scale,
+					W = subw * 2, H = subh * 2,
 				}
 			)
 		elseif image_viewer.mode == "full" then
 			Slab.Image(e.id.value, {
 				Image = sprite.image,
-				W = sprite.iw, sprite.ih,
-				Scale = image_viewer.scale,
+				W = sprite.iw, H = sprite.ih,
 			})
-		else
-			error("unknown mode: " .. image_viewer.mode)
 		end
 	end
 	Slab.EndWindow()
@@ -528,7 +528,7 @@ function DevTools.keypressed(key)
 		DevTools.show_fps = not DevTools.show_fps
 	elseif key == "r" then
 		love.event.quit("restart")
-	elseif key == "escape" then
+	elseif key == "escape" and DevTools.show then
 		love.event.quit()
 	end
 end

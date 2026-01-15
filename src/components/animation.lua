@@ -41,11 +41,11 @@ Concord.component("change_animation_tag", function(c, new_tag, override)
 end)
 
 Concord.component("animation_pause_at", function(c, at_frame)
-	if not (type(at_frame) == "string") then
-		error('Assertion failed: type(at_frame) == "string"')
-	end
-	if not Enums.pause_at[at_frame] then
-		error("Invalid 'at_frame'. Got " .. at_frame)
+	if type(at_frame) == "string" then
+		if not Enums.pause_at[at_frame] then
+			error("Invalid 'at_frame'. Got " .. at_frame)
+		end
+	elseif type(at_frame) == "number" then
 	end
 	c.at_frame = at_frame
 end)

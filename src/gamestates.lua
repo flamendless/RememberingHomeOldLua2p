@@ -61,7 +61,7 @@ function GameStates.start(resources)
 			then
 				return
 			end
-			Log.info("Emitted", event)
+			Log.trace("Emitted", event)
 		end
 	end
 

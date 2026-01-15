@@ -13,3 +13,7 @@ end)
 
 Concord.component("preserve_id")
 Concord.component("hidden")
+
+if DEV then
+	Concord.component("dev_hidden")
+end

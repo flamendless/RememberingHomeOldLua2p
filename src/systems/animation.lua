@@ -66,6 +66,11 @@ function Animation:setup_animation(e, data, on_loop)
 		error('Assertion failed: type(on_loop) == "function"')
 	end
 	local animation = e.animation
+	if animation.anim8 then
+		Log.info("setup animation already has anim8. Skipping...", "id", e.id.value)
+		return
+	end
+
 	local current_tag = animation.current_tag
 	local multi = e.multi_animation_data
 	local obj_grid, obj_animation
@@ -116,6 +121,8 @@ function Animation:setup_animation(e, data, on_loop)
 	if data.start_frame then
 		obj_animation:gotoFrame(data.start_frame)
 	end
+
+	Log.info("setup animation done", "id", e.id.value)
 end
 
 function Animation:init(world)
@@ -143,12 +150,16 @@ function Animation:init(world)
 	self.pool_pause.onAdded = function(pool, e)
 		local data = e.animation_data
 		local animation = e.animation
-		local pause_at = e.animation_pause_at
+		if animation.anim8 == nil then
+			local on_loop = self:setup_on_loop(e, animation)
+			self:setup_animation(e, data, on_loop)
+		end
 
+		local pause_at = e.animation_pause_at
 		if type(pause_at.at_frame) == "string" then
-			if pause_at.at_frame == "first" then
+			if pause_at.at_frame == Enums.pause_at.first then
 				animation.anim8:pauseAtStart()
-			elseif pause_at.at_frame == "last" then
+			elseif pause_at.at_frame == Enums.pause_at.last then
 				animation.anim8:pauseAtEnd()
 			end
 		elseif type(pause_at.at_frame) == "number" then
