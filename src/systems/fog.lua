@@ -20,9 +20,14 @@ function Fog:update()
 end
 
 function Fog:draw_fog(e)
+	if DEV then
+		if not DevTools.flags.fog then return end
+	end
+
 	if not e.__isEntity then
 		error(e.fog)
 	end
+
 	local fog = e.fog
 	local color = e.color.value
 	love.graphics.setColor(color)

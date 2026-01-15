@@ -316,7 +316,7 @@ function Animation:debug_update(dt)
 		Slab.EndComboBox()
 	end
 
-	if selected_e then
+	if selected_e and selected_e.multi_animation_data then
 		local multi_anim_data = selected_e.multi_animation_data.data
 		if Slab.BeginComboBox("cb_anim", { Selected = selected_anim }) then
 			for tag in pairs(multi_anim_data) do
