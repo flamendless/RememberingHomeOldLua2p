@@ -137,7 +137,7 @@ function Intro.car_reflect(e, car)
 		:give("pos", car.pos.x, car.pos.y)
 		:give("animation", false)
 		:give("attach_to", car)
-		:give("z_index", z_index.car_reflect[1])
+		:give("z_index", z_index.car[1] + 8)
 		:give("depth_zoom", z_index.car_reflect[2])
 		:give("transform")
 end
@@ -153,7 +153,7 @@ function Intro.car_light(e, car)
 		:give("atlas", Atlases.AtlasIntro.frames.car_headlight)
 		:give("light_flicker", 0.075)
 		:give("attach_to", car)
-		:give("attach_to_offset", 112, 24)
+		:give("attach_to_offset", 116, -24)
 		:give("z_index", z_index.car[1])
 end
 

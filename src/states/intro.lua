@@ -58,7 +58,9 @@ function Intro:state_setup()
 	end
 
 	self.e_car = Concord.entity(self.world):assemble(asm_intro.car)
-	Concord.entity(self.world):assemble(asm_intro.car_light, self.e_car):give("light_disabled"):give("intro_light")
+	Concord.entity(self.world):assemble(asm_intro.car_light, self.e_car)
+		:give("light_disabled")
+		:give("intro_light")
 	self.e_car_reflect = Concord.entity(self.world)
 		:assemble(asm_intro.car_reflect, self.e_car)
 		:give("animation_on_loop", "car_reflection_flicker")
