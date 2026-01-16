@@ -44,7 +44,11 @@ function Outside.splashes(e)
 end
 
 function Outside.firefly(e, x, y, size)
-	e:give("id", "firefly"):give("firefly"):give("pos", x, y, 2):give("point_light", size):give("diffuse", { 0, 0, 0 })
+	e:give("id", "firefly")
+		:give("firefly")
+		:give("pos", x, y, 2)
+		:give("point_light", size)
+		:give("diffuse", { 0, 0, 0 })
 end
 
 function Outside.colliders.ground(e, w, h)

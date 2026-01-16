@@ -71,13 +71,25 @@ function Outside:state_setup()
 
 	--setup end of headlights
 	local bx, by = 585, 323
-	local r, s = 4, 64
 	local color = Palette.get_diffuse("car_headlight_sl")
 	local ix, iy = 10, 1
 	for i = 1, 4 do
+		local r, s
+		if i == 2 or i == 3 then
+			r, s = 4, 48
+		else
+			r, s = 2, 64
+		end
 		local d = i - 1
+
 		Concord.entity(self.world)
-			:assemble(Assemblages.Light.point, bx + ix * d, by - iy * d, r, s, color)
+			:assemble(
+				Assemblages.Light.point,
+				bx + ix * d,
+				by - iy * d,
+				r, s,
+				color
+			)
 			:give("id", "pl_headlight_end" .. i)
 			:give("car_lights")
 	end
@@ -122,6 +134,14 @@ function Outside:state_init()
 	-- end)
 
 	self.timeline = TLE.Do(function()
+		if DEV then
+			self.world:emit("set_camera_transform", self.camera, {
+				x = 640,
+				y = 320,
+				scale = 3,
+			})
+		end
+
 		self.timeline:Pause()
 
 		Fade.set_alpha(0)
