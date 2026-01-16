@@ -31,7 +31,9 @@ end
 function BumpCollision:preupdate(dt)
 	for _, e in ipairs(self.pool:getItems()) do
 		e.collider.is_hit = false
-		e:remove("hit_wall")
+		if e:has("hit_wall") then
+			e:remove("hit_wall")
+		end
 
 		e.bump.debug_hovered = false
 	end
