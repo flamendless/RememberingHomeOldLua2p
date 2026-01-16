@@ -50,10 +50,10 @@ local map_names = { "WASD", "Arrows" }
 
 Inputs.dev_map = {
 	m = "play",
-	k = "camera_down",
-	i = "camera_up",
-	j = "camera_left",
-	l = "camera_right",
+	down = "camera_down",
+	up = "camera_up",
+	left = "camera_left",
+	right = "camera_right",
 }
 
 function Inputs.init(key_map)
