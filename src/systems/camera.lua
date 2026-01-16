@@ -1,5 +1,3 @@
-
-
 local Camera = Concord.system({
 	pool = { "camera" },
 	pool_clip = { "camera", "camera_clip" },
@@ -410,6 +408,11 @@ function Camera:debug_wheelmoved(wx, wy)
 	local scale = self.main_camera:getScale()
 	local dy = scale + wy * 0.15
 	self.main_camera:setScale(dy)
+end
+
+function Camera:debug_on_toggle(event)
+	if event ~= "camera" then return end
+	self.debug_show = not self.debug_show
 end
 
 return Camera

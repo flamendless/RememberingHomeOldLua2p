@@ -63,7 +63,7 @@ local debug_list = {
 	title = "Debug List",
 }
 local fade = {
-	show = true,
+	show = false,
 	title = "Fade",
 }
 
@@ -544,6 +544,7 @@ function DevTools.keypressed(key)
 	if Slab.IsAnyInputFocused() then
 		return
 	end
+
 	if key == "`" then
 		DevTools.show = not DevTools.show
 		Slab.EnableStats(DevTools.show)
@@ -555,6 +556,12 @@ function DevTools.keypressed(key)
 		DevTools.pause = not DevTools.pause
 	elseif key == "h" then
 		DevTools.show_fps = not DevTools.show_fps
+	elseif key == "c" then
+		GameStates.world:emit("debug_on_toggle", "camera")
+	elseif key == "l" then
+		GameStates.world:emit("debug_on_toggle", "deferred_lighting")
+	elseif key == "f" then
+		fade.show = not fade.show
 	elseif key == "r" then
 		love.event.quit("restart")
 	elseif key == "escape" and DevTools.show then

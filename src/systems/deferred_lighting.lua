@@ -363,7 +363,9 @@ local flags = {
 }
 local cache = {}
 
-function DeferredLighting:debug_on_toggle()
+function DeferredLighting:debug_on_toggle(event)
+	if event ~= "deferred_lighting" then return end
+	self.debug_show = not self.debug_show
 	flags.ambiance = not self.debug_show
 end
 
