@@ -7,15 +7,18 @@ local col_target = Palette.get_diffuse("firefly")
 function Fireflies:init(world)
 	self.world = world
 
-	self.debug_fireflies = false
+	if DEV then
+		self.debug_fireflies = false
+	end
 end
 
 function Fireflies:generate_fireflies()
-	local n = love.math.random(40, 50)
+	local n = love.math.random(26, 38)
 	local min_x, max_x = 32, 1000
-	local y = 220
+	local min_y, max_y = 220, 300
 	for _ = 1, n do
 		local x = love.math.random(min_x, max_x)
+		local y = love.math.random(min_y, max_y)
 		local size = love.math.random(12, 20)
 		local points = Generator.path_points_fireflies(x, y, 64)
 		local e = Concord.entity(self.world)
