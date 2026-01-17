@@ -40,14 +40,13 @@ function PlayerController:on_toggle_equip_flashlight()
 end
 
 function PlayerController:spawn_player(fn)
-	if fn then
-		if not (type(fn) == "function") then
-			error('Assertion failed: type(fn) == "function"')
-		end
+	if fn and not type(fn) == "function" then
+		error('Assertion failed: type(fn) == "function"')
 	end
-	if not (self.player == nil) then
+	if self.player ~= nil then
 		error("Player already exists")
 	end
+
 	local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
 	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
 	self.world:__flush()
@@ -198,6 +197,14 @@ function PlayerController:debug_update(dt)
 		Title = "PlayerController",
 		IsOpen = self.debug_show,
 	})
+
+	if self.player == nil then
+		if Slab.Button("Spawn Player") then
+			self:spawn_player()
+		end
+		Slab.EndWindow()
+		return
+	end
 
 	local pos = self.player.pos
 	Slab.Text("Pos")

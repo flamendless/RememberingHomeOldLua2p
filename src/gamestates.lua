@@ -48,8 +48,11 @@ function GameStates.start(resources)
 			parallax_move_x = true,
 			preupdate = true,
 			set_ambiance = true,
+			switch_animation_tag = true,
 			update = true,
+			update_collider = true,
 			update_particle_system = true,
+			update_speed_data = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event)

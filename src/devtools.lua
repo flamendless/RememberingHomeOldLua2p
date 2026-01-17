@@ -319,6 +319,7 @@ function DevTools.draw_component_list()
 		Title = component_list.title,
 		IsOpen = component_list.show,
 	})
+
 	local entities = GameStates.world:getEntities()
 	for _, e in ipairs(entities) do
 		local id = e.id.value
@@ -327,9 +328,8 @@ function DevTools.draw_component_list()
 				local components = e:getComponents()
 				for k in pairs(components) do
 					if Slab.BeginTree(k) then
-						if slab_components[k] then
-							slab_components[k](e)
-						end
+						local fn = slab_components[k]
+						if fn then fn(e) end
 						Slab.EndTree()
 					end
 				end
