@@ -14,7 +14,8 @@ local function get_item(id)
 			return item
 		end
 	end
-	assert(false, "should not be reached")
+
+	Log.info("Item ID not found. ID: ", id)
 end
 
 function Items.add(id)

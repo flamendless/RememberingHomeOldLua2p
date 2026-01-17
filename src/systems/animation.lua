@@ -65,12 +65,8 @@ function Animation:setup_animation(e, data, on_loop)
 	if not (type(on_loop) == "function") then
 		error('Assertion failed: type(on_loop) == "function"')
 	end
-	local animation = e.animation
-	if animation.anim8 then
-		Log.info("setup animation already has anim8. Skipping...", "id", e.id.value)
-		return
-	end
 
+	local animation = e.animation
 	local current_tag = animation.current_tag
 	local multi = e.multi_animation_data
 	local obj_grid, obj_animation

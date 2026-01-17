@@ -1,4 +1,4 @@
-local Dialogues = Concord.system({
+local DialoguesSystem = Concord.system({
 	pool = { "dialogue_item", "text_t" },
 	pool_choice = {
 		constructor = Ctor.ListByID,
@@ -9,7 +9,7 @@ local Dialogues = Concord.system({
 local c_hc = Palette.colors.hovered_choice
 local PAD = 32
 
-function Dialogues:init(world)
+function DialoguesSystem:init(world)
 	self.world = world
 	self.is_waiting = false
 	self.world:emit("create_dialogue_key")
@@ -20,7 +20,7 @@ function Dialogues:init(world)
 	end
 end
 
-function Dialogues:create_tle()
+function DialoguesSystem:create_tle()
 	self.timeline = TLE.Do(function()
 		while true do
 			local text_t = self.e_dialogue.text_t
@@ -30,7 +30,7 @@ function Dialogues:create_tle()
 			if current_line then
 				text_t.current_index = text_t.current_index + 1
 				local should_pause = true
-				local bool, signal, handle_self = Data.Dialogues.check_signal(current_line)
+				local bool, signal, handle_self = Dialogues.check_signal(current_line)
 
 				if bool then
 					self.world:emit(signal, self.e_dialogue, dialogues)
@@ -59,7 +59,7 @@ function Dialogues:create_tle()
 	end)
 end
 
-function Dialogues:create_e_dialogue()
+function DialoguesSystem:create_e_dialogue()
 	local camera = self.world:getResource("camera")
 	if not camera then
 		error("camera resource should be set by now")
@@ -81,7 +81,7 @@ function Dialogues:create_e_dialogue()
 	self:create_tle()
 end
 
-function Dialogues:update(dt)
+function DialoguesSystem:update(dt)
 	if self.is_waiting then
 		return
 	end
@@ -93,14 +93,14 @@ function Dialogues:update(dt)
 	end
 end
 
-function Dialogues:wait_dialogue(bool)
+function DialoguesSystem:wait_dialogue(bool)
 	if not (type(bool) == "boolean") then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	self.is_waiting = bool
 end
 
-function Dialogues:spawn_dialogue(dialogues_t, main, sub)
+function DialoguesSystem:spawn_dialogue(dialogues_t, main, sub)
 	if not (type(dialogues_t) == "table") then
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
@@ -112,13 +112,13 @@ function Dialogues:spawn_dialogue(dialogues_t, main, sub)
 	end
 	self.e_dialogue:give("dialogue_meta", main, sub):give("text_t", dialogues_t)
 	self:populate_choices(dialogues_t)
-	if Data.Dialogues.validate(dialogues_t) then
+	if Dialogues.validate(dialogues_t) then
 		self.world:emit("on_interact_or_inventory")
 	end
 	self.timeline:Unpause()
 end
 
-function Dialogues:spawn_dialogue_ex(dialogue_t, signal_after, ...)
+function DialoguesSystem:spawn_dialogue_ex(dialogue_t, signal_after, ...)
 	if not (type(dialogue_t) == "table") then
 		error('Assertion failed: type(dialogue_t) == "table"')
 	end
@@ -136,7 +136,7 @@ function Dialogues:spawn_dialogue_ex(dialogue_t, signal_after, ...)
 	end
 end
 
-function Dialogues:on_dialogue_reached_end(e)
+function DialoguesSystem:on_dialogue_reached_end(e)
 	if self.is_waiting then
 		self.timeline:Pause()
 		return
@@ -170,7 +170,7 @@ function Dialogues:on_dialogue_reached_end(e)
 	self.timeline:Pause()
 end
 
-function Dialogues:update_dialogues(new_dialogues_t)
+function DialoguesSystem:update_dialogues(new_dialogues_t)
 	if not (type(new_dialogues_t) == "table") then
 		error('Assertion failed: type(new_dialogues_t) == "table"')
 	end
@@ -183,7 +183,7 @@ function Dialogues:update_dialogues(new_dialogues_t)
 	end
 end
 
-function Dialogues:proceed_dialogue()
+function DialoguesSystem:proceed_dialogue()
 	for _, e in ipairs(self.pool) do
 		if e.text_skipped then
 			e:remove("text_skipped")
@@ -196,7 +196,7 @@ function Dialogues:proceed_dialogue()
 	end
 end
 
-function Dialogues:show_choices()
+function DialoguesSystem:show_choices()
 	local d = self.e_dialogue.dialogue_meta
 	local l, _, _, h = self.world:getResource("camera"):getWindow()
 	local c = self.e_dialogue.has_choices
@@ -232,7 +232,7 @@ function Dialogues:show_choices()
 	self.world:emit("set_focus_list", "dialogue_choices")
 end
 
-function Dialogues:populate_choices(t)
+function DialoguesSystem:populate_choices(t)
 	if not (type(t) == "table") then
 		error('Assertion failed: type(t) == "table"')
 	end
@@ -247,28 +247,28 @@ function Dialogues:populate_choices(t)
 	end
 end
 
-function Dialogues:cleanup()
+function DialoguesSystem:cleanup()
 	self.e_dialogue:destroy()
 	for _, e in ipairs(self.pool) do
 		e:destroy()
 	end
 end
 
-Dialogues["on_list_cursor_update_" .. "dialogue_choices"] = function(self, e_hovered)
+DialoguesSystem["on_list_cursor_update_" .. "dialogue_choices"] = function(self, e_hovered)
 	if not self.pool_choice:has(e_hovered) then
 		return
 	end
 	self.world:emit("lerp_color", e_hovered, c_hc, 0.25, "circin")
 end
 
-Dialogues["on_list_cursor_remove_" .. "dialogue_choices"] = function(self, e_hovered)
+DialoguesSystem["on_list_cursor_remove_" .. "dialogue_choices"] = function(self, e_hovered)
 	if not self.pool_choice:has(e_hovered) then
 		return
 	end
 	self.world:emit("lerp_color", e_hovered, Palette.get("ui_dialogue"), 0.25, "circin")
 end
 
-Dialogues["on_list_item_interact_" .. "dialogue_choices"] = function(self, e_hovered)
+DialoguesSystem["on_list_item_interact_" .. "dialogue_choices"] = function(self, e_hovered)
 	local t = e_hovered.text_t
 	local text_t = t.value
 	if #text_t == 0 and not text_t.choices then
@@ -277,7 +277,7 @@ Dialogues["on_list_item_interact_" .. "dialogue_choices"] = function(self, e_hov
 		local str = text_t[1]
 		local proceed = true
 		if str then
-			local bool, signal, handle_self = Data.Dialogues.check_signal(str)
+			local bool, signal, handle_self = Dialogues.check_signal(str)
 
 			if bool then
 				proceed = false
@@ -305,4 +305,4 @@ Dialogues["on_list_item_interact_" .. "dialogue_choices"] = function(self, e_hov
 	end
 end
 
-return Dialogues
+return DialoguesSystem
