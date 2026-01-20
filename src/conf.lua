@@ -13,6 +13,21 @@ for _, v in pairs(args) do
 		end
 	end
 end
+
+if not DEV then
+	--INFO: (Brandon) - hack for Mac OS
+	local exeDir = love.filesystem.getSourceBaseDirectory()
+	package.path = exeDir .. "/?.lua;" .. package.path
+
+	local ok, mod = pcall(require, "lbconfig")
+	print("lbconfig", ok, mod)
+	if ok then
+		if mod.config == "dev" then
+			DEV = true
+		end
+	end
+end
+
 print("Running with DEV", DEV)
 print("             COMMIT", GIT_COMMIT)
 

@@ -36,3 +36,5 @@ src/res/*
 *.Identifier
 *.love
 *.DS_Store
+libs/love-build.app/
+libs/love-build.zip

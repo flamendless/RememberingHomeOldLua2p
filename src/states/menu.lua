@@ -34,7 +34,7 @@ local tools = {
 	"Aseprite",
 	"Audacity",
 	"Export-TextureAtlas",
-	"makelove",
+	"love-build",
 	"msdf-bmfont",
 }
 local libs = {

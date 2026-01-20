@@ -200,6 +200,26 @@ function prof_viewer()
 	fi
 }
 
+function get_love_build()
+{
+	if [[ $(uname) == "Darwin" ]]; then
+		local OUT="libs/love-build.zip"
+		wget -O "${OUT}" "https://github.com/ellraiser/love-build/releases/download/v0.9/love-build-0.9-macos.zip"
+		unzip "${OUT}" -d "libs/"
+		chmod u+rwx "libs/love-build.app"
+		chmod -R u+rwX "libs/love-build.app"
+		xattr -dr com.apple.quarantine "libs/love-build.app"
+		chmod +x "libs/love-build.app/Contents/MacOS/love"
+		mkdir -p "release"
+	else
+		echo "Not yet implemented for this OS"
+	fi
+}
+
+function lovebuild() {
+	"libs/love-build.app/Contents/MacOS/love" "src/main.lua"
+}
+
 if [ $# -eq 0 ]; then
 	echo "Must pass command: init, rebuild, clean, run, create_atlas"
 else

@@ -58,8 +58,8 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 * [Export-TextureAtlas](https://github.com/EngineerSmith/Export-TextureAtlas) - for generating atlas textures.
 * [HotParticles](https://github.com/ReFreezed/HotParticles) - for testing/playing with particle systems.
 * [Luapreprocess](https://github.com/ReFreezed/LuaPreprocess) - for preprocessing `.lua2p` files to `.lua`
-* [makelove](https://github.com/pfirsich/makelove) - for packaging the game for other operating systems
 * [msdf-bmfont](https://www.npmjs.com/package/msdf-bmfont) - for converting `.ttf` font files to SDF
+* [love-build](https://github.com/ellraiser/love-build)
 
 ## Credits:
 
@@ -68,15 +68,16 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 ## Dependencies:
 
 * [LOVE framework](https://love2d.org) - version 11.3 is used for development
-* [makelove](https://github.com/pfirsich/makelove) - for packaging the game for other operating systems
 * [rsync](https://rsync.samba.org/) - for copying/moving
 * [luacheck](https://github.com/mpeterv/luacheck)
+* [love-build](https://github.com/ellraiser/love-build)
 
 ## Setup:
 * `git clone <this_repo>`
 * `git submodule init` then `git submodule update`
 * `cd libs/ExportTextureAtlas`, `git submodule init` then `git submodule update`
 * `./build.sh init`
+* `./build.sh get_love_build`
 
 ## Coding Style Guide
 
