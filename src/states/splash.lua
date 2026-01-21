@@ -3,6 +3,7 @@ local Splash = Concord.system()
 local DELAY_SKIP = 0.5
 
 function Splash:init(world)
+	self.id = "splash"
 	self.world = world
 end
 

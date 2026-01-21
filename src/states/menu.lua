@@ -160,6 +160,7 @@ local function generate_about()
 end
 
 function Menu:init(world)
+	self.id = "menu"
 	self.world = world
 	self.keys = {}
 	self.is_transition = true

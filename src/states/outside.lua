@@ -10,6 +10,7 @@ local function tle_log(msg)
 end
 
 function Outside:init(world)
+	self.id = "outside"
 	self.world = world
 	self.is_raining = false
 	self.rain_state = { current = 128 }
@@ -50,7 +51,7 @@ function Outside:state_setup()
 	for _, v in pairs(Assemblages.Outside.colliders) do
 		Concord.entity(self.world):assemble(v, w, h)
 	end
-	self.world:emit("parse_room_items", "outside")
+	self.world:emit("parse_room_items", self.id)
 
 	Concord.entity(self.world):assemble(Assemblages.Outside.splashes)
 	self.world:emit("generate_fireflies")

@@ -1,6 +1,7 @@
 local Kitchen = Concord.system()
 
 function Kitchen:init(world)
+	self.id = "kitchen"
 	self.world = world
 end
 
@@ -13,10 +14,10 @@ function Kitchen:state_setup()
 	self.camera = Gamera.new(0, 0, w, h)
 	self.camera:setWindow(0, 0, ww, wh)
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
-	Concord.entity(self.world):assemble(Assemblages.Common.bg, "kitchen")
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id)
 
 	self.world:emit("create_room_bounds", w, h)
-	self.world:emit("parse_room_items", "kitchen")
+	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.NGrading("lut_dusk"),
 		Shaders.FilmGrain(),

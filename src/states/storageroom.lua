@@ -1,6 +1,7 @@
 local StorageRoom = Concord.system()
 
 function StorageRoom:init(world)
+	self.id = "storage_room"
 	self.world = world
 end
 
@@ -13,10 +14,10 @@ function StorageRoom:state_setup()
 	self.camera = Gamera.new(0, 0, w, h)
 	self.camera:setWindow(0, 0, ww, wh)
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
-	Concord.entity(self.world):assemble(Assemblages.Common.bg, "storage_room")
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id)
 
 	self.world:emit("create_room_bounds", w, h)
-	self.world:emit("parse_room_items", "storage_room")
+	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.NGrading("lut_dusk"),
 		Shaders.FilmGrain(),
@@ -39,9 +40,13 @@ function StorageRoom:state_init()
 		self.world:emit("toggle_component", e_player, "can_run", true)
 	end)
 
-	-- self.world:emit("generate_ants", 18, vec2(12, 28), vec2(56, 4), true, 32)
-	-- self.world:emit("generate_ants", 18, vec2(88, 102), vec2(108, 4), true, 32)
-	-- self.world:emit("generate_flies", 18, vec2(242, 32), 6)
+	if DEV then
+		-- TODO: (Brandon) set ants start and end pos based on room?
+		-- self.world:emit("generate_ants", 18, vec2(12, 28), vec2(56, 4), true, 32)
+		-- self.world:emit("generate_ants", 18, vec2(88, 102), vec2(108, 4), true, 32)
+
+		self.world:emit("generate_flies_for_room_lights", self.id)
+	end
 
 	self.timeline = TLE.Do(function()
 		Fade.fade_in(nil, 1)

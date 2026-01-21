@@ -4,6 +4,7 @@ local Intro = Concord.system({
 })
 
 function Intro:init(world)
+	self.id = "intro"
 	self.world = world
 	self.is_raining = false
 	self.is_switching = false
@@ -20,7 +21,7 @@ function Intro:state_setup()
 	self.camera = Gamera.new(0, 0, w, h)
 	self.camera:setWindow(0, 0, ww, wh)
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
-	Concord.entity(self.world):assemble(Assemblages.Common.bg, "intro")
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id)
 
 	self.world:emit("setup_particle_system", {
 		ParticleSystems.RainIntro(Resources.data.images.rain_drop_tilted, 128, w),
