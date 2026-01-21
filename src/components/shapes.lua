@@ -1,6 +1,8 @@
 Concord.component("textured_line")
 
 Concord.component("draw_mode", function(c, draw_mode)
+	assert(type(draw_mode) == "string")
+	assert(Enums.mode[draw_mode])
 	c.value = draw_mode
 end)
 

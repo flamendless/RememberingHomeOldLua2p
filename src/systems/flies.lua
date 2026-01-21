@@ -24,37 +24,36 @@ function Flies:generate_flies(n, start_p, min_dist)
 		local p = vec2(sx, sy)
 		p:sadd(love.math.random(-min_dist, min_dist), 0)
 		p:rotate_around_inplace(angle, start_p)
-		local dist = love.math.random(min_dist, min_dist * 1.5)
-		local speed = love.math.random(24, 32)
+		local radius = love.math.random(min_dist, min_dist * 1.5)
 		Concord.entity(self.world)
 			:give("id", "fly" .. i)
-			:give("fly")
+			:give("fly", radius)
 			:give("bug")
-			:give("color", { 0, 0, 0, 1 })
+			-- :give("color", { 0, 0, 0, 1 }) -- INFO: For some reason black breaks the rendering
+			:give("color", { 1, 1, 1, 1 })
 			:give("point", 4)
 			:give("pos", p:unpack())
-			:give("pos_vec2")
 			:give("ref_pos_vec2", sx, sy)
-			:give("angle", dist, angle)
-			:give("angular_speed", speed, love.math.random(0, 1) * 2 - 1)
-			:give("no_shader")
+			-- :give("no_shader")
+			:give("z_index", 99, false)
 	end
 end
 
 function Flies:generate_flies_for_room_lights(scene)
 	assert(type(scene) == "string")
+
 	local d = Data.Lights[scene]
 	for _, lp in ipairs(d.pl.pos) do
 		self:generate_flies(
-			love.math.random(8, 26),
+			love.math.random(8, 16),
 			vec2(lp.x, lp.y),
-			love.math.random(4, 8)
+			love.math.random(8, 12)
 		)
 	end
 	if d.pl_mid	then
 		for _, lp in ipairs(d.pl_mid.pos) do
 			self:generate_flies(
-				love.math.random(8, 26),
+				love.math.random(8, 16),
 				vec2(lp.x, lp.y),
 				love.math.random(4, 8)
 			)
@@ -65,24 +64,53 @@ end
 function Flies:update(dt)
 	for _, e in ipairs(self.pool) do
 		local pos = e.pos
-		local pv = e.pos_vec2.value
 		local ref = e.ref_pos_vec2.value
-		local dist = pv:distance(ref)
-		local angle = e.angle
-		local a_speed = e.angular_speed
-		local radius = angle.radius
-		local r = angle.orig_radius / dist
-		local dir = r < love.math.random() and -1 or 1
+		local fly = e.fly
 
-		pos.x = ref.x + radius * a_speed.dir * math.cos(angle.angle)
-		pos.y = ref.y + radius * a_speed.dir * math.sin(angle.angle)
-		angle.angle = angle.angle + dt * a_speed.dir
-		angle.radius = angle.radius + a_speed.speed * dir * dt
+		fly.turn_timer = fly.turn_timer - dt
+		if fly.turn_timer <= 0 then
+			local a = math.rad(love.math.random(30, 120))
+			if love.math.random() < 0.5 then a = -a end
 
-		if love.math.random() < 0.15 then
-			a_speed.dir = a_speed.dir * -1
+			local cosA = math.cos(a)
+			local sinA = math.sin(a)
+
+			local vx = fly.vel_x * cosA - fly.vel_y * sinA
+			local vy = fly.vel_x * sinA + fly.vel_y * cosA
+			fly.vel_x, fly.vel_y = vx, vy
+
+			fly.turn_timer = 0.05 + love.math.random() * 0.4
 		end
+
+		fly.sharp_timer = fly.sharp_timer - dt
+		if fly.sharp_timer <= 0 then
+			fly.vel_x = fly.vel_x + (love.math.random() - 0.5) * 300
+			fly.vel_y = fly.vel_y + (love.math.random() - 0.5) * 300
+			fly.sharp_timer = 0.1 + love.math.random() * 0.3
+		end
+
+		local dx = ref.x - pos.x
+		local dy = ref.y - pos.y
+		local dist = math.sqrt(dx*dx + dy*dy)
+		local comfortable_dist = fly.max_radius
+
+		if dist > comfortable_dist then
+			fly.vel_x = fly.vel_x + (dx / dist) * fly.pull
+			fly.vel_y = fly.vel_y + (dy / dist) * fly.pull
+		end
+
+		local speed = math.sqrt(fly.vel_x * fly.vel_x + fly.vel_y * fly.vel_y)
+		local max_speed = 200 + love.math.random(-50, 50)
+
+		if speed > max_speed then
+			fly.vel_x = fly.vel_x / speed * max_speed
+			fly.vel_y = fly.vel_y / speed * max_speed
+		end
+
+		pos.x = pos.x + fly.vel_x * dt
+		pos.y = pos.y + fly.vel_y * dt
 	end
+
 end
 
 function Flies:set_flies_visibility(bool)

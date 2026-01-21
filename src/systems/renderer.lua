@@ -141,7 +141,7 @@ end
 
 function Renderer:draw(is_ui)
 	if is_ui then
-		if not (type(is_ui) == "boolean") then
+		if type(is_ui) ~= "boolean" then
 			error('Assertion failed: type(is_ui) == "boolean"')
 		end
 	end
