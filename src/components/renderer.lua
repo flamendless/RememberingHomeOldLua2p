@@ -1,6 +1,6 @@
-Concord.component("custom_renderer", function(c, str)
-	if not (type(str) == "string") then
-		error('Assertion failed: type(str) == "string"')
+Concord.component("custom_renderer", function(c, value)
+	if not (type(value) == "string") then
+		error('Assertion failed: type(value) == "string"')
 	end
-	c.value = str
+	c.value = value
 end)

@@ -301,7 +301,7 @@ function List:debug_update(dt)
 	end
 
 	local group = self.groups[selected or self.focused]
-	if group.entities then
+	if group and group.entities then
 		for _, e in ipairs(group.entities) do
 			Slab.CheckBox(e.list_cursor, e.text.value)
 		end
