@@ -185,6 +185,8 @@ function Renderer:draw(is_ui)
 			end
 		end
 	end
+
+	love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Renderer:cleanup()

@@ -29,12 +29,10 @@ function Flies:generate_flies(n, start_p, min_dist)
 			:give("id", "fly" .. i)
 			:give("fly", radius)
 			:give("bug")
-			-- :give("color", { 0, 0, 0, 1 }) -- INFO: For some reason black breaks the rendering
-			:give("color", { 1, 1, 1, 1 })
+			:give("color", { 0, 0, 0, 1 })
 			:give("point", 4)
 			:give("pos", p:unpack())
 			:give("ref_pos_vec2", sx, sy)
-			-- :give("no_shader")
 			:give("z_index", 99, false)
 	end
 end
@@ -50,7 +48,7 @@ function Flies:generate_flies_for_room_lights(scene)
 			love.math.random(8, 12)
 		)
 	end
-	if d.pl_mid	then
+	if d.pl_mid then
 		for _, lp in ipairs(d.pl_mid.pos) do
 			self:generate_flies(
 				love.math.random(8, 16),
@@ -91,7 +89,7 @@ function Flies:update(dt)
 
 		local dx = ref.x - pos.x
 		local dy = ref.y - pos.y
-		local dist = math.sqrt(dx*dx + dy*dy)
+		local dist = math.sqrt(dx * dx + dy * dy)
 		local comfortable_dist = fly.max_radius
 
 		if dist > comfortable_dist then
@@ -110,7 +108,6 @@ function Flies:update(dt)
 		pos.x = pos.x + fly.vel_x * dt
 		pos.y = pos.y + fly.vel_y * dt
 	end
-
 end
 
 function Flies:set_flies_visibility(bool)

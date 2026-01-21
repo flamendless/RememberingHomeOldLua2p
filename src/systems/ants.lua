@@ -36,11 +36,11 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms)
 			:give("ant")
 			:give("bug")
 			:give("color", { 0, 0, 0, 1 })
-			:give("point", 8)
+			:give("point", 2)
 			:give("pos", p.x, p.y)
 			:give("path", points)
 			:give("path_speed", speed)
-			:give("no_shader")
+			:give("z_index", 99, false)
 
 		if path_repeat then
 			e:give("path_repeat")
@@ -80,10 +80,11 @@ local flags = {
 }
 local data = {
 	n = 64,
+	dur = 16,
 	path_repeat = true,
 	speed = 32,
-	start_p = vec2(),
-	end_p = vec2(),
+	start_p = vec2(64, 64),
+	end_p = vec2(128, 128),
 }
 
 function Ants:debug_update(dt)
@@ -95,7 +96,7 @@ function Ants:debug_update(dt)
 		IsOpen = self.debug_show,
 	})
 	data.n = UIWrapper.edit_range("n", data.n, 1, 256, true)
-	data.dur = UIWrapper.edit_range("dur", data.dur, 0, 5)
+	data.dur = UIWrapper.edit_range("dur", data.dur, 0, 128)
 
 	local w, h = love.graphics.getDimensions()
 	data.start_p.x = UIWrapper.edit_range("sx", data.start_p.x, 0, w)
@@ -103,11 +104,20 @@ function Ants:debug_update(dt)
 	data.end_p.x = UIWrapper.edit_range("ex", data.end_p.x, 0, w)
 	data.end_p.y = UIWrapper.edit_range("ey", data.end_p.y, 0, h)
 
+	if Slab.Button("randomize") then
+		data.n = love.math.random(32, 64)
+		data.dur = love.math.random(32, 64)
+		data.speed = love.math.random(16, 64)
+		data.start_p.x = love.math.random(16, 64)
+		data.start_p.y = love.math.random(16, 64)
+		data.end_p.x = data.start_p.x + love.math.random(8, 64)
+		data.end_p.y = data.start_p.y + love.math.random(8, 64)
+	end
+
 	if Slab.Button("generate") then
 		for _, e in ipairs(self.pool) do
 			e:destroy()
 		end
-		flags.show = false
 		self.world:emit("debug_toggle_path", flags.path, "bug")
 		self:generate_ants(data.n, data.start_p, data.end_p, data.path_repeat, data.speed)
 	end
