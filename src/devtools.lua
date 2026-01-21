@@ -326,6 +326,13 @@ function DevTools.draw_component_list()
 		if id then
 			if Slab.BeginTree(id) then
 				local components = e:getComponents()
+				if Slab.Button("Debug Pos") then
+					GameStates.world:emit("debug_target_pos", e)
+				end
+				Slab.SameLine()
+				if Slab.Button("Clear Debug Pos") then
+					GameStates.world:emit("debug_target_pos")
+				end
 				for k in pairs(components) do
 					if Slab.BeginTree(k) then
 						local fn = slab_components[k]

@@ -7,21 +7,22 @@ function Ants:init(world)
 end
 
 function Ants:generate_ants(n, start_p, end_p, path_repeat, ms)
-	if not (type(n) == "number" and n > 0) then
+	if type(n) ~= "number" and n > 0 then
 		error('Assertion failed: type(n) == "number" and n > 0')
 	end
-	if not (start_p:type() == "vec2") then
+	if start_p:type() ~= "vec2" then
 		error('Assertion failed: start_p:type() == "vec2"')
 	end
-	if not (end_p:type() == "vec2") then
+	if end_p:type() ~= "vec2" then
 		error('Assertion failed: end_p:type() == "vec2"')
 	end
-	if not (type(path_repeat) == "boolean") then
+	if type(path_repeat) ~= "boolean" then
 		error('Assertion failed: type(path_repeat) == "boolean"')
 	end
-	if not (type(ms) == "number") then
+	if type(ms) ~= "number" then
 		error('Assertion failed: type(ms) == "number"')
 	end
+
 	local sx, sy = start_p:unpack()
 	local ex, ey = end_p:unpack()
 	local np = love.math.random(2, 5) * 3
@@ -35,7 +36,7 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms)
 			:give("ant")
 			:give("bug")
 			:give("color", { 0, 0, 0, 1 })
-			:give("point", 4)
+			:give("point", 8)
 			:give("pos", p.x, p.y)
 			:give("path", points)
 			:give("path_speed", speed)
@@ -50,7 +51,7 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms)
 end
 
 function Ants:set_ants_visibility(bool)
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 
@@ -78,9 +79,11 @@ local flags = {
 	show = false,
 }
 local data = {
-	n = 1,
-	path_repeat = false,
+	n = 64,
+	path_repeat = true,
 	speed = 32,
+	start_p = vec2(),
+	end_p = vec2(),
 }
 
 function Ants:debug_update(dt)
@@ -94,13 +97,19 @@ function Ants:debug_update(dt)
 	data.n = UIWrapper.edit_range("n", data.n, 1, 256, true)
 	data.dur = UIWrapper.edit_range("dur", data.dur, 0, 5)
 
+	local w, h = love.graphics.getDimensions()
+	data.start_p.x = UIWrapper.edit_range("sx", data.start_p.x, 0, w)
+	data.start_p.y = UIWrapper.edit_range("sy", data.start_p.y, 0, h)
+	data.end_p.x = UIWrapper.edit_range("ex", data.end_p.x, 0, w)
+	data.end_p.y = UIWrapper.edit_range("ey", data.end_p.y, 0, h)
+
 	if Slab.Button("generate") then
 		for _, e in ipairs(self.pool) do
 			e:destroy()
 		end
 		flags.show = false
 		self.world:emit("debug_toggle_path", flags.path, "bug")
-		self:generate_ants(data.n, vec2(12, 28), vec2(56, 4), data.path_repeat, data.speed)
+		self:generate_ants(data.n, data.start_p, data.end_p, data.path_repeat, data.speed)
 	end
 
 	if Slab.Button("move") then

@@ -185,6 +185,7 @@ end
 
 function DialoguesSystem:proceed_dialogue()
 	for _, e in ipairs(self.pool) do
+		--TODO: (Brandon) add devtool
 		if e.text_skipped then
 			e:remove("text_skipped")
 		elseif e.text_can_proceed then
@@ -273,35 +274,36 @@ DialoguesSystem["on_list_item_interact_" .. "dialogue_choices"] = function(self,
 	local text_t = t.value
 	if #text_t == 0 and not text_t.choices then
 		self:on_dialogue_reached_end(e_hovered)
-	else
-		local str = text_t[1]
-		local proceed = true
-		if str then
-			local bool, signal, handle_self = Dialogues.check_signal(str)
+		return
+	end
 
-			if bool then
-				proceed = false
-				--entity, table of next dialogues, chosen text
-				self.world:emit(signal, e_hovered, text_t, e_hovered.text.value)
-				if handle_self then
-					t.current_index = t.current_index + 1
-					local next_str = text_t[t.current_index]
-					if not next_str then
-						self:on_dialogue_reached_end(e_hovered)
-					end
+	local proceed = true
+	local str = text_t[1]
+	if str then
+		local bool, signal, handle_self = Dialogues.check_signal(str)
+
+		if bool then
+			proceed = false
+			--entity, table of next dialogues, chosen text
+			self.world:emit(signal, e_hovered, text_t, e_hovered.text.value)
+			if handle_self then
+				t.current_index = t.current_index + 1
+				local next_str = text_t[t.current_index]
+				if not next_str then
+					self:on_dialogue_reached_end(e_hovered)
 				end
 			end
 		end
+	end
 
-		self.world:emit("destroy_list", "dialogue_choice")
-		self.world:emit("destroy_list", "dialogue_choices")
-		if proceed then
-			local d = e_hovered.dialogue_meta
-			self:spawn_dialogue(text_t, d.main, d.sub)
-		end
-		if not text_t.choices then
-			self.e_dialogue:remove("has_choices")
-		end
+	self.world:emit("destroy_list", "dialogue_choice")
+	self.world:emit("destroy_list", "dialogue_choices")
+	if proceed then
+		local d = e_hovered.dialogue_meta
+		self:spawn_dialogue(text_t, d.main, d.sub)
+	end
+	if not text_t.choices then
+		self.e_dialogue:remove("has_choices")
 	end
 end
 

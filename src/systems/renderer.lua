@@ -176,7 +176,7 @@ function Renderer:draw(is_ui)
 				e.renderer.render(e)
 			end
 
-			if not is_ui and e.renderer == Renderers.Sprite then
+			if DEV and not is_ui and e.renderer == Renderers.Sprite then
 				Renderers.Sprite.debug_batching_update(e)
 			end
 
@@ -198,84 +198,106 @@ function Renderer:cleanup()
 end
 
 
+if DEV then
+	local debug_targets = {}
+	local search = ""
 
-local search = ""
-
-local function show_list(id, list)
-	if Slab.BeginTree(id .. " size: " .. #list) then
-		Slab.Indent()
-		for i, e in ipairs(list) do
-			local culled = e.cullable and e.cullable.value
-			local is_not_drawn = e.nf_renderer or e.hidden or culled
-			local e_id = e.id.value
-			if #search == 0 or stringx.contains(e_id, search) then
-				if Slab.CheckBox(not is_not_drawn, i) then
-					is_not_drawn = not is_not_drawn
-					if is_not_drawn then
-						e:give("hidden")
-					else
-						e:remove("hidden")
+	local function show_list(id, list)
+		if Slab.BeginTree(id .. " size: " .. #list) then
+			Slab.Indent()
+			for i, e in ipairs(list) do
+				local culled = e.cullable and e.cullable.value
+				local is_not_drawn = e.nf_renderer or e.hidden or culled
+				local e_id = e.id.value
+				if #search == 0 or stringx.contains(e_id, search) then
+					if Slab.CheckBox(not is_not_drawn, i) then
+						is_not_drawn = not is_not_drawn
+						if is_not_drawn then
+							e:give("hidden")
+						else
+							e:remove("hidden")
+						end
 					end
+					Slab.SameLine()
+					Slab.Text(e_id)
+					Slab.SameLine()
+					Slab.Text(e.renderer.id)
 				end
-				Slab.SameLine()
-				Slab.Text(e_id)
-				Slab.SameLine()
-				Slab.Text(e.renderer.id)
 			end
-		end
-		Slab.Unindent()
-		Slab.EndTree()
-	end
-end
-
-function Renderer:debug_update(dt)
-	if not self.debug_show then
-		return
-	end
-	self.debug_show = Slab.BeginWindow("renderer", {
-		Title = "Renderer",
-		IsOpen = self.debug_show,
-	})
-
-	if Slab.Input("search", { Text = search }) then
-		search = Slab.GetInputText()
-	end
-
-	show_list("list", self.list)
-	show_list("ui", self.list_ui)
-
-	for _, v in pairs(Renderers) do
-		if v.debug_update then
-			if Slab.CheckBox(v.debug_show, v.id) then
-				v.debug_show = not v.debug_show
-			end
-			if v.debug_show then
-				v.debug_update(dt)
-			end
+			Slab.Unindent()
+			Slab.EndTree()
 		end
 	end
-	Slab.EndWindow()
-end
 
-function Renderer:debug_draw()
-	if not self.debug_show then
-		return
-	end
-	for _, v in pairs(Renderers) do
-		if v.debug_show and v.debug_draw then
-			v.debug_draw()
+	function Renderer:debug_target_pos(e)
+		if e then
+			assert(e.__isEntity)
+			table.insert(debug_targets, e)
+		else
+			tablex.clear(debug_targets)
 		end
 	end
-end
 
-function Renderer:debug_draw_ui()
-	if not self.debug_show then
-		return
+	function Renderer:debug_update(dt)
+		if not self.debug_show then
+			return
+		end
+		self.debug_show = Slab.BeginWindow("renderer", {
+			Title = "Renderer",
+			IsOpen = self.debug_show,
+		})
+
+		if Slab.Input("search", { Text = search }) then
+			search = Slab.GetInputText()
+		end
+
+		show_list("list", self.list)
+		show_list("ui", self.list_ui)
+
+		for _, v in pairs(Renderers) do
+			if v.debug_update then
+				if Slab.CheckBox(v.debug_show, v.id) then
+					v.debug_show = not v.debug_show
+				end
+				if v.debug_show then
+					v.debug_update(dt)
+				end
+			end
+		end
+		Slab.EndWindow()
 	end
-	local camera = self.world:getResource("camera")
-	for _, v in pairs(Renderers) do
-		if v.debug_show and v.debug_draw then
-			v.debug_draw_ui(camera)
+
+	function Renderer:debug_draw()
+		if not self.debug_show then
+			return
+		end
+		for _, v in pairs(Renderers) do
+			if v.debug_show and v.debug_draw then
+				v.debug_draw()
+			end
+		end
+
+		if #debug_targets > 0 then
+			for _, e in ipairs(debug_targets) do
+				local pos = e.pos
+				love.graphics.setShader()
+				love.graphics.setColor(1, 0, 0, 1)
+				love.graphics.print(e.id.value, pos.x, pos.y)
+				love.graphics.circle("line", pos.x, pos.y, 64, 32)
+				love.graphics.setShader()
+			end
+		end
+	end
+
+	function Renderer:debug_draw_ui()
+		if not self.debug_show then
+			return
+		end
+		local camera = self.world:getResource("camera")
+		for _, v in pairs(Renderers) do
+			if v.debug_show and v.debug_draw then
+				v.debug_draw_ui(camera)
+			end
 		end
 	end
 end

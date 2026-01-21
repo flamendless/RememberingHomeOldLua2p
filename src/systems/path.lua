@@ -105,10 +105,8 @@ function Path:debug_toggle_path(bool, filter)
 	if not (type(bool) == "boolean") then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
-	if filter then
-		if not (type(filter) == "string") then
-			error('Assertion failed: type(filter) == "string"')
-		end
+	if filter and type(filter) ~= "string" then
+		error('Assertion failed: type(filter) == "string"')
 	end
 	self.debug_show = bool
 	flags.path = bool
@@ -157,6 +155,7 @@ function Path:debug_draw()
 						end
 						love.graphics.line(a.x, a.y, b.x, b.y)
 					end
+
 				else
 					for i = 1, path.n_points - 2, 2 do
 						local a = path.points[i]
