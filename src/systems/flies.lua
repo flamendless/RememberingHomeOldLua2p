@@ -7,15 +7,16 @@ function Flies:init(world)
 end
 
 function Flies:generate_flies(n, start_p, min_dist)
-	if not (type(n) == "number" and n > 0) then
+	if type(n) ~= "number" and n > 0 then
 		error('Assertion failed: type(n) == "number" and n > 0')
 	end
-	if not (start_p:type() == "vec2") then
+	if start_p:type() ~= "vec2" then
 		error('Assertion failed: start_p:type() == "vec2"')
 	end
-	if not (type(min_dist) == "number" and min_dist > 0) then
+	if type(min_dist) ~= "number" and min_dist > 0 then
 		error('Assertion failed: type(min_dist) == "number" and min_dist > 0')
 	end
+
 	local sx, sy = start_p:unpack()
 
 	for i = 1, n do
@@ -37,6 +38,27 @@ function Flies:generate_flies(n, start_p, min_dist)
 			:give("angle", dist, angle)
 			:give("angular_speed", speed, love.math.random(0, 1) * 2 - 1)
 			:give("no_shader")
+	end
+end
+
+function Flies:generate_flies_for_room_lights(scene)
+	assert(type(scene) == "string")
+	local d = Data.Lights[scene]
+	for _, lp in ipairs(d.pl.pos) do
+		self:generate_flies(
+			love.math.random(8, 26),
+			vec2(lp.x, lp.y),
+			love.math.random(4, 8)
+		)
+	end
+	if d.pl_mid	then
+		for _, lp in ipairs(d.pl_mid.pos) do
+			self:generate_flies(
+				love.math.random(8, 26),
+				vec2(lp.x, lp.y),
+				love.math.random(4, 8)
+			)
+		end
 	end
 end
 

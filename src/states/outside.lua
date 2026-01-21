@@ -124,25 +124,19 @@ function Outside:state_init()
 	end
 
 	--TEST
-
-	-- self.world:emit("spawn_player", function(e_player)
-	-- 	e_player:give("color_fade_in", 0.25)
-	-- 	self.world:emit("player_can_move", true, e_player)
-	-- 	self.world:emit("player_can_interact", true, e_player)
-	-- 	self.world:emit("camera_follow", e_player, 0.25)
-	-- 	self.camera:setScale(3)
-	-- 	self.camera:setPosition(e_player.pos.x, e_player.pos.y)
-	-- end)
+	if DEV then
+		self.world:emit("spawn_player", function(e_player)
+			e_player:give("color_fade_in", 0.25)
+			self.world:emit("toggle_component", e_player, "can_move", true)
+			self.world:emit("toggle_component", e_player, "can_interact", true)
+			self.world:emit("toggle_component", e_player, "can_run", true)
+			self.world:emit("camera_follow", e_player, 0.25)
+			self.camera:setScale(3)
+			self.camera:setPosition(e_player.pos.x, e_player.pos.y)
+		end)
+	end
 
 	self.timeline = TLE.Do(function()
-		if DEV then
-			self.world:emit("set_camera_transform", self.camera, {
-				x = 640,
-				y = 320,
-				scale = 3,
-			})
-		end
-
 		self.timeline:Pause()
 
 		Fade.set_alpha(0)
@@ -375,8 +369,7 @@ function Outside:check_frontdoor(e, dialogues_t)
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
 	self.world:emit("remove_choices")
-	local has_frontdoor_key = Items.has("frontdoor_key")
-	if not has_frontdoor_key then
+	if not Items.has("frontdoor_key") then
 		local t = tablex.copy(dialogues_t.door_locked)
 		self.world:emit("spawn_dialogue_ex", t)
 	end
