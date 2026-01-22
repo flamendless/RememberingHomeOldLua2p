@@ -154,6 +154,7 @@ function Renderer:draw(is_ui)
 
 	local list = get_list(self, is_ui)
 	for _, e in ipairs(list) do
+		love.graphics.setColor(1, 1, 1, 1)
 		local culled = e.cullable and e.cullable.value
 		local is_not_drawn = e.nf_renderer or e.hidden or culled
 
@@ -184,9 +185,8 @@ function Renderer:draw(is_ui)
 				love.graphics.setShader(temp_shader)
 			end
 		end
+		love.graphics.setColor(1, 1, 1, 1)
 	end
-
-	love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Renderer:cleanup()
