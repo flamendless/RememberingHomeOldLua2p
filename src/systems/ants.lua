@@ -27,20 +27,22 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms)
 	local ex, ey = end_p:unpack()
 	local np = love.math.random(2, 5) * 3
 	local points = Generator.path_points_ants(sx, sy, ex, ey, np)
-	local p = points[1]
 
 	for i = 1, n do
-		local speed = ms - (i - 1)
+		local idx = love.math.random(1, #points)
+		local cp = points[idx]
+		local px, py = cp.x, cp.y
+
 		local e = Concord.entity(self.world)
 			:give("id", "ant" .. i)
 			:give("ant")
 			:give("bug")
-			:give("color", { 0, 0, 0, 1 })
-			:give("point", 2)
-			:give("pos", p.x, p.y)
-			:give("path", points)
-			:give("path_speed", speed)
-			:give("z_index", 99, false)
+			:give("color", { 0, 0, 0, love.math.random(0.5, 1) })
+			:give("point", love.math.random(1, 2))
+			:give("pos", px, py)
+			:give("path", points, nil, idx)
+			:give("path_speed", ms - (i - 1))
+			:give("z_index", 1, false)
 
 		if path_repeat then
 			e:give("path_repeat")
