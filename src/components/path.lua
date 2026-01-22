@@ -1,4 +1,4 @@
-Concord.component("path", function(c, points, max)
+Concord.component("path", function(c, points, max, current_point)
 	if not (type(points) == "table") then
 		error('Assertion failed: type(points) == "table"')
 	end
@@ -6,6 +6,9 @@ Concord.component("path", function(c, points, max)
 		if not (type(max) == "number" and max > 0) then
 			error('Assertion failed: type(max) == "number" and max > 0')
 		end
+	end
+	if current_point and type(current_point) ~= "number" then
+		error('Assertion failed: type(current_point) == "number"')
 	end
 
 	for _, v in ipairs(points) do
@@ -19,7 +22,8 @@ Concord.component("path", function(c, points, max)
 
 	c.points = points
 	c.n_points = #points
-	c.current_point = 1
+	c.current_point = current_point or 1
+	c.dir = love.math.random() < 0.5 and 1 or -1
 	c.max = max or 1
 end)
 
@@ -32,6 +36,7 @@ end)
 
 Concord.component("apply_bezier_curve", function(c)
 	c.dt = 0
+	c.t = 0
 end)
 
 Concord.component("path_loop")
