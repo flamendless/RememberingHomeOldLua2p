@@ -129,8 +129,8 @@ function TextPaint:show_paint(e, dur_in, widest)
 		x = text_pos.x
 		y = text_pos.y
 	else
-		x = text_pos.x + str_w * 0.5
-		y = text_pos.y + str_h * 0.5
+		x = text_pos.x + str_w/2
+		y = text_pos.y + str_h/2
 	end
 
 	local paint_id = e.text_with_paint.id

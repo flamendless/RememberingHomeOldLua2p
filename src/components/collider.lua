@@ -24,8 +24,8 @@ Concord.component("collider", function(c, w, h, filter)
 	end
 	c.w = w
 	c.h = h
-	c.w_h = w * 0.5
-	c.h_h = h * 0.5
+	c.w_h = w/2
+	c.h_h = h/2
 	c.is_hit = false
 	c.normal = { x = 0, y = 0 }
 	c.filter = filter

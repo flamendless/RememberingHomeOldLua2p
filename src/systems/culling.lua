@@ -27,13 +27,13 @@ function Culling:update(dt)
 	y = y - 32
 	w = w + 32 * 2
 	h = h + 32 * 2
-	local w2 = w * 0.5
-	local h2 = h * 0.5
+	local w2 = w/2
+	local h2 = h/2
 
 	for _, e in ipairs(self.pool_sprite) do
 		local cullable = e.cullable
 		local px, py, iw, ih = Helper.get_ltwh(e)
-		local iw2, ih2 = iw * 0.5, ih * 0.5
+		local iw2, ih2 = iw/2, ih/2
 		local a_pos = vec2(px, py)
 		local a_hs = vec2(iw2, ih2)
 		local b_pos = vec2(x + w2, y + h2)

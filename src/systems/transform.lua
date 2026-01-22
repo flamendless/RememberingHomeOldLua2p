@@ -51,13 +51,13 @@ function Transform:init(world)
 		end
 
 		if t.ox == 0.5 then
-			t.ox = w * 0.5
+			t.ox = w/2
 		elseif t.ox == 1 then
 			t.ox = w
 		end
 
 		if t.oy == 0.5 then
-			t.oy = h * 0.5
+			t.oy = h/2
 		elseif t.oy == 1 then
 			t.oy = h
 		end
@@ -67,13 +67,13 @@ function Transform:init(world)
 		local frame = e.atlas.value
 		local qt = e.quad_transform
 		if qt.ox == 0.5 then
-			qt.ox = frame.w * 0.5
+			qt.ox = frame.w/2
 		elseif qt.ox == 1 then
 			qt.ox = frame.w
 		end
 
 		if qt.oy == 0.5 then
-			qt.oy = frame.h * 0.5
+			qt.oy = frame.h/2
 		elseif qt.oy == 1 then
 			qt.oy = frame.h
 		end
@@ -158,13 +158,13 @@ function Transform:update_anchor(e)
 	local y = target_pos.y - oy * sy
 
 	if anchor.anchor_x == Enums.anchor.center then
-		x = x + w * 0.5
+		x = x + w/2
 	elseif anchor.anchor_y == Enums.anchor.right then
 		x = x + w
 	end
 
 	if anchor.anchor_y == Enums.anchor.center then
-		y = y + h * 0.5
+		y = y + h/2
 	elseif anchor.anchor_y == Enums.anchor.bottom then
 		y = y + h
 	end

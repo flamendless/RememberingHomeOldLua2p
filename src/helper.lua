@@ -30,13 +30,13 @@ function Helper.get_offset(e)
 
 	if anim_data then
 		if transform.ox == 0.5 then
-			ox = anim_data.frame_width * 0.5
+			ox = anim_data.frame_width/2
 		elseif transform.ox == 1 then
 			ox = anim_data.frame_width
 		end
 
 		if transform.oy == 0.5 then
-			oy = anim_data.frame_height * 0.5
+			oy = anim_data.frame_height/2
 		elseif transform.oy == 1 then
 			oy = anim_data.frame_height
 		end
@@ -44,13 +44,13 @@ function Helper.get_offset(e)
 		local iw, ih = sprite.iw, sprite.ih
 
 		if transform.ox == 0.5 then
-			ox = iw * 0.5
+			ox = iw/2
 		elseif transform.ox == 1 then
 			ox = iw
 		end
 
 		if transform.oy == 0.5 then
-			oy = ih * 0.5
+			oy = ih/2
 		elseif transform.oy == 1 then
 			oy = ih
 		end
@@ -117,12 +117,12 @@ function Helper.get_ltwh(e)
 		ox = t.ox
 		oy = t.oy
 		if ox == 0.5 then
-			ox = w * 0.5
+			ox = w/2
 		elseif ox == 1 then
 			ox = w
 		end
 		if oy == 0.5 then
-			ox = h * 0.5
+			ox = h/2
 		elseif oy == 1 then
 			oy = h
 		end

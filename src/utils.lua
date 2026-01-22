@@ -156,7 +156,7 @@ function Utils.math.calc_e_controller_origin(e)
 	local anim_data = e.animation_data
 	local transform = e.transform
 	local pos = e.pos
-	local x = pos.x + anim_data.frame_width * 0.5 - transform.ox
+	local x = pos.x + anim_data.frame_width/2 - transform.ox
 	local y = pos.y
 	return x, y
 end

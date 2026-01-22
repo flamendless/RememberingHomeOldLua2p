@@ -67,7 +67,7 @@ function BoundingBox:debug_draw()
 			love.graphics.setColor(1, 1, 0, 1)
 		end
 		love.graphics.rectangle("line", bx, by, bw, bh)
-		love.graphics.circle("fill", bx + bw * 0.5, by + bh * 0.5, 2)
+		love.graphics.circle("fill", bx + bw/2, by + bh/2, 2)
 	end
 	love.graphics.pop()
 end

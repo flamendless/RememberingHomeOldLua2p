@@ -66,7 +66,7 @@ function DialoguesSystem:create_e_dialogue()
 	end
 	local l, _, w, h = camera:getWindow()
 	local x = l + PAD
-	local y = h - h * 0.15 * 0.5
+	local y = h - h * 0.15/2
 	self.e_dialogue = Concord.entity(self.world)
 		:give("id", "dialogue_holder")
 		:give("font", "ui")
@@ -202,7 +202,7 @@ function DialoguesSystem:show_choices()
 	local l, _, _, h = self.world:getResource("camera"):getWindow()
 	local c = self.e_dialogue.has_choices
 	local font = Resources.data.fonts.ui
-	local y = h - h * 0.15 * 0.5
+	local y = h - h * 0.15/2
 	local p2 = PAD * 2
 	local prev_x = l + p2
 	local choice_t = self.e_dialogue.text_t.value.choices

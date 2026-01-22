@@ -183,8 +183,8 @@ function BumpCollision:update_collider(e)
 	end
 
 	collider.w, collider.h = w, h
-	collider.w_h = w * 0.5
-	collider.h_h = h * 0.5
+	collider.w_h = w/2
+	collider.h_h = h/2
 
 	if new_collider.ox or new_collider.oy then
 		local t = e.transform

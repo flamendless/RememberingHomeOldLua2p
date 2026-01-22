@@ -27,7 +27,7 @@ end
 
 function Pause:create_pause_entities()
 	local ww, wh = love.graphics.getDimensions()
-	local ww2, wh2 = ww * 0.5, wh * 0.5
+	local ww2, wh2 = ww/2, wh/2
 	self.e_bg = Concord.entity(self.world):assemble(Assemblages.Pause.bg, ww2, wh2)
 	self.e_title = Concord.entity(self.world):assemble(Assemblages.Pause.text, ww2, wh2 - 64)
 	self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
@@ -35,8 +35,7 @@ function Pause:create_pause_entities()
 	if #self.pool_choice ~= 0 then
 		return
 	end
-	local ww, wh = love.graphics.getDimensions()
-	local ww2, wh2 = ww * 0.5, wh * 0.5
+
 	local by = wh2 + 16
 	local scale = 0.75
 	local fnt = Resources.data.fonts.ui

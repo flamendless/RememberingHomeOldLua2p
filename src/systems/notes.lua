@@ -65,7 +65,7 @@ function NotesSystem:create_notes()
 	local pad = 36
 	local nh = h - pad * 2 - bar_h * 2
 	local scale = math.min(w / iw, nh / ih)
-	local x, y = w * 0.5, h * 0.5
+	local x, y = w/2, h/2
 
 	self.e_bg = Concord.entity(self.world):assemble(Assemblages.Notes.bg, x, y, scale)
 
@@ -73,7 +73,7 @@ function NotesSystem:create_notes()
 	local fh = font:getHeight(" ")
 	local padq = pad * 0.25
 
-	local row_y = y - pad - ih * scale * 0.5 + fh * 2 + 48
+	local row_y = y - pad - ih * scale/2 + fh * 2 + 48
 	local row_h = fh + padq * 2
 	local rows = math.floor(ih * scale * 0.75 / row_h)
 
@@ -86,11 +86,11 @@ function NotesSystem:create_notes()
 		local offset_x = (i - 1) * 2
 		local nx, ox
 		if i <= rows then
-			local bx = x - iw * scale * 0.5 + padq
+			local bx = x - iw * scale/2 + padq
 			nx = bx - offset_x + 64
 			ox = 0
 		else
-			local bx = x + iw * scale * 0.5 - padq
+			local bx = x + iw * scale/2 - padq
 			nx = bx + offset_x - 96
 			ox = 1
 		end
@@ -112,7 +112,7 @@ NotesSystem["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
 	local on_left = e_hovered.list_cursor.value <= self.rows_per_page
 	local dx = on_left and -1 or 1
 	c_pos.x = pos.x + 4 * dx
-	c_pos.y = pos.y - font:getHeight("") * 0.5
+	c_pos.y = pos.y - font:getHeight("")/2
 	self.e_cursor.transform.ox = on_left and 1 or 0
 	self.world:emit("lerp_color", self.e_cursor, { 1, 1, 1, 1 }, 0.25, "circin")
 	self.world:emit("lerp_color", e_hovered, c_on_hovered, 0.25, "circin")

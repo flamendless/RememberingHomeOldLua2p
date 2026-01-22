@@ -96,7 +96,7 @@ function ID:debug_draw()
 	for _, e in ipairs(self.pool_dev) do
 		local id = e.id.value
 		local px, py, iw, ih = Helper.get_ltwh(e)
-		local iw2, ih2 = iw * 0.5, ih * 0.5
+		local iw2, ih2 = iw/2, ih/2
 		local a = vec2(px + iw2, py + ih2)
 		local hs = vec2(iw2, ih2)
 		local hovered = intersect.aabb_point_overlap(a, hs, v)

@@ -6,7 +6,7 @@ font_preload:setFilter("nearest", "nearest")
 local timer = 0
 local canvas, shader
 local w, h = love.graphics.getDimensions()
-local x, y = w * 0.5, h * 0.75
+local x, y = w/2, h * 0.75
 
 local ranges = {
 	depth = { min = 4, max = 32 },
@@ -25,7 +25,7 @@ end
 
 function LoadingScreen.update(dt)
 	timer = timer + dt
-	local t = (math.sin(timer) + 1) * 0.5
+	local t = (math.sin(timer) + 1)/2
 
 	for k, v in pairs(ranges) do
 		shader[k] = Utils.math.lerp_range(v, t)
@@ -42,8 +42,8 @@ function LoadingScreen.draw()
 	love.graphics.rectangle("fill", 0, 0, w, h)
 
 	local str_loading = string.format("LOADING: %i%%", Preloader.percent)
-	local ox = font_preload:getWidth(str_loading) * 0.5
-	local oy = font_preload:getHeight() * 0.5
+	local ox = font_preload:getWidth(str_loading)/2
+	local oy = font_preload:getHeight()/2
 	love.graphics.setFont(font_preload)
 
 	love.graphics.setColor(1, 1, 1, 0.75)

@@ -10,7 +10,7 @@ function Menu.desk_fast(e, ww, wh)
 			columns_count = 3,
 			n_frames = 7,
 		})
-		:give("pos", ww * 0.5, wh * 0.5)
+		:give("pos", ww/2, wh/2)
 		:give("animation", false)
 		:give("transform", 0, 1, 1, 0.5, 0.5)
 		:give("auto_scale", ww, wh, true)
@@ -27,7 +27,7 @@ function Menu.desk(e, ww, wh)
 			columns_count = 3,
 			n_frames = 7,
 		})
-		:give("pos", ww * 0.5, wh * 0.5)
+		:give("pos", ww/2, wh/2)
 		:give("animation", false)
 		:give("transform", 0, 1, 1, 0.5, 0.5)
 		:give("auto_scale", ww, wh, true)
@@ -63,7 +63,7 @@ function Menu.sheet_title(e, ww, wh)
 			columns_count = 3,
 			n_frames = 3,
 		})
-		:give("pos", 24, wh * 0.5)
+		:give("pos", 24, wh/2)
 		:give("animation", false)
 		:give("transform", 0, 1, 1, 0, 0.5)
 		:give("auto_scale", ww/3, wh, true)

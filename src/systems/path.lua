@@ -37,10 +37,8 @@ end
 
 function Path:move_linear(dt, e, points)
 	local pos = e.pos
-	local path = e.path
 	local speed = e.path_speed.value
 
-	-- always target FIRST point in window
 	local target = points[1]
 	if not target then return false end
 
@@ -56,10 +54,10 @@ function Path:move_linear(dt, e, points)
 	if step >= dist then
 		pos.x, pos.y = target.x, target.y
 		return true
-	else
-		pos.x = pos.x + dx / dist * step
-		pos.y = pos.y + dy / dist * step
 	end
+
+	pos.x = pos.x + dx / dist * step
+	pos.y = pos.y + dy / dist * step
 
 	return false
 end

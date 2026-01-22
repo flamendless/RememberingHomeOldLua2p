@@ -116,18 +116,18 @@ function Inventory:create_inventory()
 	local pad = 48
 	local nh = h - pad * 2 - bar_h * 2
 	local scale = math.min(w / iw, nh / ih)
-	local x = w * 0.5
-	local y = h * 0.5
+	local x = w/2
+	local y = h/2
 	local rows, cols = 2, 3
 	local bg_w = iw * scale
 	local bg_h = ih * scale
-	local orig_x = x - bg_w * 0.5
-	local orig_y = y - bg_h * 0.5
+	local orig_x = x - bg_w/2
+	local orig_y = y - bg_h/2
 	self.entities.bg = Concord.entity(self.world):assemble(Assemblages.Inventory.bg, x, y, scale)
 	self.world:emit("create_list_group", "inventory_choices", true, 3)
 
 	local c_bx = orig_x + bg_w - pad
-	local c_by = orig_y + bg_h * 0.5
+	local c_by = orig_y + bg_h/2
 	local choices = { "Use", "Equip", "Cancel" }
 	for i, str in ipairs(choices) do
 		local c_oy = pad * (0.5 + (i - 1) * 1.2)

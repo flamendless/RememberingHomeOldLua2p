@@ -16,21 +16,21 @@ function Canvas.init_canvases(canvases)
 	mid_canvas_prop.width = game_size.x * scale
 	mid_canvas_prop.height = game_size.y * scale
 	mid_canvas_prop.x = 0
-	mid_canvas_prop.y = math.floor(wh * 0.5 - mid_canvas_prop.height * 0.5)
+	mid_canvas_prop.y = math.floor(wh/2 - mid_canvas_prop.height/2)
 	mid_canvas_prop.scale = scale
 
 	local rem_height = wh - mid_canvas_prop.height
 
 	top_canvas_prop.width = ww
-	top_canvas_prop.height = math.floor(rem_height * 0.5)
+	top_canvas_prop.height = math.floor(rem_height/2)
 	top_canvas_prop.x = 0
 	top_canvas_prop.y = 0
 	top_canvas_prop.scale = scale
 
 	bot_canvas_prop.width = ww
-	bot_canvas_prop.height = math.floor(rem_height * 0.5)
+	bot_canvas_prop.height = math.floor(rem_height/2)
 	bot_canvas_prop.x = 0
-	bot_canvas_prop.y = math.floor(wh * 0.5 + mid_canvas_prop.height * 0.5)
+	bot_canvas_prop.y = math.floor(wh/2 + mid_canvas_prop.height/2)
 	bot_canvas_prop.scale = scale
 
 	Canvas.create_main(canvases)

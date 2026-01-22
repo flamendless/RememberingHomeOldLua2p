@@ -42,8 +42,8 @@ function TextPaintIntro:generate_paint(e, dur_in, dur_out)
 	local str_h = font:getHeight(text)
 	local offset = 96
 	local text_pos = e.pos
-	local x = text_pos.x + str_w * 0.5
-	local y = text_pos.y + str_h * 0.5
+	local x = text_pos.x + str_w/2
+	local y = text_pos.y + str_h/2
 	local chance = Lume.randomchoice({ true, false })
 	local sx = chance == true and -1 or 1
 

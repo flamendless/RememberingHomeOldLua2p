@@ -152,7 +152,7 @@ function MenuSettings:update_settings(dt)
 	local scale = 2
 	local img_kb = Resources.data.images["keyboard" .. self.key_id]
 	local iw = img_kb:getWidth()
-	Slab.SetCursorPos((width * 0.5) - (iw * scale * 0.5))
+	Slab.SetCursorPos((width/2) - (iw * scale/2))
 	Slab.Image("img_keyboard", {
 		Image = img_kb,
 		Scale = scale,

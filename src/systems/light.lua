@@ -38,11 +38,11 @@ local function manage_offset(shape, transform, sprite)
 	local w, h = sprite:getDimensions()
 
 	if shape == Enums.light_shape.round or shape == Enums.light_shape.rectangle then
-		transform.ox = w * 0.5
-		transform.oy = h * 0.5
+		transform.ox = w/2
+		transform.oy = h/2
 	elseif shape == Enums.light_shape.cone then
 		transform.ox = 0
-		transform.oy = h * 0.5
+		transform.oy = h/2
 	end
 end
 

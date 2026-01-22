@@ -251,15 +251,15 @@ function Menu:setup_menu()
 	-- local scale_subt = math.min((title_w * scale_title) / subt_w, (title_h * scale) / subt_h)
 	-- scale_subt = scale_subt * 0.75
 
-	Concord.entity(self.world):assemble(Assemblages.Menu.bg_door, ww * 1.5, wh * 0.5, scale, bg_door_w * 0.5, bg_door_h * 0.5)
+	Concord.entity(self.world):assemble(Assemblages.Menu.bg_door, ww * 1.5, wh/2, scale, bg_door_w/2, bg_door_h/2)
 
 	Concord.entity(self.world)
-		:assemble(Assemblages.Menu.bg_hallway, ww * 0.5, wh * 1.5, scale_hallway, bg_hw_w * 0.5, bg_hw_h * 0.5)
+		:assemble(Assemblages.Menu.bg_hallway, ww/2, wh * 1.5, scale_hallway, bg_hw_w/2, bg_hw_h/2)
 
 	self.e_desk = Concord.entity(self.world):assemble(Assemblages.Menu.desk, ww, wh)
 	self.e_title = Concord.entity(self.world):assemble(Assemblages.Menu.sheet_title, ww, wh)
 	-- self.subtitle = Concord.entity(self.world)
-	-- 	:assemble(Assemblages.Menu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w * 0.5, subt_h * 0.5)
+	-- 	:assemble(Assemblages.Menu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w/2, subt_h/2)
 
 	local jamboree_fnt = "res/fonts/Jamboree.fnt"
 	local jamboree_png = "res/fonts/Jamboree.png"
@@ -316,7 +316,7 @@ function Menu:setup_about()
 		"mailto:flamendless.studio@gmail.com",
 	}
 	local _, _, w, h = self.camera:getVisible()
-	local base_x = w * 0.5
+	local base_x = w/2
 	local base_y = h + 16
 	local layout = false
 	local layout_base_y = 0
@@ -334,7 +334,7 @@ function Menu:setup_about()
 			local space = el[3]
 			local str_w = font:getWidth(str)
 			local str_h = font:getHeight(str)
-			local x = base_x - str_w * 0.5
+			local x = base_x - str_w/2
 			local y = base_y
 			if space then
 				base_y = base_y + space
@@ -349,7 +349,7 @@ function Menu:setup_about()
 				layout_base_y = base_y
 				layout = true
 			elseif str == "@LAYOUT:CENTER" then
-				base_x = w * 0.5
+				base_x = w/2
 				base_y = largest
 				layout = false
 			elseif str == "@COLOR" then
@@ -372,11 +372,11 @@ function Menu:setup_about()
 				end
 			end
 		elseif type(el[1] == "string") and el[1] == "_IMAGES" then
-			base_x = w * 0.5
+			base_x = w/2
 			base_y = h * 2
 			local pad = 24
 			local n = #el
-			local n2 = (n - 1) * 0.5
+			local n2 = (n - 1)/2
 			for i2 = 2, n do
 				local id = "about_image_" .. (i + i2)
 				local resource_id = el[i2]
@@ -384,8 +384,8 @@ function Menu:setup_about()
 				local iw, ih = image:getDimensions()
 
 				local bx = base_x - (n2 * iw)
-				local x = bx + (iw * (i2 - 2)) + pad * 0.5
-				local y = base_y - ih * 0.5 - pad * 0.5
+				local x = bx + (iw * (i2 - 2)) + pad/2
+				local y = base_y - ih/2 - pad/2
 				Concord.entity(self.world)
 					:assemble(Assemblages.Menu.about_ext_link, id, resource_id, x, y)
 					:give("on_click", 1, "open_url", about_links[i2])

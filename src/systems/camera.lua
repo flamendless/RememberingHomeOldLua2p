@@ -119,7 +119,7 @@ function Camera:draw_clip()
 		local cam = e.camera.camera
 		local cx, cy, cw, ch = cam:getWindow()
 		local scale = cam:getScale()
-		local diff = (ch - e.camera_clip.h * scale) * 0.5
+		local diff = (ch - e.camera_clip.h * scale)/2
 		love.graphics.setColor(e.camera_clip.color)
 		love.graphics.rectangle("fill", cx, cy, cw, diff)
 		love.graphics.rectangle("fill", cx, ch - diff, cw, diff)
@@ -364,9 +364,9 @@ function Camera:debug_draw()
 		love.graphics.setColor(0, 0, 1, 0.7)
 		love.graphics.rectangle("line", wx, wy, ww, wh)
 		if flags.center then
-			love.graphics.line(wx + ww * 0.5, wy, wx + ww * 0.5, wy + wh)
-			love.graphics.line(wx, wy + wh * 0.5, wx + ww, wy + wh * 0.5)
-			love.graphics.circle("line", wx + ww * 0.5, wy + wh * 0.5, 1)
+			love.graphics.line(wx + ww/2, wy, wx + ww/2, wy + wh)
+			love.graphics.line(wx, wy + wh/2, wx + ww, wy + wh/2)
+			love.graphics.circle("line", wx + ww/2, wy + wh/2, 1)
 		end
 	end
 
@@ -374,9 +374,9 @@ function Camera:debug_draw()
 		love.graphics.setColor(0, 1, 0, 0.7)
 		love.graphics.rectangle("line", sx, sy, sw, sh)
 		if flags.center then
-			love.graphics.line(sw * 0.5, sy, sw * 0.5, sh)
-			love.graphics.line(sx, sh * 0.5, sw, sh * 0.5)
-			love.graphics.circle("line", sw * 0.5, sh * 0.5, 1)
+			love.graphics.line(sw/2, sy, sw/2, sh)
+			love.graphics.line(sx, sh/2, sw, sh/2)
+			love.graphics.circle("line", sw/2, sh/2, 1)
 		end
 	end
 
@@ -384,9 +384,9 @@ function Camera:debug_draw()
 		love.graphics.setColor(1, 1, 0, 0.7)
 		love.graphics.rectangle("line", vx, vy, vw, vh)
 		if flags.center then
-			love.graphics.line(vx + vw * 0.5, vy, vx + vw * 0.5, vy + vh)
-			love.graphics.line(vx, vy + vh * 0.5, vx + vw, vy + vh * 0.5)
-			love.graphics.circle("line", vx + vw * 0.5, vy + vh * 0.5, 1)
+			love.graphics.line(vx + vw/2, vy, vx + vw/2, vy + vh)
+			love.graphics.line(vx, vy + vh/2, vx + vw, vy + vh/2)
+			love.graphics.circle("line", vx + vw/2, vy + vh/2, 1)
 		end
 	end
 end

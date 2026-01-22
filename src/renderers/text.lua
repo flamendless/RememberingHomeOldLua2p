@@ -27,23 +27,23 @@ function Text.render(e)
 
 		if transform.ox == 0.5 then
 			if static_text then
-				ox = static_text.obj:getWidth() * 0.5
+				ox = static_text.obj:getWidth()/2
 			elseif textf then
-				ox = textf.limit * 0.5
+				ox = textf.limit/2
 			else
-				ox = current_font:getWidth(str) * 0.5
+				ox = current_font:getWidth(str)/2
 			end
 		end
 
 		if transform.oy == 0.5 then
 			if static_text then
-				oy = static_text.obj:getHeight() * 0.5
+				oy = static_text.obj:getHeight()/2
 			elseif textf then
 				local lines = current_font:getWidth(str) / textf.limit
 				lines = math.ceil(lines)
-				oy = current_font:getHeight() * 0.5 * lines
+				oy = current_font:getHeight()/2 * lines
 			else
-				oy = current_font:getHeight() * 0.5
+				oy = current_font:getHeight()/2
 			end
 		elseif transform.oy == 1 then
 			if static_text then

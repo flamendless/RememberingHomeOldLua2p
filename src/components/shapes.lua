@@ -51,8 +51,8 @@ Concord.component("rect", function(c, w, h)
 	end
 	c.w = w
 	c.h = h
-	c.half_w = w * 0.5
-	c.half_h = h * 0.5
+	c.half_w = w/2
+	c.half_h = h/2
 end)
 
 Concord.component("rect_border", function(c, rx, ry)
