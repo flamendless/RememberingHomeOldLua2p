@@ -34,6 +34,7 @@ end
 
 function StorageRoom:state_init()
 	self.world:emit("spawn_player", function(e_player)
+		self.e_player = e_player
 		self.world:emit("camera_follow", e_player, 0.25)
 		self.world:emit("toggle_component", e_player, "can_move", true)
 		self.world:emit("toggle_component", e_player, "can_interact", true)
@@ -42,10 +43,19 @@ function StorageRoom:state_init()
 
 	if DEV then
 		-- TODO: (Brandon) set ants start and end pos based on room?
-		-- self.world:emit("generate_ants", 18, vec2(12, 28), vec2(56, 4), true, 32)
-		-- self.world:emit("generate_ants", 18, vec2(88, 102), vec2(108, 4), true, 32)
-
+		local opts = {
+			scatter_away_from = {
+				self.e_player,
+				love.math.random(16, 32),
+				love.math.random(48, 72),
+			},
+		}
+		self.world:emit("generate_ants", 64, vec2(64, 32), vec2(56, 4), true, 32, opts)
+		self.world:emit("generate_ants", 64, vec2(88, 102), vec2(108, 4), true, 32, opts)
 		self.world:emit("generate_flies_for_room_lights", self.id)
+
+		self.world:__flush()
+		self.world:emit("move_ants")
 	end
 
 	self.timeline = TLE.Do(function()

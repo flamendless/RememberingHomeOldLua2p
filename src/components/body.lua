@@ -18,6 +18,7 @@ Concord.component("body", function(c)
 	c.dir = 1
 	c.vel_x = 0
 	c.vel_y = 0
+	c.vel = vec2()
 end)
 
 Concord.component("prev_can", function(c, e_player)

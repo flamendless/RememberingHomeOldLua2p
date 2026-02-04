@@ -144,6 +144,8 @@ function Room:create_room_bounds(w, h)
 	for _, v in pairs(Assemblages.Room) do
 		Concord.entity(self.world):assemble(v, w, h)
 	end
+
+	self.world:setResource("room_size", {width = w, height = h})
 end
 
 return Room

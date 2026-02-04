@@ -13,3 +13,15 @@ Concord.component("fly", function (c, radius)
 	c.turn_timer = 0
 	c.sharp_timer = 0
 end)
+
+Concord.component("scatter_away_from", function (c, e_target, distance, speed)
+	assert(e_target.__isEntity)
+	assert(type(distance) == "number")
+	assert(type(speed) == "number")
+	e_target:ensure("key")
+	c.key = e_target.key.value
+	c.distance = distance
+	c.speed = speed
+	c.is_overlap = false
+	c.escape_target = nil
+end)

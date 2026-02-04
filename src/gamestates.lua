@@ -45,6 +45,8 @@ function GameStates.start(resources)
 			ev_draw_ex = true,
 			ev_pp_invoke = true,
 			hover_effects = true,
+			on_add_entity = true,
+			on_remove_entity = true,
 			parallax_move_x = true,
 			preupdate = true,
 			set_ambiance = true,

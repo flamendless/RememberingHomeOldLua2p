@@ -119,7 +119,7 @@ if DEV then
 		bezier = false,
 	}
 	local component_filter = "path"
-	local alpha = 0.3
+	local alpha = 0.01
 
 	function Path:debug_toggle_path(bool, filter)
 		if not (type(bool) == "boolean") then
@@ -147,6 +147,8 @@ if DEV then
 			flags.bezier = not flags.bezier
 		end
 
+		alpha = UIWrapper.edit_range("path_alpha", alpha, 0, 1, false)
+
 		Slab.EndWindow()
 	end
 
@@ -160,7 +162,7 @@ if DEV then
 			if camera then
 				scale = 1 / camera:getScale()
 			end
-			love.graphics.setLineWidth(scale)
+			love.graphics.setLineWidth(scale/2)
 			for _, e in ipairs(self.pool) do
 				if component_filter and e[component_filter] then
 					local path = e.path

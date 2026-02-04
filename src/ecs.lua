@@ -135,6 +135,9 @@ state_systems.StorageRoom = {
 	"animation_state",
 	"behavior_tree",
 	"enemy_controller",
+	"ants",
+	"path",
+	"flies",
 }
 
 state_systems.UtilityRoom = {

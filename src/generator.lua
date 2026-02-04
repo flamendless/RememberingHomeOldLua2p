@@ -23,6 +23,7 @@ function Generator.path_points_fireflies(x, y, n)
 		prev_y = py
 		table.insert(points, p)
 	end
+	Log.info("Generated # of points for fireflies", #points)
 	return points
 end
 
@@ -60,6 +61,7 @@ function Generator.path_points_ants(x, y, ex, ey, n)
 		dy = dy * -1
 		table.insert(points, { x = px, y = py })
 	end
+	Log.info("Generated # of points for ants", #points)
 	return points
 end
 

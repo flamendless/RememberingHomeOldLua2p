@@ -107,6 +107,7 @@ function Outside:state_init()
 			self.camera:setScale(3)
 			self.camera:setPosition(e_player.pos.x, e_player.pos.y)
 			self.camera:setScale(3)
+			self.e_player = e_player
 		end)
 		Fade.set_alpha(0)
 
@@ -133,6 +134,7 @@ function Outside:state_init()
 			self.world:emit("camera_follow", e_player, 0.25)
 			self.camera:setScale(3)
 			self.camera:setPosition(e_player.pos.x, e_player.pos.y)
+			self.e_player = e_player
 		end)
 	end
 
@@ -388,8 +390,8 @@ function Outside:check_backdoor(e, dialogues_t)
 	if not (e.__isEntity and e.dialogue_meta) then
 		error("Assertion failed: e.__isEntity and e.dialogue_meta")
 	end
-	if not (e.__isEntity and e.player) then
-		error("Assertion failed: e.player")
+	if not (e.__isEntity and self.e_player) then
+		error("Assertion failed: self.e_player")
 	end
 	if not (type(dialogues_t) == "table") then
 		error('Assertion failed: type(dialogues_t) == "table"')

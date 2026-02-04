@@ -31,6 +31,12 @@ function DialoguesSystem:create_tle()
 				text_t.current_index = text_t.current_index + 1
 				local should_pause = true
 				local bool, signal, handle_self = Dialogues.check_signal(current_line)
+				Log.trace(
+					"Dialogues system",
+					"bool", bool,
+					"signal", signal,
+					"handle_self", handle_self
+				)
 
 				if bool then
 					self.world:emit(signal, self.e_dialogue, dialogues)

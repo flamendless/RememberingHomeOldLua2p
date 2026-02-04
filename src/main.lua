@@ -44,10 +44,10 @@ function love.load()
 	-- GameStates.switch("Menu")
 	-- GameStates.switch("Intro")
 	-- GameStates.switch("Outside")
-	-- GameStates.switch("StorageRoom")
+	GameStates.switch("StorageRoom")
 	-- GameStates.switch("UtilityRoom")
 	-- GameStates.switch("Kitchen")
-	GameStates.switch("LivingRoom")
+	-- GameStates.switch("LivingRoom")
 	-- GameStates.switch("TotallyDarkRoom")
 
 	DevTools.init()
@@ -91,7 +91,7 @@ function love.draw()
 		if DevTools.pause then
 			local ww, wh = love.graphics.getDimensions()
 			love.graphics.setFont(font)
-			love.graphics.printf("PAUSED", 0, wh * 0.5, ww, "center")
+			love.graphics.printf("PAUSED", 0, wh/2, ww, "center")
 		end
 		DevTools.end_draw()
 	end

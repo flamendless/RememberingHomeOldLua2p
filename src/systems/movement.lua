@@ -28,6 +28,8 @@ function Movement:update(dt)
 		end
 
 		body.vel_x, body.vel_y = vel_x, vel_y
+		body.vel.x = body.vel_x
+		body.vel.y = body.vel_y
 	end
 end
 

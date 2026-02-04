@@ -60,7 +60,12 @@ function BumpCollision:update_body(e)
 	local pos = e.pos
 	local cols, len
 
-	pos.x, pos.y, cols, len = self.pool:move(e, pos.x + body.vel_x, pos.y + body.vel_y, filter)
+	pos.x, pos.y, cols, len = self.pool:move(
+		e,
+		pos.x + body.vel_x,
+		pos.y + body.vel_y,
+		filter
+	)
 
 	for i = 1, len do
 		local c = cols[i]
