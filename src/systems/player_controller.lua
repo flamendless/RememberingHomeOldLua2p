@@ -20,6 +20,9 @@ end
 function PlayerController:init(world)
 	self.world = world
 
+	self.turn_cooldown = 0
+	self.turn_delay = 0.2
+
 	self.pool.onAdded = function(_, e)
 		local e_player = self.world:getResource("e_player")
 		if not e_player then
@@ -78,12 +81,42 @@ function PlayerController:update(dt)
 		self.player.is_running.value = Inputs.down("run_mod")
 	end
 
-	if Inputs.down("left") then
-		body.dir = -1
-		body.dx = -1
-	elseif Inputs.down("right") then
-		body.dir = 1
-		body.dx = 1
+	-- SIMPLE MOVEMENT (causes left/right spamming to instantly flip)
+	-- if Inputs.down("left") then
+	-- 	body.dir = -1
+	-- 	body.dx = -1
+	-- elseif Inputs.down("right") then
+	-- 	body.dir = 1
+	-- 	body.dx = 1
+	-- end
+
+	local turn_cd = self.turn_cooldown
+	local turn_delay = self.turn_delay
+	self.turn_cooldown = math.max(0, turn_cd - dt)
+
+	local left = Inputs.down("left")
+	local right = Inputs.down("right")
+	local desired_dir = 0
+	if left then
+		desired_dir = -1
+	elseif right then
+		desired_dir = 1
+	end
+
+	if self.turn_cooldown > 0 then
+		body.dx = 0
+	else
+		if desired_dir ~= 0 then
+			if desired_dir ~= body.dir then
+				body.dir = desired_dir
+				self.turn_cooldown = turn_delay
+				body.dx = 0
+			else
+				body.dx = desired_dir
+			end
+		else
+			body.dx = 0
+		end
 	end
 
 	if within_int and self.player.can_interact and Inputs.pressed("interact") then
