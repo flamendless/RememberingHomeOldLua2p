@@ -21,7 +21,8 @@ function PlayerController:init(world)
 	self.world = world
 
 	self.turn_cooldown = 0
-	self.turn_delay = 0.2
+	self.turn_delay = 0.05
+	self.last_desired_dir = 0
 
 	self.pool.onAdded = function(_, e)
 		local e_player = self.world:getResource("e_player")
@@ -94,13 +95,19 @@ function PlayerController:update(dt)
 	local turn_delay = self.turn_delay
 	self.turn_cooldown = math.max(0, turn_cd - dt)
 
-	local left = Inputs.down("left")
-	local right = Inputs.down("right")
+	local left_held = Inputs.held("left")
+	local right_held = Inputs.held("right")
 	local desired_dir = 0
-	if left then
+	if left_held then
 		desired_dir = -1
-	elseif right then
+	elseif right_held then
 		desired_dir = 1
+	end
+
+	if desired_dir ~= self.last_desired_dir then
+		if self.turn_cooldown <= 0 then
+			self.last_desired_dir = desired_dir
+		end
 	end
 
 	if self.turn_cooldown > 0 then
@@ -116,6 +123,9 @@ function PlayerController:update(dt)
 			end
 		else
 			body.dx = 0
+			if not Inputs.down("left") and not Inputs.down("right") then
+				self.last_desired_dir = 0
+			end
 		end
 	end
 
