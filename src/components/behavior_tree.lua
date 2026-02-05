@@ -1,8 +1,8 @@
 Concord.component("behavior_tree", function(c, beehive, nodes)
-	if not (type(beehive) == "function") then
+	if type(beehive) ~= "function" then
 		error('Assertion failed: type(beehive) == "function"')
 	end
-	if not (type(nodes) == "table") then
+	if type(nodes) ~= "table" then
 		error('Assertion failed: type(nodes) == "table"')
 	end
 	c.beehive = beehive

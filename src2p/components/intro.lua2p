@@ -1,4 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_INTRO_TEXT)
-Concord.component($_C_INTRO_LIGHT)

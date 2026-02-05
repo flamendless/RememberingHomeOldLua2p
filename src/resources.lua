@@ -18,7 +18,7 @@ end
 Resources.meta = Data.ResourcesList
 
 function Resources.get_meta(key)
-	if not (type(key) == "string") then
+	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
 	if not Resources.meta[key] then
@@ -36,7 +36,7 @@ function Resources.get_meta(key)
 end
 
 function Resources.set_resources(t)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	tablex.clear(Resources.data)
@@ -51,7 +51,7 @@ function Resources.set_resources(t)
 end
 
 function Resources.copy_array_images(resources)
-	if not (type(resources) == "table") then
+	if type(resources) ~= "table" then
 		error('Assertion failed: type(resources) == "table"')
 	end
 	for k, v in pairs(resources.array_images) do

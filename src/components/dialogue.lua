@@ -8,7 +8,7 @@ Concord.component("has_choices", function(c, ...)
 		error("Assertion failed: #c.value ~= 0")
 	end
 	for _, str in ipairs(c.value) do
-		if not (type(str) == "string") then
+		if type(str) ~= "string" then
 			error('Assertion failed: type(str) == "string"')
 		end
 	end
@@ -20,10 +20,10 @@ end)
 
 Concord.component("dialogue_item")
 Concord.component("dialogue_meta", function(c, main, sub)
-	if not (type(main) == "string") then
+	if type(main) ~= "string" then
 		error('Assertion failed: type(main) == "string"')
 	end
-	if not (type(sub) == "string") then
+	if type(sub) ~= "string" then
 		error('Assertion failed: type(sub) == "string"')
 	end
 	if not (Dialogues.get(main, sub)) then

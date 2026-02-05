@@ -311,7 +311,7 @@ function ECS.load_systems(id, world, prev_id)
 end
 
 function ECS.get_system_class(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	local l_id = string.lower(id)
@@ -322,7 +322,7 @@ function ECS.get_system_class(id)
 end
 
 function ECS.get_state_class(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	local l_id = string.lower(id)

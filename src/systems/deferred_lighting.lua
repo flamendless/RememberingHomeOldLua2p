@@ -144,14 +144,14 @@ function DeferredLighting:start_flicker(e)
 end
 
 function DeferredLighting:set_draw(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	self.ev_draw_main_id = id
 end
 
 function DeferredLighting:set_ambiance(t)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table". Got ' .. type(t))
 	end
 	if not self.orig_ambiance then
@@ -334,7 +334,7 @@ function DeferredLighting:flicker_sync(main, others)
 	if not main.__isEntity then
 		error("Assertion failed: main.__isEntity")
 	end
-	if not (type(others) == "table") then
+	if type(others) ~= "table" then
 		error('Assertion failed: type(others) == "table"')
 	end
 	local main_diff = main.diffuse.value

@@ -24,10 +24,10 @@ function PostProcessing:setup_post_process(t)
 end
 
 function PostProcessing:set_post_process_effect(id, bool)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	for _, effect in ipairs(self.effects) do
@@ -43,10 +43,10 @@ function PostProcessing:set_post_process_effect(id, bool)
 end
 
 function PostProcessing:ev_pp_invoke(id, str_fn, ...)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(str_fn) == "string") then
+	if type(str_fn) ~= "string" then
 		error('Assertion failed: type(str_fn) == "string"')
 	end
 	for _, effect in ipairs(self.effects) do

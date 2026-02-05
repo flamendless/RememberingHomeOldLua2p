@@ -11,7 +11,7 @@ function AnimationState:anim_idle(e, should_stop)
 		error("Assertion failed: e.__isEntity and e.animation and e.body and e.animation_ev_update")
 	end
 	if should_stop then
-		if not (type(should_stop) == "boolean") then
+		if type(should_stop) ~= "boolean" then
 			error('Assertion failed: type(should_stop) == "boolean"')
 		end
 	end

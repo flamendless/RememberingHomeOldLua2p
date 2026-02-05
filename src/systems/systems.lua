@@ -11,10 +11,10 @@ function Systems:init(world)
 end
 
 function Systems:set_system_to(id, bool)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	if not (system_classes[id] ~= nil) then
@@ -32,7 +32,7 @@ end
 
 function Systems:inventory_to_notes(reversed)
 	if reversed then
-		if not (type(reversed) == "boolean") then
+		if type(reversed) ~= "boolean" then
 			error('Assertion failed: type(reversed) == "boolean"')
 		end
 	end

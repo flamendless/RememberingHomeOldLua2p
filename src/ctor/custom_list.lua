@@ -55,7 +55,7 @@ function CustomList:has(e)
 end
 
 function CustomList:sort(fn)
-	if not (type(fn) == "function") then
+	if type(fn) ~= "function" then
 		error('Assertion failed: type(fn) == "function"')
 	end
 	table.sort(self, fn)

@@ -18,7 +18,7 @@ function Atlas:update_atlas(e, new_data)
 	if not (self.pool:has(e)) then
 		error("Assertion failed: self.pool:has(e)")
 	end
-	if not (type(new_data) == "table") then
+	if type(new_data) ~= "table" then
 		error('Assertion failed: type(new_data) == "table"')
 	end
 	local quad = e.quad

@@ -6,7 +6,7 @@ function Timeline:init(world)
 end
 
 function Timeline:start_timeline(fn)
-	if not (type(fn) == "function") then
+	if type(fn) ~= "function" then
 		error('Assertion failed: type(fn) == "function"')
 	end
 	self.state = Enums.timeline.playing

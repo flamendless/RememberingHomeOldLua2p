@@ -11,7 +11,7 @@ local ranges = {
 
 function DitherGradient:new(is_active, t_dither, t_pal, values)
 	if is_active then
-		if not (type(is_active) == "boolean") then
+		if type(is_active) ~= "boolean" then
 			error('Assertion failed: type(is_active) == "boolean"')
 		end
 	end
@@ -26,7 +26,7 @@ function DitherGradient:new(is_active, t_dither, t_pal, values)
 		end
 	end
 	if values then
-		if not (type(values) == "table") then
+		if type(values) ~= "table" then
 			error('Assertion failed: type(values) == "table"')
 		end
 	end

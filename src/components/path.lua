@@ -1,5 +1,5 @@
 Concord.component("path", function(c, points, max, current_point)
-	if not (type(points) == "table") then
+	if type(points) ~= "table" then
 		error('Assertion failed: type(points) == "table"')
 	end
 	if max then
@@ -12,10 +12,10 @@ Concord.component("path", function(c, points, max, current_point)
 	end
 
 	for _, v in ipairs(points) do
-		if not (type(v.x) == "number") then
+		if type(v.x) ~= "number" then
 			error('Assertion failed: type(v.x) == "number"')
 		end
-		if not (type(v.y) == "number") then
+		if type(v.y) ~= "number" then
 			error('Assertion failed: type(v.y) == "number"')
 		end
 	end
@@ -28,7 +28,7 @@ Concord.component("path", function(c, points, max, current_point)
 end)
 
 Concord.component("path_speed", function(c, speed)
-	if not (type(speed) == "number") then
+	if type(speed) ~= "number" then
 		error('Assertion failed: type(speed) == "number"')
 	end
 	c.value = speed

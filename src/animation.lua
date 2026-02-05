@@ -1,10 +1,10 @@
 local Animation = {}
 
 function Animation.get_multi_by_id(id, tbl)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(tbl) == "table") then
+	if type(tbl) ~= "table" then
 		error('Assertion failed: type(tbl) == "table"')
 	end
 	if not Data.AnimationData[id] then
@@ -12,7 +12,7 @@ function Animation.get_multi_by_id(id, tbl)
 	end
 	local data, mods = {}, {}
 	for _, v in ipairs(tbl) do
-		if not (type(v) == "string") then
+		if type(v) ~= "string" then
 			error('Assertion failed: type(v) == "string"')
 		end
 		data[v] = tablex.copy(Data.AnimationData[id][v])
@@ -22,7 +22,7 @@ function Animation.get_multi_by_id(id, tbl)
 end
 
 function Animation.get(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.AnimationData[id] then
@@ -32,7 +32,7 @@ function Animation.get(id)
 end
 
 function Animation.get_sync_data(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.AnimationSyncData[id] then

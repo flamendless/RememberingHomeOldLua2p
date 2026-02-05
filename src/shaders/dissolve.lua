@@ -10,7 +10,7 @@ function Dissolve:new(texture, duration)
 	if not (texture:type() == "Image") then
 		error('Assertion failed: texture:type() == "Image"')
 	end
-	if not (type(duration) == "number") then
+	if type(duration) ~= "number" then
 		error('Assertion failed: type(duration) == "number"')
 	end
 	self.shader_code = love.graphics.newShader(Shaders.paths.dissolve)
@@ -23,7 +23,7 @@ function Dissolve:new(texture, duration)
 end
 
 function Dissolve:set_kind(kind)
-	if not (type(kind) == "number") then
+	if type(kind) ~= "number" then
 		error('Assertion failed: type(kind) == "number"')
 	end
 	self.kind = kind
@@ -49,7 +49,7 @@ function Dissolve:update(dt)
 end
 
 function Dissolve:draw(fn)
-	if not (type(fn) == "function") then
+	if type(fn) ~= "function" then
 		error('Assertion failed: type(fn) == "function"')
 	end
 	if self.flag_process then

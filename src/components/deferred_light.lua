@@ -1,28 +1,28 @@
 Concord.component("light_disabled")
 
 Concord.component("light_id", function(c, n)
-	if not (type(n) == "number") then
+	if type(n) ~= "number" then
 		error('Assertion failed: type(n) == "number"')
 	end
 	c.value = n
 end)
 
 Concord.component("light_group", function(c, id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	c.value = id
 end)
 
 Concord.component("light_switch_id", function(c, id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	c.value = id
 end)
 
 Concord.component("point_light", function(c, size)
-	if not (type(size) == "number") then
+	if type(size) ~= "number" then
 		error('Assertion failed: type(size) == "number"')
 	end
 	c.value = size
@@ -30,7 +30,7 @@ Concord.component("point_light", function(c, size)
 end)
 
 Concord.component("light_dir", function(c, t)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	c.value = t
@@ -38,7 +38,7 @@ Concord.component("light_dir", function(c, t)
 end)
 
 Concord.component("diffuse", function(c, t)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	c.value = t
@@ -46,7 +46,7 @@ Concord.component("diffuse", function(c, t)
 end)
 
 Concord.component("light_fading", function(c, amount, dir)
-	if not (type(amount) == "number") then
+	if type(amount) ~= "number" then
 		error('Assertion failed: type(amount) == "number"')
 	end
 	if not (type(dir) == "number" and (dir == -1 or dir == 1)) then
@@ -59,7 +59,7 @@ end)
 Concord.component("d_light_flicker_remove_after")
 Concord.component("d_light_flicker_sure_on_after")
 Concord.component("d_light_flicker", function(c, during, on_chance, off_chance)
-	if not (type(during) == "number") then
+	if type(during) ~= "number" then
 		error('Assertion failed: type(during) == "number"')
 	end
 	if not (type(on_chance) == "number" and on_chance >= 0 and on_chance <= 1) then
@@ -75,12 +75,12 @@ end)
 
 Concord.component("d_light_flicker_repeat", function(c, count, delay)
 	if count then
-		if not (type(count) == "number") then
+		if type(count) ~= "number" then
 			error('Assertion failed: type(count) == "number"')
 		end
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end

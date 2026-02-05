@@ -6,10 +6,10 @@ Concord.component("hoverable", function(c)
 end)
 
 Concord.component("hover_change_color", function(c, target, step)
-	if not (type(target) == "table") then
+	if type(target) ~= "table" then
 		error('Assertion failed: type(target) == "table"')
 	end
-	if not (type(step) == "number") then
+	if type(step) ~= "number" then
 		error('Assertion failed: type(step) == "number"')
 	end
 	c.target = target
@@ -17,10 +17,10 @@ Concord.component("hover_change_color", function(c, target, step)
 end)
 
 Concord.component("hover_change_scale", function(c, target, step)
-	if not (type(target) == "number") then
+	if type(target) ~= "number" then
 		error('Assertion failed: type(target) == "number"')
 	end
-	if not (type(step) == "number") then
+	if type(step) ~= "number" then
 		error('Assertion failed: type(step) == "number"')
 	end
 	c.target = target

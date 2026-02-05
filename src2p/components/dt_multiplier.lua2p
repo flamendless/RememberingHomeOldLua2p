@@ -1,8 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_DT_MULTIPLIER, function(c, mul)
-	!if _ASSERT then
-	Assert.must(mul, Types.T_NUMBER)
-	!end
-	c.mul = mul
-end)

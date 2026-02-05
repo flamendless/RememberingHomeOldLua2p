@@ -13,14 +13,14 @@ function Depth:init(world)
 end
 
 function Depth:tween_depth_zoom(dur, factor, ease)
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
-	if not (type(factor) == "number") then
+	if type(factor) ~= "number" then
 		error('Assertion failed: type(factor) == "number"')
 	end
 	if ease then
-		if not (type(ease) == "string") then
+		if type(ease) ~= "string" then
 			error('Assertion failed: type(ease) == "string"')
 		end
 	end

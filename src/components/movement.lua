@@ -7,10 +7,10 @@ Concord.component("random_walk", function(c, dir, distance, x, y)
 	if not (type(distance) == "number" and distance > 0) then
 		error('Assertion failed: type(distance) == "number" and distance > 0')
 	end
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	c.dir = dir

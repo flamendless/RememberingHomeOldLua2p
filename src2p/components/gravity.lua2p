@@ -1,6 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_GRAVITY, function(c, gravity)
-	@@assert(type(gravity) == "number")
-	c.value = gravity
-end)

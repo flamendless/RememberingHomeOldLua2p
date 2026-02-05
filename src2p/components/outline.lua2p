@@ -1,8 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_OUTLINE)
-
-Concord.component($_C_OUTLINE_VAL, function(c, size)
-	@@assert(type(size) == "number")
-	c.value = size
-end)

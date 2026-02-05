@@ -7,28 +7,28 @@ Concord.component("draw_mode", function(c, draw_mode)
 end)
 
 Concord.component("point", function(c, size)
-	if not (type(size) == "number" and size >= 1) then
+	if type(size) ~= "number" and size >= 1 then
 		error('Assertion failed: type(size) == "number" and size >= 1')
 	end
 	c.value = size
 end)
 
 Concord.component("circle", function(c, radius, segments, start_angle, end_angle)
-	if not (type(radius) == "number") then
+	if type(radius) ~= "number" then
 		error('Assertion failed: type(radius) == "number"')
 	end
 	if segments then
-		if not (type(segments) == "number") then
+		if type(segments) ~= "number" then
 			error('Assertion failed: type(segments) == "number"')
 		end
 	end
 	if start_angle then
-		if not (type(start_angle) == "number") then
+		if type(start_angle) ~= "number" then
 			error('Assertion failed: type(start_angle) == "number"')
 		end
 	end
 	if end_angle then
-		if not (type(end_angle) == "number") then
+		if type(end_angle) ~= "number" then
 			error('Assertion failed: type(end_angle) == "number"')
 		end
 	end
@@ -43,10 +43,10 @@ Concord.component("circle", function(c, radius, segments, start_angle, end_angle
 end)
 
 Concord.component("rect", function(c, w, h)
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	c.w = w
@@ -56,10 +56,10 @@ Concord.component("rect", function(c, w, h)
 end)
 
 Concord.component("rect_border", function(c, rx, ry)
-	if not (type(rx) == "number") then
+	if type(rx) ~= "number" then
 		error('Assertion failed: type(rx) == "number"')
 	end
-	if not (type(ry) == "number") then
+	if type(ry) ~= "number" then
 		error('Assertion failed: type(ry) == "number"')
 	end
 	c.rx = rx
@@ -67,7 +67,7 @@ Concord.component("rect_border", function(c, rx, ry)
 end)
 
 Concord.component("line_width", function(c, line_width)
-	if not (type(line_width) == "number") then
+	if type(line_width) ~= "number" then
 		error('Assertion failed: type(line_width) == "number"')
 	end
 	c.value = line_width

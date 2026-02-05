@@ -11,14 +11,14 @@ Concord.component("req_col_dir", function(c, dir)
 end)
 
 Concord.component("collider", function(c, w, h, filter)
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	if filter then
-		if not (type(filter) == "string") then
+		if type(filter) ~= "string" then
 			error('Assertion failed: type(filter) == "string"')
 		end
 	end
@@ -32,10 +32,10 @@ Concord.component("collider", function(c, w, h, filter)
 end)
 
 Concord.component("collider_offset", function(c, ox, oy)
-	if not (type(ox) == "number") then
+	if type(ox) ~= "number" then
 		error('Assertion failed: type(ox) == "number"')
 	end
-	if not (type(oy) == "number") then
+	if type(oy) ~= "number" then
 		error('Assertion failed: type(oy) == "number"')
 	end
 	c.ox = ox
@@ -43,16 +43,16 @@ Concord.component("collider_offset", function(c, ox, oy)
 end)
 
 Concord.component("collider_circle", function(c, size, ox, oy)
-	if not (type(size) == "number") then
+	if type(size) ~= "number" then
 		error('Assertion failed: type(size) == "number"')
 	end
 	if ox then
-		if not (type(ox) == "number") then
+		if type(ox) ~= "number" then
 			error('Assertion failed: type(ox) == "number"')
 		end
 	end
 	if oy then
-		if not (type(oy) == "number") then
+		if type(oy) ~= "number" then
 			error('Assertion failed: type(oy) == "number"')
 		end
 	end

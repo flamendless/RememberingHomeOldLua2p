@@ -8,7 +8,7 @@ function Audio.init()
 end
 
 function Audio.set_volume(volume)
-	if not (type(volume) == "number") then
+	if type(volume) ~= "number" then
 		error('Assertion failed: type(volume) == "number"')
 	end
 	Audio.volume = volume
@@ -16,7 +16,7 @@ function Audio.set_volume(volume)
 end
 
 function Audio.set_mute(mute)
-	if not (type(mute) == "boolean") then
+	if type(mute) ~= "boolean" then
 		error('Assertion failed: type(mute) == "boolean"')
 	end
 	if mute then

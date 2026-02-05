@@ -50,11 +50,11 @@ local positions = {
 }
 
 function Intro.parallax(e, tag, scale)
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	if scale then
-		if not (type(scale) == "number") then
+		if type(scale) ~= "number" then
 			error('Assertion failed: type(scale) == "number"')
 		end
 	end

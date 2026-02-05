@@ -6,16 +6,16 @@ function GameStatesSystem:init(world)
 end
 
 function GameStatesSystem:switch_state(next_state, dur, delay)
-	if not (type(next_state) == "string") then
+	if type(next_state) ~= "string" then
 		error('Assertion failed: type(next_state) == "string"')
 	end
 	if dur then
-		if not (type(dur) == "number") then
+		if type(dur) ~= "number" then
 			error('Assertion failed: type(dur) == "number"')
 		end
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end

@@ -1,8 +1,8 @@
 Concord.component("alpha_range", function(c, min, max)
-	if not (type(min) == "number") then
+	if type(min) ~= "number" then
 		error('Assertion failed: type(min) == "number"')
 	end
-	if not (type(max) == "number") then
+	if type(max) ~= "number" then
 		error('Assertion failed: type(max) == "number"')
 	end
 	c.min = min
@@ -10,11 +10,11 @@ Concord.component("alpha_range", function(c, min, max)
 end)
 
 Concord.component("color", function(c, color, original)
-	if not (type(color) == "table") then
+	if type(color) ~= "table" then
 		error('Assertion failed: type(color) == "table"')
 	end
 	if original then
-		if not (type(original) == "table") then
+		if type(original) ~= "table" then
 			error('Assertion failed: type(original) == "table"')
 		end
 	end
@@ -23,11 +23,11 @@ Concord.component("color", function(c, color, original)
 end)
 
 Concord.component("color_fade_in_out", function(c, duration, count)
-	if not (type(duration) == "number") then
+	if type(duration) ~= "number" then
 		error('Assertion failed: type(duration) == "number"')
 	end
 	if count then
-		if not (type(count) == "number") then
+		if type(count) ~= "number" then
 			error('Assertion failed: type(count) == "number"')
 		end
 	end
@@ -36,11 +36,11 @@ Concord.component("color_fade_in_out", function(c, duration, count)
 end)
 
 Concord.component("fade_to_black", function(c, duration, delay)
-	if not (type(duration) == "number") then
+	if type(duration) ~= "number" then
 		error('Assertion failed: type(duration) == "number"')
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
@@ -49,11 +49,11 @@ Concord.component("fade_to_black", function(c, duration, delay)
 end)
 
 local c_lc = Concord.component("lerp_colors", function(c, colors, duration, delay)
-	if not (type(colors) == "table") then
+	if type(colors) ~= "table" then
 		error('Assertion failed: type(colors) == "table"')
 	end
 	if duration then
-		if not (type(duration) == "number") then
+		if type(duration) ~= "number" then
 			error('Assertion failed: type(duration) == "number"')
 		end
 	end
@@ -81,14 +81,14 @@ function c_lc:deserialize(data)
 end
 
 Concord.component("target_color", function(c, target, duration, delay)
-	if not (type(target) == "table") then
+	if type(target) ~= "table" then
 		error('Assertion failed: type(target) == "table"')
 	end
-	if not (type(duration) == "number") then
+	if type(duration) ~= "number" then
 		error('Assertion failed: type(duration) == "number"')
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
@@ -98,11 +98,11 @@ Concord.component("target_color", function(c, target, duration, delay)
 end)
 
 Concord.component("color_fade_in", function(c, duration, delay)
-	if not (type(duration) == "number") then
+	if type(duration) ~= "number" then
 		error('Assertion failed: type(duration) == "number"')
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
@@ -111,11 +111,11 @@ Concord.component("color_fade_in", function(c, duration, delay)
 end)
 
 Concord.component("color_fade_out", function(c, duration, delay)
-	if not (type(duration) == "number") then
+	if type(duration) ~= "number" then
 		error('Assertion failed: type(duration) == "number"')
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
@@ -124,7 +124,7 @@ Concord.component("color_fade_out", function(c, duration, delay)
 end)
 
 Concord.component("fade_in_target_alpha", function(c, alpha)
-	if not (type(alpha) == "number") then
+	if type(alpha) ~= "number" then
 		error('Assertion failed: type(alpha) == "number"')
 	end
 	c.value = alpha
@@ -132,10 +132,10 @@ end)
 
 Concord.component("remove_blink_on_end")
 Concord.component("blink", function(c, dur, count)
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
-	if not (type(count) == "number") then
+	if type(count) ~= "number" then
 		error('Assertion failed: type(count) == "number"')
 	end
 	c.dur = dur

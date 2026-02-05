@@ -1,12 +1,12 @@
 Concord.component("grouped", function(c, id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	c.value = id
 end)
 
 Concord.component("atlas", function(c, frame)
-	if not (type(frame) == "table") then
+	if type(frame) ~= "table" then
 		error('Assertion failed: type(frame) == "table"')
 	end
 	c.value = frame
@@ -17,7 +17,7 @@ local c_quad = Concord.component("quad", function(c, quad, info)
 		error('Assertion failed: quad:type() == "Quad"')
 	end
 	if info then
-		if not (type(info) == "table") then
+		if type(info) ~= "table" then
 			error('Assertion failed: type(info) == "table"')
 		end
 	end

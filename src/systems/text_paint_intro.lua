@@ -8,10 +8,10 @@ function TextPaintIntro:fade_text(e, dur, on_finish)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
-	if not (type(on_finish) == "function") then
+	if type(on_finish) ~= "function" then
 		error('Assertion failed: type(on_finish) == "function"')
 	end
 	self:generate_paint(e, dur)
@@ -27,11 +27,11 @@ function TextPaintIntro:generate_paint(e, dur_in, dur_out)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(dur_in) == "number") then
+	if type(dur_in) ~= "number" then
 		error('Assertion failed: type(dur_in) == "number"')
 	end
 	if dur_out then
-		if not (type(dur_out) == "number") then
+		if type(dur_out) ~= "number" then
 			error('Assertion failed: type(dur_out) == "number"')
 		end
 	end

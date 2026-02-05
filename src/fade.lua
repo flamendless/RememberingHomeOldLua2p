@@ -24,17 +24,17 @@ function Fade.fade_out(on_complete, duration, delay)
 	end
 
 	if on_complete then
-		if not (type(on_complete) == "function") then
+		if type(on_complete) ~= "function" then
 			error('Assertion failed: type(on_complete) == "function"')
 		end
 	end
 	if duration then
-		if not (type(duration) == "number") then
+		if type(duration) ~= "number" then
 			error('Assertion failed: type(duration) == "number"')
 		end
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
@@ -51,17 +51,17 @@ function Fade.fade_in(on_complete, duration, delay)
 	end
 
 	if on_complete then
-		if not (type(on_complete) == "function") then
+		if type(on_complete) ~= "function" then
 			error('Assertion failed: type(on_complete) == "function"')
 		end
 	end
 	if duration then
-		if not (type(duration) == "number") then
+		if type(duration) ~= "number" then
 			error('Assertion failed: type(duration) == "number"')
 		end
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end
@@ -77,7 +77,7 @@ function Fade.fade_in(on_complete, duration, delay)
 end
 
 function Fade.set_alpha(a)
-	if not (type(a) == "number") then
+	if type(a) ~= "number" then
 		error('Assertion failed: type(a) == "number"')
 	end
 	f_color[4] = a
@@ -90,7 +90,7 @@ function Fade.draw()
 end
 
 function Fade.set_color(color)
-	if not (type(color) == "table") then
+	if type(color) ~= "table" then
 		error('Assertion failed: type(color) == "table"')
 	end
 	f_color[1] = color[1] or f_color[1]

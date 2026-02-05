@@ -1,5 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_EASE, function(c, ease)
-	c.value = ease
-end)

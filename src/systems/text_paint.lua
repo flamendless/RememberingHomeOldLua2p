@@ -30,11 +30,11 @@ function TextPaint:show_text_paint(e, dur, widest)
 	if not (e.__isEntity and e.text_with_paint) then
 		error("Assertion failed: e.__isEntity and e.text_with_paint")
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	if widest then
-		if not (type(widest) == "string") then
+		if type(widest) ~= "string" then
 			error('Assertion failed: type(widest) == "string"')
 		end
 	end
@@ -53,11 +53,11 @@ function TextPaint:fade_text_paint(e, dur, on_complete)
 	if not e.text_with_paint.e_paint.paint then
 		error("Assertion failed: e.text_with_paint.e_paint.paint")
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	if on_complete then
-		if not (type(on_complete) == "function") then
+		if type(on_complete) ~= "function" then
 			error('Assertion failed: type(on_complete) == "function"')
 		end
 	end
@@ -86,11 +86,11 @@ function TextPaint:show_paint(e, dur_in, widest)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(dur_in) == "number") then
+	if type(dur_in) ~= "number" then
 		error('Assertion failed: type(dur_in) == "number"')
 	end
 	if widest then
-		if not (type(widest) == "string") then
+		if type(widest) ~= "string" then
 			error('Assertion failed: type(widest) == "string"')
 		end
 	end
@@ -154,14 +154,14 @@ function TextPaint:fade_paint(paint, dur, delay)
 	if not paint.__isEntity then
 		error("Assertion failed: paint.__isEntity")
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	if not paint.paint then
 		error("Assertion failed: paint.paint")
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end

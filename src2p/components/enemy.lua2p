@@ -1,6 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_ENEMY, function(c, enemy_type)
-	@@assert(type(enemy_type) == "string")
-	c.enemy_type = enemy_type
-end)

@@ -1,9 +1,9 @@
 Concord.component("angle", function(c, radius, angle)
-	if not (type(radius) == "number") then
+	if type(radius) ~= "number" then
 		error('Assertion failed: type(radius) == "number"')
 	end
 	if angle then
-		if not (type(angle) == "number") then
+		if type(angle) ~= "number" then
 			error('Assertion failed: type(angle) == "number"')
 		end
 	end
@@ -13,10 +13,10 @@ Concord.component("angle", function(c, radius, angle)
 end)
 
 Concord.component("angular_speed", function(c, speed, dir)
-	if not (type(speed) == "number") then
+	if type(speed) ~= "number" then
 		error('Assertion failed: type(speed) == "number"')
 	end
-	if not (type(dir) == "number") then
+	if type(dir) ~= "number" then
 		error('Assertion failed: type(dir) == "number"')
 	end
 	c.speed = speed

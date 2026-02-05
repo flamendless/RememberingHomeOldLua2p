@@ -1,8 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_Z_INDEX, function(c, z, sortable)
-	@@assert(type(z) == "number")
-	@@sassert(sortable, type(sortable) == "boolean")
-	c.value = z
-	c.sortable = sortable ~= false
-end)

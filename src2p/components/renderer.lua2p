@@ -1,6 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_CUSTOM_RENDERER, function(c, str)
-	@@assert(type(str) == "string")
-	c.value = str
-end)

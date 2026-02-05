@@ -74,13 +74,13 @@ function ItemsSystem:create_item_preview(bg_e, item_e)
 end
 
 function ItemsSystem:item_response(dialogue_t, main, sub)
-	if not (type(dialogue_t) == "table") then
+	if type(dialogue_t) ~= "table" then
 		error('Assertion failed: type(dialogue_t) == "table"')
 	end
-	if not (type(main) == "string") then
+	if type(main) ~= "string" then
 		error('Assertion failed: type(main) == "string"')
 	end
-	if not (type(sub) == "string") then
+	if type(sub) ~= "string" then
 		error('Assertion failed: type(sub) == "string"')
 	end
 	self.world:emit("close_inventory", true)

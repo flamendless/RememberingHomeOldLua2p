@@ -1,6 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_LINE_OF_SIGHT, function(c, value)
-	@@assert(type(value) == "number")
-	c.value = value
-end)

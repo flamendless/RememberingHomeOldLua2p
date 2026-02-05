@@ -1,5 +1,5 @@
 local c_font = Concord.component("font", function(c, resource_id)
-	if not (type(resource_id) == "string") then
+	if type(resource_id) ~= "string" then
 		error('Assertion failed: type(resource_id) == "string"')
 	end
 	c.resource_id = resource_id
@@ -17,10 +17,10 @@ function c_font:deserialize(data)
 end
 
 local c_font_sdf = Concord.component("font_sdf", function(c, fnt, png)
-	if not (type(fnt) == "string") then
+	if type(fnt) ~= "string" then
 		error('Assertion failed: type(fnt) == "string"')
 	end
-	if not (type(png) == "string") then
+	if type(png) ~= "string" then
 		error('Assertion failed: type(png) == "string"')
 	end
 	c.resource_fnt = fnt
@@ -41,12 +41,12 @@ end
 
 Concord.component("sdf", function(c, sx, sy)
 	if sx then
-		if not (type(sx) == "number") then
+		if type(sx) ~= "number" then
 			error('Assertion failed: type(sx) == "number"')
 		end
 	end
 	if sy then
-		if not (type(sy) == "number") then
+		if type(sy) ~= "number" then
 			error('Assertion failed: type(sy) == "number"')
 		end
 	end

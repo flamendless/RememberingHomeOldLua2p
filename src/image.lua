@@ -24,10 +24,10 @@ function Image.resize_image(image, width, height)
 end
 
 function Image.generate_noise(w, h)
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	local data = love.image.newImageData(w, h)

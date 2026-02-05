@@ -6,10 +6,10 @@ local Info = {
 local filename = "info.txt"
 
 local function insert_str(src, dest)
-	if not (type(src) == "table") then
+	if type(src) ~= "table" then
 		error('Assertion failed: type(src) == "table". Got ' .. type(src))
 	end
-	if not (type(dest) == "table") then
+	if type(dest) ~= "table" then
 		error('Assertion failed: type(dest) == "table". Got ' .. type(dest))
 	end
 	for k, v in pairs(src) do

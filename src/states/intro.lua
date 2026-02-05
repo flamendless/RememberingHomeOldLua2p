@@ -295,7 +295,7 @@ function Intro:car_reflection_flicker()
 end
 
 function Intro:update_rain(amount)
-	if not (type(amount) == "number") then
+	if type(amount) ~= "number" then
 		error('Assertion failed: type(amount) == "number"')
 	end
 	self.is_raining = true

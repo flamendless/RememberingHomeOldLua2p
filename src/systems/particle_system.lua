@@ -6,7 +6,7 @@ function ParticleSystem:init(world)
 end
 
 function ParticleSystem:setup_particle_system(t)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	local t_names = functional.map(t, function(v)

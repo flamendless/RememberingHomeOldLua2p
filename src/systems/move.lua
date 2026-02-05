@@ -8,7 +8,7 @@ local function internal_move_by(e, is_repeat)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(is_repeat) == "boolean") then
+	if type(is_repeat) ~= "boolean" then
 		error('Assertion failed: type(is_repeat) == "boolean"')
 	end
 	local pos = e.pos

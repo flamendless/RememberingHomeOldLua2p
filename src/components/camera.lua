@@ -3,7 +3,7 @@ Concord.component("cullable", function(c)
 end)
 
 Concord.component("bar_height", function(c, h)
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	c.value = h
@@ -16,7 +16,7 @@ local c_cam = Concord.component("camera", function(c, camera, is_main)
 		end
 	end
 	if is_main then
-		if not (type(is_main) == "boolean") then
+		if type(is_main) ~= "boolean" then
 			error('Assertion failed: type(is_main) == "boolean"')
 		end
 	end
@@ -38,10 +38,10 @@ function c_cam:deserialize(data)
 end
 
 Concord.component("camera_transform", function(c, rot, scale)
-	if not (type(rot) == "number") then
+	if type(rot) ~= "number" then
 		error('Assertion failed: type(rot) == "number"')
 	end
-	if not (type(scale) == "number") then
+	if type(scale) ~= "number" then
 		error('Assertion failed: type(scale) == "number"')
 	end
 	c.rot = rot
@@ -49,13 +49,13 @@ Concord.component("camera_transform", function(c, rot, scale)
 end)
 
 Concord.component("camera_clip", function(c, w, h, color)
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
-	if not (type(color) == "table") then
+	if type(color) ~= "table" then
 		error('Assertion failed: type(color) == "table"')
 	end
 	c.w = w
@@ -65,12 +65,12 @@ end)
 
 Concord.component("camera_follow_offset", function(c, x, y)
 	if x then
-		if not (type(x) == "number") then
+		if type(x) ~= "number" then
 			error('Assertion failed: type(x) == "number"')
 		end
 	end
 	if y then
-		if not (type(y) == "number") then
+		if type(y) ~= "number" then
 			error('Assertion failed: type(y) == "number"')
 		end
 	end

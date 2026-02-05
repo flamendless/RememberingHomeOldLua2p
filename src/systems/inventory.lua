@@ -58,7 +58,7 @@ end
 
 function Inventory:close_inventory(not_close)
 	if not_close then
-		if not (type(not_close) == "boolean") then
+		if type(not_close) ~= "boolean" then
 			error('Assertion failed: type(not_close) == "boolean"')
 		end
 	end

@@ -238,14 +238,14 @@ function Color:lerp_color(e, color, dur, ease)
 	if not (e.__isEntity and e.color) then
 		error("Assertion failed: e.__isEntity and e.color")
 	end
-	if not (type(color) == "table") then
+	if type(color) ~= "table" then
 		error('Assertion failed: type(color) == "table"')
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	if ease then
-		if not (type(ease) == "string") then
+		if type(ease) ~= "string" then
 			error('Assertion failed: type(ease) == "string"')
 		end
 	end

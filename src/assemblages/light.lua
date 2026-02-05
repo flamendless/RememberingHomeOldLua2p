@@ -4,23 +4,23 @@ function Light.point(e, x, y, z, size, diffuse, dir)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
-	if not (type(z) == "number") then
+	if type(z) ~= "number" then
 		error('Assertion failed: type(z) == "number"')
 	end
-	if not (type(size) == "number") then
+	if type(size) ~= "number" then
 		error('Assertion failed: type(size) == "number"')
 	end
-	if not (type(diffuse) == "table") then
+	if type(diffuse) ~= "table" then
 		error('Assertion failed: type(diffuse) == "table"')
 	end
 	if dir then
-		if not (type(dir) == "number") then
+		if type(dir) ~= "number" then
 			error('Assertion failed: type(dir) == "number"')
 		end
 	end
@@ -39,22 +39,22 @@ function Light.spot(e, x, y, z, dir, size, diffuse)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
-	if not (type(z) == "number") then
+	if type(z) ~= "number" then
 		error('Assertion failed: type(z) == "number"')
 	end
-	if not (type(dir) == "table") then
+	if type(dir) ~= "table" then
 		error('Assertion failed: type(dir) == "table"')
 	end
-	if not (type(size) == "number") then
+	if type(size) ~= "number" then
 		error('Assertion failed: type(size) == "number"')
 	end
-	if not (type(diffuse) == "table") then
+	if type(diffuse) ~= "table" then
 		error('Assertion failed: type(diffuse) == "table"')
 	end
 
@@ -72,7 +72,7 @@ function Light.fl_spot(e, e_player, sync_data)
 	if not e_player.__isEntity then
 		error("Assertion failed: e_player.__isEntity")
 	end
-	if not (type(sync_data) == "table") then
+	if type(sync_data) ~= "table" then
 		error('Assertion failed: type(sync_data) == "table"')
 	end
 

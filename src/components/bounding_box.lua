@@ -1,14 +1,14 @@
 Concord.component("bounding_box", function(c, x, y, w, h)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	c.x = x

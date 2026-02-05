@@ -37,10 +37,10 @@ function Fog:draw_fog(e)
 end
 
 function Fog:fade_in_fog(target_id, dur)
-	if not (type(target_id) == "string") then
+	if type(target_id) ~= "string" then
 		error('Assertion failed: type(target_id) == "string"')
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	for _, e in ipairs(self.pool) do
@@ -53,10 +53,10 @@ function Fog:fade_in_fog(target_id, dur)
 end
 
 function Fog:fade_out_fog(target_id, dur)
-	if not (type(target_id) == "string") then
+	if type(target_id) ~= "string" then
 		error('Assertion failed: type(target_id) == "string"')
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	for _, e in ipairs(self.pool) do

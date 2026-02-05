@@ -1,9 +1,9 @@
 Concord.component("id", function(c, id, sub_id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if sub_id then
-		if not (type(sub_id) == "string") then
+		if type(sub_id) ~= "string" then
 			error('Assertion failed: type(sub_id) == "string"')
 		end
 	end

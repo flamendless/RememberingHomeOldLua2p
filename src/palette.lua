@@ -69,14 +69,14 @@ Palette.diffuse = {
 }
 
 function Palette.get(color, alpha)
-	if not (type(color) == "string") then
+	if type(color) ~= "string" then
 		error('Assertion failed: type(color) == "string"')
 	end
 	if not Palette.colors[color] then
 		error("Assertion failed: Palette.colors[color]")
 	end
 	if alpha then
-		if not (type(alpha) == "number") then
+		if type(alpha) ~= "number" then
 			error('Assertion failed: type(alpha) == "number"')
 		end
 	end
@@ -86,7 +86,7 @@ function Palette.get(color, alpha)
 end
 
 function Palette.get_diffuse(color)
-	if not (type(color) == "string") then
+	if type(color) ~= "string" then
 		error('Assertion failed: type(color) == "string"')
 	end
 	if not Palette.diffuse[color] then

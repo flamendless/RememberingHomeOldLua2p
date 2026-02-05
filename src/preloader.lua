@@ -11,13 +11,13 @@ local keys = {
 }
 
 function Preloader.start(resources, container, on_complete)
-	if not (type(resources) == "table") then
+	if type(resources) ~= "table" then
 		error('Assertion failed: type(resources) == "table"')
 	end
-	if not (type(container) == "table") then
+	if type(container) ~= "table" then
 		error('Assertion failed: type(container) == "table"')
 	end
-	if not (type(on_complete) == "function") then
+	if type(on_complete) ~= "function" then
 		error('Assertion failed: type(on_complete) == "function"')
 	end
 	Preloader.percent = 0
@@ -53,7 +53,7 @@ function Preloader.start(resources, container, on_complete)
 end
 
 function Preloader.load(data, userdata, container, on_complete)
-	if not (type(data) == "table") then
+	if type(data) ~= "table" then
 		error('Assertion failed: type(data) == "table"')
 	end
 	local preloader = Lily.loadMulti(data)
@@ -74,27 +74,27 @@ function Preloader.load(data, userdata, container, on_complete)
 				local tt = data:getTextureType()
 				data:setFilter("nearest", "nearest")
 				if tt == "array" then
-					if not (type(container.array_images) == "table") then
+					if type(container.array_images) ~= "table" then
 						error('Assertion failed: type(container.array_images) == "table"')
 					end
 					container.array_images[id] = data
 				end
-				if not (type(container.images) == "table") then
+				if type(container.images) ~= "table" then
 					error('Assertion failed: type(container.images) == "table"')
 				end
 				container.images[id] = data
 			elseif data_type == "ImageData" then
-				if not (type(container.image_data) == "table") then
+				if type(container.image_data) ~= "table" then
 					error('Assertion failed: type(container.image_data) == "table"')
 				end
 				container.image_data[id] = data
 			elseif data_type == "Source" then
-				if not (type(container.sources) == "table") then
+				if type(container.sources) ~= "table" then
 					error('Assertion failed: type(container.sources) == "table"')
 				end
 				container.sources[id] = data
 			elseif data_type == "Font" then
-				if not (type(container.fonts) == "table") then
+				if type(container.fonts) ~= "table" then
 					error('Assertion failed: type(container.fonts) == "table"')
 				end
 				data:setFilter("nearest", "nearest")

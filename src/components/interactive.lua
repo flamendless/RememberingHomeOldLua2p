@@ -28,10 +28,10 @@ Concord.component("within_interactive", function(c, entity)
 end)
 
 Concord.component("interactive_req_player_dir", function(c, x, y)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	c.x = x

@@ -5,14 +5,14 @@ Concord.component("list_item", function(c)
 end)
 
 Concord.component("list_cursor", function(c, cursor_index)
-	if not (type(cursor_index) == "number") then
+	if type(cursor_index) ~= "number" then
 		error('Assertion failed: type(cursor_index) == "number"')
 	end
 	c.value = cursor_index
 end)
 
 Concord.component("list_group", function(c, group_id)
-	if not (type(group_id) == "string") then
+	if type(group_id) ~= "string" then
 		error('Assertion failed: type(group_id) == "string"')
 	end
 	c.value = group_id

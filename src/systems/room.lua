@@ -5,7 +5,7 @@ function Room:init(world)
 end
 
 function Room:parse_room_items(res)
-	if not (type(res) == "string") then
+	if type(res) ~= "string" then
 		error('Assertion failed: type(res) == "string"')
 	end
 	local data = require("atlases.atlas_" .. res)
@@ -39,17 +39,17 @@ function Room:parse_room_items(res)
 end
 
 function Room:create_room_item(frames, spr_res, t, g_id)
-	if not (type(frames) == "table") then
+	if type(frames) ~= "table" then
 		error('Assertion failed: type(frames) == "table"')
 	end
-	if not (type(spr_res) == "string") then
+	if type(spr_res) ~= "string" then
 		error('Assertion failed: type(spr_res) == "string"')
 	end
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	if g_id then
-		if not (type(g_id) == "string") then
+		if type(g_id) ~= "string" then
 			error('Assertion failed: type(g_id) == "string"')
 		end
 	end
@@ -95,16 +95,16 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 end
 
 function Room:create_grouped_items(group, group_t, frames, list)
-	if not (type(group) == "table") then
+	if type(group) ~= "table" then
 		error('Assertion failed: type(group) == "table"')
 	end
-	if not (type(group_t) == "table") then
+	if type(group_t) ~= "table" then
 		error('Assertion failed: type(group_t) == "table"')
 	end
-	if not (type(frames) == "table") then
+	if type(frames) ~= "table" then
 		error('Assertion failed: type(frames) == "table"')
 	end
-	if not (type(list) == "table") then
+	if type(list) ~= "table" then
 		error('Assertion failed: type(list) == "table"')
 	end
 

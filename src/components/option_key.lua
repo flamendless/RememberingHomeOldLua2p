@@ -1,8 +1,8 @@
 Concord.component("option_key", function(c, id, page)
-	if not (type(id) == "number") then
+	if type(id) ~= "number" then
 		error('Assertion failed: type(id) == "number"')
 	end
-	if not (type(page) == "number") then
+	if type(page) ~= "number" then
 		error('Assertion failed: type(page) == "number"')
 	end
 	c.id = id

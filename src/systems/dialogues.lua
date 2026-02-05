@@ -100,20 +100,20 @@ function DialoguesSystem:update(dt)
 end
 
 function DialoguesSystem:wait_dialogue(bool)
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	self.is_waiting = bool
 end
 
 function DialoguesSystem:spawn_dialogue(dialogues_t, main, sub)
-	if not (type(dialogues_t) == "table") then
+	if type(dialogues_t) ~= "table" then
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
-	if not (type(main) == "string") then
+	if type(main) ~= "string" then
 		error('Assertion failed: type(main) == "string"')
 	end
-	if not (type(sub) == "string") then
+	if type(sub) ~= "string" then
 		error('Assertion failed: type(sub) == "string"')
 	end
 	self.e_dialogue:give("dialogue_meta", main, sub):give("text_t", dialogues_t)
@@ -125,14 +125,14 @@ function DialoguesSystem:spawn_dialogue(dialogues_t, main, sub)
 end
 
 function DialoguesSystem:spawn_dialogue_ex(dialogue_t, signal_after, ...)
-	if not (type(dialogue_t) == "table") then
+	if type(dialogue_t) ~= "table" then
 		error('Assertion failed: type(dialogue_t) == "table"')
 	end
 	if not (#dialogue_t ~= 0) then
 		error("Assertion failed: #dialogue_t ~= 0")
 	end
 	if signal_after then
-		if not (type(signal_after) == "string") then
+		if type(signal_after) ~= "string" then
 			error('Assertion failed: type(signal_after) == "string"')
 		end
 	end
@@ -177,7 +177,7 @@ function DialoguesSystem:on_dialogue_reached_end(e)
 end
 
 function DialoguesSystem:update_dialogues(new_dialogues_t)
-	if not (type(new_dialogues_t) == "table") then
+	if type(new_dialogues_t) ~= "table" then
 		error('Assertion failed: type(new_dialogues_t) == "table"')
 	end
 	if not self.e_dialogue.item_id then
@@ -240,7 +240,7 @@ function DialoguesSystem:show_choices()
 end
 
 function DialoguesSystem:populate_choices(t)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	local choices = {}

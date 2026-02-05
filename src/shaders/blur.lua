@@ -4,7 +4,7 @@ local Blur = class({
 
 function Blur:new(is_active)
 	if is_active then
-		if not (type(is_active) == "boolean") then
+		if type(is_active) ~= "boolean" then
 			error('Assertion failed: type(is_active) == "boolean"')
 		end
 	end

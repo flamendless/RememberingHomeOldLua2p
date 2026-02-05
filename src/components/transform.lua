@@ -2,37 +2,37 @@
 
 Concord.component("transform", function(c, rotation, sx, sy, ox, oy, kx, ky)
 	if rotation then
-		if not (type(rotation) == "number") then
+		if type(rotation) ~= "number" then
 			error('Assertion failed: type(rotation) == "number"')
 		end
 	end
 	if sx then
-		if not (type(sx) == "number") then
+		if type(sx) ~= "number" then
 			error('Assertion failed: type(sx) == "number"')
 		end
 	end
 	if sy then
-		if not (type(sy) == "number") then
+		if type(sy) ~= "number" then
 			error('Assertion failed: type(sy) == "number"')
 		end
 	end
 	if ox then
-		if not (type(ox) == "number") then
+		if type(ox) ~= "number" then
 			error('Assertion failed: type(ox) == "number"')
 		end
 	end
 	if oy then
-		if not (type(oy) == "number") then
+		if type(oy) ~= "number" then
 			error('Assertion failed: type(oy) == "number"')
 		end
 	end
 	if kx then
-		if not (type(kx) == "number") then
+		if type(kx) ~= "number" then
 			error('Assertion failed: type(kx) == "number"')
 		end
 	end
 	if ky then
-		if not (type(ky) == "number") then
+		if type(ky) ~= "number" then
 			error('Assertion failed: type(ky) == "number"')
 		end
 	end
@@ -50,37 +50,37 @@ end)
 
 Concord.component("quad_transform", function(c, rotation, sx, sy, ox, oy, kx, ky)
 	if rotation then
-		if not (type(rotation) == "number") then
+		if type(rotation) ~= "number" then
 			error('Assertion failed: type(rotation) == "number"')
 		end
 	end
 	if sx then
-		if not (type(sx) == "number") then
+		if type(sx) ~= "number" then
 			error('Assertion failed: type(sx) == "number"')
 		end
 	end
 	if sy then
-		if not (type(sy) == "number") then
+		if type(sy) ~= "number" then
 			error('Assertion failed: type(sy) == "number"')
 		end
 	end
 	if ox then
-		if not (type(ox) == "number") then
+		if type(ox) ~= "number" then
 			error('Assertion failed: type(ox) == "number"')
 		end
 	end
 	if oy then
-		if not (type(oy) == "number") then
+		if type(oy) ~= "number" then
 			error('Assertion failed: type(oy) == "number"')
 		end
 	end
 	if kx then
-		if not (type(kx) == "number") then
+		if type(kx) ~= "number" then
 			error('Assertion failed: type(kx) == "number"')
 		end
 	end
 	if ky then
-		if not (type(ky) == "number") then
+		if type(ky) ~= "number" then
 			error('Assertion failed: type(ky) == "number"')
 		end
 	end
@@ -97,7 +97,7 @@ Concord.component("quad_transform", function(c, rotation, sx, sy, ox, oy, kx, ky
 end)
 
 Concord.component("depth_zoom", function(c, zoom_factor)
-	if not (type(zoom_factor) == "number") then
+	if type(zoom_factor) ~= "number" then
 		error('Assertion failed: type(zoom_factor) == "number"')
 	end
 	c.value = zoom_factor

@@ -32,15 +32,15 @@ local default_setting = { linear = true, dpiscale = 1 }
 
 function NGrading:new(res_id, res_id2, is_active)
 	if is_active then
-		if not (type(is_active) == "boolean") then
+		if type(is_active) ~= "boolean" then
 			error('Assertion failed: type(is_active) == "boolean"')
 		end
 	end
-	if not (type(res_id) == "string") then
+	if type(res_id) ~= "string" then
 		error('Assertion failed: type(res_id) == "string"')
 	end
 	if res_id2 then
-		if not (type(res_id2) == "string") then
+		if type(res_id2) ~= "string" then
 			error('Assertion failed: type(res_id2) == "string"')
 		end
 	end
@@ -111,7 +111,7 @@ function NGrading:new_multi(img, img2, cs)
 	if not (img2:type() == "ImageData") then
 		error('Assertion failed: img2:type() == "ImageData"')
 	end
-	if not (type(cs) == "number") then
+	if type(cs) ~= "number" then
 		error('Assertion failed: type(cs) == "number"')
 	end
 	local data = img

@@ -111,7 +111,7 @@ function Flies:update(dt)
 end
 
 function Flies:set_flies_visibility(bool)
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 

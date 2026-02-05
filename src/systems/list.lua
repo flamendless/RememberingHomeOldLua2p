@@ -54,10 +54,10 @@ function List:update(dt)
 end
 
 function List:create_list_group(id, vertical_only, per_page, use_max_threshold, limit)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(vertical_only) == "boolean") then
+	if type(vertical_only) ~= "boolean" then
 		error('Assertion failed: type(vertical_only) == "boolean"')
 	end
 	if not (type(per_page) == "number" and per_page > 0) then
@@ -67,7 +67,7 @@ function List:create_list_group(id, vertical_only, per_page, use_max_threshold, 
 		error(id .. " was already added")
 	end
 	if use_max_threshold then
-		if not (type(use_max_threshold) == "boolean") then
+		if type(use_max_threshold) ~= "boolean" then
 			error('Assertion failed: type(use_max_threshold) == "boolean"')
 		end
 	end
@@ -89,7 +89,7 @@ function List:create_list_group(id, vertical_only, per_page, use_max_threshold, 
 end
 
 function List:create_list_group_grid(id, rows, cols)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not (self.groups[id] == nil) then

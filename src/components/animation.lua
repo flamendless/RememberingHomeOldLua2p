@@ -2,7 +2,7 @@ Concord.component("override_animation")
 
 local c_anim = Concord.component("animation", function(c, stop_on_last)
 	if stop_on_last then
-		if not (type(stop_on_last) == "boolean") then
+		if type(stop_on_last) ~= "boolean" then
 			error('Assertion failed: type(stop_on_last) == "boolean"')
 		end
 	end
@@ -28,11 +28,11 @@ function c_anim:deserialize(data)
 end
 
 Concord.component("change_animation_tag", function(c, new_tag, override)
-	if not (type(new_tag) == "string") then
+	if type(new_tag) ~= "string" then
 		error('Assertion failed: type(new_tag) == "string"')
 	end
 	if override then
-		if not (type(override) == "boolean") then
+		if type(override) ~= "boolean" then
 			error('Assertion failed: type(override) == "boolean"')
 		end
 	end
@@ -51,7 +51,7 @@ Concord.component("animation_pause_at", function(c, at_frame)
 end)
 
 Concord.component("animation_stop", function(c, event)
-	if not (type(event) == "string") then
+	if type(event) ~= "string" then
 		error('Assertion failed: type(event) == "string"')
 	end
 	c.event = event
@@ -68,7 +68,7 @@ Concord.component("current_frame", function(c, max)
 end)
 
 Concord.component("animation_ev_update", function(c, ev_update)
-	if not (type(ev_update) == "string") then
+	if type(ev_update) ~= "string" then
 		error('Assertion failed: type(ev_update) == "string"')
 	end
 	c.value = ev_update

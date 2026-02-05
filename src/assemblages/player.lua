@@ -24,22 +24,22 @@ end
 
 function Player.base(e, x, y, speed_data, can)
 	if can then
-		if not (type(can) == "table") then
+		if type(can) ~= "table" then
 			error('Assertion failed: type(can) == "table"')
 		end
 	end
 	if can.move then
-		if not (type(can.move) == "boolean") then
+		if type(can.move) ~= "boolean" then
 			error('Assertion failed: type(can.move) == "boolean"')
 		end
 	end
 	if can.run then
-		if not (type(can.run) == "boolean") then
+		if type(can.run) ~= "boolean" then
 			error('Assertion failed: type(can.run) == "boolean"')
 		end
 	end
 	if can.open_door then
-		if not (type(can.open_door) == "boolean") then
+		if type(can.open_door) ~= "boolean" then
 			error('Assertion failed: type(can.open_door) == "boolean"')
 		end
 	end
@@ -84,10 +84,10 @@ function Player.base(e, x, y, speed_data, can)
 end
 
 function Player.outside_house(e, x, y)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	e:assemble(Player.base, x, y, player_speed_data, {
@@ -100,10 +100,10 @@ function Player.outside_house(e, x, y)
 end
 
 function Player.room(e, x, y)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	e:assemble(Player.base, x, y, player_speed_data, {

@@ -44,7 +44,7 @@ function PlayerController:on_toggle_equip_flashlight()
 end
 
 function PlayerController:spawn_player(fn)
-	if fn and not type(fn) == "function" then
+	if fn and type(fn) ~= "function" then
 		error('Assertion failed: type(fn) == "function"')
 	end
 	if self.player ~= nil then

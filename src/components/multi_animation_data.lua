@@ -1,8 +1,8 @@
 local c = Concord.component("multi_animation_data", function(c, first, data, modifier)
-	if not (type(first) == "string") then
+	if type(first) ~= "string" then
 		error('Assertion failed: type(first) == "string"')
 	end
-	if not (type(data) == "table") then
+	if type(data) ~= "table" then
 		error('Assertion failed: type(data) == "table"')
 	end
 	if not data[first] then
@@ -10,25 +10,25 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 	end
 
 	for _, v in pairs(data) do
-		if not (type(v.resource_id) == "string") then
+		if type(v.resource_id) ~= "string" then
 			error('Assertion failed: type(v.resource_id) == "string"')
 		end
 		if not (type(v.delay) == "number" or type(v.delay) == "table") then
 			error('Assertion failed: type(v.delay) == "number" or type(v.delay) == "table"')
 		end
-		if not (type(v.rows_count) == "number") then
+		if type(v.rows_count) ~= "number" then
 			error('Assertion failed: type(v.rows_count) == "number"')
 		end
-		if not (type(v.columns_count) == "number") then
+		if type(v.columns_count) ~= "number" then
 			error('Assertion failed: type(v.columns_count) == "number"')
 		end
-		if not (type(v.n_frames) == "number") then
+		if type(v.n_frames) ~= "number" then
 			error('Assertion failed: type(v.n_frames) == "number"')
 		end
 	end
 
 	if modifier then
-		if not (type(modifier) == "table") then
+		if type(modifier) ~= "table" then
 			error('Assertion failed: type(modifier) == "table"')
 		end
 	end
@@ -37,10 +37,10 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 			if not data[id] then
 				error("Assertion failed: data[id]")
 			end
-			if not (type(v[1]) == "string") then
+			if type(v[1]) ~= "string" then
 				error('Assertion failed: type(v[1]) == "string"')
 			end
-			if not (type(v[2]) == "string") then
+			if type(v[2]) ~= "string" then
 				error('Assertion failed: type(v[2]) == "string"')
 			end
 		end

@@ -3,7 +3,7 @@ local Canvas = class({
 })
 
 function Canvas.init_canvases(canvases)
-	if not (type(canvases) == "table") then
+	if type(canvases) ~= "table" then
 		error('Assertion failed: type(canvases) == "table"')
 	end
 	local game_size = { x = 128, y = 32 }
@@ -71,22 +71,22 @@ function Canvas.create_main(canvases)
 end
 
 function Canvas:new_default(x, y, width, height, rotation, scale)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
-	if not (type(width) == "number") then
+	if type(width) ~= "number" then
 		error('Assertion failed: type(width) == "number"')
 	end
-	if not (type(height) == "number") then
+	if type(height) ~= "number" then
 		error('Assertion failed: type(height) == "number"')
 	end
-	if not (type(rotation) == "number") then
+	if type(rotation) ~= "number" then
 		error('Assertion failed: type(rotation) == "number"')
 	end
-	if not (type(scale) == "number") then
+	if type(scale) ~= "number" then
 		error('Assertion failed: type(scale) == "number"')
 	end
 	self.canvas = love.graphics.newCanvas(width, height)
@@ -99,7 +99,7 @@ function Canvas:new_default(x, y, width, height, rotation, scale)
 end
 
 function Canvas:new_from_table(tbl)
-	if not (type(tbl) == "table") then
+	if type(tbl) ~= "table" then
 		error('Assertion failed: type(tbl) == "table"')
 	end
 	self.x = tbl.x
@@ -131,27 +131,27 @@ function Canvas:new(x, y, width, height, rotation, scale)
 		error('Assertion failed: type(x) == "number" or type(x) == "table"')
 	end
 	if y then
-		if not (type(y) == "number") then
+	if type(y) ~= "number" then
 			error('Assertion failed: type(y) == "number"')
 		end
 	end
 	if width then
-		if not (type(width) == "number") then
+	if type(width) ~= "number" then
 			error('Assertion failed: type(width) == "number"')
 		end
 	end
 	if height then
-		if not (type(height) == "number") then
+	if type(height) ~= "number" then
 			error('Assertion failed: type(height) == "number"')
 		end
 	end
 	if rotation then
-		if not (type(rotation) == "number") then
+		if type(rotation) ~= "number" then
 			error('Assertion failed: type(rotation) == "number"')
 		end
 	end
 	if scale then
-		if not (type(scale) == "number") then
+		if type(scale) ~= "number" then
 			error('Assertion failed: type(scale) == "number"')
 		end
 	end
@@ -167,25 +167,25 @@ function Canvas:new(x, y, width, height, rotation, scale)
 end
 
 function Canvas:set(x, y, width, height, rotation, scale)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
-	if not (type(width) == "number") then
+	if type(width) ~= "number" then
 		error('Assertion failed: type(width) == "number"')
 	end
-	if not (type(height) == "number") then
+	if type(height) ~= "number" then
 		error('Assertion failed: type(height) == "number"')
 	end
 	if rotation then
-		if not (type(rotation) == "number") then
+		if type(rotation) ~= "number" then
 			error('Assertion failed: type(rotation) == "number"')
 		end
 	end
 	if scale then
-		if not (type(scale) == "number") then
+		if type(scale) ~= "number" then
 			error('Assertion failed: type(scale) == "number"')
 		end
 	end

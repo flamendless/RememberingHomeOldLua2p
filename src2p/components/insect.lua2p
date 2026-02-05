@@ -1,6 +1,0 @@
-local Concord = require("modules.concord")
-
-Concord.component($_C_BUG)
-Concord.component($_C_ANT)
-Concord.component($_C_FLY)
-Concord.component($_C_FIREFLY)

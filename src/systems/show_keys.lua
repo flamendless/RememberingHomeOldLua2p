@@ -11,10 +11,10 @@ function ShowKeys:init(world)
 end
 
 function ShowKeys:create_key_with_text(id, txt, key)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(txt) == "string") then
+	if type(txt) ~= "string" then
 		error('Assertion failed: type(txt) == "string"')
 	end
 	local ww, wh = love.graphics.getDimensions()
@@ -77,10 +77,10 @@ function ShowKeys:show_key(id, bool)
 	if not Settings.current.show_keys then
 		return
 	end
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	local e = self.keys[id]

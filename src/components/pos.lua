@@ -2,14 +2,14 @@
 Concord.component("pos_vec2")
 
 Concord.component("pos", function(c, x, y, z)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	if z then
-		if not (type(z) == "number") then
+		if type(z) ~= "number" then
 			error('Assertion failed: type(z) == "number"')
 		end
 	end
@@ -22,20 +22,20 @@ Concord.component("pos", function(c, x, y, z)
 end)
 
 Concord.component("ref_pos_vec2", function(c, x, y)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	c.value = vec2(x, y)
 end)
 
 Concord.component("size", function(c, w, h)
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	c.w = w

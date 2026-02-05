@@ -4,11 +4,11 @@ Concord.component("bg")
 Concord.component("array_image")
 
 local c_sprite = Concord.component("sprite", function(c, resource_id, container)
-	if not (type(resource_id) == "string") then
+	if type(resource_id) ~= "string" then
 		error('Assertion failed: type(resource_id) == "string"')
 	end
 	if container then
-		if not (type(container) == "string") then
+		if type(container) ~= "string" then
 			error('Assertion failed: type(container) == "string"')
 		end
 	end
@@ -31,10 +31,10 @@ end
 
 --TODO: (Brandon) remove with fog?
 local c_noise_tex = Concord.component("noise_texture", function(c, w, h)
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
-	if not (type(h) == "number") then
+	if type(h) ~= "number" then
 		error('Assertion failed: type(h) == "number"')
 	end
 	c.w = w

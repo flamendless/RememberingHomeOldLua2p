@@ -1,21 +1,21 @@
 local c_anim_data = Concord.component("animation_data", function(c, data)
-	if not (type(data) == "table") then
+	if type(data) ~= "table" then
 		error('Assertion failed: type(data) == "table"')
 	end
 	if not (data.resource_id and type(data.resource_id) == "string") then
 		error('Assertion failed: data.resource_id and type(data.resource_id) == "string"')
 	end
-	if not (type(data.frames) == "table") then
+	if type(data.frames) ~= "table" then
 		error('Assertion failed: type(data.frames) == "table"')
 	end
-	if not (type(data.rows_count) == "number") then
+	if type(data.rows_count) ~= "number" then
 		error('Assertion failed: type(data.rows_count) == "number"')
 	end
-	if not (type(data.columns_count) == "number") then
+	if type(data.columns_count) ~= "number" then
 		error('Assertion failed: type(data.columns_count) == "number"')
 	end
 	if data.n_frames then
-		if not (type(data.n_frames) == "number") then
+		if type(data.n_frames) ~= "number" then
 			error('Assertion failed: type(data.n_frames) == "number"')
 		end
 	end

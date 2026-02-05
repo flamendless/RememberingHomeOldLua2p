@@ -2,19 +2,19 @@ local c_anchor = Concord.component("anchor", function(c, entity, ax, ay, padding
 	if not entity.__isEntity then
 		error("Assertion failed: entity.__isEntity")
 	end
-	if not (type(ax) == "string") then
+	if type(ax) ~= "string" then
 		error('Assertion failed: type(ax) == "string"')
 	end
-	if not (type(ay) == "string") then
+	if type(ay) ~= "string" then
 		error('Assertion failed: type(ay) == "string"')
 	end
 	if padding_x then
-		if not (type(padding_x) == "number") then
+		if type(padding_x) ~= "number" then
 			error('Assertion failed: type(padding_x) == "number"')
 		end
 	end
 	if padding_y then
-		if not (type(padding_y) == "number") then
+		if type(padding_y) ~= "number" then
 			error('Assertion failed: type(padding_y) == "number"')
 		end
 	end

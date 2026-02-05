@@ -7,7 +7,7 @@ local function set_node(e, tag)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	e.behavior_tree.current_node = bt_enemy[tag]
@@ -17,7 +17,7 @@ local function set_node_bt(e, tag)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	return function()
@@ -49,7 +49,7 @@ local function is_current_anim(e, tag)
 	if not (e.__isEntity and e.behavior_tree and e.animation) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree and e.animation")
 	end
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	return (e.animation.base_tag == tag) and "success" or "failure"
@@ -59,7 +59,7 @@ local function is_current_anim_bt(e, tag)
 	if not (e.__isEntity and e.behavior_tree and e.animation) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree and e.animation")
 	end
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	return function()
@@ -71,7 +71,7 @@ local function is_current_anim_done(e, tag)
 	if not (e.__isEntity and e.behavior_tree and e.animation) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree and e.animation")
 	end
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	local base_tag = e.animation.base_tag
@@ -86,7 +86,7 @@ local function is_current_anim_done_bt(e, tag)
 	if not (e.__isEntity and e.behavior_tree and e.animation) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree and e.animation")
 	end
-	if not (type(tag) == "string") then
+	if type(tag) ~= "string" then
 		error('Assertion failed: type(tag) == "string"')
 	end
 	return function()
@@ -98,7 +98,7 @@ local function has_component_bt(e, component)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	if not (type(component) == "string") then
+	if type(component) ~= "string" then
 		error('Assertion failed: type(component) == "string"')
 	end
 	return function()
@@ -147,7 +147,7 @@ local function random(tbl)
 	end
 
 	for _, bt in ipairs(tbl) do
-		if not (type(bt) == "function") then
+		if type(bt) ~= "function" then
 			error('Assertion failed: type(bt) == "function"')
 		end
 	end
@@ -162,7 +162,7 @@ local function random_bt(tbl)
 	end
 
 	for _, bt in ipairs(tbl) do
-		if not (type(bt) == "function") then
+		if type(bt) ~= "function" then
 			error('Assertion failed: type(bt) == "function"')
 		end
 	end
@@ -176,10 +176,10 @@ local function wait_random_bt(e, min, max)
 	if not (e.__isEntity and e.behavior_tree) then
 		error("Assertion failed: e.__isEntity and e.behavior_tree")
 	end
-	if not (type(min) == "number") then
+	if type(min) ~= "number" then
 		error('Assertion failed: type(min) == "number"')
 	end
-	if not (type(max) == "number") then
+	if type(max) ~= "number" then
 		error('Assertion failed: type(max) == "number"')
 	end
 	if not (min > 0 and min < max) then

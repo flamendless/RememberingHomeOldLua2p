@@ -318,7 +318,7 @@ function Outside:get_flashlight(e, dialogues_t)
 	if not (e.__isEntity and e.dialogue_meta) then
 		error("Assertion failed: e.__isEntity and e.dialogue_meta")
 	end
-	if not (type(dialogues_t) == "table") then
+	if type(dialogues_t) ~= "table" then
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
 	local has_flashlight = Items.has("flashlight")
@@ -367,7 +367,7 @@ function Outside:check_frontdoor(e, dialogues_t)
 	if not (e.__isEntity and e.dialogue_meta) then
 		error("Assertion failed: e.__isEntity and e.dialogue_meta")
 	end
-	if not (type(dialogues_t) == "table") then
+	if type(dialogues_t) ~= "table" then
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
 	self.world:emit("remove_choices")
@@ -393,7 +393,7 @@ function Outside:check_backdoor(e, dialogues_t)
 	if not (e.__isEntity and self.e_player) then
 		error("Assertion failed: self.e_player")
 	end
-	if not (type(dialogues_t) == "table") then
+	if type(dialogues_t) ~= "table" then
 		error('Assertion failed: type(dialogues_t) == "table"')
 	end
 	local has_flashlight = Items.has("flashlight")

@@ -21,12 +21,12 @@ end
 
 Concord.component("fl_spawn_offset", function(c, x, y)
 	if x then
-		if not (type(x) == "number") then
+		if type(x) ~= "number" then
 			error('Assertion failed: type(x) == "number"')
 		end
 	end
 	if y then
-		if not (type(y) == "number") then
+		if type(y) ~= "number" then
 			error('Assertion failed: type(y) == "number"')
 		end
 	end

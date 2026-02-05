@@ -1,7 +1,7 @@
 local Common = {}
 
 function Common.bg(e, bg_id)
-	if not (type(bg_id) == "string") then
+	if type(bg_id) ~= "string" then
 		error('Assertion failed: type(bg_id) == "string"')
 	end
 	e:give("id", "bg"):give("pos", 0, 0):give("sprite", bg_id):give("bg")

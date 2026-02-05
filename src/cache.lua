@@ -18,7 +18,7 @@ function Cache.has_entity(e)
 end
 
 function Cache.get_entity(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	return Cache.entities[id]
@@ -36,10 +36,10 @@ function Cache.remove_entity(e)
 end
 
 function Cache.get(t_id, id)
-	if not (type(t_id) == "string") then
+	if type(t_id) ~= "string" then
 		error('Assertion failed: type(t_id) == "string"')
 	end
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Cache[t_id] then
@@ -49,10 +49,10 @@ function Cache.get(t_id, id)
 end
 
 function Cache.store(t_id, id, v)
-	if not (type(t_id) == "string") then
+	if type(t_id) ~= "string" then
 		error('Assertion failed: type(t_id) == "string"')
 	end
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not (v ~= nil) then
@@ -73,13 +73,13 @@ function Cache.clean_resources()
 end
 
 function Cache.manage_resources(resources, list, prev_res)
-	if not (type(resources) == "table") then
+	if type(resources) ~= "table" then
 		error('Assertion failed: type(resources) == "table"')
 	end
-	if not (type(list) == "table") then
+	if type(list) ~= "table" then
 		error('Assertion failed: type(list) == "table"')
 	end
-	if not (type(prev_res) == "table") then
+	if type(prev_res) ~= "table" then
 		error('Assertion failed: type(prev_res) == "table"')
 	end
 	for kind, t in pairs(list) do

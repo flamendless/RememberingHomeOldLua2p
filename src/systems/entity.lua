@@ -18,10 +18,10 @@ function Entity:toggle_component(e, prop, bool)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(prop) == "string") then
+	if type(prop) ~= "string" then
 		error('Assertion failed: type(prop) == "string"')
 	end
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	if bool then

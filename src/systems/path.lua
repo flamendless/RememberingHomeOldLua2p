@@ -122,7 +122,7 @@ if DEV then
 	local alpha = 0.01
 
 	function Path:debug_toggle_path(bool, filter)
-		if not (type(bool) == "boolean") then
+		if type(bool) ~= "boolean" then
 			error('Assertion failed: type(bool) == "boolean"')
 		end
 		if filter and type(filter) ~= "string" then

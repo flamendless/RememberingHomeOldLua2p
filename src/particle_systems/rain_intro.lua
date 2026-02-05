@@ -8,10 +8,10 @@ function RainIntroParticles:new(image, buffer, w)
 	if not (image:type() == "Image") then
 		error('Assertion failed: image:type() == "Image"')
 	end
-	if not (type(buffer) == "number") then
+	if type(buffer) ~= "number" then
 		error('Assertion failed: type(buffer) == "number"')
 	end
-	if not (type(w) == "number") then
+	if type(w) ~= "number" then
 		error('Assertion failed: type(w) == "number"')
 	end
 	local ps = lg.newParticleSystem(image, buffer)

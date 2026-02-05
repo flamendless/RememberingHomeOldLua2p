@@ -1,3 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_NF_RENDERER)

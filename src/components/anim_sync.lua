@@ -7,13 +7,13 @@ Concord.component("anim_sync_with", function(c, e_target)
 end)
 
 Concord.component("anim_sync_data", function(c, c_name, c_props, t)
-	if not (type(c_name) == "string") then
+	if type(c_name) ~= "string" then
 		error('Assertion failed: type(c_name) == "string"')
 	end
-	if not (type(c_props) == "table") then
+	if type(c_props) ~= "table" then
 		error('Assertion failed: type(c_props) == "table"')
 	end
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	c.c_name = c_name

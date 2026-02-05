@@ -79,7 +79,7 @@ function GameStates.start(resources)
 end
 
 function GameStates.switch(next_id)
-	if not (type(next_id) == "string") then
+	if type(next_id) ~= "string" then
 		error('Assertion failed: type(next_id) == "string"')
 	end
 

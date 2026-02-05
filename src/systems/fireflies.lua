@@ -33,7 +33,7 @@ function Fireflies:generate_fireflies()
 end
 
 function Fireflies:show_fireflies(dur)
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	for _, e in ipairs(self.pool) do
@@ -57,7 +57,7 @@ function Fireflies:show_fireflies(dur)
 end
 
 function Fireflies:hide_fireflies(dur)
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	for _, e in ipairs(self.pool) do

@@ -15,10 +15,10 @@ function c_attach_to:deserialize(data)
 end
 
 Concord.component("attach_to_offset", function(c, ox, oy)
-	if not (type(ox) == "number") then
+	if type(ox) ~= "number" then
 		error('Assertion failed: type(ox) == "number"')
 	end
-	if not (type(oy) == "number") then
+	if type(oy) ~= "number" then
 		error('Assertion failed: type(oy) == "number"')
 	end
 	c.ox = ox
@@ -26,10 +26,10 @@ Concord.component("attach_to_offset", function(c, ox, oy)
 end)
 
 Concord.component("attach_to_spawn_point", function(c, x, y)
-	if not (type(x) == "number") then
+	if type(x) ~= "number" then
 		error('Assertion failed: type(x) == "number"')
 	end
-	if not (type(y) == "number") then
+	if type(y) ~= "number" then
 		error('Assertion failed: type(y) == "number"')
 	end
 	c.x = x

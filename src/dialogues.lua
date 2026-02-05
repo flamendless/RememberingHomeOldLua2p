@@ -17,7 +17,7 @@ function Dialogues.get(main, sub)
 end
 
 function Dialogues.check_signal(str)
-	if not (type(str) == "string") then
+	if type(str) ~= "string" then
 		error('Assertion failed: type(str) == "string"')
 	end
 	local bool = stringx.starts_with(str, "_")
@@ -36,7 +36,7 @@ function Dialogues.check_signal(str)
 end
 
 function Dialogues.validate(dialogue_t)
-	if not (type(dialogue_t) == "table") then
+	if type(dialogue_t) ~= "table" then
 		error('Assertion failed: type(dialogue_t) == "table"')
 	end
 	if #dialogue_t == 0 then

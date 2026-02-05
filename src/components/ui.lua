@@ -1,11 +1,11 @@
 Concord.component("ui_element")
 
 Concord.component("layer", function(c, id, n)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if n then
-		if not (type(n) == "number") then
+		if type(n) ~= "number" then
 			error('Assertion failed: type(n) == "number"')
 		end
 	end

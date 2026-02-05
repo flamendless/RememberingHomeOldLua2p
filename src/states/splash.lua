@@ -120,11 +120,11 @@ end
 
 local c = { none = 0.7, reset = 0.25, glitch = 0.05 }
 function Splash:do_glitch(time, delay)
-	if not (type(time) == "number") then
+	if type(time) ~= "number" then
 		error('Assertion failed: type(time) == "number"')
 	end
 	if delay then
-		if not (type(delay) == "number") then
+		if type(delay) ~= "number" then
 			error('Assertion failed: type(delay) == "number"')
 		end
 	end

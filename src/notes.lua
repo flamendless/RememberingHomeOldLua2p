@@ -3,7 +3,7 @@ local Notes = {}
 local acquired = {}
 
 local function get_note(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Notes[id] then
@@ -18,7 +18,7 @@ local function get_note(id)
 end
 
 function Notes.add(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Notes[id] then
@@ -32,7 +32,7 @@ function Notes.add(id)
 end
 
 function Notes.get_info(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Notes[id] then
@@ -42,7 +42,7 @@ function Notes.get_info(id)
 end
 
 function Notes.has(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Notes[id] then

@@ -60,7 +60,7 @@ Inputs.dev_map = {
 
 function Inputs.init(key_map)
 	if key_map then
-		if not (type(key_map) == "number") then
+		if type(key_map) ~= "number" then
 			error('Assertion failed: type(key_map) == "number"')
 		end
 	end
@@ -90,7 +90,7 @@ function Inputs.init(key_map)
 end
 
 function Inputs.pressed(key)
-	if not (type(key) == "string") then
+	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
 	if not (Inputs.current[key] ~= nil) then
@@ -100,7 +100,7 @@ function Inputs.pressed(key)
 end
 
 function Inputs.released(key)
-	if not (type(key) == "string") then
+	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
 	if not (Inputs.current[key] ~= nil) then
@@ -110,7 +110,7 @@ function Inputs.released(key)
 end
 
 function Inputs.down(key)
-	if not (type(key) == "string") then
+	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
 	if not (Inputs.current[key] ~= nil) then
@@ -120,7 +120,7 @@ function Inputs.down(key)
 end
 
 function Inputs.held(key, threshold)
-	if not (type(key) == "string") then
+	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
 	if not (Inputs.current[key] ~= nil) then
@@ -133,7 +133,7 @@ function Inputs.held(key, threshold)
 end
 
 function Inputs.keypressed(_, scancode)
-	if not (type(scancode) == "string") then
+	if type(scancode) ~= "string" then
 		error('Assertion failed: type(scancode) == "string"')
 	end
 	if not Inputs.map[scancode] then
@@ -148,7 +148,7 @@ function Inputs.keypressed(_, scancode)
 end
 
 function Inputs.keyreleased(_, scancode)
-	if not (type(scancode) == "string") then
+	if type(scancode) ~= "string" then
 		error('Assertion failed: type(scancode) == "string"')
 	end
 	if not Inputs.map[scancode] then

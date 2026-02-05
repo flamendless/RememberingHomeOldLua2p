@@ -1,4 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_SPLASHES)
-Concord.component($_C_CAR_LIGHTS)

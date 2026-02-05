@@ -414,7 +414,7 @@ end
 
 function Menu:hide_main_menu(duration)
 	if duration then
-		if not (type(duration) == "number") then
+		if type(duration) ~= "number" then
 			error('Assertion failed: type(duration) == "number"')
 		end
 	end
@@ -442,7 +442,7 @@ end
 
 function Menu:hide_sub_menu(duration)
 	if duration then
-		if not (type(duration) == "number") then
+		if type(duration) ~= "number" then
 			error('Assertion failed: type(duration) == "number"')
 		end
 	end
@@ -582,7 +582,7 @@ function Menu:state_mousepressed(mx, my, mb)
 end
 
 function Menu:open_url(str)
-	if not (type(str) == "string") then
+	if type(str) ~= "string" then
 		error('Assertion failed: type(str) == "string"')
 	end
 	love.system.openURL(str)

@@ -51,21 +51,21 @@ function Camera:set_camera_transform(camera, t)
 	if not (Gamera.isCamera(camera)) then
 		error("Assertion failed: Gamera.isCamera(camera)")
 	end
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
 	if t.x then
-		if not (type(t.x) == "number") then
+		if type(t.x) ~= "number" then
 			error('Assertion failed: type(t.x) == "number"')
 		end
 	end
 	if t.y then
-		if not (type(t.y) == "number") then
+		if type(t.y) ~= "number" then
 			error('Assertion failed: type(t.y) == "number"')
 		end
 	end
 	if t.scale then
-		if not (type(t.scale) == "number") then
+		if type(t.scale) ~= "number" then
 			error('Assertion failed: type(t.scale) == "number"')
 		end
 	end
@@ -94,7 +94,7 @@ function Camera:camera_follow(target, dur)
 	if not target.__isEntity then
 		error("Assertion failed: target.__isEntity")
 	end
-	if not (type(dur) == "number") then
+	if type(dur) ~= "number" then
 		error('Assertion failed: type(dur) == "number"')
 	end
 	self.follow = true
@@ -392,7 +392,7 @@ function Camera:debug_draw()
 end
 
 function Camera:debug_on_drag(bool)
-	if not (type(bool) == "boolean") then
+	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	self.follow = not bool

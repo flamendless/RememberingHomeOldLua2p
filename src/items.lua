@@ -3,7 +3,7 @@ local Items = {}
 local acquired = {}
 
 local function get_item(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Items[id] then
@@ -19,7 +19,7 @@ local function get_item(id)
 end
 
 function Items.add(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Items[id] then
@@ -33,7 +33,7 @@ function Items.add(id)
 end
 
 function Items.get_info(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Items[id] then
@@ -47,7 +47,7 @@ function Items.get_acquired()
 end
 
 function Items.has(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Items[id] then
@@ -58,7 +58,7 @@ function Items.has(id)
 end
 
 function Items.toggle_equip(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Items[id] then
@@ -69,7 +69,7 @@ function Items.toggle_equip(id)
 end
 
 function Items.is_equipped(id)
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
 	if not Data.Items[id] then

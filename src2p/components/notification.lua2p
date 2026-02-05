@@ -1,6 +1,0 @@
-local Concord = require("modules.concord.concord")
-
-Concord.component($_C_NOTIFICATION, function(c, id)
-	@@assert(type(id) == "string")
-	c.value = id
-end)

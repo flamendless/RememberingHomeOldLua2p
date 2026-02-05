@@ -41,13 +41,13 @@ end
 
 function Settings.set(id, value, should_overwrite)
 	should_overwrite = should_overwrite or false
-	if not (type(id) == "string") then
+	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (type(value) == "boolean" or type(value) == "number") then
+	if type(value) ~= "boolean" or type(value) ~= "number" then
 		error('Assertion failed: type(value) == "boolean" or type(value) == "number"')
 	end
-	if not (type(should_overwrite) == "boolean") then
+	if type(should_overwrite) ~= "boolean" then
 		error('Assertion failed: type(should_overwrite) == "boolean"')
 	end
 
@@ -62,10 +62,10 @@ function Settings.set(id, value, should_overwrite)
 end
 
 function Settings.set_from_table(t, should_overwrite)
-	if not (type(t) == "table") then
+	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
-	if not (type(should_overwrite) == "boolean") then
+	if type(should_overwrite) ~= "boolean" then
 		error('Assertion failed: type(should_overwrite) == "boolean"')
 	end
 	for k, v in pairs(t) do

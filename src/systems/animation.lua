@@ -11,7 +11,7 @@ function Animation:setup_animation_data(e, new_tag)
 	if not (e.__isEntity and e.animation) then
 		error("Assertion failed: e.__isEntity and e.animation")
 	end
-	if not (type(new_tag) == "string") then
+	if type(new_tag) ~= "string" then
 		error('Assertion failed: type(new_tag) == "string"')
 	end
 	if not e.multi_animation_data then
@@ -59,10 +59,10 @@ function Animation:setup_animation(e, data, on_loop)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(data) == "table") then
+	if type(data) ~= "table" then
 		error('Assertion failed: type(data) == "table"')
 	end
-	if not (type(on_loop) == "function") then
+	if type(on_loop) ~= "function" then
 		error('Assertion failed: type(on_loop) == "function"')
 	end
 
@@ -184,16 +184,16 @@ function Animation:switch_animation_tag(e, new_tag, base_tag, override)
 	if not e.__isEntity then
 		error("Assertion failed: e.__isEntity")
 	end
-	if not (type(new_tag) == "string") then
+	if type(new_tag) ~= "string" then
 		error('Assertion failed: type(new_tag) == "string"')
 	end
 	if base_tag then
-		if not (type(base_tag) == "string") then
+		if type(base_tag) ~= "string" then
 			error('Assertion failed: type(base_tag) == "string"')
 		end
 	end
 	if override then
-		if not (type(override) == "boolean") then
+		if type(override) ~= "boolean" then
 			error('Assertion failed: type(override) == "boolean"')
 		end
 	end
@@ -268,7 +268,7 @@ function Animation:anim_pause_at_start(e, signal)
 		error("Assertion failed: e.__isEntity and e.animation")
 	end
 	if signal then
-		if not (type(signal) == "string") then
+		if type(signal) ~= "string" then
 			error('Assertion failed: type(signal) == "string"')
 		end
 	end
@@ -284,7 +284,7 @@ function Animation:anim_pause_at_end(e, signal)
 		error("Assertion failed: e.__isEntity and e.animation")
 	end
 	if signal then
-		if not (type(signal) == "string") then
+		if type(signal) ~= "string" then
 			error('Assertion failed: type(signal) == "string"')
 		end
 	end
