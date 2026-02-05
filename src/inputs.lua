@@ -45,6 +45,8 @@ local Inputs = {
 	rev_maps = {},
 	previous = {},
 	current = {},
+	hold_timers = {},
+	default_hold_threshold = 0.15,
 }
 local map_names = { "WASD", "Arrows" }
 
@@ -117,6 +119,19 @@ function Inputs.down(key)
 	return Inputs.current[key]
 end
 
+function Inputs.held(key, threshold)
+	if not (type(key) == "string") then
+		error('Assertion failed: type(key) == "string"')
+	end
+	if not (Inputs.current[key] ~= nil) then
+		error("Assertion failed: Inputs.current[key] ~= nil")
+	end
+	if not threshold then
+		threshold = Inputs.default_hold_threshold
+	end
+	return Inputs.current[key] and (Inputs.hold_timers[key] or 0) >= threshold
+end
+
 function Inputs.keypressed(_, scancode)
 	if not (type(scancode) == "string") then
 		error('Assertion failed: type(scancode) == "string"')
@@ -147,9 +162,14 @@ function Inputs.keyreleased(_, scancode)
 	Inputs.current[Inputs.map[scancode]] = false
 end
 
-function Inputs.update()
+function Inputs.update(dt)
 	for k, v in pairs(Inputs.current) do
 		Inputs.previous[k] = v
+		if v then
+			Inputs.hold_timers[k] = (Inputs.hold_timers[k] or 0) + dt
+		else
+			Inputs.hold_timers[k] = 0
+		end
 	end
 end
 
@@ -157,6 +177,7 @@ function Inputs.flush()
 	for k in pairs(Inputs.current) do
 		Inputs.previous[k] = false
 		Inputs.current[k] = false
+		Inputs.hold_timers[k] = 0
 	end
 end
 
@@ -169,7 +190,7 @@ function Inputs.get_map_names()
 end
 
 function Inputs.get_current_map_name()
-	return tablex.copy(map_names[Settings.current.key_map])
+	return map_names[Settings.current.key_map]
 end
 
 return Inputs

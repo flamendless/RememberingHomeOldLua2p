@@ -61,7 +61,7 @@ function love.update(dt)
 	Timer.update(dt)
 	Flux.update(dt)
 	GameStates.update(dt)
-	Inputs.update()
+	Inputs.update(dt)
 
 	if not GameStates.is_ready then
 		LoadingScreen.update(dt)
