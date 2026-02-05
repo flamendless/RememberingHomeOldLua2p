@@ -43,7 +43,6 @@ sort = require("modules.batteries.sort")
 stringx = require("modules.batteries.stringx")
 tablex = require("modules.batteries.tablex")
 timer = require("modules.batteries.timer")
-unique_mapping = require("modules.batteries.unique_mapping")
 vec2 = require("modules.batteries.vec2")
 vec3 = require("modules.batteries.vec3")
 
