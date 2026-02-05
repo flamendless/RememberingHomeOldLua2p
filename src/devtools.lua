@@ -42,6 +42,12 @@ local mouse = {
 	show = false,
 	title = "Mouse Info",
 }
+local input = {
+	show = false,
+	title = "Input Info",
+	keys = {},
+	keys_maps = {},
+}
 local entity_list = {
 	show = false,
 	show_list = false,
@@ -77,6 +83,7 @@ local image_viewer = {
 local list = {
 	stats,
 	mouse,
+	input,
 	entity_list,
 	system_list,
 	component_list,
@@ -91,6 +98,7 @@ local cols = 2
 
 function DevTools.init()
 	Slab.Initialize({ "NoDocks" })
+	DevTools.init_input()
 end
 
 local color_white = { 1, 1, 1, 1 }
@@ -135,6 +143,7 @@ function DevTools.update(dt)
 
 	DevTools.draw_stats()
 	DevTools.draw_mouse()
+	DevTools.draw_inputs()
 	DevTools.draw_entities_list()
 	DevTools.draw_system_list()
 	DevTools.draw_component_list()
@@ -227,6 +236,105 @@ function DevTools.draw_mouse()
 	local str_c = string.format("Camera: (%d, %d)", cx, cy)
 	Slab.Text(str_m)
 	Slab.Text(str_c)
+	Slab.EndWindow()
+end
+
+function DevTools.init_input()
+	for key_name in pairs(Inputs.current) do
+		table.insert(input.keys, key_name)
+	end
+
+	local maps = Inputs.get_map_keys()
+	local map_names = Inputs.get_map_names()
+	for i, map_name in ipairs(map_names) do
+		local current_map = maps[i]
+		if not input.keys_maps[map_name] then
+			input.keys_maps[map_name] = {}
+		end
+		for physical_key in pairs(current_map) do
+			table.insert(input.keys_maps[map_name], physical_key)
+		end
+	end
+end
+
+function DevTools.draw_inputs()
+	if not input.show then
+		return
+	end
+	input.show = Slab.BeginWindow("input", {
+		Title = input.title,
+		IsOpen = input.show,
+	})
+
+	local current_map_name = Inputs.get_current_map_name()
+	Slab.Text("Current Map: " .. current_map_name)
+	Slab.Text("Hold Threshold: " .. string.format("%.2fs", Inputs.default_hold_threshold))
+	Slab.Separator()
+
+	Slab.BeginLayout("layout_inputs", { Columns = 5 })
+	Slab.SetLayoutColumn(1)
+	Slab.Text("Key")
+	Slab.SetLayoutColumn(2)
+	Slab.Text("Down")
+	Slab.SetLayoutColumn(3)
+	Slab.Text("Pressed")
+	Slab.SetLayoutColumn(4)
+	Slab.Text("Released")
+	Slab.SetLayoutColumn(5)
+	Slab.Text("Hold Time")
+
+	for _, key_name in ipairs(input.keys) do
+		Slab.SetLayoutColumn(1)
+		Slab.Text(key_name)
+
+		Slab.SetLayoutColumn(2)
+		local is_down = Inputs.down(key_name)
+		if is_down then Slab.Text("X") end
+
+		Slab.SetLayoutColumn(3)
+		local is_pressed = Inputs.pressed(key_name)
+		if is_pressed then Slab.Text("X") end
+
+		Slab.SetLayoutColumn(4)
+		local is_released = Inputs.released(key_name)
+		if is_released then Slab.Text("X") end
+
+		Slab.SetLayoutColumn(5)
+		local hold_time = Inputs.hold_timers[key_name] or 0
+		if is_down then Slab.Text(string.format("%.3f", hold_time)) end
+	end
+
+	Slab.EndLayout()
+	Slab.Separator()
+
+	if Slab.BeginTree("Key Mappings") then
+		local maps = Inputs.get_map_keys()
+		local map_names = Inputs.get_map_names()
+
+		for i, map_name in ipairs(map_names) do
+			if Slab.BeginTree(map_name) then
+				Slab.BeginLayout("layout_map_" .. i, { Columns = 2 })
+				Slab.SetLayoutColumn(1)
+				Slab.Text("Physical Key")
+				Slab.SetLayoutColumn(2)
+				Slab.Text("Mapped Action")
+
+				local current_map = maps[i]
+				for _, physical_key in ipairs(input.keys_maps[map_name]) do
+					Slab.SetLayoutColumn(1)
+					Slab.Text(physical_key)
+					Slab.SetLayoutColumn(2)
+					Slab.Text(current_map[physical_key])
+				end
+
+				Slab.EndLayout()
+				Slab.EndTree()
+			end
+		end
+
+		Slab.EndTree()
+	end
+
 	Slab.EndWindow()
 end
 
