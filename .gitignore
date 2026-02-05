@@ -33,6 +33,7 @@ res/exported/keys
 backup_*
 res/images/atlases
 src/res/*
+src/modules/*
 *.Identifier
 *.love
 *.DS_Store
