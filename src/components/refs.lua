@@ -8,7 +8,7 @@ end)
 
 Concord.component("refs", function(c, ...)
 	local t = { ... }
-	if not (#t > 0) then
+	if #t <= 0 then
 		error("Assertion failed: #t > 0")
 	end
 	local v = {}
@@ -19,7 +19,7 @@ Concord.component("refs", function(c, ...)
 		e:ensure("key")
 		v[i] = e.key.value
 	end
-	if not (#t == #v) then
+	if #t ~= #v then
 		error("Assertion failed: #t == #v")
 	end
 	c.value = v

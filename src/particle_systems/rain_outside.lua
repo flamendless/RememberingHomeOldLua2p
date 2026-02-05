@@ -5,7 +5,7 @@ local RainOutsideParticles = class({
 })
 
 function RainOutsideParticles:new(image, buffer, w)
-	if not (image:type() == "Image") then
+	if image:type() ~= "Image" then
 		error('Assertion failed: image:type() == "Image"')
 	end
 	if type(buffer) ~= "number" then

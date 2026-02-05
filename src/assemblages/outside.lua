@@ -72,7 +72,9 @@ function Outside.colliders.right_bound(e, w, h)
 end
 
 function Outside.lights.pl_car_headlight(e, id)
-	e:assemble(Assemblages.Light.point, 733, 296, 4, 24, Palette.get_diffuse("car_headlight_pl")):give("id", id):give("car_lights")
+	e:assemble(Assemblages.Light.point, 733, 296, 4, 24, Palette.get_diffuse("car_headlight_pl"))
+		:give("id", id)
+		:give("car_lights")
 end
 
 function Outside.lights.sl_car_headlight(e, id)
@@ -86,7 +88,8 @@ function Outside.lights.pl_backdoor(e, id)
 end
 
 function Outside.lights.sl_backdoor(e, id)
-	e:assemble(Assemblages.Light.spot, 446, 241, 4, { 0, 1, -0.8, 0.77 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
+	e:assemble(Assemblages.Light.spot, 446, 241, 4, { 0, 1, -0.8, 0.77 }, 64, Palette.get_diffuse("door_sl"))
+		:give("id", id)
 end
 
 function Outside.lights.pl_frontdoor(e, id)

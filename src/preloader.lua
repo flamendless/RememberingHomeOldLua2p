@@ -58,7 +58,7 @@ function Preloader.load(data, userdata, container, on_complete)
 	end
 	local preloader = Lily.loadMulti(data)
 	preloader:setUserData(userdata)
-	preloader:onLoaded(function(id, i, data)
+	preloader:onLoaded(function(_, _, _)
 		local to_load = preloader:getCount()
 		local completed = preloader:getLoadedCount()
 		Preloader.percent = (completed / to_load) * 100
@@ -66,42 +66,42 @@ function Preloader.load(data, userdata, container, on_complete)
 
 	preloader:onComplete(function(id, tbl_data)
 		for i, tbl in ipairs(tbl_data) do
-			local id = id[i]
-			local data = tbl[1]
-			local data_type = data:type()
+			local pid = id[i]
+			local pdata = tbl[1]
+			local data_type = pdata:type()
 
 			if data_type == "Image" then
-				local tt = data:getTextureType()
-				data:setFilter("nearest", "nearest")
+				local tt = pdata:getTextureType()
+				pdata:setFilter("nearest", "nearest")
 				if tt == "array" then
 					if type(container.array_images) ~= "table" then
 						error('Assertion failed: type(container.array_images) == "table"')
 					end
-					container.array_images[id] = data
+					container.array_images[pid] = pdata
 				end
 				if type(container.images) ~= "table" then
 					error('Assertion failed: type(container.images) == "table"')
 				end
-				container.images[id] = data
+				container.images[pid] = pdata
 			elseif data_type == "ImageData" then
 				if type(container.image_data) ~= "table" then
 					error('Assertion failed: type(container.image_data) == "table"')
 				end
-				container.image_data[id] = data
+				container.image_data[pid] = pdata
 			elseif data_type == "Source" then
 				if type(container.sources) ~= "table" then
 					error('Assertion failed: type(container.sources) == "table"')
 				end
-				container.sources[id] = data
+				container.sources[pid] = pdata
 			elseif data_type == "Font" then
 				if type(container.fonts) ~= "table" then
 					error('Assertion failed: type(container.fonts) == "table"')
 				end
-				data:setFilter("nearest", "nearest")
-				container.fonts[id] = data
+				pdata:setFilter("nearest", "nearest")
+				container.fonts[pid] = pdata
 			end
 
-			local str = string.format("Loaded: #%i - %s : %s", i, data_type, id)
+			local str = string.format("Loaded: #%i - %s : %s", i, data_type, pid)
 			Log.trace(str)
 		end
 

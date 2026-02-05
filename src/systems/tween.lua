@@ -68,9 +68,8 @@ function Tween:tween_camera_scale(camera, dur, scale, ease)
 			error('Assertion failed: type(ease) == "string"')
 		end
 	end
-	local f = Flux.to(camera, dur, {
-		scale = scale,
-	}):ease(ease or Enums.ease.linear)
+	local _ = Flux.to(camera, dur, { scale = scale })
+		:ease(ease or Enums.ease.linear)
 end
 
 return Tween

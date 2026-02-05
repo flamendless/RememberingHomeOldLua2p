@@ -17,7 +17,7 @@ function Systems:set_system_to(id, bool)
 	if type(bool) ~= "boolean" then
 		error('Assertion failed: type(bool) == "boolean"')
 	end
-	if not (system_classes[id] ~= nil) then
+	if system_classes[id] == nil then
 		error("Assertion failed: system_classes[id] ~= nil")
 	end
 	local sys = self.world:getSystem(system_classes[id])

@@ -24,7 +24,7 @@ function Notes.add(id)
 	if not Data.Notes[id] then
 		error("no " .. id .. " in data.notes")
 	end
-	if not (Notes.has(id) == false) then
+	if Notes.has(id) then
 		error(id .. " was already added")
 	end
 	table.insert(acquired, tablex.copy(Data.Notes[id]))

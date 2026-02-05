@@ -6,7 +6,6 @@ local Movement = Concord.system({
 function Movement:update(dt)
 	for _, e in ipairs(self.pool_walk) do
 		local random_walk = e.random_walk
-		local orig_pos = random_walk.orig_pos
 		local diff = random_walk.orig_pos:distance(e.pos_vec2.value)
 		local body = e.body
 

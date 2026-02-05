@@ -69,7 +69,7 @@ function Settings.set_from_table(t, should_overwrite)
 		error('Assertion failed: type(should_overwrite) == "boolean"')
 	end
 	for k, v in pairs(t) do
-		if not (Settings.current[k] ~= nil) then
+		if Settings.current[k] == nil then
 			error("invalid " .. k .. " key")
 		end
 		Settings.current[k] = v

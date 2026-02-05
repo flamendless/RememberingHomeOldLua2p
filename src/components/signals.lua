@@ -53,9 +53,9 @@ local names_multi = {
 }
 
 for _, v in ipairs(names) do
-	local c = callback(v, ctor_single)
+	local _ = callback(v, ctor_single)
 end
 
 for _, v in ipairs(names_multi) do
-	local c = callback(v, ctor_multi)
+	local _ = callback(v, ctor_multi)
 end

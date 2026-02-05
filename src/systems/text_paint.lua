@@ -95,12 +95,12 @@ function TextPaint:show_paint(e, dur_in, widest)
 		end
 	end
 	if e.static_text then
-		if not (e.static_text ~= nil) then
+		if e.static_text == nil then
 			error("Assertion failed: e.static_text ~= nil")
 		end
 	end
 	if e.text then
-		if not (e.text ~= nil) then
+		if e.text == nil then
 			error("Assertion failed: e.text ~= nil")
 		end
 	end
@@ -133,7 +133,6 @@ function TextPaint:show_paint(e, dur_in, widest)
 		y = text_pos.y + str_h/2
 	end
 
-	local paint_id = e.text_with_paint.id
 	local paint = Concord.entity(self.world)
 		:give("id", "text_paint")
 		:give("pos", x, y)

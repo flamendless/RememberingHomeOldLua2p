@@ -32,7 +32,7 @@ Palette.colors = {
 }
 
 for k, v in pairs(Palette.colors) do
-	if not (v[4] == nil) then
+	if v[4] ~= nil then
 		error(k .. " must have no alpha set")
 	end
 end

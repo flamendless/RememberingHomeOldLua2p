@@ -97,9 +97,9 @@ function ID:debug_draw()
 		local id = e.id.value
 		local px, py, iw, ih = Helper.get_ltwh(e)
 		local iw2, ih2 = iw/2, ih/2
-		local a = vec2(px + iw2, py + ih2)
+		local av = vec2(px + iw2, py + ih2)
 		local hs = vec2(iw2, ih2)
-		local hovered = intersect.aabb_point_overlap(a, hs, v)
+		local hovered = intersect.aabb_point_overlap(av, hs, v)
 		if hovered then
 			love.graphics.print(id, px, py)
 		end

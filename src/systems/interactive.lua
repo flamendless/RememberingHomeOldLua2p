@@ -14,7 +14,6 @@ function Interactive:on_collide_interactive(e, other)
 		error("Assertion failed: other.__isEntity")
 	end
 	local body = e.body
-	local other_col = other.collider
 	local req_n = other.interactive_req_player_dir
 	if body and req_n and req_n.x ~= body.dir then
 		return

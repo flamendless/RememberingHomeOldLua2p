@@ -59,7 +59,6 @@ function BoundingBox:debug_draw()
 	love.graphics.push()
 	love.graphics.origin()
 	for _, e in ipairs(self.pool) do
-		local bb = e.bounding_box
 		local bx, by = Helper.get_real_pos_box(e)
 		local bw, bh = Helper.get_real_size(e)
 		love.graphics.setColor(1, 0, 0, 1)

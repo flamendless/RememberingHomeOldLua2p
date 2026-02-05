@@ -159,7 +159,7 @@ function Animation:init(world)
 				animation.anim8:pauseAtEnd()
 			end
 		elseif type(pause_at.at_frame) == "number" then
-			if not (pause_at.at_frame <= data.n_frames) then
+			if pause_at.at_frame > data.n_frames then
 				error("Assertion failed: pause_at.at_frame <= data.n_frames")
 			end
 			animation.anim8:gotoFrame(pause_at.at_frame)

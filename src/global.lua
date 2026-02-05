@@ -131,7 +131,6 @@ Settings = require("settings")
 Shaders = require("shaders")
 UIWrapper = require("ui_wrapper")
 Utils = require("utils")
-Utils = require("utils")
 WindowMode = require("window_mode")
 
 Assemblages = {

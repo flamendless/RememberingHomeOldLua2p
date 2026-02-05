@@ -52,7 +52,7 @@ function ErrorHandler.callback(msg)
 	end
 
 	if love.joystick then
-		for i, v in ipairs(love.joystick.getJoysticks()) do
+		for _, v in ipairs(love.joystick.getJoysticks()) do
 			v:setVibration()
 		end
 	end
@@ -111,7 +111,7 @@ function ErrorHandler.callback(msg)
 
 	return function()
 		love.event.pump()
-		for e, a, b, c in love.event.poll() do
+		for e, a, _, _ in love.event.poll() do
 			if e == "quit" then
 				return 1
 			elseif e == "keypressed" and a == "escaped" then

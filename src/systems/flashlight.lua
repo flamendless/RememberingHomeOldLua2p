@@ -14,7 +14,7 @@ function Flashlight:init(world)
 	self.player = nil
 
 	self.pool.onAdded = function(pool, e)
-		if not (self.flashlight == nil) then
+		if self.flashlight ~= nil then
 			error("Flashlight was already added")
 		end
 
@@ -26,7 +26,7 @@ function Flashlight:init(world)
 	end
 
 	self.pool_player.onAdded = function(pool, e)
-		if not (self.player == nil) then
+		if self.player ~= nil then
 			error("Player was already added")
 		end
 		self.player = e
@@ -187,8 +187,8 @@ if DEV then
 			local by = p_pos.y + col.h_h
 			local fx = bx + offset.x * fd[1]
 			local fy = by + offset.y
-			fx = UIWrapper.edit_number("x", fx, true)
-			fy = UIWrapper.edit_number("y", fy, true)
+			UIWrapper.edit_number("x", fx, true)
+			UIWrapper.edit_number("y", fy, true)
 
 		end
 		Slab.EndWindow()

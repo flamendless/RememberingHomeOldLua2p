@@ -84,7 +84,7 @@ function Path:update(dt)
 		local path = e.path
 		local points, _ = self:get_points(e)
 
-		local reached = false
+		local reached
 		if e.apply_bezier_curve then
 			reached = self:move_curve(dt, e, points)
 		else

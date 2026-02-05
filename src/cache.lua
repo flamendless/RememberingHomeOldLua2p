@@ -55,7 +55,7 @@ function Cache.store(t_id, id, v)
 	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (v ~= nil) then
+	if v == nil then
 		error("Assertion failed: v ~= nil")
 	end
 	Cache[t_id][id] = v
@@ -67,7 +67,7 @@ end
 
 function Cache.clean_resources()
 	tablex.clear(Cache.resources)
-	if not (#Cache.resources == 0) then
+	if #Cache.resources ~= 0 then
 		error("Assertion failed: #Cache.resources == 0")
 	end
 end

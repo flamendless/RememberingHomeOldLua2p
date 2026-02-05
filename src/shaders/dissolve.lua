@@ -7,7 +7,7 @@ local function smootherstep(v)
 end
 
 function Dissolve:new(texture, duration)
-	if not (texture:type() == "Image") then
+	if texture:type() ~= "Image" then
 		error('Assertion failed: texture:type() == "Image"')
 	end
 	if type(duration) ~= "number" then

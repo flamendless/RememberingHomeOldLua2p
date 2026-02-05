@@ -128,7 +128,7 @@ function DialoguesSystem:spawn_dialogue_ex(dialogue_t, signal_after, ...)
 	if type(dialogue_t) ~= "table" then
 		error('Assertion failed: type(dialogue_t) == "table"')
 	end
-	if not (#dialogue_t ~= 0) then
+	if #dialogue_t == 0 then
 		error("Assertion failed: #dialogue_t ~= 0")
 	end
 	if signal_after then

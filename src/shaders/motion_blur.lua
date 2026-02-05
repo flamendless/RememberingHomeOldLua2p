@@ -3,7 +3,7 @@ local MotionBlur = class({
 })
 
 function MotionBlur:new(canvas, config)
-	if not (canvas:type() == "CustomCanvas") then
+	if canvas:type() ~= "CustomCanvas" then
 		error('Assertion failed: canvas:type() == "CustomCanvas"')
 	end
 	if config then

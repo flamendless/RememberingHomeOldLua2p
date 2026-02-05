@@ -114,7 +114,7 @@ function Canvas:new_from_table(tbl)
 end
 
 function Canvas:new_from_canvas(source)
-	if not (source:type() == "CustomCanvas") then
+	if source:type() ~= "CustomCanvas" then
 		error('Assertion failed: source:type() == "CustomCanvas"')
 	end
 	self.canvas = love.graphics.newCanvas(source.width, source.height)

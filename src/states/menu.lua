@@ -237,17 +237,17 @@ function Menu:setup_menu()
 	local ww, wh = love.graphics.getDimensions()
 	local bg_door = Resources.data.images.bg_door
 	local bg_hallway = Resources.data.images.bg_hallway
-	local sheet_title = Resources.data.images.sheet_title
+	-- local sheet_title = Resources.data.images.sheet_title
 	-- local subtitle = Resources.data.images.subtitle
 
 	local bg_hw_w, bg_hw_h = bg_hallway:getDimensions()
 	local bg_door_w, bg_door_h = bg_door:getDimensions()
-	local title_w, title_h = sheet_title:getDimensions()
+	-- local title_w, title_h = sheet_title:getDimensions()
 	-- local subt_w, subt_h = subtitle:getDimensions()
 
 	local scale = math.min(ww / bg_door_w, wh / bg_door_h)
 	local scale_hallway = math.min(ww / bg_hw_w, wh / bg_hw_h)
-	local scale_title = math.min((bg_door_w * scale) / title_w, (bg_door_h * scale) / title_h)
+	-- local scale_title = math.min((bg_door_w * scale) / title_w, (bg_door_h * scale) / title_h)
 	-- local scale_subt = math.min((title_w * scale_title) / subt_w, (title_h * scale) / subt_h)
 	-- scale_subt = scale_subt * 0.75
 

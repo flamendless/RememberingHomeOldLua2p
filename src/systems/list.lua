@@ -63,7 +63,7 @@ function List:create_list_group(id, vertical_only, per_page, use_max_threshold, 
 	if not (type(per_page) == "number" and per_page > 0) then
 		error('Assertion failed: type(per_page) == "number" and per_page > 0')
 	end
-	if not (self.groups[id] == nil) then
+	if self.groups[id] ~= nil then
 		error(id .. " was already added")
 	end
 	if use_max_threshold then
@@ -92,13 +92,13 @@ function List:create_list_group_grid(id, rows, cols)
 	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (self.groups[id] == nil) then
+	if self.groups[id] ~= nil then
 		error(id .. " was already added")
 	end
-	if not (type(rows) == "number" and rows > 0) then
+	if type(rows) ~= "number" or rows <= 0 then
 		error('Assertion failed: type(rows) == "number" and rows > 0')
 	end
-	if not (type(cols) == "number" and cols > 0) then
+	if type(cols) ~= "number" or cols <= 0 then
 		error('Assertion failed: type(cols) == "number" and cols > 0')
 	end
 	self.groups[id] = {

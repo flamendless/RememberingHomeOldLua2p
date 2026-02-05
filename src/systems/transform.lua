@@ -133,7 +133,7 @@ function Transform:update_anchor(e)
 	end
 	local target_pos = e_target.pos
 	local target_sprite = e_target.sprite
-	if not (target_sprite.image:type() == "Image") then
+	if target_sprite.image:type() ~= "Image" then
 		error('Assertion failed: target_sprite.image:type() == "Image"')
 	end
 	local sx, sy, ox, oy = 1, 1, 0, 0

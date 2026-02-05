@@ -60,7 +60,7 @@ function NGrading:new(res_id, res_id2, is_active)
 end
 
 function NGrading:new_single(img, cs)
-	if not (img:type() == "ImageData") then
+	if img:type() ~= "ImageData" then
 		error('Assertion failed: img:type() == "ImageData"')
 	end
 	local data = img
@@ -105,10 +105,10 @@ function NGrading:new_single(img, cs)
 end
 
 function NGrading:new_multi(img, img2, cs)
-	if not (img:type() == "ImageData") then
+	if img:type() ~= "ImageData" then
 		error('Assertion failed: img:type() == "ImageData"')
 	end
-	if not (img2:type() == "ImageData") then
+	if img2:type() ~= "ImageData" then
 		error('Assertion failed: img2:type() == "ImageData"')
 	end
 	if type(cs) ~= "number" then

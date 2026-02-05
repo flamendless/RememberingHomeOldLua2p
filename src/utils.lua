@@ -81,11 +81,11 @@ function Utils.string.get_widest(t)
 	if type(t) ~= "table" then
 		error('Assertion failed: type(t) == "table"')
 	end
-	if not (#t ~= 0) then
-		error("Assertion failed: #t ~= 0")
+	if #t == 0 then
+		error("Assertion failed: #t == 0")
 	end
 	local widest = 0
-	for i, str in ipairs(t) do
+	for _, str in ipairs(t) do
 		widest = math.max(widest, #str)
 	end
 	return widest

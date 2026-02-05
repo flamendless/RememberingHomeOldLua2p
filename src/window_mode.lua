@@ -7,7 +7,7 @@ WindowMode.modes = {
 WindowMode.list = {}
 
 function WindowMode.init()
-	for i, t in ipairs(WindowMode.modes) do
+	for _, t in ipairs(WindowMode.modes) do
 		local str = t.width .. "x" .. t.height
 		table.insert(WindowMode.list, str)
 	end

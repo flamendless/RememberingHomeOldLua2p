@@ -58,7 +58,7 @@ function Save.toggle_flag(id, should_overwrite)
 	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (Save.data[id] ~= nil) then
+	if Save.data[id] == nil then
 		error("Assertion failed: Save.data[id] ~= nil")
 	end
 	if should_overwrite then
@@ -76,7 +76,7 @@ function Save.set_flag(id, value, should_overwrite)
 	if type(id) ~= "string" then
 		error('Assertion failed: type(id) == "string"')
 	end
-	if not (Save.data[id] ~= nil) then
+	if Save.data[id] == nil then
 		error("Assertion failed: Save.data[id] ~= nil")
 	end
 	if type(value) ~= "boolean" then

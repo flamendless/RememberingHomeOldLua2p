@@ -84,7 +84,7 @@ function ShowKeys:show_key(id, bool)
 		error('Assertion failed: type(bool) == "boolean"')
 	end
 	local e = self.keys[id]
-	if not (e ~= nil) then
+	if e == nil then
 		error("Assertion failed: e ~= nil")
 	end
 	if not bool then

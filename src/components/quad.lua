@@ -13,7 +13,7 @@ Concord.component("atlas", function(c, frame)
 end)
 
 local c_quad = Concord.component("quad", function(c, quad, info)
-	if not (quad:type() == "Quad") then
+	if quad:type() ~= "Quad" then
 		error('Assertion failed: quad:type() == "Quad"')
 	end
 	if info then

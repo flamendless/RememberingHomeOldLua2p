@@ -93,7 +93,7 @@ function Inputs.pressed(key)
 	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
-	if not (Inputs.current[key] ~= nil) then
+	if Inputs.current[key] == nil then
 		error("Assertion failed: Inputs.current[key] ~= nil")
 	end
 	return Inputs.current[key] and not Inputs.previous[key]
@@ -103,7 +103,7 @@ function Inputs.released(key)
 	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
-	if not (Inputs.current[key] ~= nil) then
+	if Inputs.current[key] == nil then
 		error("Assertion failed: Inputs.current[key] ~= nil")
 	end
 	return not Inputs.current[key] and Inputs.previous[key]
@@ -113,7 +113,7 @@ function Inputs.down(key)
 	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
-	if not (Inputs.current[key] ~= nil) then
+	if Inputs.current[key] == nil then
 		error("Assertion failed: Inputs.current[key] ~= nil")
 	end
 	return Inputs.current[key]
@@ -123,7 +123,7 @@ function Inputs.held(key, threshold)
 	if type(key) ~= "string" then
 		error('Assertion failed: type(key) == "string"')
 	end
-	if not (Inputs.current[key] ~= nil) then
+	if Inputs.current[key] == nil then
 		error("Assertion failed: Inputs.current[key] ~= nil")
 	end
 	if not threshold then

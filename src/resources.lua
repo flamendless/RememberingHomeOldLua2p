@@ -40,7 +40,7 @@ function Resources.set_resources(t)
 		error('Assertion failed: type(t) == "table"')
 	end
 	tablex.clear(Resources.data)
-	if not (#Resources.data == 0) then
+	if #Resources.data ~= 0 then
 		error("Assertion failed: #Resources.data == 0")
 	end
 	for k, _ in pairs(t) do

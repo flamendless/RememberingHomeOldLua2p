@@ -32,7 +32,7 @@ function Sprite.set_bg(e)
 	if not (e.__isEntity and e.sprite and e.bg) then
 		error("Assertion failed: e.__isEntity and e.sprite and e.bg")
 	end
-	if not (Sprite.e_bg == nil) then
+	if Sprite.e_bg ~= nil then
 		error("only 1 bg entity is allowed")
 	end
 	Sprite.e_bg = e

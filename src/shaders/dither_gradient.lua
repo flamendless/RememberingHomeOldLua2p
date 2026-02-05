@@ -16,12 +16,12 @@ function DitherGradient:new(is_active, t_dither, t_pal, values)
 		end
 	end
 	if t_dither then
-		if not (t_dither:type() == "Image") then
+		if t_dither:type() ~= "Image" then
 			error('Assertion failed: t_dither:type() == "Image"')
 		end
 	end
 	if t_pal then
-		if not (t_pal:type() == "Image") then
+		if t_pal:type() ~= "Image" then
 			error('Assertion failed: t_pal:type() == "Image"')
 		end
 	end

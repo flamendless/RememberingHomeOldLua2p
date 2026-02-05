@@ -4,7 +4,7 @@ Concord.component("text_skipped")
 Concord.component("has_choices", function(c, ...)
 	c.value = { ... }
 
-	if not (#c.value ~= 0) then
+	if #c.value == 0 then
 		error("Assertion failed: #c.value ~= 0")
 	end
 	for _, str in ipairs(c.value) do
@@ -13,7 +13,7 @@ Concord.component("has_choices", function(c, ...)
 		end
 	end
 
-	if not (#c.value ~= 0) then
+	if #c.value == 0 then
 		error("Assertion failed: #c.value ~= 0")
 	end
 end)

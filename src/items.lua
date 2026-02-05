@@ -25,7 +25,7 @@ function Items.add(id)
 	if not Data.Items[id] then
 		error("no " .. id .. " in data.items")
 	end
-	if not (Items.has(id) == false) then
+	if Items.has(id) then
 		error(id .. " was already added")
 	end
 	table.insert(acquired, { id = id, equipped = false })

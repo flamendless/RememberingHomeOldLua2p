@@ -72,7 +72,7 @@ function PostProcessing:update(dt)
 end
 
 function PostProcessing:apply_post_process(canvas)
-	if not (canvas:type() == "CustomCanvas") then
+	if canvas:type() ~= "CustomCanvas" then
 		error('Assertion failed: canvas:type() == "CustomCanvas"')
 	end
 	love.graphics.setCanvas(self.buffer1.canvas)

@@ -20,7 +20,7 @@ Concord.component("speed_data", function(c, speed_data)
 		end
 	end
 
-	for i, v in ipairs(speed_data) do
+	for _, v in ipairs(speed_data) do
 		if type(v.x) ~= "number" then
 			error('Assertion failed: type(v.x) == "number"')
 		end
