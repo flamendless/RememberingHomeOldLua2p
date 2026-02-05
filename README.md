@@ -1,11 +1,3 @@
-# NOTE
-
-This repo will now be public, this is for anyone who want to check out the usage with Luapreprocess.
-Going further with the development, there will be a lot of changes so we will move that to a new repo which
-is private for now.
-
----
-
 # Remembering Home
 
 ![](https://img.shields.io/badge/lua-on%20development-green.svg)

@@ -8,6 +8,7 @@ return {
 
 		"DEV",
 		"GIT_COMMIT",
+		"TODO",
 
 		-- Standard libraries
 		"UTF8",

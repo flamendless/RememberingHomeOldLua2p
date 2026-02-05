@@ -182,4 +182,9 @@ if DEV then
 
 		return old_remove(self, ...)
 	end
+
+	function TODO(msg)
+		msg = msg or "(flam)"
+		print("TODO", msg)
+	end
 end
