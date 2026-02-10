@@ -1,5 +1,30 @@
 local ResourcesList = {}
 
+local player = {
+	{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
+	{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
+	{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
+	{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
+	{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
+	{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
+	{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
+	{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+}
+
+local enemy = {
+	{ "sheet_enemy_suit_idle", "res/images/enemy_suit/sheet_enemy_idle.png" },
+	{ "sheet_enemy_suit_walk", "res/images/enemy_suit/sheet_enemy_walk.png" },
+	{ "sheet_enemy_suit_lean_back", "res/images/enemy_suit/sheet_enemy_lean_back.png" },
+	{ "sheet_enemy_suit_lean_return_back", "res/images/enemy_suit/sheet_enemy_lean_return_back.png" },
+}
+
+local textures = {
+	{ "tex_displacement", "res/textures/displacement.png" },
+	{ "pause_bg", "res/textures/pause_bg.png" },
+	{ "bayer16", "res/textures/bayer16.png" },
+	{ "pal_hollow", "res/textures/pal_hollow.png" },
+}
+
 ResourcesList.Splash = {
 	images = {
 		{ "flamendless_logo", "res/images/splash/flamendless_logo.png" },
@@ -74,12 +99,8 @@ ResourcesList.Outside = {
 		{ "bg_notes", "res/images/inventory_notes/bg_notes.png" },
 		{ "note_cursor", "res/images/inventory_notes/note_cursor.png" },
 
-		{ "tex_displacement", "res/textures/displacement.png" },
-		{ "pause_bg", "res/textures/pause_bg.png" },
-		{ "bayer16", "res/textures/bayer16.png" },
-		{ "pal_hollow", "res/textures/pal_hollow.png" },
-
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		unpack(textures),
 	},
 	array_images = {
 		{ "bg_sky", "res/images/outside/bg_sky.png" },
@@ -88,14 +109,7 @@ ResourcesList.Outside = {
 		{ "firefly", "res/images/outside/firefly.png" },
 		{ "splashes", "res/images/outside/splashes.png" },
 		{ "splashes_low", "res/images/outside/splashes_low.png" },
-		{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
-		{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
-		{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
-		{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
-		{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
-		{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
-		{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
-		{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+		unpack(player),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
@@ -120,24 +134,13 @@ ResourcesList.StorageRoom = {
 		{ "bg_notes", "res/images/inventory_notes/bg_notes.png" },
 		{ "note_cursor", "res/images/inventory_notes/note_cursor.png" },
 
-		{ "tex_displacement", "res/textures/displacement.png" },
-		{ "pause_bg", "res/textures/pause_bg.png" },
-		{ "bayer16", "res/textures/bayer16.png" },
-		{ "pal_hollow", "res/textures/pal_hollow.png" },
-
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		unpack(textures),
 	},
 	array_images = {
 		{ "storage_room", "res/images/storage_room/storage_room.png" },
 		{ "atlas_storage_room_items", "res/images/atlases/storage_room.png" },
-		{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
-		{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
-		{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
-		{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
-		{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
-		{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
-		{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
-		{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+		unpack(player),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
@@ -162,24 +165,13 @@ ResourcesList.UtilityRoom = {
 		{ "bg_notes", "res/images/inventory_notes/bg_notes.png" },
 		{ "note_cursor", "res/images/inventory_notes/note_cursor.png" },
 
-		{ "tex_displacement", "res/textures/displacement.png" },
-		{ "pause_bg", "res/textures/pause_bg.png" },
-		{ "bayer16", "res/textures/bayer16.png" },
-		{ "pal_hollow", "res/textures/pal_hollow.png" },
-
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		unpack(textures),
 	},
 	array_images = {
 		{ "utility_room", "res/images/utility_room/utility_room.png" },
 		{ "atlas_utility_room_items", "res/images/atlases/utility_room.png" },
-		{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
-		{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
-		{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
-		{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
-		{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
-		{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
-		{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
-		{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+		unpack(player),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
@@ -205,24 +197,13 @@ ResourcesList.Kitchen = {
 		{ "bg_notes", "res/images/inventory_notes/bg_notes.png" },
 		{ "note_cursor", "res/images/inventory_notes/note_cursor.png" },
 
-		{ "tex_displacement", "res/textures/displacement.png" },
-		{ "pause_bg", "res/textures/pause_bg.png" },
-		{ "bayer16", "res/textures/bayer16.png" },
-		{ "pal_hollow", "res/textures/pal_hollow.png" },
-
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		unpack(textures),
 	},
 	array_images = {
 		{ "kitchen", "res/images/kitchen/kitchen.png" },
 		{ "atlas_kitchen_items", "res/images/atlases/kitchen.png" },
-		{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
-		{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
-		{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
-		{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
-		{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
-		{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
-		{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
-		{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+		unpack(player),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
@@ -247,29 +228,14 @@ ResourcesList.LivingRoom = {
 		{ "bg_notes", "res/images/inventory_notes/bg_notes.png" },
 		{ "note_cursor", "res/images/inventory_notes/note_cursor.png" },
 
-		{ "tex_displacement", "res/textures/displacement.png" },
-		{ "pause_bg", "res/textures/pause_bg.png" },
-		{ "bayer16", "res/textures/bayer16.png" },
-		{ "pal_hollow", "res/textures/pal_hollow.png" },
-
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		unpack(textures),
 	},
 	array_images = {
 		{ "living_room", "res/images/living_room/living_room.png" },
 		{ "atlas_living_room_items", "res/images/atlases/living_room.png" },
-		{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
-		{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
-		{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
-		{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
-		{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
-		{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
-		{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
-		{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
-
-		{ "sheet_enemy_suit_idle", "res/images/enemy_suit/sheet_enemy_idle.png" },
-		{ "sheet_enemy_suit_walk", "res/images/enemy_suit/sheet_enemy_walk.png" },
-		{ "sheet_enemy_suit_lean_back", "res/images/enemy_suit/sheet_enemy_lean_back.png" },
-		{ "sheet_enemy_suit_lean_return_back", "res/images/enemy_suit/sheet_enemy_lean_return_back.png" },
+		unpack(player),
+		unpack(enemy),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
@@ -298,14 +264,7 @@ ResourcesList.Office1 = {
 	array_images = {
 		{ "office1", "res/images/office1/office1.png" },
 		{ "atlas_office1_items", "res/images/atlases/office1.png" },
-		{ "sheet_player_idle", "res/images/player/sheet_player_idle_normal.png" },
-		{ "sheet_player_walk", "res/images/player/sheet_player_walk_normal.png" },
-		{ "sheet_player_run", "res/images/player/sheet_player_run_normal.png" },
-		{ "sheet_player_open_door", "res/images/player/sheet_player_open_door_normal.png" },
-		{ "sheet_player_idle_f", "res/images/player/sheet_player_idle_flashlight.png" },
-		{ "sheet_player_walk_f", "res/images/player/sheet_player_walk_flashlight.png" },
-		{ "sheet_player_run_f", "res/images/player/sheet_player_run_flashlight.png" },
-		{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+		unpack(player),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
