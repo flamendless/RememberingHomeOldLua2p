@@ -44,11 +44,12 @@ function love.load()
 	-- GameStates.switch("Menu")
 	-- GameStates.switch("Intro")
 	-- GameStates.switch("Outside")
-	GameStates.switch("StorageRoom")
+	-- GameStates.switch("StorageRoom")
 	-- GameStates.switch("UtilityRoom")
 	-- GameStates.switch("Kitchen")
 	-- GameStates.switch("LivingRoom")
 	-- GameStates.switch("TotallyDarkRoom")
+	GameStates.switch("Office1")
 
 	DevTools.init()
 end

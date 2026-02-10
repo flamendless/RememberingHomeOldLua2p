@@ -158,7 +158,6 @@ GameStates = require("gamestates")
 
 require("modules.batteries"):export()
 require("modules.sdf").mount()
-require("modules.strict")
 
 if DEV then
 	local old_give = Concord.entity.give
@@ -188,3 +187,5 @@ if DEV then
 		print("TODO", msg)
 	end
 end
+
+require("modules.strict")

@@ -92,7 +92,7 @@ function create_atlas()
 	eta_path=./libs/ExportTextureAtlas/
 	output_path=./res/images/atlases
 	source_path=./res/exported
-	exported_dirs=(intro kitchen living_room outside storage_room utility_room)
+	exported_dirs=(intro kitchen living_room outside storage_room utility_room office1)
 	input_dirs=()
 	output_dirs=()
 	data_dirs=()

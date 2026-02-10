@@ -249,6 +249,9 @@ state_systems.LivingRoom = {
 }
 state_systems.TotallyDarkRoom = state_systems.LivingRoom
 
+--TODO: (flam)
+state_systems.Office1 = state_systems.LivingRoom
+
 local unpausable_list = {
 	"pause",
 	"renderer",

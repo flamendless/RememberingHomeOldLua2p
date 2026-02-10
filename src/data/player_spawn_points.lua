@@ -38,4 +38,7 @@ PlayerSpawnPoints.LivingRoom = {
 
 PlayerSpawnPoints.TotallyDarkRoom = PlayerSpawnPoints.LivingRoom
 
+--TODO: (flam)
+PlayerSpawnPoints.Office1 = PlayerSpawnPoints.LivingRoom
+
 return PlayerSpawnPoints
