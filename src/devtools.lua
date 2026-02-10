@@ -28,6 +28,7 @@ local DevTools = {
 		give = {},
 		remove = {},
 	},
+	debug_pos = {},
 }
 
 local slab_components
@@ -80,6 +81,16 @@ local image_viewer = {
 	mode = nil, -- quad or full
 }
 
+local designer = {
+	show = false,
+	title = "Designer Tools",
+	selected = nil,
+	selected_e = nil,
+	dragging = false,
+	drag_offset_x = 0,
+	drag_offset_y = 0,
+}
+
 local list = {
 	stats,
 	mouse,
@@ -90,6 +101,7 @@ local list = {
 	debug_list,
 	fade,
 	image_viewer,
+	designer,
 }
 
 local getFPS = love.timer.getFPS
@@ -101,7 +113,6 @@ function DevTools.init()
 	DevTools.init_input()
 end
 
-local color_white = { 1, 1, 1, 1 }
 function DevTools.update(dt)
 	if not DevTools.show then
 		return
@@ -129,6 +140,7 @@ function DevTools.update(dt)
 	end
 	if Slab.CheckBox(DevTools.designer, "Designer") then
 		DevTools.designer = not DevTools.designer
+		designer.show = DevTools.designer
 	end
 	for _, v in ipairs(list) do
 		if Slab.CheckBox(v.show, v.title) then
@@ -136,10 +148,6 @@ function DevTools.update(dt)
 		end
 	end
 	Slab.EndWindow()
-
-	if DevTools.designer then
-		GameStates.world:emit("set_ambiance", color_white)
-	end
 
 	DevTools.draw_stats()
 	DevTools.draw_mouse()
@@ -150,6 +158,7 @@ function DevTools.update(dt)
 	DevTools.draw_debug_list()
 	DevTools.draw_fade()
 	DevTools.draw_image_viewer()
+	DevTools.draw_designer()
 	GameStates.world:emit("debug_update", dt)
 end
 
@@ -168,6 +177,15 @@ function DevTools.draw()
 
 	GameStates.world:emit("debug_draw")
 	GameStates.world:emit("debug_draw_ui")
+
+	if #DevTools.debug_pos > 0 then
+		for _, e in ipairs(DevTools.debug_pos) do
+			local x, y, w, h = Helper.get_ltwh(e)
+			love.graphics.setColor(1, 0, 0, 1)
+			love.graphics.rectangle("line", x, y, w, h)
+			love.graphics.setColor(1, 1, 1, 1)
+		end
+	end
 
 	if DevTools.camera then
 		DevTools.camera:detach()
@@ -435,11 +453,11 @@ function DevTools.draw_component_list()
 			if Slab.BeginTree(id) then
 				local components = e:getComponents()
 				if Slab.Button("Debug Pos") then
-					GameStates.world:emit("debug_target_pos", e)
+					table.insert(DevTools.debug_pos, e)
 				end
 				Slab.SameLine()
 				if Slab.Button("Clear Debug Pos") then
-					GameStates.world:emit("debug_target_pos")
+					tablex.clear(DevTools.debug_pos)
 				end
 				for k in pairs(components) do
 					if Slab.BeginTree(k) then
@@ -643,6 +661,49 @@ function DevTools.draw_image_viewer()
 	Slab.EndWindow()
 end
 
+function DevTools.draw_designer()
+	if not designer.show then
+		return
+	end
+
+	designer.show = Slab.BeginWindow("designer", {
+		Title = designer.title,
+		IsOpen = designer.show,
+	})
+
+	Slab.Text("Select Entity:")
+	Slab.SameLine()
+	if Slab.BeginComboBox("cb_designer_e", { Selected = designer.selected }) then
+		local entities = GameStates.world:getEntities()
+		for _, e in ipairs(entities) do
+			if e.room_item and e.id and e.pos and e.sprite then
+				if Slab.TextSelectable(e.id.value) then
+					designer.selected = e.id.value
+					designer.selected_e = e
+					tablex.clear(DevTools.debug_pos)
+					table.insert(DevTools.debug_pos, e)
+					break
+				end
+			end
+		end
+		Slab.EndComboBox()
+	end
+
+	if designer.selected_e then
+		Slab.Separator()
+		Slab.Text("Selected Entity: " .. designer.selected_e.id.value)
+		Slab.Text("Position:")
+		local pos = designer.selected_e.pos
+		pos.x = UIWrapper.edit_number("x", pos.x, true)
+		pos.y = UIWrapper.edit_number("y", pos.y, true)
+	else
+		Slab.Text("No entity selected")
+	end
+
+	Slab.EndWindow()
+end
+
+
 function DevTools.end_draw()
 	if stats.show then
 		stats.stats = love.graphics.getStats(stats.stats)
@@ -710,6 +771,62 @@ function DevTools.wheelmoved(wx, wy)
 		return
 	end
 	GameStates.world:emit("debug_wheelmoved", wx, wy)
+end
+
+function DevTools.mousepressed(mx, my, mb)
+	if not GameStates.world then
+		return
+	end
+
+	if DevTools.designer and designer.selected_e and mb == 1 then
+		local camera = DevTools.camera
+		local world_x, world_y = mx, my
+		if camera then
+			world_x, world_y = camera:toWorld(mx, my)
+		end
+
+		local pos = designer.selected_e.pos
+		local dist = math.sqrt((world_x - pos.x)^2 + (world_y - pos.y)^2)
+		if dist < 20 then
+			designer.dragging = true
+			designer.drag_offset_x = world_x - pos.x
+			designer.drag_offset_y = world_y - pos.y
+		end
+	end
+
+	GameStates.world:emit("debug_mousepressed", mx, my, mb)
+end
+
+function DevTools.mousereleased(mx, my, mb)
+	if not GameStates.world then
+		return
+	end
+
+	if mb == 1 then
+		designer.dragging = false
+	end
+
+	GameStates.world:emit("debug_mousereleased", mx, my, mb)
+end
+
+function DevTools.mousemoved(mx, my, dx, dy)
+	if not GameStates.world then
+		return
+	end
+
+	if DevTools.designer and designer.dragging and designer.selected_e then
+		local camera = DevTools.camera
+		local world_x, world_y = mx, my
+		if camera then
+			world_x, world_y = camera:toWorld(mx, my)
+		end
+
+		local pos = designer.selected_e.pos
+		pos.x = world_x - designer.drag_offset_x
+		pos.y = world_y - designer.drag_offset_y
+	end
+
+	GameStates.world:emit("debug_mousemoved", mx, my, dx, dy)
 end
 
 function DevTools.clear()

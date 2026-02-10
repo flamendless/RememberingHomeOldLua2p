@@ -201,7 +201,6 @@ end
 
 
 if DEV then
-	local debug_targets = {}
 	local search = ""
 
 	local function show_list(id, list)
@@ -228,15 +227,6 @@ if DEV then
 			end
 			Slab.Unindent()
 			Slab.EndTree()
-		end
-	end
-
-	function Renderer:debug_target_pos(e)
-		if e then
-			assert(e.__isEntity)
-			table.insert(debug_targets, e)
-		else
-			tablex.clear(debug_targets)
 		end
 	end
 
@@ -276,17 +266,6 @@ if DEV then
 		for _, v in pairs(Renderers) do
 			if v.debug_show and v.debug_draw then
 				v.debug_draw()
-			end
-		end
-
-		if #debug_targets > 0 then
-			for _, e in ipairs(debug_targets) do
-				local pos = e.pos
-				love.graphics.setShader()
-				love.graphics.setColor(1, 0, 0, 1)
-				love.graphics.print(e.id.value, pos.x, pos.y)
-				love.graphics.circle("line", pos.x, pos.y, 64, 32)
-				love.graphics.setShader()
 			end
 		end
 	end
