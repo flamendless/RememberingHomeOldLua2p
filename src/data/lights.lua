@@ -69,4 +69,27 @@ Lights.living_room = {
 	},
 }
 
+Lights.office1 = {
+	pl = {
+		lz = 90,
+		ls = 128,
+		fade = 8,
+		pos = {
+			{ x = 91, y = 38 },
+			{ x = 329, y = 38 },
+		},
+	},
+	pl_mid = {
+		lz = 2,
+		ls = 64,
+		fade = 32,
+		pos = {
+			{ x = 186, y = 53 },
+			{ x = 193, y = 45 },
+			{ x = 202, y = 45 },
+			{ x = 209, y = 53 },
+		},
+	},
+}
+
 return Lights

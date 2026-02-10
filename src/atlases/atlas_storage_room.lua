@@ -2,10 +2,16 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["barrell"] = {
-			x = 303,
-			y = 56,
-			w = 32,
+		["table"] = {
+			x = 201,
+			y = 4,
+			w = 59,
+			h = 40
+		},
+		["tires"] = {
+			x = 201,
+			y = 52,
+			w = 35,
 			h = 22
 		},
 		["shelf"] = {
@@ -14,47 +20,11 @@ local Data = {
 			w = 70,
 			h = 60
 		},
-		["filing_cabinet"] = {
-			x = 303,
-			y = 4,
-			w = 19,
-			h = 44
-		},
-		["right_door"] = {
-			x = 355,
-			y = 4,
-			w = 4,
-			h = 65
-		},
 		["bulb"] = {
 			x = 330,
 			y = 4,
 			w = 5,
 			h = 18
-		},
-		["table"] = {
-			x = 201,
-			y = 4,
-			w = 59,
-			h = 40
-		},
-		["ladder"] = {
-			x = 4,
-			y = 4,
-			w = 111,
-			h = 70
-		},
-		["light_switch"] = {
-			x = 244,
-			y = 52,
-			w = 13,
-			h = 17
-		},
-		["shelf_side"] = {
-			x = 268,
-			y = 4,
-			w = 27,
-			h = 70
 		},
 		["left_door"] = {
 			x = 343,
@@ -62,11 +32,41 @@ local Data = {
 			w = 4,
 			h = 65
 		},
-		["tires"] = {
-			x = 201,
+		["light_switch"] = {
+			x = 244,
 			y = 52,
-			w = 35,
+			w = 13,
+			h = 17
+		},
+		["barrell"] = {
+			x = 303,
+			y = 56,
+			w = 32,
 			h = 22
+		},
+		["ladder"] = {
+			x = 4,
+			y = 4,
+			w = 111,
+			h = 70
+		},
+		["right_door"] = {
+			x = 355,
+			y = 4,
+			w = 4,
+			h = 65
+		},
+		["filing_cabinet"] = {
+			x = 303,
+			y = 4,
+			w = 19,
+			h = 44
+		},
+		["shelf_side"] = {
+			x = 268,
+			y = 4,
+			w = 27,
+			h = 70
 		}
 	},
 	meta = {

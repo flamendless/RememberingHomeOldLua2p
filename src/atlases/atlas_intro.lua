@@ -2,23 +2,11 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["bg_tree_cover"] = {
-			x = 1785,
-			y = 4,
-			w = 79,
-			h = 249
-		},
-		["grass_front"] = {
+		["buildings"] = {
 			x = 1239,
-			y = 137,
+			y = 204,
 			w = 384,
 			h = 59
-		},
-		["title_light"] = {
-			x = 1631,
-			y = 166,
-			w = 118,
-			h = 86
 		},
 		["grass"] = {
 			x = 1872,
@@ -26,47 +14,11 @@ local Data = {
 			w = 384,
 			h = 31
 		},
-		["car_headlight"] = {
-			x = 1872,
-			y = 4,
-			w = 198,
-			h = 99
-		},
-		["post_light"] = {
-			x = 1631,
-			y = 4,
-			w = 146,
-			h = 154
-		},
-		["trees_fg"] = {
-			x = 757,
-			y = 137,
-			w = 474,
-			h = 91
-		},
-		["grass_back"] = {
-			x = 1149,
-			y = 4,
-			w = 384,
-			h = 69
-		},
-		["clouds"] = {
-			x = 4,
-			y = 4,
-			w = 745,
-			h = 231
-		},
-		["buildings"] = {
+		["grass_front"] = {
 			x = 1239,
-			y = 204,
+			y = 137,
 			w = 384,
 			h = 59
-		},
-		["post"] = {
-			x = 2264,
-			y = 4,
-			w = 25,
-			h = 131
 		},
 		["trees_bg"] = {
 			x = 757,
@@ -74,11 +26,35 @@ local Data = {
 			w = 384,
 			h = 125
 		},
-		["grass2"] = {
-			x = 1872,
-			y = 150,
+		["road"] = {
+			x = 1149,
+			y = 81,
 			w = 384,
-			h = 27
+			h = 47
+		},
+		["bg_tree_cover"] = {
+			x = 1785,
+			y = 4,
+			w = 79,
+			h = 249
+		},
+		["clouds"] = {
+			x = 4,
+			y = 4,
+			w = 745,
+			h = 231
+		},
+		["grass_back"] = {
+			x = 1149,
+			y = 4,
+			w = 384,
+			h = 69
+		},
+		["post_light"] = {
+			x = 1631,
+			y = 4,
+			w = 146,
+			h = 154
 		},
 		["title"] = {
 			x = 2078,
@@ -86,11 +62,35 @@ local Data = {
 			w = 118,
 			h = 86
 		},
-		["road"] = {
-			x = 1149,
-			y = 81,
+		["title_light"] = {
+			x = 1631,
+			y = 166,
+			w = 118,
+			h = 86
+		},
+		["car_headlight"] = {
+			x = 1872,
+			y = 4,
+			w = 198,
+			h = 99
+		},
+		["grass2"] = {
+			x = 1872,
+			y = 150,
 			w = 384,
-			h = 47
+			h = 27
+		},
+		["post"] = {
+			x = 2264,
+			y = 4,
+			w = 25,
+			h = 131
+		},
+		["trees_fg"] = {
+			x = 757,
+			y = 137,
+			w = 474,
+			h = 91
 		}
 	},
 	meta = {

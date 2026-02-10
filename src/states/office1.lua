@@ -26,10 +26,7 @@ function Office1:state_setup()
 		Shaders.Glitch(),
 	})
 
-	for _, v in pairs(Assemblages.LivingRoom.lights) do
-		Concord.entity(self.world):assemble(v):give("light_disabled")
-	end
-	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_totally_dark_room"))
+	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_office1"))
 	self.world:emit("set_draw", "ev_draw_ex")
 end
 
@@ -43,7 +40,7 @@ function Office1:state_init()
 
 	self.timeline = TLE.Do(function()
 		Fade.fade_in(nil, 1)
-		self.camera:setScale(4)
+		self.camera:setScale(2)
 		self.timeline:Pause()
 	end)
 end
