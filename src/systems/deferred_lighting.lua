@@ -505,6 +505,15 @@ function DeferredLighting:debug_edit(pool, group_id)
 					self:update_light_diffuse(e)
 				end
 			end
+
+			if Slab.Button("Print") then
+				print("id", id)
+				print("x", pos.x)
+				print("y", pos.y)
+				print("z", pos.z)
+				print("value", pl.value)
+			end
+
 			Slab.EndTree()
 			Slab.Unindent()
 		end

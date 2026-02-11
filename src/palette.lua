@@ -65,9 +65,8 @@ Palette.diffuse = {
 	living_room_mid_pl = { 2.28, 1.56, 0.5 },
 	living_room_side = { 1.44, 1.64, 0.2 },
 
-	ambiance_office1 = { 1, 1, 1, 1 },
-	office1_mid_pl = { 2.28, 1.56, 0.5 },
-	office1_side = { 1.44, 1.64, 0.2 },
+	ambiance_office1 = { 0.18, 0.29, 1, 0.3 },
+	office1_sides = { 1.44, 1.64, 0.2 },
 
 	ambiance_totally_dark_room = { 0.7, 0.7, 0.7, 0.0 },
 }

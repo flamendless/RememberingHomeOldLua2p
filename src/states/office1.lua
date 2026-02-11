@@ -28,6 +28,9 @@ function Office1:state_setup()
 		Shaders.Glitch(),
 	})
 
+	for _, v in pairs(Assemblages.Office1.lights) do
+		Concord.entity(self.world):assemble(v)
+	end
 	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_office1"))
 	self.world:emit("set_draw", "ev_draw_ex")
 end
