@@ -694,8 +694,13 @@ function DevTools.draw_designer()
 		Slab.Text("Selected Entity: " .. designer.selected_e.id.value)
 		Slab.Text("Position:")
 		local pos = designer.selected_e.pos
+		local z_index = designer.z_index
 		pos.x = UIWrapper.edit_number("x", pos.x, true)
 		pos.y = UIWrapper.edit_number("y", pos.y, true)
+		z_index.value = UIWrapper.edit_number("z", z_index.value, true)
+		if Slab.CheckBox(z_index.sortable, "sortable") then
+			z_index.sortable = not z_index.sortable
+		end
 	else
 		Slab.Text("No entity selected")
 	end
