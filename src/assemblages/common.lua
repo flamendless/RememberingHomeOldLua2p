@@ -1,10 +1,19 @@
 local Common = {}
 
-function Common.bg(e, bg_id)
+function Common.bg(e, bg_id, w)
 	if type(bg_id) ~= "string" then
 		error('Assertion failed: type(bg_id) == "string"')
 	end
+	if w then
+		assert(type(w) == "number")
+	end
 	e:give("id", "bg"):give("pos", 0, 0):give("sprite", bg_id):give("bg")
+
+	if w then
+		local iw = e.sprite.iw
+		local sx = w/iw
+		e:give("transform", 0, sx, 1)
+	end
 end
 
 function Common.text(e, pos, str, font, color)

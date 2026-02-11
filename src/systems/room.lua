@@ -140,12 +140,14 @@ function Room:create_grouped_items(group, group_t, frames, list)
 	end
 end
 
-function Room:create_room_bounds(w, h)
+function Room:create_room_bounds(w, h, opt)
+	if opt then assert(type(opt) == "table") end
+
 	for _, v in pairs(Assemblages.Room) do
-		Concord.entity(self.world):assemble(v, w, h)
+		Concord.entity(self.world):assemble(v, w, h, opt)
 	end
 
-	self.world:setResource("room_size", {width = w, height = h})
+	self.world:setResource("room_size", {width = w, height = h, opt = opt})
 end
 
 return Room
