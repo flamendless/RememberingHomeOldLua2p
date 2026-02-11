@@ -1,7 +1,6 @@
 local DevTools = {
 	show = false,
 	show_fps = true,
-	designer = false,
 	pause = false,
 	flags = {
 		animation = false,
@@ -89,6 +88,7 @@ local designer = {
 	dragging = false,
 	drag_offset_x = 0,
 	drag_offset_y = 0,
+	show_outline = true,
 }
 
 local list = {
@@ -138,9 +138,9 @@ function DevTools.update(dt)
 	if Slab.CheckBox(DevTools.flags.fog, "Fog") then
 		DevTools.flags.fog = not DevTools.flags.fog
 	end
-	if Slab.CheckBox(DevTools.designer, "Designer") then
-		DevTools.designer = not DevTools.designer
-		designer.show = DevTools.designer
+	if Slab.CheckBox(designer.show, "Designer") then
+		designer.show = not designer.show
+		GameStates.world:emit("toggle_debug_show", "camera")
 	end
 	for _, v in ipairs(list) do
 		if Slab.CheckBox(v.show, v.title) then
@@ -178,10 +178,10 @@ function DevTools.draw()
 	GameStates.world:emit("debug_draw")
 	GameStates.world:emit("debug_draw_ui")
 
-	if #DevTools.debug_pos > 0 then
+	if designer.show_outline and #DevTools.debug_pos > 0 then
 		for _, e in ipairs(DevTools.debug_pos) do
 			local x, y, w, h = Helper.get_ltwh(e)
-			love.graphics.setColor(1, 0, 0, 1)
+			love.graphics.setColor(1, 0, 0, 0.5)
 			love.graphics.rectangle("line", x, y, w, h)
 			love.graphics.setColor(1, 1, 1, 1)
 		end
@@ -673,6 +673,10 @@ function DevTools.draw_designer()
 
 	Slab.Text("Select Entity:")
 	Slab.SameLine()
+	if Slab.CheckBox(designer.show_outline, "outline") then
+		designer.show_outline = not designer.show_outline
+	end
+	Slab.SameLine()
 	if Slab.BeginComboBox("cb_designer_e", { Selected = designer.selected }) then
 		local entities = GameStates.world:getEntities()
 		for _, e in ipairs(entities) do
@@ -694,7 +698,7 @@ function DevTools.draw_designer()
 		Slab.Text("Selected Entity: " .. designer.selected_e.id.value)
 		Slab.Text("Position:")
 		local pos = designer.selected_e.pos
-		local z_index = designer.z_index
+		local z_index = designer.selected_e.z_index
 		pos.x = UIWrapper.edit_number("x", pos.x, true)
 		pos.y = UIWrapper.edit_number("y", pos.y, true)
 		z_index.value = UIWrapper.edit_number("z", z_index.value, true)
@@ -783,7 +787,7 @@ function DevTools.mousepressed(mx, my, mb)
 		return
 	end
 
-	if DevTools.designer and designer.selected_e and mb == 1 then
+	if designer.show and designer.selected_e and mb == 1 then
 		local camera = DevTools.camera
 		local world_x, world_y = mx, my
 		if camera then
@@ -792,7 +796,7 @@ function DevTools.mousepressed(mx, my, mb)
 
 		local pos = designer.selected_e.pos
 		local dist = math.sqrt((world_x - pos.x)^2 + (world_y - pos.y)^2)
-		if dist < 20 then
+		if dist < 40 then
 			designer.dragging = true
 			designer.drag_offset_x = world_x - pos.x
 			designer.drag_offset_y = world_y - pos.y
@@ -819,7 +823,7 @@ function DevTools.mousemoved(mx, my, dx, dy)
 		return
 	end
 
-	if DevTools.designer and designer.dragging and designer.selected_e then
+	if designer.show and designer.dragging and designer.selected_e then
 		local camera = DevTools.camera
 		local world_x, world_y = mx, my
 		if camera then

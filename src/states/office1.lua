@@ -8,15 +8,17 @@ end
 function Office1:state_setup()
 	local w, h = Resources.data.images.office1:getDimensions()
 	local ww, wh = love.graphics.getDimensions()
+	local mult = 1.5
+	local rw = w * mult
 
 	self.canvas = Canvas.create_main()
 	self.scale = math.min(ww / w, wh / h)
-	self.camera = Gamera.new(0, 0, w, h)
+	self.camera = Gamera.new(0, 0, rw, h)
 	self.camera:setWindow(0, 0, ww, wh)
-	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
-	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id)
+	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, rw, h)
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id, rw)
 
-	self.world:emit("create_room_bounds", w, h)
+	self.world:emit("create_room_bounds", rw, h, {sx = mult})
 	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.NGrading("lut_dusk"),
@@ -36,6 +38,7 @@ function Office1:state_init()
 		self.world:emit("toggle_component", e_player, "can_move", true)
 		self.world:emit("toggle_component", e_player, "can_interact", true)
 		self.world:emit("toggle_component", e_player, "can_run", true)
+		self.e_player = e_player
 	end)
 
 	self.timeline = TLE.Do(function()

@@ -91,6 +91,11 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 			e:give("req_col_dir", t.req_col_dir)
 		end
 	end
+
+	if DEV and t.no_col then
+		e:give("collider", w, h, Enums.bump_filter.cross):give("bump")
+	end
+
 	return e
 end
 

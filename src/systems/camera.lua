@@ -212,207 +212,216 @@ function Camera:hide_bars()
 end
 
 
-local format = string.format
-local flags = {
-	center = true,
-	visible = false,
-	world = false,
-	window = false,
-	clip = false,
-}
+if DEV then
+	local format = string.format
+	local flags = {
+		center = true,
+		visible = false,
+		world = false,
+		window = false,
+		clip = false,
+	}
 
-function Camera:debug_update(dt)
-	if not self.debug_show then
-		return
+	function Camera:toggle_debug_show(id)
+		assert(type(id) == "string")
+		if id == "camera" then
+			self.debug_show = not self.debug_show
+		end
 	end
-	self.debug_show = Slab.BeginWindow("camera", {
-		Title = "Camera",
-		IsOpen = self.debug_show,
-	})
-	local camera = self.main_camera
-	if camera then
-		local x, y = camera:getPosition()
-		local scale = camera:getScale()
-		local wx, wy, ww, wh = camera:getWorld()
-		local sx, sy, sw, sh = camera:getWindow()
-		local vx, vy, vw, vh = camera:getVisible()
-		local str_world = format("World: (%d, %d, %d, %d)", wx, wy, ww, wh)
-		local str_window = format("Window: (%d, %d, %d, %d)", sx, sy, sw, sh)
-		local str_visible = format("Visible: (%d, %d, %d, %d)", vx, vy, vw, vh)
-		Slab.Text("Pos:")
-		Slab.Indent()
-		Slab.Text("x:")
-		Slab.SameLine()
-		if
-			Slab.InputNumberSlider("x", x, 0, sw, {
-				ReturnOnText = false,
-				NumbersOnly = true,
-				Precision = 1,
-			})
-		then
-			self.follow = false
-			x = Slab.GetInputNumber()
-			self.main_camera:setPosition(x, y)
-		end
-		Slab.Text("y:")
-		Slab.SameLine()
-		if
-			Slab.InputNumberSlider("y", y, 0, sh, {
-				ReturnOnText = false,
-				NumbersOnly = true,
-				Precision = 1,
-			})
-		then
-			self.follow = false
-			y = Slab.GetInputNumber()
-			self.main_camera:setPosition(x, y)
-		end
-		Slab.Unindent()
 
-		Slab.Text("Scale:")
-		Slab.SameLine()
-		if
-			Slab.InputNumberSlider("scale", scale, 1, 10, {
-				ReturnOnText = false,
-				NumbersOnly = true,
-				Precision = 2,
-			})
-		then
-			scale = Slab.GetInputNumber()
-			self.main_camera:setScale(scale)
+	function Camera:debug_update(dt)
+		if not self.debug_show then
+			return
 		end
+		self.debug_show = Slab.BeginWindow("camera", {
+			Title = "Camera",
+			IsOpen = self.debug_show,
+		})
+		local camera = self.main_camera
+		if camera then
+			local x, y = camera:getPosition()
+			local scale = camera:getScale()
+			local wx, wy, ww, wh = camera:getWorld()
+			local sx, sy, sw, sh = camera:getWindow()
+			local vx, vy, vw, vh = camera:getVisible()
+			local str_world = format("World: (%d, %d, %d, %d)", wx, wy, ww, wh)
+			local str_window = format("Window: (%d, %d, %d, %d)", sx, sy, sw, sh)
+			local str_visible = format("Visible: (%d, %d, %d, %d)", vx, vy, vw, vh)
+			Slab.Text("Pos:")
+			Slab.Indent()
+			Slab.Text("x:")
+			Slab.SameLine()
+			if
+				Slab.InputNumberSlider("x", x, 0, sw, {
+					ReturnOnText = false,
+					NumbersOnly = true,
+					Precision = 1,
+				})
+			then
+				self.follow = false
+				x = Slab.GetInputNumber()
+				self.main_camera:setPosition(x, y)
+			end
+			Slab.Text("y:")
+			Slab.SameLine()
+			if
+				Slab.InputNumberSlider("y", y, 0, sh, {
+					ReturnOnText = false,
+					NumbersOnly = true,
+					Precision = 1,
+				})
+			then
+				self.follow = false
+				y = Slab.GetInputNumber()
+				self.main_camera:setPosition(x, y)
+			end
+			Slab.Unindent()
 
-		Slab.Text(str_world)
-		Slab.Text(str_window)
-		Slab.Text(str_visible)
+			Slab.Text("Scale:")
+			Slab.SameLine()
+			if
+				Slab.InputNumberSlider("scale", scale, 1, 10, {
+					ReturnOnText = false,
+					NumbersOnly = true,
+					Precision = 2,
+				})
+			then
+				scale = Slab.GetInputNumber()
+				self.main_camera:setScale(scale)
+			end
 
-		if Slab.CheckBox(self.follow, "Follow") then
-			self.follow = not self.follow
-		end
-		Slab.SameLine()
-		if Slab.CheckBox(self.clip, "Clip") then
-			self.clip = not self.clip
-		end
-		if Slab.CheckBox(flags.clip, "Debug Clip") then
-			flags.clip = not flags.clip
-			for _, e in ipairs(self.pool_clip) do
-				local clip = e.camera_clip
-				if flags.clip then
-					clip.debug_prev = clip.color
-					clip.color = { 1, 0, 0, 1 }
-				else
-					clip.color = clip.debug_prev
+			Slab.Text(str_world)
+			Slab.Text(str_window)
+			Slab.Text(str_visible)
+
+			if Slab.CheckBox(self.follow, "Follow") then
+				self.follow = not self.follow
+			end
+			Slab.SameLine()
+			if Slab.CheckBox(self.clip, "Clip") then
+				self.clip = not self.clip
+			end
+			if Slab.CheckBox(flags.clip, "Debug Clip") then
+				flags.clip = not flags.clip
+				for _, e in ipairs(self.pool_clip) do
+					local clip = e.camera_clip
+					if flags.clip then
+						clip.debug_prev = clip.color
+						clip.color = { 1, 0, 0, 1 }
+					else
+						clip.color = clip.debug_prev
+					end
 				end
 			end
+			Slab.SameLine()
+			if Slab.CheckBox(flags.center, "Center") then
+				flags.center = not flags.center
+			end
+			if Slab.CheckBox(flags.world, "World") then
+				flags.world = not flags.world
+			end
+			Slab.SameLine()
+			if Slab.CheckBox(flags.window, "Window") then
+				flags.window = not flags.window
+			end
+			if Slab.CheckBox(flags.visible, "Visible") then
+				flags.visible = not flags.visible
+			end
+		else
+			Slab.Text("No camera in current state")
 		end
-		Slab.SameLine()
-		if Slab.CheckBox(flags.center, "Center") then
-			flags.center = not flags.center
+		Slab.EndWindow()
+
+		local speed = 64
+		if love.keyboard.isDown("lshift") then
+			speed = 128
 		end
-		if Slab.CheckBox(flags.world, "World") then
-			flags.world = not flags.world
+
+		local dx, dy = 0, 0
+		if Inputs.down("camera_down") then
+			dy = 1
+		elseif Inputs.down("camera_up") then
+			dy = -1
 		end
-		Slab.SameLine()
-		if Slab.CheckBox(flags.window, "Window") then
-			flags.window = not flags.window
+		if Inputs.down("camera_left") then
+			dx = -1
+		elseif Inputs.down("camera_right") then
+			dx = 1
 		end
-		if Slab.CheckBox(flags.visible, "Visible") then
-			flags.visible = not flags.visible
-		end
-	else
-		Slab.Text("No camera in current state")
-	end
-	Slab.EndWindow()
 
-	local speed = 64
-	if love.keyboard.isDown("lshift") then
-		speed = 128
-	end
-
-	local dx, dy = 0, 0
-	if Inputs.down("camera_down") then
-		dy = 1
-	elseif Inputs.down("camera_up") then
-		dy = -1
-	end
-	if Inputs.down("camera_left") then
-		dx = -1
-	elseif Inputs.down("camera_right") then
-		dx = 1
-	end
-
-	if dx ~= 0 or dy ~= 0 then
-		local x, y = self.main_camera:getPosition()
-		x = x + speed * dt * dx
-		y = y + speed * dt * dy
-		self.follow = false
-		self.main_camera:setPosition(x, y)
-	end
-end
-
-function Camera:debug_draw()
-	if not self.debug_show then
-		return
-	end
-	local scale = self.main_camera:getScale()
-	local wx, wy, ww, wh = self.main_camera:getWorld()
-	local sx, sy, sw, sh = self.main_camera:getWindow()
-	local vx, vy, vw, vh = self.main_camera:getVisible()
-
-	love.graphics.setLineWidth(1 / scale)
-	if flags.world then
-		love.graphics.setColor(0, 0, 1, 0.7)
-		love.graphics.rectangle("line", wx, wy, ww, wh)
-		if flags.center then
-			love.graphics.line(wx + ww/2, wy, wx + ww/2, wy + wh)
-			love.graphics.line(wx, wy + wh/2, wx + ww, wy + wh/2)
-			love.graphics.circle("line", wx + ww/2, wy + wh/2, 1)
+		if dx ~= 0 or dy ~= 0 then
+			local x, y = self.main_camera:getPosition()
+			x = x + speed * dt * dx
+			y = y + speed * dt * dy
+			self.follow = false
+			self.main_camera:setPosition(x, y)
 		end
 	end
 
-	if flags.window then
-		love.graphics.setColor(0, 1, 0, 0.7)
-		love.graphics.rectangle("line", sx, sy, sw, sh)
-		if flags.center then
-			love.graphics.line(sw/2, sy, sw/2, sh)
-			love.graphics.line(sx, sh/2, sw, sh/2)
-			love.graphics.circle("line", sw/2, sh/2, 1)
+	function Camera:debug_draw()
+		if not self.debug_show then
+			return
+		end
+		local scale = self.main_camera:getScale()
+		local wx, wy, ww, wh = self.main_camera:getWorld()
+		local sx, sy, sw, sh = self.main_camera:getWindow()
+		local vx, vy, vw, vh = self.main_camera:getVisible()
+
+		love.graphics.setLineWidth(1 / scale)
+		if flags.world then
+			love.graphics.setColor(0, 0, 1, 0.7)
+			love.graphics.rectangle("line", wx, wy, ww, wh)
+			if flags.center then
+				love.graphics.line(wx + ww/2, wy, wx + ww/2, wy + wh)
+				love.graphics.line(wx, wy + wh/2, wx + ww, wy + wh/2)
+				love.graphics.circle("line", wx + ww/2, wy + wh/2, 1)
+			end
+		end
+
+		if flags.window then
+			love.graphics.setColor(0, 1, 0, 0.7)
+			love.graphics.rectangle("line", sx, sy, sw, sh)
+			if flags.center then
+				love.graphics.line(sw/2, sy, sw/2, sh)
+				love.graphics.line(sx, sh/2, sw, sh/2)
+				love.graphics.circle("line", sw/2, sh/2, 1)
+			end
+		end
+
+		if flags.visible then
+			love.graphics.setColor(1, 1, 0, 0.7)
+			love.graphics.rectangle("line", vx, vy, vw, vh)
+			if flags.center then
+				love.graphics.line(vx + vw/2, vy, vx + vw/2, vy + vh)
+				love.graphics.line(vx, vy + vh/2, vx + vw, vy + vh/2)
+				love.graphics.circle("line", vx + vw/2, vy + vh/2, 1)
+			end
 		end
 	end
 
-	if flags.visible then
-		love.graphics.setColor(1, 1, 0, 0.7)
-		love.graphics.rectangle("line", vx, vy, vw, vh)
-		if flags.center then
-			love.graphics.line(vx + vw/2, vy, vx + vw/2, vy + vh)
-			love.graphics.line(vx, vy + vh/2, vx + vw, vy + vh/2)
-			love.graphics.circle("line", vx + vw/2, vy + vh/2, 1)
+	function Camera:debug_on_drag(bool)
+		if type(bool) ~= "boolean" then
+			error('Assertion failed: type(bool) == "boolean"')
 		end
+		self.follow = not bool
 	end
-end
 
-function Camera:debug_on_drag(bool)
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
+	function Camera:debug_wheelmoved(wx, wy)
+		if not self.debug_show then
+			return
+		end
+		if not self.main_camera then
+			return
+		end
+		local scale = self.main_camera:getScale()
+		local dy = scale + wy * 0.15
+		self.main_camera:setScale(dy)
 	end
-	self.follow = not bool
-end
 
-function Camera:debug_wheelmoved(wx, wy)
-	if not self.debug_show then
-		return
+	function Camera:debug_on_toggle(event)
+		if event ~= "camera" then return end
+		self.debug_show = not self.debug_show
 	end
-	if not self.main_camera then
-		return
-	end
-	local scale = self.main_camera:getScale()
-	local dy = scale + wy * 0.15
-	self.main_camera:setScale(dy)
-end
-
-function Camera:debug_on_toggle(event)
-	if event ~= "camera" then return end
-	self.debug_show = not self.debug_show
 end
 
 return Camera
