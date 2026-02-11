@@ -705,6 +705,12 @@ function DevTools.draw_designer()
 		if Slab.CheckBox(z_index.sortable, "sortable") then
 			z_index.sortable = not z_index.sortable
 		end
+
+		if Slab.Button("Print") then
+			print("id", designer.selected_e.id.value)
+			print("x", pos.x)
+			print("y", pos.y)
+		end
 	else
 		Slab.Text("No entity selected")
 	end
