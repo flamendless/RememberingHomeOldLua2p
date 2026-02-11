@@ -28,15 +28,15 @@ local Data = {
 	{
 		id = "glasswindow",
 		x = 146,
-		y = 72,
-		z = 6,
+		y = 56,
+		z = 4,
 		no_col = true,
 	},
 	{
 		id = "glasswindow2",
 		x = 476,
-		y = 72,
-		z = 6,
+		y = 56,
+		z = 4,
 		no_col = true,
 	},
 	{
@@ -78,6 +78,27 @@ local Data = {
 		no_col = true,
 	},
 	{
+		id = "bookshelf",
+		x = 490,
+		y = 86,
+		z = 6,
+	},
+	{
+		id = "chairs",
+		name = "chairs1",
+		x = 111,
+		y = 114,
+		z = 6,
+	},
+	{
+		id = "chairs",
+		name = "chairs2",
+		x = 197,
+		y = 114,
+		z = 6,
+	},
+
+	{
 		id = "table",
 		x = 64,
 		y = 52,
@@ -91,18 +112,6 @@ local Data = {
 	},
 	{
 		id = "ceiling_light",
-		x = 64,
-		y = 52,
-		z = 6,
-	},
-	{
-		id = "chairs",
-		x = 64,
-		y = 52,
-		z = 6,
-	},
-	{
-		id = "bookshelf",
 		x = 64,
 		y = 52,
 		z = 6,

@@ -2,16 +2,16 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["frontdoor"] = {
-			x = 138,
-			y = 4,
-			w = 33,
-			h = 67
-		},
 		["backdoor"] = {
 			x = 179,
 			y = 4,
 			w = 10,
+			h = 67
+		},
+		["frontdoor"] = {
+			x = 138,
+			y = 4,
+			w = 33,
 			h = 67
 		},
 		["car"] = {

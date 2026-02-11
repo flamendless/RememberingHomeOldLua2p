@@ -2,17 +2,35 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["table"] = {
-			x = 201,
+		["shelf_side"] = {
+			x = 268,
 			y = 4,
-			w = 59,
-			h = 40
+			w = 27,
+			h = 70
+		},
+		["filing_cabinet"] = {
+			x = 303,
+			y = 4,
+			w = 19,
+			h = 44
+		},
+		["left_door"] = {
+			x = 343,
+			y = 4,
+			w = 4,
+			h = 65
 		},
 		["tires"] = {
 			x = 201,
 			y = 52,
 			w = 35,
 			h = 22
+		},
+		["right_door"] = {
+			x = 355,
+			y = 4,
+			w = 4,
+			h = 65
 		},
 		["shelf"] = {
 			x = 123,
@@ -26,18 +44,6 @@ local Data = {
 			w = 5,
 			h = 18
 		},
-		["left_door"] = {
-			x = 343,
-			y = 4,
-			w = 4,
-			h = 65
-		},
-		["light_switch"] = {
-			x = 244,
-			y = 52,
-			w = 13,
-			h = 17
-		},
 		["barrell"] = {
 			x = 303,
 			y = 56,
@@ -50,23 +56,17 @@ local Data = {
 			w = 111,
 			h = 70
 		},
-		["right_door"] = {
-			x = 355,
-			y = 4,
-			w = 4,
-			h = 65
+		["light_switch"] = {
+			x = 244,
+			y = 52,
+			w = 13,
+			h = 17
 		},
-		["filing_cabinet"] = {
-			x = 303,
+		["table"] = {
+			x = 201,
 			y = 4,
-			w = 19,
-			h = 44
-		},
-		["shelf_side"] = {
-			x = 268,
-			y = 4,
-			w = 27,
-			h = 70
+			w = 59,
+			h = 40
 		}
 	},
 	meta = {
