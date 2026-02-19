@@ -46,7 +46,7 @@ function Office1:state_init()
 
 	self.timeline = TLE.Do(function()
 		Fade.fade_in(nil, 1)
-		self.camera:setScale(2)
+		self.camera:setScale(4)
 		self.timeline:Pause()
 	end)
 end

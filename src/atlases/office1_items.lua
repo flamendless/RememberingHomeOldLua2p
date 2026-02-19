@@ -89,7 +89,7 @@ local Data = {
 		name = "plants_left1",
 		x = 300,
 		y = 109,
-		z = 6,
+		z = 8,
 		no_col = true,
 	},
 	{
@@ -97,7 +97,7 @@ local Data = {
 		name = "plants_left2",
 		x = 320,
 		y = 109,
-		z = 6,
+		z = 8,
 		no_col = true,
 	},
 	{
@@ -105,7 +105,7 @@ local Data = {
 		name = "plants_right1",
 		x = 412,
 		y = 109,
-		z = 6,
+		z = 8,
 		no_col = true,
 	},
 	{
@@ -113,7 +113,7 @@ local Data = {
 		name = "plants_right2",
 		x = 432,
 		y = 109,
-		z = 6,
+		z = 8,
 		no_col = true,
 	},
 	{

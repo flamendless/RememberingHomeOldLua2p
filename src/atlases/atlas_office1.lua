@@ -2,41 +2,11 @@
 -- check build.sh create_atlas
 local Data = {
 	frames = {
-		["glasswindow"] = {
-			x = 156,
-			y = 84,
-			w = 144,
-			h = 34
-		},
-		["office_chair"] = {
-			x = 418,
-			y = 68,
-			w = 21,
-			h = 35
-		},
-		["chairs"] = {
-			x = 199,
-			y = 4,
-			w = 92,
-			h = 30
-		},
-		["ceiling_light"] = {
+		["bookshelf"] = {
 			x = 4,
-			y = 70,
-			w = 102,
-			h = 5
-		},
-		["trash"] = {
-			x = 376,
-			y = 47,
-			w = 11,
-			h = 14
-		},
-		["door_right"] = {
-			x = 346,
 			y = 4,
-			w = 22,
-			h = 70
+			w = 111,
+			h = 58
 		},
 		["main_door"] = {
 			x = 123,
@@ -50,6 +20,36 @@ local Data = {
 			w = 37,
 			h = 36
 		},
+		["door_right"] = {
+			x = 346,
+			y = 4,
+			w = 22,
+			h = 70
+		},
+		["ceiling_light"] = {
+			x = 4,
+			y = 70,
+			w = 102,
+			h = 5
+		},
+		["glasswindow2"] = {
+			x = 4,
+			y = 84,
+			w = 144,
+			h = 34
+		},
+		["plants"] = {
+			x = 376,
+			y = 4,
+			w = 34,
+			h = 35
+		},
+		["office_chair"] = {
+			x = 418,
+			y = 68,
+			w = 21,
+			h = 35
+		},
 		["dispenser"] = {
 			x = 418,
 			y = 4,
@@ -62,14 +62,8 @@ local Data = {
 			w = 48,
 			h = 21
 		},
-		["plants"] = {
-			x = 376,
-			y = 4,
-			w = 34,
-			h = 35
-		},
-		["glasswindow2"] = {
-			x = 4,
+		["glasswindow"] = {
+			x = 156,
 			y = 84,
 			w = 144,
 			h = 34
@@ -80,17 +74,23 @@ local Data = {
 			w = 39,
 			h = 70
 		},
+		["chairs"] = {
+			x = 199,
+			y = 4,
+			w = 92,
+			h = 30
+		},
 		["desk"] = {
 			x = 308,
 			y = 84,
 			w = 56,
 			h = 36
 		},
-		["bookshelf"] = {
-			x = 4,
-			y = 4,
-			w = 111,
-			h = 58
+		["trash"] = {
+			x = 376,
+			y = 47,
+			w = 11,
+			h = 14
 		}
 	},
 	meta = {
