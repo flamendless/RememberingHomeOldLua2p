@@ -49,6 +49,7 @@ function GameStates.start(resources)
 			on_remove_entity = true,
 			parallax_move_x = true,
 			preupdate = true,
+			remove_outlines = true,
 			set_ambiance = true,
 			switch_animation_tag = true,
 			update = true,

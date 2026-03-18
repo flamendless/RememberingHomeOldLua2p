@@ -86,7 +86,9 @@ function BumpCollision:check_col(e)
 	local pos = e.pos
 	local _, _, cols, len = self.pool:check(e, pos.x, pos.y, filter)
 	local has_collide_with = false
+	local has_collide_interactive = false
 
+	local int_len = 0
 	local within_int = e.within_interactive
 	for i = 1, len do
 		local c = cols[i]
@@ -94,6 +96,11 @@ function BumpCollision:check_col(e)
 		local other_col = other.collider
 		other_col.normal.x = c.normalX
 		other_col.normal.y = c.normalY
+
+		if other.interactive then
+			int_len = int_len + 1
+		end
+
 		if i == 1 and e.can_interact and other.interactive then
 			local proceed = true
 			local req = other.req_col_dir
@@ -105,10 +112,12 @@ function BumpCollision:check_col(e)
 			if proceed then
 				if not within_int and other.interactive then
 					self.world:emit("on_collide_interactive", e, other)
-				elseif within_int and within_int.entity ~= other then
+				elseif within_int.entity ~= other then
 					self.world:emit("on_change_interactive", e, other)
 				end
 			end
+
+			has_collide_interactive = true
 		end
 
 		if other.controller then
@@ -121,8 +130,12 @@ function BumpCollision:check_col(e)
 		end
 	end
 
+	if not has_collide_interactive then
+		self.world:emit("remove_outlines")
+	end
+
 	local col = e.collider
-	if not col.is_hit and within_int and len == 0 then
+	if not col.is_hit and within_int and int_len == 0 then
 		self.world:emit("on_leave_interactive", e, within_int.entity)
 	end
 
@@ -188,8 +201,8 @@ function BumpCollision:update_collider(e)
 	end
 
 	collider.w, collider.h = w, h
-	collider.w_h = w/2
-	collider.h_h = h/2
+	collider.w_h = w / 2
+	collider.h_h = h / 2
 
 	if new_collider.ox or new_collider.oy then
 		local t = e.transform
@@ -216,10 +229,10 @@ local function edit(id, value, t)
 	Slab.Text(id .. ":")
 	Slab.SameLine()
 	if Slab.Input(id, {
-		Text = tostring(value),
-		ReturnOnText = false,
-		NumbersOnly = true,
-	}) then
+			Text = tostring(value),
+			ReturnOnText = false,
+			NumbersOnly = true,
+		}) then
 		value = Slab.GetInputNumber()
 		t[id] = math.floor(value)
 	end
