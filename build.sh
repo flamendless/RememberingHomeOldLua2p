@@ -87,36 +87,38 @@ function check()
 		--jobs 2
 }
 
-function create_atlas()
+function gen_atlas()
 {
 	eta_path=./libs/ExportTextureAtlas/
 	output_path=./res/images/atlases
 	source_path=./res/exported
-	exported_dirs=(intro kitchen living_room outside storage_room utility_room office1)
+	exported_dirs=("$@")
 	input_dirs=()
 	output_dirs=()
 	data_dirs=()
 	ignores=()
 
 	for cur_dir in "${exported_dirs[@]}"; do
-		in_dir=$source_path/$cur_dir/
-		out_dir=$output_path/$cur_dir.png
-		data_dir=./src/atlases/atlas_$cur_dir.lua
-		ignore=$source_path/$cur_dir/$cur_dir.png
-		input_dirs+=($in_dir)
-		output_dirs+=($out_dir)
-		data_dirs+=($data_dir)
-		ignores+=($ignore)
+		in_dir="$source_path/$cur_dir/"
+		out_dir="$output_path/$cur_dir.png"
+		data_dir="./src/atlases/atlas_$cur_dir.lua"
+		ignore="$source_path/$cur_dir/$cur_dir.png"
+
+		input_dirs+=("$in_dir")
+		output_dirs+=("$out_dir")
+		data_dirs+=("$data_dir")
+		ignores+=("$ignore")
+
 		echo "gen atlas: '$in_dir' -> '$out_dir' + '$data_dir' !'$ignore'"
 	done
 
-	love $eta_path \
+	love "$eta_path" \
 		-input "${input_dirs[@]}" \
 		-output "${output_dirs[@]}" \
 		-dataOutput "${data_dirs[@]}" \
 		-ignore "${ignores[@]}" \
 		-removeFileExtension \
-		-padding $padding \
+		-padding "$padding" \
 		-template "./scripts/atlas_template.lua"
 }
 
@@ -150,9 +152,18 @@ function clean_logs()
 function init()
 {
 	create_output_dir
-	process_src "$dir_source"
-	create_atlas
 	copy_modules
+	process_src "$dir_source"
+	local exported_dirs=(
+		intro
+		kitchen
+		living_room
+		outside
+		storage_room
+		utility_room
+		office1
+	)
+	gen_atlas "${exported_dirs[@]}"
 	copy_res
 }
 
@@ -221,7 +232,7 @@ function lovebuild() {
 }
 
 if [ $# -eq 0 ]; then
-	echo "Must pass command: init, rebuild, clean, run, create_atlas"
+	echo "Must pass command: init, rebuild, clean, run, gen_atlas, copy_res, copy_modules"
 else
 	"$@"
 fi
