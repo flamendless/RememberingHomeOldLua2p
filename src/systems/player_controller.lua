@@ -19,6 +19,7 @@ end
 
 function PlayerController:init(world)
 	self.world = world
+	self.turn_cooldown = 0
 
 	if DEV then
 		self.turn_delay = 0.01
