@@ -8,17 +8,11 @@ local Data = {
 			w = 111,
 			h = 58
 		},
-		["main_door"] = {
-			x = 123,
+		["plants"] = {
+			x = 376,
 			y = 4,
-			w = 68,
-			h = 72
-		},
-		["plants_2"] = {
-			x = 372,
-			y = 84,
-			w = 37,
-			h = 36
+			w = 34,
+			h = 35
 		},
 		["door_right"] = {
 			x = 346,
@@ -32,17 +26,47 @@ local Data = {
 			w = 102,
 			h = 5
 		},
+		["plants_2"] = {
+			x = 372,
+			y = 84,
+			w = 37,
+			h = 36
+		},
+		["glasswindow"] = {
+			x = 156,
+			y = 84,
+			w = 144,
+			h = 34
+		},
+		["chairs"] = {
+			x = 199,
+			y = 4,
+			w = 92,
+			h = 30
+		},
 		["glasswindow2"] = {
 			x = 4,
 			y = 84,
 			w = 144,
 			h = 34
 		},
-		["plants"] = {
-			x = 376,
+		["trash"] = {
+			x = 255,
+			y = 42,
+			w = 11,
+			h = 14
+		},
+		["main_door"] = {
+			x = 123,
 			y = 4,
-			w = 34,
-			h = 35
+			w = 68,
+			h = 72
+		},
+		["desk_plant"] = {
+			x = 402,
+			y = 47,
+			w = 8,
+			h = 12
 		},
 		["office_chair"] = {
 			x = 418,
@@ -56,17 +80,17 @@ local Data = {
 			w = 17,
 			h = 56
 		},
+		["pc"] = {
+			x = 376,
+			y = 47,
+			w = 18,
+			h = 14
+		},
 		["table"] = {
 			x = 199,
 			y = 42,
 			w = 48,
 			h = 21
-		},
-		["glasswindow"] = {
-			x = 156,
-			y = 84,
-			w = 144,
-			h = 34
 		},
 		["door"] = {
 			x = 299,
@@ -74,23 +98,11 @@ local Data = {
 			w = 39,
 			h = 70
 		},
-		["chairs"] = {
-			x = 199,
-			y = 4,
-			w = 92,
-			h = 30
-		},
 		["desk"] = {
 			x = 308,
 			y = 84,
 			w = 56,
 			h = 36
-		},
-		["trash"] = {
-			x = 376,
-			y = 47,
-			w = 11,
-			h = 14
 		}
 	},
 	meta = {
@@ -98,7 +110,7 @@ local Data = {
 		extrude = 0,
 		atlasWidth = 443,
 		atlasHeight = 124,
-		quadCount = 15
+		quadCount = 17
 	}
 }
 return Data

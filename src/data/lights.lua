@@ -81,6 +81,11 @@ Lights.office1 = {
 			{ x = 657, y = 40 },
 		},
 	},
+	pc_light = {
+		lz = 4,
+		ls = 151,
+		pos = { x = 69, y = 114 },
+	},
 }
 
 return Lights

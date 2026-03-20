@@ -112,7 +112,7 @@ function BumpCollision:check_col(e)
 			if proceed then
 				if not within_int and other.interactive then
 					self.world:emit("on_collide_interactive", e, other)
-				elseif within_int.entity ~= other then
+				elseif within_int.entity ~= other and other.interactive then
 					self.world:emit("on_change_interactive", e, other)
 				end
 			end

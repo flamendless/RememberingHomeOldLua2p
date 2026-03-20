@@ -39,7 +39,7 @@ function DeferredLighting:init(world)
 	self.lighting_pass = love.graphics.newShader(Shaders.paths.df_lighting)
 	self.ambiance = { 1, 1, 1, 1 }
 	self.groups = {}
-	self.mesh = self:create_mesh_p()
+	self.mesh = self:create_mesh_point()
 	self.buffers = {
 		Canvas.create_main(),
 		Canvas.create_main(),
@@ -300,7 +300,7 @@ function DeferredLighting:draw_lights()
 	love.graphics.drawInstanced(self.mesh.light, #self.pool)
 end
 
-function DeferredLighting:create_mesh_p()
+function DeferredLighting:create_mesh_point()
 	local v = { { 0, 0, 0, 0, 0, 0, 0, 1 }, { 0, 1, 0, 0, 1, 1, 1, 1 } }
 	for _ = 1, 64 do
 		local t = v[#v]

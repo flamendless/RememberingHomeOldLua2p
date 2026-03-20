@@ -67,6 +67,7 @@ Palette.diffuse = {
 
 	ambiance_office1 = { 0.18, 0.29, 1, 0.3 },
 	office1_sides = { 1.44, 1.64, 0.2 },
+	office1_pc = { 1.44, 1.64, 0.2 },
 
 	ambiance_totally_dark_room = { 0.7, 0.7, 0.7, 0.0 },
 }

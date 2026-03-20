@@ -33,7 +33,7 @@ local Data = {
 	},
 	{
 		id = "office_chair",
-		x = 28,
+		x = 25,
 		y = 109,
 		z = 4,
 		no_col = true,
@@ -46,9 +46,10 @@ local Data = {
 	},
 	{
 		id = "desk",
-		x = 44,
+		x = 41,
 		y = 108,
 		z = 6,
+		no_col = true,
 	},
 	{
 		id = "main_door",
@@ -56,6 +57,7 @@ local Data = {
 		y = 72,
 		z = 6,
 		is_door = true,
+		no_col = true,
 	},
 	{
 		id = "door_right",
@@ -162,7 +164,19 @@ local Data = {
 		z = 99,
 		no_col = true,
 	},
-
+	{
+		id = "pc",
+		x = 69,
+		y = 108,
+		z = 7,
+	},
+	{
+		id = "desk_plant",
+		x = 89,
+		y = 110,
+		z = 8,
+		no_col = true,
+	},
 }
 
 return Data
