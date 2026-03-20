@@ -1,36 +1,45 @@
-local Log = Concord.system()
+local LogsSystem = Concord.system()
 
-function Log:init(world)
+function LogsSystem:init(world)
 	self.world = world
 	self.logs = {
+		all = {},
 		entity = {},
 		interactive = {},
 	}
-	self.tabs = { "entity", "interactive" }
+	self.tabs = { "all", "entity", "interactive" }
 	self.current = self.tabs[1]
 end
 
-function Log:on_add_entity(e)
+function LogsSystem:on_add_entity(e)
 	local str = "on_add_entity: " .. e.id.value
+	table.insert(self.logs.all, str)
 	table.insert(self.logs.entity, str)
+	if DEV then Log.debug("Log", str) end
 end
 
-function Log:on_remove_entity(e)
+function LogsSystem:on_remove_entity(e)
 	local str = "on_remove_entity: " .. e.id.value
+	table.insert(self.logs.all, str)
 	table.insert(self.logs.entity, str)
+	if DEV then Log.debug("Log", str) end
 end
 
-function Log:on_collide_interactive(e, other)
+function LogsSystem:on_collide_interactive(e, other)
 	local str = string.format("on_col: %s, %s", e.id.value, other.id.value)
+	table.insert(self.logs.all, str)
 	table.insert(self.logs.interactive, str)
+	if DEV then Log.debug("Log", str) end
 end
 
-function Log:on_leave_interactive(e)
+function LogsSystem:on_leave_interactive(e)
 	local str = "on_leave_col: " .. e.id.value
+	table.insert(self.logs.all, str)
 	table.insert(self.logs.interactive, str)
+	if DEV then Log.debug("Log", str) end
 end
 
-function Log:debug_update(dt)
+function LogsSystem:debug_update(dt)
 	if not self.debug_show then
 		return
 	end
@@ -57,4 +66,4 @@ function Log:debug_update(dt)
 	Slab.EndWindow()
 end
 
-return Log
+return LogsSystem

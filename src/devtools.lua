@@ -138,10 +138,6 @@ function DevTools.update(dt)
 	if Slab.CheckBox(DevTools.flags.fog, "Fog") then
 		DevTools.flags.fog = not DevTools.flags.fog
 	end
-	if Slab.CheckBox(designer.show, "Designer") then
-		designer.show = not designer.show
-		GameStates.world:emit("toggle_debug_show", "camera")
-	end
 	for _, v in ipairs(list) do
 		if Slab.CheckBox(v.show, v.title) then
 			v.show = not v.show

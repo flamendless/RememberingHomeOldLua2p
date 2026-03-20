@@ -20,8 +20,11 @@ end
 function PlayerController:init(world)
 	self.world = world
 
-	self.turn_cooldown = 0
-	self.turn_delay = 0.05
+	if DEV then
+		self.turn_delay = 0.01
+	else
+		self.turn_delay = 0.03 -- TODO: finalize value someday
+	end
 	self.last_desired_dir = 0
 
 	self.pool.onAdded = function(_, e)
