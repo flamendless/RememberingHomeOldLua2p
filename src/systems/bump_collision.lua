@@ -101,7 +101,7 @@ function BumpCollision:check_col(e)
 			int_len = int_len + 1
 		end
 
-		if i == 1 and e.can_interact and other.interactive then
+		if e.can_interact and other.interactive then
 			local proceed = true
 			local req = other.req_col_dir
 
