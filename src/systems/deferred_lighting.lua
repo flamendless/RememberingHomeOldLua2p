@@ -281,9 +281,9 @@ function DeferredLighting:begin_deferred_lighting(camera, canvas)
 
 	love.graphics.clear()
 	love.graphics.setBlendMode("add")
-	self.world:emit("draw_lights")
+	self:cull_and_draw_lights(camera)
 	love.graphics.setBlendMode("alpha")
-	love.graphics.setShader() --unset lighting_pass
+	love.graphics.setShader()
 	camera:detach()
 	love.graphics.setBlendMode("add")
 	self.world:emit("apply_ambiance")
@@ -298,6 +298,57 @@ end
 
 function DeferredLighting:draw_lights()
 	love.graphics.drawInstanced(self.mesh.light, #self.pool)
+end
+
+function DeferredLighting:cull_and_draw_lights(camera)
+	local sw, sh = love.graphics.getDimensions()
+	local cx, cy = sw * 0.5, sh * 0.5
+	local cam_x, cam_y = camera:getPosition()
+	local cam_z = camera._z or 0
+	local _, _, _, vh = camera:getVisible()
+	local hh = vh * 0.5
+
+	local visible = {}
+	for _, e in ipairs(self.pool) do
+		if e.light_disabled then
+			goto continue
+		end
+		local lx, ly, lz = e.pos.x, e.pos.y, e.pos.z
+		local radius = e.point_light.value
+		local screen_x = cx + (lx - cam_x)
+		local screen_y = cy + (ly - cam_y)
+		local extent = radius * 2
+		if screen_x + extent < 0 or screen_x - extent > sw then
+			goto continue
+		end
+		if screen_y + extent < 0 or screen_y - extent > sh then
+			goto continue
+		end
+		if lz < cam_z - hh - extent or lz > cam_z + hh + extent then
+			goto continue
+		end
+		visible[#visible + 1] = e
+		::continue::
+	end
+
+	if #visible == 0 then
+		return
+	end
+
+	for i, e in ipairs(visible) do
+		-- local id = e.light_id.value
+		local pos = e.pos
+		local pl = e.point_light
+		local diff = e.diffuse
+		local ld = e.light_dir
+		self.mesh.pos:setVertex(i, { pos.x, pos.y, pos.z, pl.value })
+		self.mesh.diffuse:setVertex(i, diff.value)
+		if ld then
+			self.mesh.dir:setVertex(i, ld.value)
+		end
+	end
+
+	love.graphics.drawInstanced(self.mesh.light, #visible)
 end
 
 function DeferredLighting:create_mesh_point()

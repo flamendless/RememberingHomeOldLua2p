@@ -38,10 +38,7 @@ vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc)
 	float ld = length(tl);
 	vec3 l = normalize(tl);
 
-	vec3 lpos = vec3(u_ndc_p, u_w_p.z);
-
-	// thanks to @Jookia over at Discord!
-	if ((ld / u_scale > 1.0) || (u_angle != 0 && (dot(-l, u_dir) < u_angle))) discard;
+	if ((ld / u_scale > 1.0) || (u_angle != 0 && (dot(-l, u_dir) < u_angle))) return vec4(0.0);
 	c = c * l.z * max(1.0 - ld * ld, 0.0) * u_diff;
 
 	return vec4(c, 1.0);
