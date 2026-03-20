@@ -13,19 +13,19 @@ for i, pos in ipairs(pl.pos) do
 	end
 end
 
-local pc_light = Data.Lights.office1.pc_light
-Office1.lights.pc_light = function(e)
-	e:assemble(
-		Assemblages.Light.spot,
-		pc_light.pos.x,
-		pc_light.pos.y,
-		pc_light.lz,
-		{ -32, 0, 0.49, 0.16 },
-		pc_light.ls,
-		Palette.get_diffuse("office1_pc")
-	)
-		:give("id", "pc_light")
-		:give("light_fading", pc_light.fade, -1)
-end
+-- local pc_light = Data.Lights.office1.pc_light
+-- Office1.lights.pc_light = function(e)
+-- 	e:assemble(
+-- 		Assemblages.Light.spot,
+-- 		pc_light.pos.x,
+-- 		pc_light.pos.y,
+-- 		pc_light.lz,
+-- 		{ -32, 0, 0.49, 0.16 },
+-- 		pc_light.ls,
+-- 		Palette.get_diffuse("office1_pc")
+-- 	)
+-- 		:give("id", "pc_light")
+-- 		:give("light_fading", pc_light.fade, -1)
+-- end
 
 return Office1

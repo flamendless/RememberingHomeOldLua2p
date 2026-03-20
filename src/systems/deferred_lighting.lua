@@ -26,11 +26,11 @@ local DeferredLighting = Concord.system({
 	},
 })
 
-local lvfp = { { "u_lpos", "float", 4 } } -- pos.xyz, scale
-local lvft = { { "u_ldir", "float", 4 } } -- dir.xyz, angle
+local lvfp = { { "u_lpos", "float", 4 } }    -- pos.xyz, scale
+local lvft = { { "u_ldir", "float", 4 } }    -- dir.xyz, angle
 local lvfd = { { "u_diffuse", "float", 3 } } -- color
 local RA = { 0.9951847266722, 0.098017140329561 }
-local MAX_LIGHTS = 96
+local MAX_LIGHTS = 16
 
 function DeferredLighting:init(world)
 	self.world = world
@@ -493,7 +493,6 @@ function DeferredLighting:debug_edit(pool, group_id)
 				if prop_diff then
 					self:update_light_diff_group(group_id, e, prop_diff)
 				end
-
 			else
 				if b_x or b_y or b_z or b_v then
 					self:update_light_pos(e)
@@ -518,6 +517,9 @@ function DeferredLighting:debug_edit(pool, group_id)
 					print("dir z", dir[3])
 					print("dir angle", dir[4])
 				end
+				print("r", diffuse[1])
+				print("g", diffuse[2])
+				print("b", diffuse[3])
 			end
 
 			Slab.EndTree()

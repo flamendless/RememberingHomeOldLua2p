@@ -6,7 +6,7 @@ Lights.storage_room = {
 		ls = 106,
 		fade = 12,
 		pos = {
-			{ x = 92, y = 33 },
+			{ x = 92,  y = 33 },
 			{ x = 242, y = 33 },
 		},
 	},
@@ -18,7 +18,7 @@ Lights.utility_room = {
 		ls = 106,
 		fade = 12,
 		pos = {
-			{ x = 92, y = 33 },
+			{ x = 92,  y = 33 },
 			{ x = 242, y = 33 },
 		},
 	},
@@ -30,7 +30,7 @@ Lights.kitchen = {
 		ls = 128,
 		fade = 6,
 		pos = {
-			{ x = 86, y = 26 },
+			{ x = 86,  y = 26 },
 			{ x = 386, y = 27 },
 		},
 	},
@@ -52,7 +52,7 @@ Lights.living_room = {
 		ls = 128,
 		fade = 8,
 		pos = {
-			{ x = 91, y = 38 },
+			{ x = 91,  y = 38 },
 			{ x = 329, y = 38 },
 		},
 	},
@@ -82,10 +82,14 @@ Lights.office1 = {
 		},
 	},
 	pc_light = {
-		lz = 1,
-		ls = 8,
-		fade = 1,
-		pos = { x = 70, y = 114 },
+		x = 70,
+		y = 114,
+		z = 10,
+		intensity = 6,
+		w = 16,
+		h = 11,
+		rows = 4,
+		cols = 4,
 	},
 }
 
