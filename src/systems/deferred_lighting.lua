@@ -512,6 +512,12 @@ function DeferredLighting:debug_edit(pool, group_id)
 				print("y", pos.y)
 				print("z", pos.z)
 				print("value", pl.value)
+				if dir then
+					print("dir x", dir[1])
+					print("dir y", dir[2])
+					print("dir z", dir[3])
+					print("dir angle", dir[4])
+				end
 			end
 
 			Slab.EndTree()

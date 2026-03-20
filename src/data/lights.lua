@@ -82,9 +82,10 @@ Lights.office1 = {
 		},
 	},
 	pc_light = {
-		lz = 4,
-		ls = 151,
-		pos = { x = 69, y = 114 },
+		lz = 1,
+		ls = 8,
+		fade = 1,
+		pos = { x = 70, y = 114 },
 	},
 }
 

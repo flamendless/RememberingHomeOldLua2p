@@ -88,7 +88,15 @@ function Outside.lights.pl_backdoor(e, id)
 end
 
 function Outside.lights.sl_backdoor(e, id)
-	e:assemble(Assemblages.Light.spot, 446, 241, 4, { 0, 1, -0.8, 0.77 }, 64, Palette.get_diffuse("door_sl"))
+	e:assemble(
+		Assemblages.Light.spot,
+		446,
+		241,
+		4,
+		{ 0, 1, -0.8, 0.77 },
+		64,
+		Palette.get_diffuse("door_sl")
+	)
 		:give("id", id)
 end
 

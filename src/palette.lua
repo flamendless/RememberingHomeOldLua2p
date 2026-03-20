@@ -39,7 +39,7 @@ end
 
 Palette.diffuse = {
 	--intro
-	ambiance_intro = {1, 1, 1, 1},
+	ambiance_intro = { 1, 1, 1, 1 },
 	car = { 1, 1, 1 },
 	post = { 1, 1, 1 },
 
@@ -67,7 +67,7 @@ Palette.diffuse = {
 
 	ambiance_office1 = { 0.18, 0.29, 1, 0.3 },
 	office1_sides = { 1.44, 1.64, 0.2 },
-	office1_pc = { 1.44, 1.64, 0.2 },
+	office1_pc = { 2.67, 1.33, 0.67 },
 
 	ambiance_totally_dark_room = { 0.7, 0.7, 0.7, 0.0 },
 }
