@@ -19,12 +19,11 @@ function BillboardGlow:init(world)
 
 	self.pool.onAdded = function(pool, e)
 		local g = e.glow_group
-		if g then
-			if not self.groups[g.id] then
-				self.groups[g.id] = {}
-			end
-			table.insert(self.groups[g.id], e)
+		if not g then return end
+		if not self.groups[g.id] then
+			self.groups[g.id] = {}
 		end
+		table.insert(self.groups[g.id], e)
 	end
 end
 
@@ -244,7 +243,7 @@ if DEV then
 						e2.pos.y = e2.pos.y - dy
 						e2.pos.z = e2.pos.z - dz
 						e2.billboard_glow.size = ns
-						local color2 = e.color.value
+						local color2 = e2.color.value
 						color2[1] = nr
 						color2[2] = ng
 						color2[3] = nb
