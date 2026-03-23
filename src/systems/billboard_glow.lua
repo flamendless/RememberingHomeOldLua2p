@@ -14,7 +14,8 @@ function BillboardGlow:init(world)
 	self.glow_texture = self:generate_glow_texture(size)
 	self.batch = love.graphics.newSpriteBatch(self.glow_texture, 32, "stream")
 
-	self:create_glow_canvas()
+	self.mask_canvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
+	self.blocker_mask = nil
 
 	self.pool.onAdded = function(pool, e)
 		local g = e.glow_group
@@ -25,12 +26,6 @@ function BillboardGlow:init(world)
 			table.insert(self.groups[g.id], e)
 		end
 	end
-end
-
-function BillboardGlow:create_glow_canvas()
-	local ww, wh = love.graphics.getDimensions()
-	self.glow_canvas = love.graphics.newCanvas(ww, wh)
-	self.glow_canvas:setFilter("linear", "linear")
 end
 
 function BillboardGlow:generate_glow_texture(size)
@@ -53,98 +48,83 @@ function BillboardGlow:generate_glow_texture(size)
 	return img
 end
 
-function BillboardGlow:update(dt)
-	for _, e in ipairs(self.pool) do
-		if not e.glow_disabled then
-			local glow = e.billboard_glow
-			local flicker = e.glow_flicker
-			if flicker then
-				if love.math.random() < flicker.chance * dt then
-					glow.intensity = glow.orig_intensity +
-						love.math.random(-flicker.offset, flicker.offset) * glow.orig_intensity
-				else
-					glow.intensity = glow.orig_intensity
-				end
-			end
+function BillboardGlow:create_blocker_mask(camera)
+	local w = love.graphics.getWidth()
+	local h = love.graphics.getHeight()
 
-			local pulse = e.glow_pulse
-			if pulse then
-				pulse.time = pulse.time + dt * pulse.speed
-				glow.intensity = glow.orig_intensity + math.sin(pulse.time) * pulse.amplitude
-			end
+	if self.mask_canvas:getWidth() ~= w or self.mask_canvas:getHeight() ~= h then
+		self.mask_canvas = love.graphics.newCanvas(w, h)
+	end
+
+	local prev_canvas = love.graphics.getCanvas()
+	love.graphics.setCanvas(self.mask_canvas)
+	love.graphics.clear(1, 1, 1, 1)
+
+	love.graphics.setBlendMode("subtract")
+	love.graphics.setColor(0, 0, 0, 1)
+
+	for _, e in ipairs(self.pool_blocker_rect) do
+		if not e.hidden then
+			local pos = e.pos
+			local rect = e.rect
+			local sx, sy = camera:toScreen(pos.x, pos.y)
+			local screen_half_w = rect.half_w * camera:getScale()
+			local screen_half_h = rect.half_h * camera:getScale()
+			local x = sx - screen_half_w
+			local y = sy - screen_half_h
+			local sw = screen_half_w * 2
+			local sh = screen_half_h * 2
+			love.graphics.rectangle("fill", x, y, sw, sh)
 		end
 	end
+
+	for _, e in ipairs(self.pool_blocker_circle) do
+		if not e.hidden then
+			local pos = e.pos
+			local circle = e.circle
+			local sx, sy = camera:toScreen(pos.x, pos.y)
+			local screen_radius = circle.radius * camera:getScale()
+			love.graphics.circle("fill", sx, sy, screen_radius, circle.segments or 32)
+		end
+	end
+
+	love.graphics.setBlendMode("alpha")
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setCanvas(prev_canvas)
+
+	local img_data = self.mask_canvas:newImageData()
+	self.blocker_mask = love.graphics.newImage(img_data)
 end
 
 function BillboardGlow:draw_billboard_glow(camera)
-	if #self.pool == 0 then
+	if #self.pool == 0 and #self.pool_blocker_rect == 0 and #self.pool_blocker_circle == 0 then
 		return
 	end
 
-	local has_blockers = #self.pool_blocker_rect > 0 or #self.pool_blocker_circle > 0
+	self:create_blocker_mask(camera)
 
 	local prev_blend = love.graphics.getBlendMode()
+	local prev_shader = love.graphics.getShader()
+	love.graphics.setBlendMode("add")
+	love.graphics.setShader(self.shader)
+	self.shader:send("u_blocker_mask", self.blocker_mask)
+	self.shader:send("u_screen_size", {love.graphics.getWidth(), love.graphics.getHeight()})
 
-	if has_blockers then
-		camera:attach()
-		love.graphics.setCanvas(self.glow_canvas)
-		love.graphics.clear()
-		love.graphics.setBlendMode("add")
-
-		for _, e in ipairs(self.pool) do
-			if not e.hidden and not e.glow_disabled then
-				self:add_to_batch(e)
-			end
+	camera:attach()
+	self.batch:clear()
+	for _, e in ipairs(self.pool) do
+		if not e.hidden and not e.glow_disabled then
+			self:add_to_batch(e)
 		end
-		love.graphics.draw(self.batch)
-		self.batch:clear()
-
-		love.graphics.setBlendMode("alpha")
-		love.graphics.setColor(0, 0, 0, 1)
-
-		for _, e in ipairs(self.pool_blocker_rect) do
-			if not e.hidden then
-				local pos = e.pos
-				local rect = e.rect
-				local x = pos.x - rect.half_w
-				local y = pos.y - rect.half_h
-				love.graphics.rectangle("fill", x, y, rect.w, rect.h)
-			end
-		end
-
-		for _, e in ipairs(self.pool_blocker_circle) do
-			if not e.hidden then
-				local pos = e.pos
-				local circle = e.circle
-				love.graphics.circle("fill", pos.x, pos.y, circle.radius, circle.segments)
-			end
-		end
-
-		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.setCanvas()
-		camera:detach()
-
-		love.graphics.setBlendMode("add")
-		camera:attach()
-		love.graphics.draw(self.glow_canvas)
-		if DEV then
-			self:debug_draw_blockers()
-		end
-		camera:detach()
-	else
-		love.graphics.setBlendMode("add")
-		camera:attach()
-		self.batch:clear()
-		for _, e in ipairs(self.pool) do
-			if not e.hidden and not e.glow_disabled then
-				self:add_to_batch(e)
-			end
-		end
-		love.graphics.draw(self.batch)
-		camera:detach()
 	end
-
+	love.graphics.draw(self.batch)
+	camera:detach()
 	love.graphics.setBlendMode(prev_blend)
+	love.graphics.setShader(prev_shader)
+
+	if DEV then
+		self:debug_draw_outlines(camera)
+	end
 end
 
 function BillboardGlow:add_to_batch(e)
@@ -195,12 +175,10 @@ if DEV then
 			flags.group = not flags.group
 		end
 		Slab.SameLine()
-
 		if Slab.CheckBox(flags.blockers, "blockers") then
 			flags.blockers = not flags.blockers
 		end
 		Slab.SameLine()
-
 		if Slab.CheckBox(flags.blockers_outline, "outline") then
 			flags.blockers_outline = not flags.blockers_outline
 		end
@@ -338,6 +316,35 @@ if DEV then
 		end
 	end
 
+	function BillboardGlow:debug_draw_outlines(camera)
+		if not self.debug_show or not flags.blockers_outline then return end
+
+		local prev_blend = love.graphics.getBlendMode()
+		love.graphics.setBlendMode("alpha")
+		love.graphics.setColor(1, 0, 0, 1)
+
+		camera:attach()
+
+		for _, e in ipairs(self.pool_blocker_rect) do
+			local pos = e.pos
+			local rect = e.rect
+			local x = pos.x - rect.half_w
+			local y = pos.y - rect.half_h
+			love.graphics.rectangle("line", x, y, rect.w, rect.h)
+		end
+
+		for _, e in ipairs(self.pool_blocker_circle) do
+			local pos = e.pos
+			local circle = e.circle
+			love.graphics.circle("line", pos.x, pos.y, circle.radius, circle.segments)
+		end
+
+		camera:detach()
+
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.setBlendMode(prev_blend)
+	end
+
 	function BillboardGlow:glow_group_set_disable(group_id, is_d, e)
 		for _, other in ipairs(self.groups[group_id]) do
 			if e ~= other then
@@ -348,37 +355,6 @@ if DEV then
 				end
 			end
 		end
-	end
-
-	function BillboardGlow:debug_draw_blockers()
-		local prev_blend = love.graphics.getBlendMode()
-		love.graphics.setBlendMode("alpha")
-
-		for _, e in ipairs(self.pool_blocker_rect) do
-			if e.debug_shape then
-				local pos = e.pos
-				local rect = e.rect
-				local x = pos.x - rect.half_w
-				local y = pos.y - rect.half_h
-				local temp = { love.graphics.getColor() }
-				love.graphics.setColor(1, 0, 0, 1)
-				love.graphics.rectangle("line", x, y, rect.w, rect.h)
-				love.graphics.setColor(temp)
-			end
-		end
-
-		for _, e in ipairs(self.pool_blocker_circle) do
-			if e.debug_shape then
-				local pos = e.pos
-				local circle = e.circle
-				local temp = { love.graphics.getColor() }
-				love.graphics.setColor(1, 0, 0, 1)
-				love.graphics.circle("line", pos.x, pos.y, circle.radius, circle.segments)
-				love.graphics.setColor(temp)
-			end
-		end
-
-		love.graphics.setBlendMode(prev_blend)
 	end
 end
 
