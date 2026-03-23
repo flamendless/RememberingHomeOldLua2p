@@ -1,5 +1,6 @@
 local BillboardGlow = Concord.system({
 	pool = { "billboard_glow", "pos" },
+	pool_pulse = { "glow_pulse", "billboard_glow", "pos" },
 	pool_blocker_rect = { "glow_blocker", "pos", "rect" },
 	pool_blocker_circle = { "glow_blocker", "pos", "circle" },
 })
@@ -24,6 +25,19 @@ function BillboardGlow:init(world)
 			self.groups[g.id] = {}
 		end
 		table.insert(self.groups[g.id], e)
+	end
+end
+
+function BillboardGlow:update(dt)
+	for _, e in ipairs(self.pool_pulse) do
+		if not e.hidden and not e.glow_disabled then
+			local pulse = e.glow_pulse
+			pulse.time = pulse.time + dt * pulse.speed
+
+			local intensity = math.sin(pulse.time) * pulse.amplitude
+			local glow = e.billboard_glow
+			glow.intensity = glow.orig_intensity + intensity
+		end
 	end
 end
 
