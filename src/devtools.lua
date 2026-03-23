@@ -5,6 +5,7 @@ local DevTools = {
 	flags = {
 		animation = false,
 		deferred_lighting = false,
+		billboard_glow = false,
 		bounding_box = false,
 		bump_collision = false,
 		camera = false,

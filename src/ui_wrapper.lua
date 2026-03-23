@@ -2,6 +2,7 @@ local UIWrapper = {}
 
 function UIWrapper.edit_number(id, value, is_int)
 	local v = value
+	local initial = value
 	if is_int then
 		v = math.floor(v)
 	end
@@ -18,10 +19,11 @@ function UIWrapper.edit_number(id, value, is_int)
 			value = math.floor(value)
 		end
 	end
-	return value, bool
+	return value, bool, initial - value
 end
 
 function UIWrapper.edit_range(id, value, min, max, is_int)
+	local initial = value
 	Slab.Text(id .. ":")
 	Slab.SameLine()
 	local bool = Slab.InputNumberSlider(id, value, min, max, {
@@ -33,19 +35,17 @@ function UIWrapper.edit_range(id, value, min, max, is_int)
 			value = math.floor(value)
 		end
 	end
-	return value, bool
+	return value, bool, initial - value
 end
 
-if DEV then
-	function UIWrapper.color(color)
-		assert(type(color) == "table")
-		assert(#color == 4 or #color == 3)
-		color[1] = UIWrapper.edit_range("r", color[1], 0, 1)
-		color[2] = UIWrapper.edit_range("g", color[2], 0, 1)
-		color[3] = UIWrapper.edit_range("b", color[3], 0, 1)
-		if #color == 4 then
-			color[4] = UIWrapper.edit_range("a", color[4], 0, 1)
-		end
+function UIWrapper.color(color)
+	assert(type(color) == "table")
+	assert(#color == 4 or #color == 3)
+	color[1] = UIWrapper.edit_range("r", color[1], 0, 1)
+	color[2] = UIWrapper.edit_range("g", color[2], 0, 1)
+	color[3] = UIWrapper.edit_range("b", color[3], 0, 1)
+	if #color == 4 then
+		color[4] = UIWrapper.edit_range("a", color[4], 0, 1)
 	end
 end
 

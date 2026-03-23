@@ -1,6 +1,7 @@
 local Shaders = {}
 
 Shaders.paths = {
+	billboard_glow = "shaders/billboard_glow.glsl",
 	blur = "shaders/blur.glsl",
 	dissolve = "shaders/dissolve.glsl",
 	dither_gradient = "shaders/dither_gradient.glsl",

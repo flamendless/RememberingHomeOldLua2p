@@ -408,173 +408,174 @@ function DeferredLighting:cleanup()
 	self.timer:clear()
 end
 
-local flags = {
-	ambiance = true,
-	group = true,
-}
-local cache = {}
+if DEV then
+	local flags = {
+		ambiance = true,
+		group = true,
+	}
+	local cache = {}
 
-function DeferredLighting:debug_on_toggle(event)
-	if event ~= "deferred_lighting" then return end
-	self.debug_show = not self.debug_show
-	flags.ambiance = not self.debug_show
-end
-
-function DeferredLighting:debug_update(dt)
-	if not self.debug_show then
-		return
+	function DeferredLighting:debug_on_toggle(event)
+		if event ~= "deferred_lighting" then return end
+		self.debug_show = not self.debug_show
+		flags.ambiance = not self.debug_show
 	end
-	self.debug_show = Slab.BeginWindow("light", {
-		Title = "DeferredLighting",
-		IsOpen = self.debug_show,
-	})
-	if Slab.CheckBox(flags.group, "group") then
-		flags.group = not flags.group
-	end
-	Slab.SameLine()
 
-	local ac = self.ambiance
-	if Slab.CheckBox(flags.ambiance, "ambiance") then
-		flags.ambiance = not flags.ambiance
-		if not flags.ambiance then
-			self:set_ambiance({ 0, 0, 0, 0 })
+	function DeferredLighting:debug_update(dt)
+		if not self.debug_show then return end
+		self.debug_show = Slab.BeginWindow("light", {
+			Title = "DeferredLighting",
+			IsOpen = self.debug_show,
+		})
+
+		if Slab.CheckBox(flags.group, "group") then
+			flags.group = not flags.group
+		end
+		Slab.SameLine()
+
+		local ac = self.ambiance
+		if Slab.CheckBox(flags.ambiance, "ambiance") then
+			flags.ambiance = not flags.ambiance
+			if not flags.ambiance then
+				self:set_ambiance({ 0, 0, 0, 0 })
+			else
+				self:set_ambiance(self.orig_ambiance or ac)
+			end
+		end
+		ac[1] = UIWrapper.edit_range("ar", ac[1], 0, 1)
+		ac[2] = UIWrapper.edit_range("ag", ac[2], 0, 1)
+		ac[3] = UIWrapper.edit_range("ab", ac[3], 0, 1)
+		ac[4] = UIWrapper.edit_range("aa", ac[4], 0, 1)
+
+		if Slab.Button("Disable All") then
+			for _, e in ipairs(self.pool) do
+				e:give("light_disabled")
+			end
+		end
+
+		if Slab.Button("Enable All") then
+			for _, e in ipairs(self.pool) do
+				e:remove("light_disabled")
+			end
+		end
+
+		if flags.group then
+			for k, v in pairs(self.groups) do
+				if Slab.BeginTree(k, { Title = k }) then
+					self:debug_edit(v, k)
+					Slab.EndTree()
+				end
+			end
 		else
-			self:set_ambiance(self.orig_ambiance or ac)
+			self:debug_edit(self.pool)
 		end
-	end
-	ac[1] = UIWrapper.edit_range("ar", ac[1], 0, 1)
-	ac[2] = UIWrapper.edit_range("ag", ac[2], 0, 1)
-	ac[3] = UIWrapper.edit_range("ab", ac[3], 0, 1)
-	ac[4] = UIWrapper.edit_range("aa", ac[4], 0, 1)
-
-	if Slab.Button("Disable All") then
-		for _, e in ipairs(self.pool) do
-			e:give("light_disabled")
-		end
+		Slab.EndWindow()
 	end
 
-	if Slab.Button("Enable All") then
-		for _, e in ipairs(self.pool) do
-			e:remove("light_disabled")
-		end
-	end
-
-	if flags.group then
-		for k, v in pairs(self.groups) do
-			if Slab.BeginTree(k, { Title = k }) then
-				self:debug_edit(v, k)
-				Slab.EndTree()
-			end
-		end
-	else
-		self:debug_edit(self.pool)
-	end
-	Slab.EndWindow()
-end
-
-function DeferredLighting:debug_edit(pool, group_id)
-	for i, e in ipairs(pool) do
-		if group_id and i ~= 1 then
-			return
-		end
-
-		local id = e.id.value
-		if Slab.BeginTree(id, { Title = id }) then
-			Slab.Indent()
-			local ld = e.light_disabled
-			if Slab.CheckBox(ld, "Disabled") then
-				local is_d
-				if ld then
-					e:remove("light_disabled")
-					is_d = false
-				else
-					e:give("light_disabled")
-					is_d = true
-				end
-				if group_id then
-					self:light_group_set_disable(group_id, is_d, e)
-				end
+	function DeferredLighting:debug_edit(pool, group_id)
+		for i, e in ipairs(pool) do
+			if group_id and i ~= 1 then
+				return
 			end
 
-			local flicker = e.d_light_flicker
-			if flicker then
-				if not cache[id] then
-					cache[id] = { flicker.during, flicker.on_chance, flicker.off_chance }
-				end
-				Slab.SameLine()
-				if Slab.CheckBox(flicker, "Flicker") then
-					if flicker then
-						e:remove("d_light_flicker")
+			local id = e.id.value
+			if Slab.BeginTree(id, { Title = id }) then
+				Slab.Indent()
+				local ld = e.light_disabled
+				if Slab.CheckBox(ld, "Disabled") then
+					local is_d
+					if ld then
+						e:remove("light_disabled")
+						is_d = false
 					else
-						e:give("d_light_flicker", unpack(cache[id]))
+						e:give("light_disabled")
+						is_d = true
+					end
+					if group_id then
+						self:light_group_set_disable(group_id, is_d, e)
 					end
 				end
-			end
 
-			local pos = e.pos
-			local pl = e.point_light
-			local diffuse = e.diffuse.value
-			local dir = e.light_dir and e.light_dir.value
-			local b_x, b_y, b_z, b_r, b_g, b_b, b_v, b_dx, b_dy, b_dz, b_da
-			pos.x, b_x = UIWrapper.edit_number("x", pos.x, true)
-			pos.y, b_y = UIWrapper.edit_number("y", pos.y, true)
-			pos.z, b_z = UIWrapper.edit_range("z", pos.z, 1, 256, true)
-			pl.value, b_v = UIWrapper.edit_range("s", pl.value, 0, 256, true)
-			if dir then
-				Slab.Separator()
-				dir[1], b_dx = UIWrapper.edit_range("dx", dir[1], -32, 32)
-				dir[2], b_dy = UIWrapper.edit_range("dy", dir[2], -32, 32)
-				dir[3], b_dz = UIWrapper.edit_range("dz", dir[3], -1, 1)
-				dir[4], b_da = UIWrapper.edit_range("angle", dir[4], -1, 1)
-			end
-			Slab.Separator()
-			diffuse[1], b_r = UIWrapper.edit_range("r", diffuse[1], 0, 100)
-			diffuse[2], b_g = UIWrapper.edit_range("g", diffuse[2], 0, 100)
-			diffuse[3], b_b = UIWrapper.edit_range("b", diffuse[3], 0, 100)
+				local flicker = e.d_light_flicker
+				if flicker then
+					if not cache[id] then
+						cache[id] = { flicker.during, flicker.on_chance, flicker.off_chance }
+					end
+					Slab.SameLine()
+					if Slab.CheckBox(flicker, "Flicker") then
+						if flicker then
+							e:remove("d_light_flicker")
+						else
+							e:give("d_light_flicker", unpack(cache[id]))
+						end
+					end
+				end
 
-			if flags.group then
-				local prop_pos = (b_x and "x") or (b_y and "y") or (b_z and "z")
-				if prop_pos then
-					self:update_light_pos_group(group_id, e, prop_pos)
-				end
-				if b_v then
-					self:update_light_radius_group(group_id, e)
-				end
-				local prop_diff = (b_r and 1) or (b_g and 2) or (b_b and 3)
-				if prop_diff then
-					self:update_light_diff_group(group_id, e, prop_diff)
-				end
-			else
-				if b_x or b_y or b_z or b_v then
-					self:update_light_pos(e)
-				end
-				if b_dx or b_dy or b_dz or b_da then
-					self:update_light_dir(e)
-				end
-				if b_r or b_g or b_b then
-					self:update_light_diffuse(e)
-				end
-			end
-
-			if Slab.Button("Print") then
-				print("id", id)
-				print("x", pos.x)
-				print("y", pos.y)
-				print("z", pos.z)
-				print("value", pl.value)
+				local pos = e.pos
+				local pl = e.point_light
+				local diffuse = e.diffuse.value
+				local dir = e.light_dir and e.light_dir.value
+				local b_x, b_y, b_z, b_r, b_g, b_b, b_v, b_dx, b_dy, b_dz, b_da
+				pos.x, b_x = UIWrapper.edit_number("x", pos.x, true)
+				pos.y, b_y = UIWrapper.edit_number("y", pos.y, true)
+				pos.z, b_z = UIWrapper.edit_range("z", pos.z, 1, 256, true)
+				pl.value, b_v = UIWrapper.edit_range("s", pl.value, 0, 256, true)
 				if dir then
-					print("dir x", dir[1])
-					print("dir y", dir[2])
-					print("dir z", dir[3])
-					print("dir angle", dir[4])
+					Slab.Separator()
+					dir[1], b_dx = UIWrapper.edit_range("dx", dir[1], -32, 32)
+					dir[2], b_dy = UIWrapper.edit_range("dy", dir[2], -32, 32)
+					dir[3], b_dz = UIWrapper.edit_range("dz", dir[3], -1, 1)
+					dir[4], b_da = UIWrapper.edit_range("angle", dir[4], -1, 1)
 				end
-				print("r", diffuse[1])
-				print("g", diffuse[2])
-				print("b", diffuse[3])
-			end
+				Slab.Separator()
+				diffuse[1], b_r = UIWrapper.edit_range("r", diffuse[1], 0, 100)
+				diffuse[2], b_g = UIWrapper.edit_range("g", diffuse[2], 0, 100)
+				diffuse[3], b_b = UIWrapper.edit_range("b", diffuse[3], 0, 100)
 
-			Slab.EndTree()
-			Slab.Unindent()
+				if flags.group then
+					local prop_pos = (b_x and "x") or (b_y and "y") or (b_z and "z")
+					if prop_pos then
+						self:update_light_pos_group(group_id, e, prop_pos)
+					end
+					if b_v then
+						self:update_light_radius_group(group_id, e)
+					end
+					local prop_diff = (b_r and 1) or (b_g and 2) or (b_b and 3)
+					if prop_diff then
+						self:update_light_diff_group(group_id, e, prop_diff)
+					end
+				else
+					if b_x or b_y or b_z or b_v then
+						self:update_light_pos(e)
+					end
+					if b_dx or b_dy or b_dz or b_da then
+						self:update_light_dir(e)
+					end
+					if b_r or b_g or b_b then
+						self:update_light_diffuse(e)
+					end
+				end
+
+				if Slab.Button("Print") then
+					print("id", id)
+					print("x", pos.x)
+					print("y", pos.y)
+					print("z", pos.z)
+					print("value", pl.value)
+					if dir then
+						print("dir x", dir[1])
+						print("dir y", dir[2])
+						print("dir z", dir[3])
+						print("dir angle", dir[4])
+					end
+					print("r", diffuse[1])
+					print("g", diffuse[2])
+					print("b", diffuse[3])
+				end
+
+				Slab.EndTree()
+				Slab.Unindent()
+			end
 		end
 	end
 end

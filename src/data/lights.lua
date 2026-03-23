@@ -83,8 +83,8 @@ Lights.office1 = {
 	},
 	pc_light = {
 		x = 70,
-		y = 114,
-		z = 10,
+		y = 108,
+		z = 3,
 		intensity = 6,
 		w = 16,
 		h = 11,

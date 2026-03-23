@@ -244,8 +244,42 @@ state_systems.LivingRoom = {
 }
 state_systems.TotallyDarkRoom = state_systems.LivingRoom
 
---TODO: (flam)
-state_systems.Office1 = state_systems.LivingRoom
+state_systems.Office1 = {
+	"animation",
+	"atlas",
+	"billboard_glow",
+	"bump_collision",
+	"camera",
+	"color",
+	"show_keys",
+	"deferred_lighting",
+	"dialogues",
+	"entity",
+	"gamestates",
+	"interactive",
+	"inventory",
+	"items",
+	"movement",
+	"outline",
+	"pause",
+	"player_controller",
+	"renderer",
+	"room",
+	"systems",
+	"transform",
+	"typewriter",
+	"door",
+	"light_switch",
+	"notes",
+	"list",
+	"post_processing",
+	"randomize_uv",
+	"timeline",
+	"animation_state",
+	"behavior_tree",
+	"enemy_controller",
+	"path",
+}
 
 local unpausable_list = {
 	"pause",

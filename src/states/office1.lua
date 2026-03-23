@@ -31,6 +31,9 @@ function Office1:state_setup()
 	for _, v in pairs(Assemblages.Office1.lights) do
 		Concord.entity(self.world):assemble(v)
 	end
+	for _, v in pairs(Assemblages.Office1.glows) do
+		v(self.world)
+	end
 	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_office1"))
 	self.world:emit("set_draw", "ev_draw_ex")
 end
@@ -58,6 +61,7 @@ end
 
 function Office1:state_draw()
 	self.world:emit("begin_deferred_lighting", self.camera, self.canvas)
+	self.world:emit("draw_billboard_glow", self.camera)
 	self.world:emit("end_deferred_lighting")
 	self.world:emit("apply_post_process", self.canvas)
 	self.world:emit("draw_ui")

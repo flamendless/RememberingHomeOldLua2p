@@ -151,7 +151,8 @@ Assemblages = {
     Room = require("assemblages.room"),
     StorageRoom = require("assemblages.storage_room"),
     UI = require("assemblages.ui"),
-    UtilityRoom = require("assemblages.utility_room")
+    UtilityRoom = require("assemblages.utility_room"),
+    BillboardGlow = require("assemblages.billboard_glow"),
 }
 
 ECS = require("ecs")
