@@ -74,7 +74,7 @@ function BillboardGlow:create_blocker_mask(camera)
 	love.graphics.clear(1, 1, 1, 1)
 
 	love.graphics.setBlendMode("subtract")
-	love.graphics.setColor(0, 0, 0, 1)
+	love.graphics.setColor(1, 1, 1, 1)
 
 	for _, e in ipairs(self.pool_blocker_rect) do
 		if not e.hidden then
