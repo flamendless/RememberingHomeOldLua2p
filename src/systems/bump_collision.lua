@@ -92,42 +92,45 @@ function BumpCollision:check_col(e)
 	local within_int = e.within_interactive
 	for i = 1, len do
 		local c = cols[i]
-		local other = c.other
-		local other_col = other.collider
+		local e_other = c.other
+		local other_col = e_other.collider
 		other_col.normal.x = c.normalX
 		other_col.normal.y = c.normalY
 
-		if other.interactive then
+		if e_other.interactive then
 			int_len = int_len + 1
 		end
 
-		if e.can_interact and other.interactive then
+		if e.can_interact and e_other.interactive then
 			local proceed = true
-			local req = other.req_col_dir
+			local req = e_other.req_col_dir
 
 			if req and (e.body.dir ~= req.value) then
 				proceed = false
 			end
 
 			if proceed then
-				if not within_int and other.interactive then
-					self.world:emit("on_collide_interactive", e, other)
-				elseif within_int.entity ~= other and other.interactive then
-					self.world:emit("on_change_interactive", e, other)
+				if not within_int and e_other.interactive then
+					self.world:emit("on_collide_interactive", e, e_other)
+
+				elseif within_int.entity ~= e_other and e_other.interactive then
+					self.world:emit("on_change_interactive", e, e_other)
 				end
 			end
 
 			has_collide_interactive = true
 		end
 
-		if other.controller then
-			e:ensure("collide_with", other)
+		if e_other.controller then
+			e:ensure("collide_with", e_other)
 			has_collide_with = true
 		end
 		if e.controller then
-			other:ensure("collide_with", e)
+			e_other:ensure("collide_with", e)
 			has_collide_with = true
 		end
+
+		if has_collide_interactive then break end
 	end
 
 	if not has_collide_interactive then
