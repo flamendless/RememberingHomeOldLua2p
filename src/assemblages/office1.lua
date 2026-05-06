@@ -43,14 +43,14 @@ Office1.glows.pc_glow = function(world)
 
 	for i, e in ipairs(es) do
 		e:give("id", "pc_glow" .. i)
-		:give("glow_pulse", 8, 8)
-		:give("glow_group", "pc_glow")
+			:give("glow_pulse", 8, 8)
+			:give("glow_group", "pc_glow")
 	end
 
 	local e_blocker = Concord.entity(world)
 	e_blocker:give("id", "pc_glow_blocker")
-		:give("pos", grid_center_x, grid_center_y, pc_light.z)
-		:give("rect", 16, 16)
+		:give("pos", grid_center_x + 2, grid_center_y + 2, pc_light.z)
+		:give("rect", 16, 18)
 		:give("glow_blocker")
 end
 

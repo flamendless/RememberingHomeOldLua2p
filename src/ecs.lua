@@ -281,6 +281,9 @@ state_systems.Office1 = {
 	"path",
 }
 
+state_systems.Office2 = tablex.copy(state_systems.Office1)
+
+
 local unpausable_list = {
 	"pause",
 	"renderer",

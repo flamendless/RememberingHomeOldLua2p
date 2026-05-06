@@ -93,4 +93,18 @@ Lights.office1 = {
 	},
 }
 
+Lights.office2 = {
+	pl = {
+		lz = 60,
+		ls = 156,
+		fade = 8,
+		pos = {
+			{ x = 123, y = 40 },
+			{ x = 275, y = 40 },
+			{ x = 484, y = 40 },
+			{ x = 657, y = 40 },
+		},
+	},
+}
+
 return Lights

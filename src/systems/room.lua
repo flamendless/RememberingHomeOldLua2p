@@ -58,6 +58,7 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 			error('Assertion failed: type(g_id) == "string"')
 		end
 	end
+
 	local id = g_id or t.id
 	local item = frames[id]
 	if not item then
@@ -67,12 +68,21 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 	local w = math.floor(item.w * scale)
 	local h = math.floor(item.h * scale)
 
+	local sx = scale
+	local sy = scale
+	local ox = 0
+	local oy = 0
+	if t.flip_h then
+		sx = -sx
+		ox = w
+	end
+
 	local e = Concord.entity(self.world)
 		:give("id", t.name or id)
 		:give("sprite", spr_res)
 		:give("pos", t.x, t.y)
 		:give("atlas", item)
-		:give("quad_transform", 0, scale, scale)
+		:give("quad_transform", 0, sx, sy, ox, oy)
 		:give("z_index", t.z or 4, false)
 		:give("outline_val", t.outline_val or 1)
 		:give("cullable")

@@ -49,7 +49,8 @@ function love.load()
 	-- GameStates.switch("Kitchen")
 	-- GameStates.switch("LivingRoom")
 	-- GameStates.switch("TotallyDarkRoom")
-	GameStates.switch("Office1")
+	-- GameStates.switch("Office1")
+	GameStates.switch("Office2")
 
 	DevTools.init()
 end

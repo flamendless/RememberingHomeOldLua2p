@@ -251,7 +251,6 @@ ResourcesList.LivingRoom = {
 	},
 }
 
---TODO: (flam)
 ResourcesList.Office1 = {
 	images = {
 		{ "atlas_keys", "res/ui/atlas_keys.png" },
@@ -264,6 +263,34 @@ ResourcesList.Office1 = {
 	array_images = {
 		{ "office1", "res/images/office1/office1.png" },
 		{ "atlas_office1_items", "res/images/atlases/office1.png" },
+		unpack(player),
+	},
+	image_data = {
+		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
+		{ "lut_dusk_64", "res/lut/lut_dusk_64.png" },
+	},
+	fonts = {
+		{ "ui", "res/fonts/Jamboree.ttf", 32, "default" },
+		{ "dialogue", "res/fonts/DigitalDisco.ttf", 32, "default" },
+		{ "item_name", "res/fonts/DigitalDisco.ttf", 20, "default" },
+		{ "item_desc", "res/fonts/DigitalDisco.ttf", 16, "default" },
+		{ "note_list", "res/fonts/DigitalDisco.ttf", 16, "default" },
+		{ "inventory_choice", "res/fonts/DigitalDisco.ttf", 24, "default" },
+	},
+}
+
+ResourcesList.Office2 = {
+	images = {
+		{ "atlas_keys", "res/ui/atlas_keys.png" },
+		{ "bg_inventory", "res/images/inventory_notes/bg_inventory.png" },
+		{ "tex_displacement", "res/textures/displacement.png" },
+		{ "pause_bg", "res/textures/pause_bg.png" },
+		{ "bayer16", "res/textures/bayer16.png" },
+		{ "pal_hollow", "res/textures/pal_hollow.png" },
+	},
+	array_images = {
+		{ "office2", "res/images/office2/office2.png" },
+		{ "atlas_office2_items", "res/images/atlases/office2.png" },
 		unpack(player),
 	},
 	image_data = {

@@ -33,5 +33,8 @@ PlayerSpawnPoints.TotallyDarkRoom = PlayerSpawnPoints.LivingRoom
 PlayerSpawnPoints.Office1 = {
 	default = { 127, 64 },
 }
+PlayerSpawnPoints.Office2 = {
+	default = { 127, 64 },
+}
 
 return PlayerSpawnPoints

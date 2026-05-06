@@ -145,6 +145,7 @@ Assemblages = {
     Menu = require("assemblages.menu"),
     Notes = require("assemblages.notes"),
     Office1 = require("assemblages.office1"),
+    Office2 = require("assemblages.office2"),
     Outside = require("assemblages.outside"),
     Pause = require("assemblages.pause"),
     Player = require("assemblages.player"),
