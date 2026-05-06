@@ -175,6 +175,23 @@ if DEV then
 		local frames = require("atlases.atlas_" .. self.current_res).frames
 		local spr_res = "atlas_" .. self.current_res .. "_items"
 
+		for _, e in ipairs(self.pool) do
+			local id = e.id.value
+			local found = false
+			for _, data in ipairs(list) do
+				local data_id = data.name or data.id
+				if data_id == id then
+					found = true
+					break
+				end
+			end
+
+			if not found then
+				e:destroy()
+				print("found and deleted stale room item", id)
+			end
+		end
+
 		for _, data in ipairs(list) do
 			local data_id = data.name or data.id
 			local found = false
@@ -198,11 +215,11 @@ if DEV then
 					end
 
 					found = true
+					break
 				end
 			end
 
 			if not found then
-				print("not found", data_id, "will create it at runtime!")
 				local e = self:create_room_item(frames, spr_res, data)
 				print("created new room item", e.id.value)
 			end
