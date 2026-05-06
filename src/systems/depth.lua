@@ -34,12 +34,14 @@ function Depth:tween_depth_zoom(dur, factor, ease)
 	end
 end
 
-function Depth:debug_wheelmoved(wx, wy)
-	for _, e in ipairs(self.pool) do
-		local zf = e.depth_zoom.value
-		local t = e.transform or e.quad_transform
-		t.sx = math.max(t.orig_sx, t.orig_sx + zf * wy)
-		t.sy = math.max(t.orig_sy, t.orig_sy + zf * wy)
+if DEV then
+	function Depth:debug_wheelmoved(wx, wy)
+		for _, e in ipairs(self.pool) do
+			local zf = e.depth_zoom.value
+			local t = e.transform or e.quad_transform
+			t.sx = math.max(t.orig_sx, t.orig_sx + zf * wy)
+			t.sy = math.max(t.orig_sy, t.orig_sy + zf * wy)
+		end
 	end
 end
 

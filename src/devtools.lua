@@ -742,16 +742,18 @@ function DevTools.keypressed(key)
 	-- 	GameStates.world:emit("load_game")
 	elseif key == "space" then
 		DevTools.pause = not DevTools.pause
-	elseif key == "h" then
+	elseif key == "s" then
 		DevTools.show_fps = not DevTools.show_fps
+	elseif key == "f" then
+		fade.show = not fade.show
+	elseif key == "h" then
+		GameStates.world:emit("debug_hot_reload")
+	elseif key == "r" then
+		love.event.quit("restart")
 	elseif key == "c" then
 		GameStates.world:emit("debug_on_toggle", "camera")
 	elseif key == "l" then
 		GameStates.world:emit("debug_on_toggle", "deferred_lighting")
-	elseif key == "f" then
-		fade.show = not fade.show
-	elseif key == "r" then
-		love.event.quit("restart")
 	elseif key == "escape" and DevTools.show then
 		love.event.quit()
 	end

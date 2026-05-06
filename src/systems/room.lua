@@ -1,13 +1,18 @@
-local Room = Concord.system()
+local Room = Concord.system({
+	pool = { "id", "room_item" }
+})
 
 function Room:init(world)
 	self.world = world
+	self.current_res = nil
 end
 
 function Room:parse_room_items(res)
 	if type(res) ~= "string" then
 		error('Assertion failed: type(res) == "string"')
 	end
+	self.current_res = res
+
 	local data = require("atlases.atlas_" .. res)
 	local list = require("atlases." .. res .. "_items")
 	local frames = data.frames
@@ -152,7 +157,33 @@ function Room:create_room_bounds(w, h, opt)
 		Concord.entity(self.world):assemble(v, w, h, opt)
 	end
 
-	self.world:setResource("room_size", {width = w, height = h, opt = opt})
+	self.world:setResource("room_size", { width = w, height = h, opt = opt })
+end
+
+if DEV then
+	function Room:debug_hot_reload()
+		Log.info("Triggered hot reload", "res:", self.current_res)
+		local rawlist, err = loadfile("src/atlases/" .. self.current_res .. "_items.lua")
+		if err then
+			error(err)
+		end
+		if rawlist == nil then
+			error("invalid file")
+		end
+
+		local list = rawlist()
+
+		for _, data in ipairs(list) do
+			for _, e in ipairs(self.pool) do
+				local id = e.id.value
+				if id == data.name or id == data.id then
+					e.pos.x = data.x
+					e.pos.y = data.y
+					e.z_index.value = data.z
+				end
+			end
+		end
+	end
 end
 
 return Room
