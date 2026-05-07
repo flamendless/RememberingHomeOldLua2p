@@ -1,4 +1,11 @@
-local Palette = {}
+local Palette = {
+	cmap = {
+		"r",
+		"g",
+		"b",
+		"a",
+	},
+}
 
 -- TODO: (Brandon) finalize colors
 

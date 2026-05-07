@@ -86,6 +86,7 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 		:give("z_index", t.z or 4, false)
 		:give("outline_val", t.outline_val or 1)
 		:give("cullable")
+		:give("color", t.tint or Palette.colors.white)
 
 	if not g_id and not t.no_col then
 		e:give("collider", w, h, Enums.bump_filter.cross):give("bump")
@@ -174,14 +175,9 @@ if DEV then
 	function Room:debug_hot_reload()
 		Log.info("Triggered hot reload", "res:", self.current_res)
 		local rawlist, err = loadfile("src/atlases/" .. self.current_res .. "_items.lua")
-		if err then
-			error(err)
-		end
-		if rawlist == nil then
-			error("invalid file")
-		end
+		if err then error(err) end
 
-		local list = rawlist()
+		local list = rawlist and rawlist() or {}
 		local frames = require("atlases.atlas_" .. self.current_res).frames
 		local spr_res = "atlas_" .. self.current_res .. "_items"
 
@@ -222,6 +218,15 @@ if DEV then
 					if e.z_index.value ~= data.z then
 						e.z_index.value = data.z
 						print(id, "Updated z_index")
+					end
+
+					if data.tint then
+						for i, c in ipairs(Palette.cmap) do
+							if e.color.value[i] ~= data.tint[i] then
+								e.color.value[i] = data.tint[i]
+								print(id, "Updated color." .. c)
+							end
+						end
 					end
 
 					found = true
