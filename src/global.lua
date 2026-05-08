@@ -24,6 +24,11 @@ Flux = require("modules.flux.flux")
 Gamera = require("modules.gamera.gamera")
 Lily = require("modules.lily.lily")
 Log = require("modules.log.log")
+LoveInk = {
+	Dialogue = require("modules.loveink.dialogue"),
+	DialogueUI = require("modules.loveink.dialogue_ui"),
+	Helpers = require("modules.loveink.story_helpers"),
+}
 LoveSplash = require("modules.splashes.o-ten-one")
 Lume = require("modules.lume.lume")
 ReflowPrint = require("modules.reflowprint.reflowprint")
@@ -49,60 +54,60 @@ vec3 = require("modules.batteries.vec3")
 Enums = require("enums")
 
 Data = {
-    AnimationData = require("data.animation_data"),
-    AnimationSyncData = require("data.animation_sync_data"),
-    Colliders = require("data.colliders"),
-    Dialogues = require("data.dialogues"),
-    Doors = require("data.doors"),
-    Items = require("data.items"),
-    Lights = require("data.lights"),
-    Notes = require("data.notes"),
-    PlayerSpawnPoints = require("data.player_spawn_points"),
-    ResourcesList = require("data.resources_list")
+	AnimationData = require("data.animation_data"),
+	AnimationSyncData = require("data.animation_sync_data"),
+	Colliders = require("data.colliders"),
+	Dialogues = require("data.dialogues"),
+	Doors = require("data.doors"),
+	Items = require("data.items"),
+	Lights = require("data.lights"),
+	Notes = require("data.notes"),
+	PlayerSpawnPoints = require("data.player_spawn_points"),
+	ResourcesList = require("data.resources_list")
 }
 
 Renderers = {
-    BB = require("renderers.bounding_box"),
-    Circle = require("renderers.circle"),
-    Point = require("renderers.point"),
-    Rect = require("renderers.rect"),
-    Sprite = require("renderers.sprite"),
-    Text = require("renderers.text"),
-    UI = require("renderers.ui")
+	BB = require("renderers.bounding_box"),
+	Circle = require("renderers.circle"),
+	Point = require("renderers.point"),
+	Rect = require("renderers.rect"),
+	Sprite = require("renderers.sprite"),
+	Text = require("renderers.text"),
+	UI = require("renderers.ui")
 }
 
 ParticleSystems = {
-    RainIntro = require("particle_systems.rain_intro"),
-    RainOutside = require("particle_systems.rain_outside")
+	RainIntro = require("particle_systems.rain_intro"),
+	RainOutside = require("particle_systems.rain_outside")
 }
 
 Atlases = {
-    AtlasIntro = require("atlases.atlas_intro"),
-    AtlasKeys = require("atlases.atlas_keys"),
-    KitchenItems = require("atlases.kitchen_items"),
-    LivingRoomItems = require("atlases.living_room_items"),
-    OutsideItems = require("atlases.outside_items"),
-    StorageRoomItems = require("atlases.storage_room_items"),
-    UtilityRoomItems = require("atlases.utility_room_items")
+	AtlasIntro = require("atlases.atlas_intro"),
+	AtlasKeys = require("atlases.atlas_keys"),
+	KitchenItems = require("atlases.kitchen_items"),
+	LivingRoomItems = require("atlases.living_room_items"),
+	OutsideItems = require("atlases.outside_items"),
+	StorageRoomItems = require("atlases.storage_room_items"),
+	UtilityRoomItems = require("atlases.utility_room_items")
 }
 
 Ctor = {
-    BumpStorage = require("ctor.bump_storage"),
-    CustomList = require("ctor.custom_list"),
-    ListByID = require("ctor.list_by_id"),
-    SortedTable = require("ctor.sorted_table")
+	BumpStorage = require("ctor.bump_storage"),
+	CustomList = require("ctor.custom_list"),
+	ListByID = require("ctor.list_by_id"),
+	SortedTable = require("ctor.sorted_table")
 }
 
 Beehive = {
-    Fail = require("modules.beehive.beehive.fail"),
-    Invert = require("modules.beehive.beehive.invert"),
-    Repeat = require("modules.beehive.beehive.repeat"),
-    Selector = require("modules.beehive.beehive.selector"),
-    Sequence = require("modules.beehive.beehive.sequence")
+	Fail = require("modules.beehive.beehive.fail"),
+	Invert = require("modules.beehive.beehive.invert"),
+	Repeat = require("modules.beehive.beehive.repeat"),
+	Selector = require("modules.beehive.beehive.selector"),
+	Sequence = require("modules.beehive.beehive.sequence")
 }
 
 Behaviors = {
-    Enemy = require("behaviors.enemy")
+	Enemy = require("behaviors.enemy")
 }
 
 Animation = require("animation")
@@ -134,26 +139,26 @@ Utils = require("utils")
 WindowMode = require("window_mode")
 
 Assemblages = {
-    Common = require("assemblages.common"),
-    Enemy = require("assemblages.enemy"),
-    Intro = require("assemblages.intro"),
-    Inventory = require("assemblages.inventory"),
-    Items = require("assemblages.items"),
-    Kitchen = require("assemblages.kitchen"),
-    Light = require("assemblages.light"),
-    LivingRoom = require("assemblages.living_room"),
-    Menu = require("assemblages.menu"),
-    Notes = require("assemblages.notes"),
-    Office1 = require("assemblages.office1"),
-    Office2 = require("assemblages.office2"),
-    Outside = require("assemblages.outside"),
-    Pause = require("assemblages.pause"),
-    Player = require("assemblages.player"),
-    Room = require("assemblages.room"),
-    StorageRoom = require("assemblages.storage_room"),
-    UI = require("assemblages.ui"),
-    UtilityRoom = require("assemblages.utility_room"),
-    BillboardGlow = require("assemblages.billboard_glow"),
+	Common = require("assemblages.common"),
+	Enemy = require("assemblages.enemy"),
+	Intro = require("assemblages.intro"),
+	Inventory = require("assemblages.inventory"),
+	Items = require("assemblages.items"),
+	Kitchen = require("assemblages.kitchen"),
+	Light = require("assemblages.light"),
+	LivingRoom = require("assemblages.living_room"),
+	Menu = require("assemblages.menu"),
+	Notes = require("assemblages.notes"),
+	Office1 = require("assemblages.office1"),
+	Office2 = require("assemblages.office2"),
+	Outside = require("assemblages.outside"),
+	Pause = require("assemblages.pause"),
+	Player = require("assemblages.player"),
+	Room = require("assemblages.room"),
+	StorageRoom = require("assemblages.storage_room"),
+	UI = require("assemblages.ui"),
+	UtilityRoom = require("assemblages.utility_room"),
+	BillboardGlow = require("assemblages.billboard_glow"),
 }
 
 ECS = require("ecs")
@@ -165,7 +170,7 @@ require("modules.sdf").mount()
 if DEV then
 	local old_give = Concord.entity.give
 	function Concord.entity:give(...)
-		local t = {...}
+		local t = { ... }
 		if not DevTools.metrics.give[t[1]] then
 			DevTools.metrics.give[t[1]] = 0
 		end
@@ -176,7 +181,7 @@ if DEV then
 
 	local old_remove = Concord.entity.remove
 	function Concord.entity:remove(...)
-		local t = {...}
+		local t = { ... }
 		if not DevTools.metrics.remove[t[1]] then
 			DevTools.metrics.remove[t[1]] = 0
 		end

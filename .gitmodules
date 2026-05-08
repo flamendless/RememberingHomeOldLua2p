@@ -67,3 +67,6 @@
 [submodule "modules/bump"]
 	path = modules/bump
 	url = https://github.com/oniietzschan/bump-niji
+[submodule "modules/loveink"]
+	path = modules/loveink
+	url = https://github.com/flamendless/LoveInk

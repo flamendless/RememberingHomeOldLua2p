@@ -43,69 +43,71 @@ function ID:init(world)
 	end
 end
 
-local flags = {
-	right_clicked = false,
-}
-local e_right_clicked
-local fnt = love.graphics.newFont(8)
-fnt:setFilter("nearest", "nearest")
+if DEV then
+	local flags = {
+		right_clicked = false,
+	}
+	local e_right_clicked
+	local fnt = love.graphics.newFont(8)
+	fnt:setFilter("nearest", "nearest")
 
-function ID:debug_e_right_clicked(e)
-	e_right_clicked = e
-	flags.right_clicked = true
-end
-
-function ID:debug_update(dt)
-	if not self.debug_show then
-		return
+	function ID:debug_e_right_clicked(e)
+		e_right_clicked = e
+		flags.right_clicked = true
 	end
-	if e_right_clicked then
-		flags.right_clicked = Slab.BeginWindow("components", {
-			Title = "Components",
-			IsOpen = flags.right_clicked,
-		})
-		for _, c in pairs(e_right_clicked) do
-			if type(c) == "table" and c.__isComponent then
-				Slab.Text(c.__name)
+
+	function ID:debug_update(dt)
+		if not self.debug_show then
+			return
+		end
+		if e_right_clicked then
+			flags.right_clicked = Slab.BeginWindow("components", {
+				Title = "Components",
+				IsOpen = flags.right_clicked,
+			})
+			for _, c in pairs(e_right_clicked) do
+				if type(c) == "table" and c.__isComponent then
+					Slab.Text(c.__name)
+				end
+			end
+			Slab.EndWindow()
+
+			if not flags.right_clicked then
+				e_right_clicked = nil
 			end
 		end
-		Slab.EndWindow()
+	end
 
-		if not flags.right_clicked then
-			e_right_clicked = nil
+	function ID:debug_draw()
+		if not self.debug_show then
+			return
 		end
-	end
-end
-
-function ID:debug_draw()
-	if not self.debug_show then
-		return
-	end
-	local camera = self.world:getResource("camera")
-	if not camera then
-		return
-	end
-	local mx, my = love.mouse.getPosition()
-	mx, my = camera:toWorld(mx, my)
-	local v = vec2(mx, my)
-	local r, g, b, a = love.graphics.getColor()
-	love.graphics.push()
-	love.graphics.setColor(1, 0, 0, 0.75)
-	love.graphics.setFont(fnt)
-
-	for _, e in ipairs(self.pool_dev) do
-		local id = e.id.value
-		local px, py, iw, ih = Helper.get_ltwh(e)
-		local iw2, ih2 = iw/2, ih/2
-		local av = vec2(px + iw2, py + ih2)
-		local hs = vec2(iw2, ih2)
-		local hovered = intersect.aabb_point_overlap(av, hs, v)
-		if hovered then
-			love.graphics.print(id, px, py)
+		local camera = self.world:getResource("camera")
+		if not camera then
+			return
 		end
+		local mx, my = love.mouse.getPosition()
+		mx, my = camera:toWorld(mx, my)
+		local v = vec2(mx, my)
+		local r, g, b, a = love.graphics.getColor()
+		love.graphics.push()
+		love.graphics.setColor(1, 0, 0, 0.75)
+		love.graphics.setFont(fnt)
+
+		for _, e in ipairs(self.pool_dev) do
+			local id = e.id.value
+			local px, py, iw, ih = Helper.get_ltwh(e)
+			local iw2, ih2 = iw / 2, ih / 2
+			local av = vec2(px + iw2, py + ih2)
+			local hs = vec2(iw2, ih2)
+			local hovered = intersect.aabb_point_overlap(av, hs, v)
+			if hovered then
+				love.graphics.print(id, px, py)
+			end
+		end
+		love.graphics.setColor(r, g, b, a)
+		love.graphics.pop()
 	end
-	love.graphics.setColor(r, g, b, a)
-	love.graphics.pop()
 end
 
 return ID

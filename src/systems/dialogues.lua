@@ -1,315 +1,121 @@
-local DialoguesSystem = Concord.system({
-	pool = { "dialogue_item", "text_t" },
-	pool_choice = {
-		constructor = Ctor.ListByID,
-		id = "dialogue_choices",
-	},
-})
-
-local c_hc = Palette.colors.hovered_choice
-local PAD = 32
+local DialoguesSystem = Concord.system()
 
 function DialoguesSystem:init(world)
 	self.world = world
-	self.is_waiting = false
-	self.world:emit("create_dialogue_key")
-	self.pool_choice.onAdded = function(pool, e)
-		if e.item_id.value ~= Enums.item.choice then
-			self.pool_choice:remove(e)
-		end
+end
+
+function DialoguesSystem:state_setup()
+	local current_id = string.lower(GameStates.current_id)
+	Log.info("Loading dialogues data", current_id)
+
+	local data = Data.Dialogues[current_id]
+	self.dialogue = LoveInk.Dialogue.new(data, "start")
+
+	--TODO: customize. Should we defer this to renderer system?
+	local cfg = {
+		textbox = {
+			x = 50,
+			y = love.graphics.getHeight() - 180,
+			width = love.graphics.getWidth() - 100,
+			height = 150,
+			typewriter_speed = 40,
+			font = love.graphics.newFont(18)
+		},
+		choicelist = {
+			x = 100,
+			y = 200,
+			width = love.graphics.getWidth() - 200,
+			button_height = 50,
+			font = love.graphics.newFont(16)
+		}
+
+	}
+	self.ui = LoveInk.DialogueUI.new(cfg)
+
+	-- self.current_content = self.dialogue:getNext()
+	-- self.ui:showContent(self.current_content)
+
+	self.ui.on_choice_made = function(index)
+		print("choice made", index)
+		self.current_content = self.dialogue:choose(index)
+		self.ui:showContent(self.current_content)
 	end
 end
 
-function DialoguesSystem:create_tle()
-	self.timeline = TLE.Do(function()
-		while true do
-			local text_t = self.e_dialogue.text_t
-			local dialogues = text_t and text_t.value
-			local current_line = dialogues and dialogues[text_t.current_index]
-
-			if current_line then
-				text_t.current_index = text_t.current_index + 1
-				local should_pause = true
-				local bool, signal, handle_self = Dialogues.check_signal(current_line)
-				Log.trace(
-					"Dialogues system",
-					"bool", bool,
-					"signal", signal,
-					"handle_self", handle_self
-				)
-
-				if bool then
-					self.world:emit(signal, self.e_dialogue, dialogues)
-					current_line = ""
-					text_t.max_n = text_t.max_n - 1
-
-					if text_t.current_index > text_t.max_n then
-						should_pause = false
-					end
-				end
-
-				if handle_self then
-					self.world:emit("show_key", "dialogue", true)
-					self.e_dialogue:remove("text_can_proceed"):remove("hidden"):give("text", current_line)
-				end
-
-				if should_pause then
-					self.timeline:Pause()
-				end
-			elseif text_t and (text_t.current_index > text_t.max_n) then
-				self:on_dialogue_reached_end()
-			else
-				self.timeline:Pause()
-			end
-		end
-	end)
-end
-
-function DialoguesSystem:create_e_dialogue()
-	local camera = self.world:getResource("camera")
-	if not camera then
-		error("camera resource should be set by now")
-	end
-	local l, _, w, h = camera:getWindow()
-	local x = l + PAD
-	local y = h - h * 0.15/2
-	self.e_dialogue = Concord.entity(self.world)
-		:give("id", "dialogue_holder")
-		:give("font", "ui")
-		:give("color", Palette.get("ui_dialogue"))
-		:give("text", "")
-		:give("dialogue_item")
-		:give("ui_element")
-		:give("transform", 0, 1, 1, 0, 0.5)
-		:give("layer", "dialogue", 3)
-		:give("reflowprint", w - PAD * 2, "left")
-		:give("pos", x, y)
-	self:create_tle()
-end
-
-function DialoguesSystem:update(dt)
-	if self.is_waiting then
-		return
-	end
-	if not self.e_dialogue then
-		self:create_e_dialogue()
-	end
-	if Inputs.released("interact") and #self.pool_choice == 0 then
-		self:proceed_dialogue()
-	end
-end
-
-function DialoguesSystem:wait_dialogue(bool)
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
-	end
-	self.is_waiting = bool
-end
-
-function DialoguesSystem:spawn_dialogue(dialogues_t, main, sub)
-	if type(dialogues_t) ~= "table" then
-		error('Assertion failed: type(dialogues_t) == "table"')
-	end
-	if type(main) ~= "string" then
-		error('Assertion failed: type(main) == "string"')
-	end
-	if type(sub) ~= "string" then
-		error('Assertion failed: type(sub) == "string"')
-	end
-	self.e_dialogue:give("dialogue_meta", main, sub):give("text_t", dialogues_t)
-	self:populate_choices(dialogues_t)
-	if Dialogues.validate(dialogues_t) then
-		self.world:emit("on_interact_or_inventory")
-	end
-	self.timeline:Unpause()
-end
-
-function DialoguesSystem:spawn_dialogue_ex(dialogue_t, signal_after, ...)
-	if type(dialogue_t) ~= "table" then
-		error('Assertion failed: type(dialogue_t) == "table"')
-	end
-	if #dialogue_t == 0 then
-		error("Assertion failed: #dialogue_t ~= 0")
-	end
-	if signal_after then
-		if type(signal_after) ~= "string" then
-			error('Assertion failed: type(signal_after) == "string"')
-		end
-	end
-	self:spawn_dialogue(dialogue_t, "_none", "_none")
-	if signal_after then
-		self.e_dialogue:give("on_dialogue_end", signal_after, 0, ...)
-	end
-end
-
-function DialoguesSystem:on_dialogue_reached_end(e)
-	if self.is_waiting then
-		self.timeline:Pause()
-		return
-	end
-
-	e = e or self.e_dialogue
-	if e.item_id then
-		self.world:emit("destroy_list", "dialogue_choice")
-	end
-
-	if e.has_choices then
-		e:give("hidden")
-		self:show_choices()
-	else
-		local on_d_end = e.on_dialogue_end
-		if on_d_end then
-			self.world:emit(on_d_end.signal, unpack(on_d_end.args))
+function DialoguesSystem:ev_advance()
+	if self.current_content and self.current_content.type == "text" then
+		if self.ui:isTextComplete() then
+			self.current_content = self.dialogue:getNext()
+			self.ui:showContent(self.current_content)
 		else
-			self.world:emit("on_leave_interact_or_inventory")
-			self.world:emit("set_system_to", "inventory", true)
-			e:remove("dialogue_meta"):remove("text_t"):remove("text"):remove("item_id"):remove("has_choices")
-			self.e_dialogue
-				:remove("dialogue_meta")
-				:remove("text_t")
-				:remove("text")
-				:remove("item_id")
-				:remove("has_choices")
-		end
-		self.world:emit("show_key", "dialogue", false)
-	end
-	self.timeline:Pause()
-end
-
-function DialoguesSystem:update_dialogues(new_dialogues_t)
-	if type(new_dialogues_t) ~= "table" then
-		error('Assertion failed: type(new_dialogues_t) == "table"')
-	end
-	if not self.e_dialogue.item_id then
-		self.e_dialogue:give("text_t", new_dialogues_t)
-		self.timeline:Unpause()
-	else
-		local d = self.e_dialogue.dialogue_meta
-		self:spawn_dialogue(new_dialogues_t, d.main, d.sub)
-	end
-end
-
-function DialoguesSystem:proceed_dialogue()
-	for _, e in ipairs(self.pool) do
-		--TODO: (Brandon) add devtool
-		if e.text_skipped then
-			e:remove("text_skipped")
-		elseif e.text_can_proceed then
-			local rfp = e.reflowprint
-			rfp.dt = 0
-			rfp.current = 1
-			self.timeline:Unpause()
+			self.ui:skipTypewriter()
 		end
 	end
 end
 
-function DialoguesSystem:show_choices()
-	local d = self.e_dialogue.dialogue_meta
-	local l, _, _, h = self.world:getResource("camera"):getWindow()
-	local c = self.e_dialogue.has_choices
-	local font = Resources.data.fonts.ui
-	local y = h - h * 0.15/2
-	local p2 = PAD * 2
-	local prev_x = l + p2
-	local choice_t = self.e_dialogue.text_t.value.choices
-	self.world:emit("create_list_group", "dialogue_choices", false, #choice_t)
+function DialoguesSystem:state_update(dt)
+	if self.dialogue:getCurrentKnot() == "fin" then
+		self.current_content = nil
+	end
 
-	for _, str in ipairs(c.value) do
-		local id = "choice_" .. str
-		local fw = font:getWidth(str)
-		local x = prev_x
-		prev_x = x + fw + p2
-		for _, v in ipairs(choice_t) do
-			if v[1] == str then
-				choice_t = tablex.copy(v)
-				table.remove(choice_t, 1)
-				break
+	--TODO: use enums for keys instead of strings
+	if Inputs.released("interact") then
+		self:ev_advance()
+	end
+
+	--TODO: if dialogue is active, what entities/systems do we want to pause/block?? How??
+	self.ui:update(dt)
+end
+
+function DialoguesSystem:state_draw()
+	if not self.dialogue:hasEnded() and self.current_content then
+		self.ui:draw()
+	end
+end
+
+-- TODO: ponder whether we want mouse or key based interactions
+function DialoguesSystem:state_mousepressed(mx, my, mb)
+	if self.ui:mousepressed(mx, my, mb) then
+		return
+	end
+end
+
+if DEV then
+	function DialoguesSystem:debug_update(dt)
+		if not self.debug_show then return end
+
+		self.debug_show = Slab.BeginWindow("dialogues", {
+			Title = "Dialogues",
+			IsOpen = self.debug_show,
+		})
+		Slab.Text("ID: " .. GameStates.current_id)
+
+		local start_disabled = self.current_content ~= nil
+		if Slab.Button("start", { Disabled = start_disabled}) then
+			if self.dialogue:getCurrentKnot() == "fin" then
+				self.dialogue:divertTo("start")
 			end
+			self.current_content = self.dialogue:getNext()
+			self.ui:showContent(self.current_content)
 		end
 
-		Concord.entity(self.world)
-			:assemble(Assemblages.UI.choice, id, str, choice_t, x, y)
-			:give("reflowprint", fw + PAD * 2, "left")
-			:give("dialogue_meta", d.main, d.sub)
-			:give("list_item")
-			:give("list_group", "dialogue_choices")
-		self:populate_choices(choice_t)
-	end
+		--TODO: Maybe store knots in a map so that map[knot_name]count
+		Slab.Text("Dialogue:")
+			Slab.Indent()
+			Slab.Text("Current Knot: " .. self.dialogue:getCurrentKnot())
+			Slab.Text("Visit Count: " .. self.dialogue:getKnotVisitCount(self.dialogue:getCurrentKnot()))
+			Slab.Unindent()
 
-	self.world:emit("set_focus_list", "dialogue_choices")
-end
-
-function DialoguesSystem:populate_choices(t)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
-	local choices = {}
-	if t.choices then
-		for _, v in ipairs(t.choices) do
-			table.insert(choices, v[1])
+		local _ = Slab.CheckBox(self.ui:isTextComplete(), "Is Text Complete")
+		if self.current_content then
+			Slab.Text("Current Content:")
+				Slab.Indent()
+				Slab.Text("Type: " .. self.current_content.type)
+				Slab.Text("Content: " .. (self.current_content.content or ""))
+				Slab.Text("Speaker: " .. (self.current_content.speaker or ""))
+				Slab.Unindent()
 		end
-	end
-	if #choices ~= 0 then
-		self.e_dialogue:give("has_choices", unpack(choices))
-	end
-end
-
-function DialoguesSystem:cleanup()
-	self.e_dialogue:destroy()
-	for _, e in ipairs(self.pool) do
-		e:destroy()
-	end
-end
-
-DialoguesSystem["on_list_cursor_update_" .. "dialogue_choices"] = function(self, e_hovered)
-	if not self.pool_choice:has(e_hovered) then
-		return
-	end
-	self.world:emit("lerp_color", e_hovered, c_hc, 0.25, "circin")
-end
-
-DialoguesSystem["on_list_cursor_remove_" .. "dialogue_choices"] = function(self, e_hovered)
-	if not self.pool_choice:has(e_hovered) then
-		return
-	end
-	self.world:emit("lerp_color", e_hovered, Palette.get("ui_dialogue"), 0.25, "circin")
-end
-
-DialoguesSystem["on_list_item_interact_" .. "dialogue_choices"] = function(self, e_hovered)
-	local t = e_hovered.text_t
-	local text_t = t.value
-	if #text_t == 0 and not text_t.choices then
-		self:on_dialogue_reached_end(e_hovered)
-		return
-	end
-
-	local proceed = true
-	local str = text_t[1]
-	if str then
-		local bool, signal, handle_self = Dialogues.check_signal(str)
-
-		if bool then
-			proceed = false
-			--entity, table of next dialogues, chosen text
-			self.world:emit(signal, e_hovered, text_t, e_hovered.text.value)
-			if handle_self then
-				t.current_index = t.current_index + 1
-				local next_str = text_t[t.current_index]
-				if not next_str then
-					self:on_dialogue_reached_end(e_hovered)
-				end
-			end
-		end
-	end
-
-	self.world:emit("destroy_list", "dialogue_choice")
-	self.world:emit("destroy_list", "dialogue_choices")
-	if proceed then
-		local d = e_hovered.dialogue_meta
-		self:spawn_dialogue(text_t, d.main, d.sub)
-	end
-	if not text_t.choices then
-		self.e_dialogue:remove("has_choices")
+		Slab.EndWindow()
 	end
 end
 

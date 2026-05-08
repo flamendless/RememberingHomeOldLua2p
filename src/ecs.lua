@@ -253,6 +253,7 @@ state_systems.Office1 = {
 	"color",
 	"show_keys",
 	"deferred_lighting",
+	-- "dialogues_old",
 	"dialogues",
 	"entity",
 	"gamestates",

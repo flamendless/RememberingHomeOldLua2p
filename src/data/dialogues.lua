@@ -1,5 +1,11 @@
 local Dialogues = {}
 
+--TODO: Move this
+local Speakers = {
+	narrator = "narrator",
+	player = "player",
+}
+
 Dialogues._none = {
 	_none = {},
 }
@@ -147,6 +153,26 @@ Dialogues.kitchen = {
 			{ "nothing" },
 		},
 	},
+}
+
+Dialogues.office2 = {
+	start = {
+		LoveInk.Helpers.text("Test from LoveInk", Speakers.player),
+		LoveInk.Helpers.choice("Ready to test choices?", {
+			{"Yes", divert = "yes"},
+			{"No", divert = "loop"},
+		}),
+	},
+	loop = {
+		LoveInk.Helpers.text("You have no choice!", Speakers.player),
+		LoveInk.Helpers.divert("start"),
+	},
+	yes = {
+		LoveInk.Helpers.text("Very good!", Speakers.player),
+		LoveInk.Helpers.text("exiting now", Speakers.narrator),
+		LoveInk.Helpers.divert("fin"),
+	},
+	fin = {},
 }
 
 return Dialogues

@@ -26,6 +26,7 @@ return {
 		"Gamera",
 		"Lily",
 		"Log",
+		"LoveInk",
 		"LoveSplash",
 		"Lume",
 		"ReflowPrint",

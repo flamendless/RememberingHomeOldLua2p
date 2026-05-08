@@ -59,8 +59,10 @@ function MenuSettings:init_settings()
 		end
 	end
 
-	for k, _ in pairs(Inputs.dev_map) do
-		self.key_map[k] = nil
+	if DEV then
+		for k, _ in pairs(Inputs.dev_map) do
+			self.key_map[k] = nil
+		end
 	end
 end
 

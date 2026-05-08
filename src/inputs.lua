@@ -50,13 +50,15 @@ local Inputs = {
 }
 local map_names = { "WASD", "Arrows" }
 
-Inputs.dev_map = {
-	m = "play",
-	down = "camera_down",
-	up = "camera_up",
-	left = "camera_left",
-	right = "camera_right",
-}
+if DEV then
+	Inputs.dev_map = {
+		m = "play",
+		down = "camera_down",
+		up = "camera_up",
+		left = "camera_left",
+		right = "camera_right",
+	}
+end
 
 function Inputs.init(key_map)
 	if key_map then
@@ -70,7 +72,9 @@ function Inputs.init(key_map)
 	end
 	Inputs.map = maps[n]
 
-	tablex.overlay(Inputs.map, Inputs.dev_map)
+	if DEV then
+		tablex.overlay(Inputs.map, Inputs.dev_map)
+	end
 
 	tablex.clear(Inputs.previous)
 	tablex.clear(Inputs.current)
@@ -104,7 +108,7 @@ function Inputs.released(key)
 		error('Assertion failed: type(key) == "string"')
 	end
 	if Inputs.current[key] == nil then
-		error("Assertion failed: Inputs.current[key] ~= nil")
+		error(key)
 	end
 	return not Inputs.current[key] and Inputs.previous[key]
 end

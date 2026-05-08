@@ -10,6 +10,7 @@ local DevTools = {
 		bump_collision = false,
 		camera = false,
 		culling = false,
+		dialogues = false,
 		fireflies = false,
 		flashlight = true,
 		fog = true,
@@ -756,6 +757,8 @@ function DevTools.keypressed(key)
 		GameStates.world:emit("debug_on_toggle", "deferred_lighting")
 	elseif key == "escape" and DevTools.show then
 		love.event.quit()
+	else
+		GameStates.world:emit("debug_keypressed", key)
 	end
 end
 
