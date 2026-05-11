@@ -94,8 +94,14 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 		if not t.not_interactive then
 			e:give("interactive")
 		end
-		if t.dialogue then
-			e:give("dialogue_meta", unpack(t.dialogue))
+		if t.dialogue_key then
+			assert(type(t.dialogue_key) == "string")
+			e:give("dialogue_key", t.dialogue_key)
+			-- e:give("dialogue_meta", unpack(t.dialogue))
+			if t.dialogue_force_pause then
+				assert(type(t.dialogue_force_pause) == "table")
+				e:give("dialogue_force_pause", t.dialogue_force_pause)
+			end
 		end
 		if t.usable_with_item then
 			e:give("usable_with_item")

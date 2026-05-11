@@ -32,3 +32,19 @@ Concord.component("dialogue_meta", function(c, main, sub)
 	c.main = main
 	c.sub = sub
 end)
+
+-- New Dialogues system components
+Concord.component("dialogue_key", function(c, key)
+	assert(type(key) == "string")
+	c.value = key
+end)
+
+Concord.component("dialogue_force_pause", function(c, keys)
+	assert(type(keys) == "table")
+	if DEV then
+		for _, key in ipairs(keys) do
+			assert(type(key) == "string")
+		end
+	end
+	c.values = keys
+end)

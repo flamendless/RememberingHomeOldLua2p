@@ -156,21 +156,10 @@ Dialogues.kitchen = {
 }
 
 Dialogues.office2 = {
-	start = {
-		LoveInk.Helpers.text("Test from LoveInk", Speakers.player),
-		LoveInk.Helpers.choice("Ready to test choices?", {
-			{"Yes", divert = "yes"},
-			{"No", divert = "loop"},
-		}),
-	},
-	loop = {
-		LoveInk.Helpers.text("You have no choice!", Speakers.player),
-		LoveInk.Helpers.divert("start"),
-	},
-	yes = {
-		LoveInk.Helpers.text("Very good!", Speakers.player),
-		LoveInk.Helpers.text("exiting now", Speakers.narrator),
-		LoveInk.Helpers.divert("fin"),
+	start = {},
+	test = {
+		LoveInk.Helpers.text("Test from LoveInk"),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	fin = {},
 }

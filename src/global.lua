@@ -53,6 +53,9 @@ vec3 = require("modules.batteries.vec3")
 
 Enums = require("enums")
 
+-- CONSTANT VALUES/IDS/KEYS
+DIALOGUE_FIN = "fin"
+
 Data = {
 	AnimationData = require("data.animation_data"),
 	AnimationSyncData = require("data.animation_sync_data"),

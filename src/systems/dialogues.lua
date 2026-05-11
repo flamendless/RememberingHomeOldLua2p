@@ -36,9 +36,37 @@ function DialoguesSystem:state_setup()
 	-- self.ui:showContent(self.current_content)
 
 	self.ui.on_choice_made = function(index)
-		print("choice made", index)
 		self.current_content = self.dialogue:choose(index)
 		self.ui:showContent(self.current_content)
+	end
+end
+
+function DialoguesSystem:start_dialogue(e, e_other)
+	assert(e.__isEntity)
+	assert(e_other.__isEntity)
+	local dialogue_key = e_other.dialogue_key.value
+	assert(type(dialogue_key) == "string")
+	if self.dialogue:getCurrentKnot() ~= dialogue_key then
+		self.dialogue:divertTo(dialogue_key)
+		self.current_content = self.dialogue:getNext()
+		self.ui:showContent(self.current_content)
+
+		-- for now let's just pause the player
+		self.world:emit("toggle_component", e, "can_move", false)
+		self.world:emit("toggle_component", e, "can_interact", false)
+		self.world:emit("toggle_component", e, "can_run", false)
+
+		--TODO: Implement pause (b)
+		if e_other.dialogue_force_pause then
+			for _, key in ipairs(e_other.dialogue_force_pause.values) do
+				local e_to_pause = self.world:getEntityByKey(key)
+				if e_to_pause then
+					e_to_pause:give("paused")
+				else
+					Log.warning("Key was referenced in dialogue_force_pause but does not exist in world", key)
+				end
+			end
+		end
 	end
 end
 
@@ -50,11 +78,18 @@ function DialoguesSystem:ev_advance()
 		else
 			self.ui:skipTypewriter()
 		end
+
+		if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+			local e_player = self.world:getResource("e_player")
+			self.world:emit("toggle_component", e_player, "can_move", true)
+			self.world:emit("toggle_component", e_player, "can_interact", true)
+			self.world:emit("toggle_component", e_player, "can_run", true)
+		end
 	end
 end
 
 function DialoguesSystem:state_update(dt)
-	if self.dialogue:getCurrentKnot() == "fin" then
+	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 		self.current_content = nil
 	end
 
@@ -92,7 +127,7 @@ if DEV then
 
 		local start_disabled = self.current_content ~= nil
 		if Slab.Button("start", { Disabled = start_disabled}) then
-			if self.dialogue:getCurrentKnot() == "fin" then
+			if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 				self.dialogue:divertTo("start")
 			end
 			self.current_content = self.dialogue:getNext()

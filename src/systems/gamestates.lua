@@ -47,47 +47,49 @@ function GameStatesSystem:load_game()
 	-- self.world:deserialize(data, true)
 end
 
-local states = {
-	"Menu",
-	"Intro",
-	"Outside",
-	"StorageRoom",
-	"UtilityRoom",
-	"Kitchen",
-	"LivingRoom",
-	"TotallyDarkRoom",
-}
+if DEV then
+	local states = {
+		"Menu",
+		"Intro",
+		"Outside",
+		"StorageRoom",
+		"UtilityRoom",
+		"Kitchen",
+		"LivingRoom",
+		"TotallyDarkRoom",
+	}
 
-function GameStatesSystem:debug_update(dt)
-	if not self.debug_show then
-		return
-	end
-	self.debug_show = Slab.BeginWindow("gs", {
-		Title = "GameStatesSystem",
-		IsOpen = self.debug_show,
-	})
-	if Slab.BeginComboBox("cb_gs", { Selected = self.world.current_id }) then
-		for _, v in ipairs(states) do
-			if Slab.TextSelectable(v) then
-				self:switch_state(v, 1.5, 0.5)
-				break
-			end
+	function GameStatesSystem:debug_update(dt)
+		if not self.debug_show then
+			return
 		end
-		Slab.EndComboBox()
+		self.debug_show = Slab.BeginWindow("gs", {
+			Title = "GameStatesSystem",
+			IsOpen = self.debug_show,
+		})
+		if Slab.BeginComboBox("cb_gs", { Selected = self.world.current_id }) then
+			for _, v in ipairs(states) do
+				if Slab.TextSelectable(v) then
+					self:switch_state(v, 1.5, 0.5)
+					break
+				end
+			end
+			Slab.EndComboBox()
+		end
+		Slab.EndWindow()
 	end
-	Slab.EndWindow()
-end
 
-function GameStatesSystem:state_keypressed(key)
-	if not love.keyboard.isDown("lshift") then
-		return
-	end
-	if key == "0" then
-		Fade.set_alpha(0)
-	else
-		local i = tonumber(key)
-		if i and i >= 1 and i <= (#states - 2) then
-			self:switch_state(states[i + 2], 0)
+	function GameStatesSystem:state_keypressed(key)
+		if not love.keyboard.isDown("lshift") then
+			return
+		end
+		if key == "0" then
+			Fade.set_alpha(0)
+		else
+			local i = tonumber(key)
+			if i and i >= 1 and i <= (#states - 2) then
+				self:switch_state(states[i + 2], 0)
+			end
 		end
 	end
 end

@@ -143,7 +143,7 @@ function PlayerController:update(dt)
 		end
 
 		if proceed then
-			if other.dialogue_meta then
+			if other.dialogue_key then
 				self:on_player_interact(self.player, other)
 			elseif other.is_door then
 				self.world:emit("on_interact_door", self.player, other)
@@ -181,19 +181,21 @@ function PlayerController:player_update_animation(override_name, override_varian
 	return anim_name
 end
 
-function PlayerController:on_player_interact(player, interactive)
+function PlayerController:on_player_interact(player, e_interactive)
 	if not (player.__isEntity and player.player) then
 		error("Assertion failed: player.__isEntity and player.player")
 	end
-	if not (interactive.__isEntity and interactive.interactive) then
+	if not (e_interactive.__isEntity and e_interactive.interactive) then
 		error("Assertion failed: interactive.__isEntity and interactive.interactive")
 	end
 	self.player.is_interacting.value = true
 	-- self.world:emit("on_interact_or_inventory")
 	-- self.world:emit("create_speech_bubble", player)
-	local d = interactive.dialogue_meta
-	local dialogues_t = Dialogues.get(d.main, d.sub)
-	self.world:emit("spawn_dialogue", dialogues_t, d.main, d.sub)
+	-- local d = interactive.dialogue_meta
+	-- local dialogues_t = Dialogues.get(d.main, d.sub)
+	-- self.world:emit("spawn_dialogue", dialogues_t, d.main, d.sub)
+
+	self.world:emit("start_dialogue", player, e_interactive)
 end
 
 function PlayerController:on_interact_or_inventory()

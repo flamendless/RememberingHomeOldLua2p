@@ -74,7 +74,6 @@ local Data = {
 		y = 81,
 		z = 7,
 		no_col = true,
-		attach_to = "office_door_right",
 	},
 	{
 		id = "door3",
@@ -89,7 +88,9 @@ local Data = {
 		x = 348,
 		y = 111,
 		z = 6,
-		no_col = true,
+		-- no_col = true,
+		dialogue_key = "test",
+		-- dialogue_force_pause = {"all"}, -- TODO: Implement pause (a)
 	},
 	{
 		id = "shelf1",
