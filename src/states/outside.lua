@@ -99,6 +99,9 @@ function Outside:state_setup()
 end
 
 function Outside:state_init()
+	if DEV then
+		Fade.set_alpha(0)
+	end
 	if self.prev_id == "StorageRoom" then
 		self.world:emit("spawn_player", function(e_player)
 			self.world:emit("toggle_component", e_player, "can_move", true)

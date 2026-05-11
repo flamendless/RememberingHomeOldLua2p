@@ -30,7 +30,7 @@ local lvfp = { { "u_lpos", "float", 4 } }    -- pos.xyz, scale
 local lvft = { { "u_ldir", "float", 4 } }    -- dir.xyz, angle
 local lvfd = { { "u_diffuse", "float", 3 } } -- color
 local RA = { 0.9951847266722, 0.098017140329561 }
-local MAX_LIGHTS = 16
+local MAX_LIGHTS = 64 -- TODO: we can lower this to 16, but for Outside must be 64
 
 function DeferredLighting:init(world)
 	self.world = world

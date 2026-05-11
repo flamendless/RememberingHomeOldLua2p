@@ -22,12 +22,23 @@ Doors.LivingRoom = {
 	door = "DiningArea",
 }
 
+Doors.Office1 = {
+	door_right = "Office2",
+}
+
+Doors.Office2 = {
+	door_left = "Office1",
+}
+
 function Doors.get_next(current_id, door_id)
 	if not (type(current_id) == "string" and type(door_id) == "string") then
 		error('Assertion failed: type(current_id) == "string" and type(door_id) == "string"')
 	end
+	if not Doors[current_id] then
+		error("No defined current_id " .. current_id .. " in Doors data")
+	end
 	if not Doors[current_id][door_id] then
-		error("Assertion failed: Doors[current_id][door_id]")
+		error("No defined door_id " .. door_id .. " for current_id " .. current_id)
 	end
 	return Doors[current_id][door_id]
 end

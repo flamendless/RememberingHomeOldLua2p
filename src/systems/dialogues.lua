@@ -9,6 +9,11 @@ function DialoguesSystem:state_setup()
 	Log.info("Loading dialogues data", current_id)
 
 	local data = Data.Dialogues[current_id]
+	if not data then
+		Log.warn("No current id '%s' defined in Dialogues data", current_id)
+		return
+	end
+
 	self.dialogue = LoveInk.Dialogue.new(data, "start")
 
 	--TODO: customize. Should we defer this to renderer system?
@@ -89,6 +94,8 @@ function DialoguesSystem:ev_advance()
 end
 
 function DialoguesSystem:state_update(dt)
+	if not self.dialogue then return end
+
 	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 		self.current_content = nil
 	end
@@ -103,6 +110,7 @@ function DialoguesSystem:state_update(dt)
 end
 
 function DialoguesSystem:state_draw()
+	if not self.dialogue then return end
 	if not self.dialogue:hasEnded() and self.current_content then
 		self.ui:draw()
 	end
@@ -110,6 +118,7 @@ end
 
 -- TODO: ponder whether we want mouse or key based interactions
 function DialoguesSystem:state_mousepressed(mx, my, mb)
+	if not self.dialogue then return end
 	if self.ui:mousepressed(mx, my, mb) then
 		return
 	end

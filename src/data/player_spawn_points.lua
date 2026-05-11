@@ -29,12 +29,14 @@ PlayerSpawnPoints.LivingRoom = {
 
 PlayerSpawnPoints.TotallyDarkRoom = PlayerSpawnPoints.LivingRoom
 
---TODO: (flam)
 PlayerSpawnPoints.Office1 = {
 	default = { 127, 64 },
+	Office2 = { 680, 64, Enums.face_dir.left },
 }
+
 PlayerSpawnPoints.Office2 = {
 	default = { 127, 64 },
+	Office1 = { 86, 64, Enums.face_dir.right },
 }
 
 return PlayerSpawnPoints

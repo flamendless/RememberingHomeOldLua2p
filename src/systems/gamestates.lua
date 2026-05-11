@@ -25,6 +25,7 @@ function GameStatesSystem:switch_state(next_state, dur, delay)
 	if GameStates.current_id == next_state then
 		return
 	end
+
 	Log.info("switching state to", next_state)
 	self.is_switching = true
 	Fade.fade_out(function()

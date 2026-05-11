@@ -3,9 +3,13 @@ local PlayerController = Concord.system({
 })
 
 local function get_spawn_points(current_id, prev_id)
-	local d = Data.PlayerSpawnPoints[current_id][prev_id or "default"]
+	local d1 = Data.PlayerSpawnPoints[current_id]
+	if not d1[prev_id] then
+		prev_id = "default"
+	end
+	local d = Data.PlayerSpawnPoints[current_id][prev_id]
 	if not d then
-		error("Assertion failed: d")
+		error("No data given current_id " .. current_id .. " and prev_id " .. prev_id)
 	end
 	if not d[3] then
 		d[3] = Enums.face_dir.left
@@ -55,7 +59,8 @@ function PlayerController:spawn_player(fn)
 		error("Player already exists")
 	end
 
-	local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
+	-- local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
+	local x, y, face = get_spawn_points(GameStates.current_id, GameStates.prev_id)
 	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
 	self.world:__flush()
 	if face == Enums.face_dir.left then
