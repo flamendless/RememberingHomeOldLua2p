@@ -162,9 +162,6 @@ end
 
 function DeferredLighting:update(dt)
 	self.timer:update(dt)
-	if self.timer_open_flashlight then
-		self.timer_open_flashlight:update(dt)
-	end
 	self:update_light_fading(dt)
 end
 
@@ -179,15 +176,18 @@ function DeferredLighting:shutdown_lights()
 			other:give("light_disabled")
 		end
 	end
+end
 
-	--TODO: maybe we want player's to turn the light by themselves?
-	self.timer_open_flashlight = Timer.new()
-	self.timer_open_flashlight:after(1, function()
-		--TODO: add sound effect of flashlight on
-		for _, other in ipairs(self.groups["player_flashlight"]) do
+function DeferredLighting:toggle_light_group(group_id, state)
+	assert(type(group_id) == "string")
+	assert(type(state) == "boolean")
+	for _, other in ipairs(self.groups[group_id]) do
+		if state then
 			other:remove("light_disabled")
+		else
+			other:give("light_disabled")
 		end
-	end)
+	end
 end
 
 function DeferredLighting:light_group_set_disable(group_id, is_d, e)

@@ -84,7 +84,8 @@ local added = false
 
 function Inventory:update(dt)
 	--TODO: do we need inventory screen?
-	if true then return end
+	if DEV then return end
+
 	if not self.is_open and Inputs.pressed("inventory") then
 		if not added then
 			Items.add("flashlight")
