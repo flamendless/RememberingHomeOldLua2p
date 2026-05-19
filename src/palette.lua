@@ -50,6 +50,9 @@ Palette.diffuse = {
 	car = { 1, 1, 1 },
 	post = { 1, 1, 1 },
 
+	--TODO: finalize
+	ambiance_survival = {0, 0, 0, 0.5},
+
 	--outside
 	ambiance_outside = { 0.7, 0.7, 0.7, 0.3 },
 	firefly = { 3, 2.5, 0 },

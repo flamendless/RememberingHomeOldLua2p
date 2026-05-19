@@ -69,7 +69,7 @@ function Camera:set_camera_transform(camera, t)
 			error('Assertion failed: type(t.scale) == "number"')
 		end
 	end
-	--ALWAYS SET SCALE FIRST BEFORE POSITION
+	--INFO: ALWAYS SET SCALE FIRST BEFORE POSITION
 	local scale = camera:getScale()
 	camera:setScale(t.scale or scale)
 	local x, y = camera:getPosition()
@@ -88,6 +88,10 @@ function Camera:get_follow_coords(target)
 		y = y + offset.y
 	end
 	return x, y
+end
+
+function Camera:camera_unfollow()
+	self.follow = false
 end
 
 function Camera:camera_follow(target, dur)
@@ -297,7 +301,13 @@ if DEV then
 			if Slab.CheckBox(self.follow, "Follow") then
 				self.follow = not self.follow
 			end
-			Slab.SameLine()
+
+			if self.to_follow then
+				Slab.Indent()
+				Slab.Text("to follow id: " .. self.to_follow.id.value)
+				Slab.Unindent()
+			end
+
 			if Slab.CheckBox(self.clip, "Clip") then
 				self.clip = not self.clip
 			end

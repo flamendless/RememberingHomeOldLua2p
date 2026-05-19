@@ -245,6 +245,7 @@ state_systems.LivingRoom = {
 state_systems.TotallyDarkRoom = state_systems.LivingRoom
 
 state_systems.Office1 = {
+	"tween",
 	"animation",
 	"atlas",
 	"billboard_glow",
@@ -281,6 +282,7 @@ state_systems.Office1 = {
 	"enemy_controller",
 	"path",
 	"flashlight",
+	"survival",
 }
 
 state_systems.Office2 = tablex.copy(state_systems.Office1)

@@ -68,6 +68,7 @@ function Player.base(e, x, y, speed_data, can)
 		:give("is_running")
 		:give("is_interacting")
 		:give("controller_origin")
+		:give("camera_follow_offset", 0, 0)
 
 	if can.move then
 		e:give("can_move")
