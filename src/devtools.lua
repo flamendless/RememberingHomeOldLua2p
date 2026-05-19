@@ -744,7 +744,7 @@ function DevTools.keypressed(key)
 	elseif key == "space" then
 		DevTools.pause = not DevTools.pause
 	elseif key == "t" then
-		GameStates.world:emit("survival_on")
+		GameStates.world:emit("survival_toggle")
 	elseif key == "s" then
 		DevTools.show_fps = not DevTools.show_fps
 	elseif key == "f" then

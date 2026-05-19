@@ -15,8 +15,17 @@ function Survival:init(world)
 	self.state = false
 end
 
+function Survival:survival_toggle()
+	if self.state then
+		self:survival_off()
+	else
+		self:survival_on()
+	end
+end
+
 function Survival:survival_on()
 	self.state = true
+	self.prev_state = {}
 
 	self.world:emit("shutdown_lights")
 	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_survival"))
@@ -26,6 +35,7 @@ function Survival:survival_on()
 
 	local camera = self.world:getResource("camera")
 	assert(camera)
+	self.prev_state.camera = tablex.copy(camera)
 
 	local DUR = 1
 	local SCALE = 2
@@ -33,6 +43,7 @@ function Survival:survival_on()
 	local cfo = e_player.camera_follow_offset
 	if cfo then
 		local coll = e_player.collider
+		self.prev_state.camera_follow_offset = tablex.copy(cfo)
 		cfo.x = coll.w/2
 		cfo.y = coll.h/4
 	end
@@ -45,6 +56,25 @@ function Survival:survival_on()
 		--TODO: add sound effect of flashlight on
 		self.world:emit("toggle_light_group", "player_flashlight", true)
 	end)
+end
+
+function Survival:survival_off()
+	self.state = false
+
+	local e_player = self.world:getResource("e_player")
+	assert(e_player)
+
+	local camera = self.world:getResource("camera")
+	assert(camera)
+
+	camera.scale = self.prev_state.camera.scale
+
+	local cfo = e_player.camera_follow_offset
+	if cfo then
+		self.prev_state.camera = tablex.copy(camera)
+		local prev_cfo = self.prev_state.camera_follow_offset
+		e_player.camera_follow_offset = prev_cfo
+	end
 end
 
 function Survival:state_update(dt)
