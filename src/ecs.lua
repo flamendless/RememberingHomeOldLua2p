@@ -280,6 +280,7 @@ state_systems.Office1 = {
 	"behavior_tree",
 	"enemy_controller",
 	"path",
+	"flashlight",
 }
 
 state_systems.Office2 = tablex.copy(state_systems.Office1)

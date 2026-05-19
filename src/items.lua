@@ -76,6 +76,7 @@ function Items.is_equipped(id)
 		error("no " .. id .. " in data.items")
 	end
 	local item = get_item(id)
+	assert(item, "failed to get item with id " .. id)
 	return item.equipped
 end
 

@@ -169,7 +169,21 @@ function DeferredLighting:apply_ambiance()
 	love.graphics.setColor(self.ambiance)
 end
 
+function DeferredLighting:shutdown_lights()
+	for k, v in pairs(self.groups) do
+		if k ~= "player_flashlight" then
+			for _, other in ipairs(v) do
+				other:give("light_disabled")
+			end
+		end
+	end
+end
+
 function DeferredLighting:light_group_set_disable(group_id, is_d, e)
+	assert(type(group_id) == "string")
+	assert(type(is_d) == "boolean")
+	assert(e.__isEntity)
+
 	for _, other in ipairs(self.groups[group_id]) do
 		if e ~= other then
 			if is_d then

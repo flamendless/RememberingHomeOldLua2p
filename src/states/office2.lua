@@ -41,6 +41,7 @@ function Office2:state_init()
 		self.world:emit("toggle_component", e_player, "can_move", true)
 		self.world:emit("toggle_component", e_player, "can_interact", true)
 		self.world:emit("toggle_component", e_player, "can_run", true)
+		self.world:emit("on_toggle_equip_flashlight")
 		self.e_player = e_player
 	end)
 

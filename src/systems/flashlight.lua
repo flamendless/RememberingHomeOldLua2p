@@ -36,15 +36,16 @@ end
 
 function Flashlight:create_flashlight()
 	Concord.entity(self.world):assemble(
-		Assemblages.light.fl_spot,
+		Assemblages.Light.fl_spot,
 		self.player,
 		Animation.get_sync_data("flashlight")
 	)
 	:give("battery", 100)
 	:give("battery_state", Enums.battery_state.full)
+	:give("light_group", "player_flashlight")
 
-	self.start_l = Concord.entity(self.world):assemble(Assemblages.light.fl_start)
-	self.end_l = Concord.entity(self.world):assemble(Assemblages.light.fl_end)
+	self.start_l = Concord.entity(self.world):assemble(Assemblages.Light.fl_start):give("light_group", "player_flashlight")
+	self.end_l = Concord.entity(self.world):assemble(Assemblages.Light.fl_end):give("light_group", "player_flashlight")
 	table.insert(self.pool_flashlight, self.start_l)
 	table.insert(self.pool_flashlight, self.end_l)
 end
@@ -171,8 +172,6 @@ if DEV then
 		local battery = self.flashlight and self.flashlight.battery
 		if battery then
 			Slab.Text("state: " .. self.flashlight.battery_state.value)
-			Slab.Text("battery")
-			Slab.SameLine()
 			UIWrapper.edit_range("battery", battery.pct, 0, 100)
 			consumption_rate = UIWrapper.edit_range("consumption rate", consumption_rate, 0, 10)
 			local pl = self.flashlight.point_light

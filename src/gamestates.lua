@@ -56,6 +56,10 @@ function GameStates.start(resources)
 			update_collider = true,
 			update_particle_system = true,
 			update_speed_data = true,
+			update_light_pos = true,
+			update_light_dir = true,
+			update_light_diffuse = true,
+			flicker_sync = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event)

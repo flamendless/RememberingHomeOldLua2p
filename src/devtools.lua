@@ -743,6 +743,8 @@ function DevTools.keypressed(key)
 	-- 	GameStates.world:emit("load_game")
 	elseif key == "space" then
 		DevTools.pause = not DevTools.pause
+	elseif key == "t" then
+		GameStates.world:emit("shutdown_lights")
 	elseif key == "s" then
 		DevTools.show_fps = not DevTools.show_fps
 	elseif key == "f" then

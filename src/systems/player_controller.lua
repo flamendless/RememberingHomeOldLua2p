@@ -41,6 +41,10 @@ function PlayerController:init(world)
 end
 
 function PlayerController:on_toggle_equip_flashlight()
+	if DEV then
+		Items.add("flashlight")
+		Items.toggle_equip("flashlight")
+	end
 	local has_f = Items.is_equipped("flashlight")
 	self.player:remove("multi_animation_data"):give(
 		"multi_animation_data",
