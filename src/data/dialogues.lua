@@ -1,10 +1,10 @@
 local Dialogues = {}
 
 --TODO: Move this
-local Speakers = {
-	narrator = "narrator",
-	player = "player",
-}
+-- local Speakers = {
+-- 	narrator = "narrator",
+-- 	player = "player",
+-- }
 
 Dialogues._none = {
 	_none = {},
@@ -29,7 +29,7 @@ Dialogues.outside = {
 	car = {
 		"An old but reliable car",
 		choices = {
-			{ "drive", "Maybe tomorrow", "For now I need to get in shelter and rest" },
+			{ "drive",         "Maybe tomorrow",    "For now I need to get in shelter and rest" },
 			{
 				"search",
 				"There might be something in the glove box",
@@ -123,7 +123,7 @@ Dialogues.storage_room = {
 			{
 				"open",
 				choices = {
-					{ "first", "spools of wires and cables", "taken from old electronics" },
+					{ "first",  "spools of wires and cables", "taken from old electronics" },
 					{ "second", "tapes, used pens, markers,", "screws, nails, and so on" },
 					{
 						"third",
@@ -148,7 +148,7 @@ Dialogues.kitchen = {
 	light_switch = {
 		"which switch to toggle?",
 		choices = {
-			{ "top", "_toggle_light_switch" },
+			{ "top",    "_toggle_light_switch" },
 			{ "bottom", "_toggle_light_switch" },
 			{ "nothing" },
 		},
@@ -159,6 +159,10 @@ Dialogues.office2 = {
 	start = {},
 	test = {
 		LoveInk.Helpers.text("Test from LoveInk"),
+		LoveInk.Helpers.choice("check shelf?", {
+			{ "yes",       divert = DIALOGUE_FIN },
+			{ "im scared", divert = "test" },
+		}),
 		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	fin = {},

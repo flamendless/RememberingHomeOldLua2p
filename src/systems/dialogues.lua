@@ -43,6 +43,7 @@ function DialoguesSystem:state_setup()
 	self.ui.on_choice_made = function(index)
 		self.current_content = self.dialogue:choose(index)
 		self.ui:showContent(self.current_content)
+		self:on_dialogue_fin()
 	end
 end
 
@@ -75,6 +76,16 @@ function DialoguesSystem:start_dialogue(e, e_other)
 	end
 end
 
+function DialoguesSystem:on_dialogue_fin()
+	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+		local e_player = self.world:getResource("e_player")
+		self.world:emit("toggle_component", e_player, "can_move", true)
+		self.world:emit("toggle_component", e_player, "can_interact", true)
+		self.world:emit("toggle_component", e_player, "can_run", true)
+		self.current_content = nil
+	end
+end
+
 function DialoguesSystem:ev_advance()
 	if self.current_content and self.current_content.type == "text" then
 		if self.ui:isTextComplete() then
@@ -84,21 +95,16 @@ function DialoguesSystem:ev_advance()
 			self.ui:skipTypewriter()
 		end
 
-		if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
-			local e_player = self.world:getResource("e_player")
-			self.world:emit("toggle_component", e_player, "can_move", true)
-			self.world:emit("toggle_component", e_player, "can_interact", true)
-			self.world:emit("toggle_component", e_player, "can_run", true)
-		end
+		self:on_dialogue_fin()
 	end
 end
 
 function DialoguesSystem:state_update(dt)
 	if not self.dialogue then return end
 
-	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
-		self.current_content = nil
-	end
+	-- if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+	-- 	self.current_content = nil
+	-- end
 
 	--TODO: use enums for keys instead of strings
 	if Inputs.released("interact") then
@@ -135,7 +141,7 @@ if DEV then
 		Slab.Text("ID: " .. GameStates.current_id)
 
 		local start_disabled = self.current_content ~= nil
-		if Slab.Button("start", { Disabled = start_disabled}) then
+		if Slab.Button("start", { Disabled = start_disabled }) then
 			if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 				self.dialogue:divertTo("start")
 			end
@@ -145,19 +151,19 @@ if DEV then
 
 		--TODO: Maybe store knots in a map so that map[knot_name]count
 		Slab.Text("Dialogue:")
-			Slab.Indent()
-			Slab.Text("Current Knot: " .. self.dialogue:getCurrentKnot())
-			Slab.Text("Visit Count: " .. self.dialogue:getKnotVisitCount(self.dialogue:getCurrentKnot()))
-			Slab.Unindent()
+		Slab.Indent()
+		Slab.Text("Current Knot: " .. self.dialogue:getCurrentKnot())
+		Slab.Text("Visit Count: " .. self.dialogue:getKnotVisitCount(self.dialogue:getCurrentKnot()))
+		Slab.Unindent()
 
 		local _ = Slab.CheckBox(self.ui:isTextComplete(), "Is Text Complete")
 		if self.current_content then
 			Slab.Text("Current Content:")
-				Slab.Indent()
-				Slab.Text("Type: " .. self.current_content.type)
-				Slab.Text("Content: " .. (self.current_content.content or ""))
-				Slab.Text("Speaker: " .. (self.current_content.speaker or ""))
-				Slab.Unindent()
+			Slab.Indent()
+			Slab.Text("Type: " .. self.current_content.type)
+			Slab.Text("Content: " .. (self.current_content.content or ""))
+			Slab.Text("Speaker: " .. (self.current_content.speaker or ""))
+			Slab.Unindent()
 		end
 		Slab.EndWindow()
 	end
