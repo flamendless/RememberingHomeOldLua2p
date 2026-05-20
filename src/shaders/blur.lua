@@ -1,5 +1,5 @@
 local Blur = class({
-	name = "Blur",
+	name = Enums.shaders.blur,
 })
 
 function Blur:new(is_active)

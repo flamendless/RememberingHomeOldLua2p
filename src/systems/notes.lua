@@ -32,7 +32,7 @@ function NotesSystem:close_notes(not_close)
 		self.world:emit("on_leave_interact_or_inventory")
 	end
 	self.is_open = false
-	self.world:emit("set_post_process_effect", "Blur", false)
+	self.world:emit("set_post_process_effect", Enums.shaders.blur, false)
 	self.world:emit("destroy_key", "notes")
 	self.e_bg:destroy()
 	self.e_cursor:destroy()

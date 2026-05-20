@@ -20,17 +20,17 @@ function Pause:init(world)
 	local ww, wh = love.graphics.getDimensions()
 	self.canvas = love.graphics.newCanvas(ww, wh)
 	self.timer = timer(get_glitch_timer(), nil, function()
-		self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch", self.reset_after)
+		self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "do_random_glitch", self.reset_after)
 		self.timer:reset(get_glitch_timer())
 	end)
 end
 
 function Pause:create_pause_entities()
 	local ww, wh = love.graphics.getDimensions()
-	local ww2, wh2 = ww/2, wh/2
+	local ww2, wh2 = ww / 2, wh / 2
 	self.e_bg = Concord.entity(self.world):assemble(Assemblages.Pause.bg, ww2, wh2)
 	self.e_title = Concord.entity(self.world):assemble(Assemblages.Pause.text, ww2, wh2 - 64)
-	self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
+	self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "reset_glitch")
 
 	if #self.pool_choice ~= 0 then
 		return
@@ -68,7 +68,7 @@ function Pause:on_pause()
 		end
 		self:create_pause_entities()
 		self.world:__flush()
-		self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch", self.reset_after)
+		self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "do_random_glitch", self.reset_after)
 	else
 		for i, v in ipairs(self.world:getSystems()) do
 			v:setEnabled(self.prev[i])
@@ -80,13 +80,13 @@ function Pause:on_pause()
 	end
 
 	self.is_paused = not self.is_paused
-	self.world:emit("set_post_process_effect", "Blur", self.is_paused)
-	self.world:emit("set_post_process_effect", "Glitch", self.is_paused)
+	self.world:emit("set_post_process_effect", Enums.shaders.blur, self.is_paused)
+	self.world:emit("set_post_process_effect", Enums.shaders.glitch, self.is_paused)
 	Log.info("Paused:", self.is_paused)
 end
 
 Pause["on_list_cursor_update_" .. "pause_choices"] = function(self, e_hovered)
-	self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch", self.reset_after)
+	self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "do_random_glitch", self.reset_after)
 	for _, e in ipairs(self.pool_choice) do
 		if e ~= e_hovered then
 			local color = e.color.value

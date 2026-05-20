@@ -28,8 +28,8 @@ function Intro:state_setup()
 		ParticleSystems.RainIntro(Resources.data.images.rain_drop_tilted2, 128, w),
 	})
 	self.world:emit("setup_post_process", {
-		Shaders.NGrading("lut_afternoon"),
-		Shaders.NGrading("lut_afternoon", "lut_dusk", false),
+		Shaders.ngrading("lut_afternoon"),
+		Shaders.ngrading("lut_afternoon", "lut_dusk", false),
 	})
 
 	-- self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_intro"))
@@ -168,8 +168,8 @@ function Intro:state_init()
 			self.world:emit("set_ambiance", ambient_color)
 		end)
 
-		self.world:emit("set_post_process_effect", "NGrading", false)
-		self.world:emit("set_post_process_effect", "NGradingMulti", true)
+		self.world:emit("set_post_process_effect", Enums.shaders.ngrading, false)
+		self.world:emit("set_post_process_effect", Enums.shaders.ngrading_multi, true)
 		-- ngrading.status = 2
 		-- current_ngrading = ngrading.multi
 		-- Flux.to(ngrading, 15, {dt = 1})
@@ -246,7 +246,7 @@ function Intro:state_update(dt)
 	end
 
 	self.world:emit("parallax_move_x", dt, -1)
-	self.world:emit("ev_pp_invoke", "NGrading", "set_dt", dt)
+	self.world:emit("ev_pp_invoke", Enums.shaders.ngrading, "set_dt", dt)
 	self.world:emit("update", dt)
 end
 

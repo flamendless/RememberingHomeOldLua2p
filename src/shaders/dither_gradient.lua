@@ -1,5 +1,5 @@
 local DitherGradient = class({
-	name = "DitherGradient",
+	name = Enums.shaders.dither_gradient,
 })
 
 local ranges = {
@@ -71,44 +71,46 @@ function DitherGradient:update_values()
 	self.shader:send("u_offset", self.offset)
 end
 
-local opt_slider_int = {
-	ReturnOnText = false,
-	NumbersOnly = true,
-	Precision = 0,
-}
+if DEV then
+	local opt_slider_int = {
+		ReturnOnText = false,
+		NumbersOnly = true,
+		Precision = 0,
+	}
 
-local opt_slider_float = {
-	ReturnOnText = false,
-	NumbersOnly = true,
-	Precision = 2,
-}
+	local opt_slider_float = {
+		ReturnOnText = false,
+		NumbersOnly = true,
+		Precision = 2,
+	}
 
-function DitherGradient:debug_slider(id, val, min, max, opt)
-	Slab.Text(id)
-	Slab.SameLine()
-	if Slab.InputNumberSlider(id, val, min, max, opt) then
-		if not self[id] then
-			error("Assertion failed: self[id]")
+	function DitherGradient:debug_slider(id, val, min, max, opt)
+		Slab.Text(id)
+		Slab.SameLine()
+		if Slab.InputNumberSlider(id, val, min, max, opt) then
+			if not self[id] then
+				error("Assertion failed: self[id]")
+			end
+			self[id] = Slab.GetInputNumber()
+			self.shader:send("u_" .. id, self[id])
 		end
-		self[id] = Slab.GetInputNumber()
-		self.shader:send("u_" .. id, self[id])
-	end
-end
-
-function DitherGradient:debug_update(dt)
-	if not self.debug_show then
-		return
 	end
 
-	self.debug_show = Slab.BeginWindow("dither_gradient", {
-		Title = "DitherGradient",
-		IsOpen = self.debug_show,
-	})
-	self:debug_slider("depth", self.depth, ranges.depth.min, ranges.depth.max, opt_slider_int)
-	self:debug_slider("dither_size", self.dither_size, ranges.dither_size.min, ranges.dither_size.max, opt_slider_int)
-	self:debug_slider("contrast", self.contrast, ranges.contrast.min, ranges.contrast.max, opt_slider_float)
-	self:debug_slider("offset", self.offset, ranges.offset.min, ranges.offset.max, opt_slider_float)
-	Slab.EndWindow()
+	function DitherGradient:debug_update(dt)
+		if not self.debug_show then
+			return
+		end
+
+		self.debug_show = Slab.BeginWindow("dither_gradient", {
+			Title = self:type(),
+			IsOpen = self.debug_show,
+		})
+		self:debug_slider("depth", self.depth, ranges.depth.min, ranges.depth.max, opt_slider_int)
+		self:debug_slider("dither_size", self.dither_size, ranges.dither_size.min, ranges.dither_size.max, opt_slider_int)
+		self:debug_slider("contrast", self.contrast, ranges.contrast.min, ranges.contrast.max, opt_slider_float)
+		self:debug_slider("offset", self.offset, ranges.offset.min, ranges.offset.max, opt_slider_float)
+		Slab.EndWindow()
+	end
 end
 
 return DitherGradient

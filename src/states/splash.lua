@@ -11,7 +11,7 @@ function Splash:state_setup()
 	self.canvas = Canvas.create_main()
 	--TODO: (Brandon) maybe add glitch effect to other sub-splash screens?
 	self.world:emit("setup_post_process", {
-		Shaders.Glitch(),
+		Shaders.glitch(),
 	})
 end
 
@@ -21,22 +21,22 @@ function Splash:state_init()
 	end
 
 	self.timeline = TLE.Do(function()
-		self.world:emit("set_post_process_effect", "Glitch", true)
+		self.world:emit("set_post_process_effect", Enums.shaders.glitch, true)
 		self.current_state = Enums.splash_state.love
 		self:set_skippable_timer()
 		self:create_splash_love()
 		self:do_glitch(3, 2)
 		self.timeline:Pause()
 
-		self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
-		self.world:emit("set_post_process_effect", "Glitch", false)
+		self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "reset_glitch")
+		self.world:emit("set_post_process_effect", Enums.shaders.glitch, false)
 		self.current_state = Enums.splash_state.wits
 		self:set_skippable_timer()
 		self:create_splash_wits()
 		self.timeline:Pause()
 
-		self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
-		self.world:emit("set_post_process_effect", "Glitch", true)
+		self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "reset_glitch")
+		self.world:emit("set_post_process_effect", Enums.shaders.glitch, true)
 		self.current_state = Enums.splash_state.flam
 		self:set_skippable_timer()
 		self:create_splash_flamendless()
@@ -62,7 +62,7 @@ function Splash:create_splash_love()
 end
 
 function Splash:create_splash_wits()
-	self.world:emit("set_post_process_effect", "Glitch", false)
+	self.world:emit("set_post_process_effect", Enums.shaders.glitch, false)
 	local ww, wh = love.graphics.getDimensions()
 	self.splash_wits = Concord.entity(self.world)
 		:assemble(Assemblages.Common.animated_sprite, Animation.get("wits"), ww/2, wh/2)
@@ -132,12 +132,12 @@ function Splash:do_glitch(time, delay)
 		Timer.during(time, function()
 			local res = Lume.weightedchoice(c)
 			if res == "glitch" then
-				self.world:emit("ev_pp_invoke", "Glitch", "do_random_glitch")
+				self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "do_random_glitch")
 			elseif res == "reset" then
-				self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
+				self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "reset_glitch")
 			end
 		end, function()
-			self.world:emit("ev_pp_invoke", "Glitch", "reset_glitch")
+			self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "reset_glitch")
 		end)
 	end)
 end

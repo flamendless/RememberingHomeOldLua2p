@@ -62,4 +62,16 @@ Enums.bt.enemy = Enum("idle", "walk", "chase", "lean_back", "lean_return_back", 
 Enums.timeline = Enum("created", "playing", "paused", "killed")
 Enums.fade = Enum("none", "fade_in", "fade_out")
 
+Enums.shaders = Enum(
+	"blur",
+	"dissolve",
+	"dither_gradient",
+	"film_grain",
+	"glitch",
+	"motion_blur",
+	"ngrading",
+	"ngrading_multi",
+	"vignette_ex"
+)
+
 return Enums

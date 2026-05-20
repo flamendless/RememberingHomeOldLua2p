@@ -19,11 +19,11 @@ function LivingRoom:state_setup()
 	self.world:emit("create_room_bounds", w, h)
 	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
-		Shaders.NGrading("lut_dusk"),
-		Shaders.FilmGrain(),
-		Shaders.Blur(),
-		Shaders.DitherGradient(),
-		Shaders.Glitch(),
+		Shaders.ngrading("lut_dusk"),
+		Shaders.film_grain(),
+		Shaders.blur(),
+		Shaders.dither_gradient(),
+		Shaders.glitch(),
 	})
 
 	for _, v in pairs(Assemblages.LivingRoom.lights) do

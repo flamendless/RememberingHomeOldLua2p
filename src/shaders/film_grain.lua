@@ -1,5 +1,5 @@
 local FilmGrain = class({
-	name = "FilmGrain",
+	name = Enums.shaders.film_grain,
 })
 
 function FilmGrain:new()

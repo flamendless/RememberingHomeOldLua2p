@@ -19,7 +19,7 @@ local ranges = {
 function LoadingScreen.init()
 	local tex_dither = love.graphics.newImage("res/textures/bayer16.png")
 	local tex_palette = love.graphics.newImage("res/textures/pal_hollow.png")
-	shader = Shaders.DitherGradient(true, tex_dither, tex_palette)
+	shader = Shaders.dither_gradient(true, tex_dither, tex_palette)
 	canvas = love.graphics.newCanvas()
 end
 

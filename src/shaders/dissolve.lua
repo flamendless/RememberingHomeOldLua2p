@@ -1,5 +1,5 @@
 local Dissolve = class({
-	name = "Dissolve",
+	name = Enums.shaders.dissolve,
 })
 
 local function smootherstep(v)

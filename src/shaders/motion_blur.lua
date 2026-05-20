@@ -1,5 +1,5 @@
 local MotionBlur = class({
-	name = "MotionBlur",
+	name = Enums.shaders.motion_blur,
 })
 
 function MotionBlur:new(canvas, config)

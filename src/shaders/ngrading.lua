@@ -25,7 +25,7 @@
 ---------------------------------------------------------------------------
 
 local NGrading = class({
-	name = "NGrading",
+	name = Enums.shaders.ngrading,
 })
 
 local default_setting = { linear = true, dpiscale = 1 }
@@ -218,7 +218,7 @@ end
 
 function NGrading:get_type()
 	if self.is_multi then
-		return "NGradingMulti"
+		return Enums.shaders.ngrading_multi
 	end
 	return self:type()
 end

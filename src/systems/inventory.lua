@@ -77,7 +77,7 @@ function Inventory:close_inventory(not_close)
 	end
 	self.world:emit("destroy_list", "inventory_cells")
 	self.world:emit("destroy_list", "inventory_choices")
-	self.world:emit("set_post_process_effect", "Blur", false)
+	self.world:emit("set_post_process_effect", Enums.shaders.blur, false)
 end
 
 local added = false

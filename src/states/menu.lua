@@ -173,7 +173,7 @@ function Menu:state_setup()
 	self.camera:setWindow(0, 0, ww, wh)
 	self.canvases = {}
 	Canvas.init_canvases(self.canvases)
-	self.mb = Shaders.MotionBlur(self.canvases.main)
+	self.mb = Shaders.motion_blur(self.canvases.main)
 	self:setup_menu()
 end
 

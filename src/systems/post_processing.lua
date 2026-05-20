@@ -63,7 +63,9 @@ end
 
 function PostProcessing:update(dt)
 	for _, effect in ipairs(self.effects) do
-		effect.debug_show = effect.is_active
+		if DEV then
+			effect.debug_show = effect.is_active
+		end
 
 		if effect.update then
 			effect:update(dt)
@@ -72,9 +74,8 @@ function PostProcessing:update(dt)
 end
 
 function PostProcessing:apply_post_process(canvas)
-	if canvas:type() ~= "CustomCanvas" then
-		error('Assertion failed: canvas:type() == "CustomCanvas"')
-	end
+	assert(canvas:type() == "CustomCanvas")
+
 	love.graphics.setCanvas(self.buffer1.canvas)
 	love.graphics.clear()
 	canvas:render_n()

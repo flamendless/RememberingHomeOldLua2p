@@ -1,5 +1,5 @@
 local Glitch = class({
-	name = "Glitch",
+	name = Enums.shaders.glitch,
 })
 
 local debug_values = {
@@ -82,47 +82,49 @@ function Glitch:update(dt)
 	end
 end
 
-local opt_slider = {
-	ReturnOnText = false,
-	NumbersOnly = true,
-	Precision = 2,
-}
+if DEV then
+	local opt_slider = {
+		ReturnOnText = false,
+		NumbersOnly = true,
+		Precision = 2,
+	}
 
-function Glitch:debug_slider(id, min, max)
-	local val = debug_values[id]
-	Slab.Text(id)
-	Slab.SameLine()
-	if Slab.InputNumberSlider(id, val, min, max, opt_slider) then
-		local new_value = Slab.GetInputNumber()
-		debug_values[id] = new_value
-		self.shader:send(id, new_value)
+	function Glitch:debug_slider(id, min, max)
+		local val = debug_values[id]
+		Slab.Text(id)
+		Slab.SameLine()
+		if Slab.InputNumberSlider(id, val, min, max, opt_slider) then
+			local new_value = Slab.GetInputNumber()
+			debug_values[id] = new_value
+			self.shader:send(id, new_value)
+		end
 	end
-end
 
-function Glitch:debug_update(dt)
-	if not self.debug_show or not self.is_active then
-		return
+	function Glitch:debug_update(dt)
+		if not self.debug_show or not self.is_active then
+			return
+		end
+		self.debug_show = Slab.BeginWindow("glitch_shader", {
+			Title = self:type(),
+			IsOpen = self.debug_show,
+		})
+		self:debug_slider("u_dis_amount", 0, 0.1)
+		self:debug_slider("u_dis_size", 0.1, 2.0)
+		self:debug_slider("u_abb_amount_x", 0, 0.1)
+		self:debug_slider("u_abb_amount_y", 0, 0.1)
+		self:debug_slider("u_max_a", 0.1, 1.0)
+		if self.timer then
+			Slab.Text(self.timer:progress())
+		end
+		if Slab.Button("randomize") then
+			self:do_random_glitch()
+		end
+		Slab.SameLine()
+		if Slab.Button("reset") then
+			self:reset_glitch()
+		end
+		Slab.EndWindow()
 	end
-	self.debug_show = Slab.BeginWindow("glitch_shader", {
-		Title = "Glitch",
-		IsOpen = self.debug_show,
-	})
-	self:debug_slider("u_dis_amount", 0, 0.1)
-	self:debug_slider("u_dis_size", 0.1, 2.0)
-	self:debug_slider("u_abb_amount_x", 0, 0.1)
-	self:debug_slider("u_abb_amount_y", 0, 0.1)
-	self:debug_slider("u_max_a", 0.1, 1.0)
-	if self.timer then
-		Slab.Text(self.timer:progress())
-	end
-	if Slab.Button("randomize") then
-		self:do_random_glitch()
-	end
-	Slab.SameLine()
-	if Slab.Button("reset") then
-		self:reset_glitch()
-	end
-	Slab.EndWindow()
 end
 
 return Glitch

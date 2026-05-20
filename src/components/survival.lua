@@ -1,0 +1,1 @@
+Concord.component("splats")

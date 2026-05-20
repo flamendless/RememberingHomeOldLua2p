@@ -57,9 +57,9 @@ function Outside:state_setup()
 	self.world:emit("generate_fireflies")
 
 	self.world:emit("setup_post_process", {
-		Shaders.NGrading("lut_dusk"),
-		Shaders.Blur(),
-		Shaders.Glitch(),
+		Shaders.ngrading("lut_dusk"),
+		Shaders.blur(),
+		Shaders.glitch(),
 	})
 
 	--setup lights

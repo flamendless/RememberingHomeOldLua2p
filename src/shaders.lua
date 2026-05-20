@@ -9,6 +9,7 @@ Shaders.paths = {
 	film_grain = "shaders/film_grain.glsl",
 	fog = "shaders/fog.glsl",
 	glitch = "shaders/glitch.glsl",
+	vignette_ex = "shaders/vignette_ex.glsl",
 
 	ngrading = true,
 	ngrading_old = "shaders/ngrading_old.glsl",

@@ -287,6 +287,7 @@ ResourcesList.Office2 = {
 		{ "pause_bg", "res/textures/pause_bg.png" },
 		{ "bayer16", "res/textures/bayer16.png" },
 		{ "pal_hollow", "res/textures/pal_hollow.png" },
+		{ "vignette_part", "res/textures/vignette_part.png" },
 	},
 	array_images = {
 		{ "office2", "res/images/office2/office2.png" },
