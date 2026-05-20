@@ -28,9 +28,9 @@ function Survival:survival_on()
 	self.world:emit("set_post_process_effect", Enums.shaders.vignette_ex, true)
 	self.world:emit("ev_pp_invoke", Enums.shaders.vignette_ex, "survival_on", {
 		intensity = 0.75,
+		pulse_strength = 0.25,
 		panic = 0.75,
-		darkness = 0.75,
-		pulse_strength = 0.75,
+		darkness = 1,
 	})
 	self.prev_state = {}
 
