@@ -12,8 +12,7 @@ attribute vec4 u_lpos;
 attribute vec4 u_ldir;
 attribute vec3 u_diffuse;
 
-vec4 position(mat4 transform_projection, vec4 vertex_position)
-{
+vec4 position(mat4 transform_projection, vec4 vertex_position) {
 	u_ndc_p = (transform_projection * vec4(u_lpos.xy, 0.0, 1.0)).xy;
 	u_scale = u_lpos.w;
 	u_diff = u_diffuse;
@@ -29,8 +28,7 @@ vec4 position(mat4 transform_projection, vec4 vertex_position)
 uniform Image u_cb;
 uniform Image u_nb;
 
-vec4 effect(vec4 col, Image tex, vec2 uv, vec2 sc)
-{
+vec4 effect(vec4 col, Image tex, vec2 uv, vec2 sc) {
 	sc /= love_ScreenSize.xy;
 	vec2 ndc = (sc - vec2(0.5)) * 2.0;
 	vec3 c = Texel(u_cb, sc).xyz;

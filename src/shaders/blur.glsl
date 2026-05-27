@@ -1,7 +1,6 @@
 //https://github.com/Jam3/glsl-fast-gaussian-blur/blob/master/13.glsl
 
-vec4 effect(vec4 _, Image tex, vec2 uv, vec2 sc)
-{
+vec4 effect(vec4 _, Image tex, vec2 uv, vec2 sc) {
 	vec2 direction = vec2(1, 1);
 	vec4 color = vec4(0.0);
 	vec2 off1 = vec2(1.411764705882353) * direction;

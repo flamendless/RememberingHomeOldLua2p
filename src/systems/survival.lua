@@ -30,7 +30,7 @@ function Survival:survival_on()
 		intensity = 0.75,
 		pulse_strength = 0.25,
 		panic = 0.75,
-		darkness = 1,
+		darkness = 1.8,
 	})
 	self.prev_state = {}
 

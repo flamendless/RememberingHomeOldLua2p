@@ -3,8 +3,7 @@
 uniform float u_time;
 uniform float u_fog_speed;
 
-vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc)
-{
+vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
 	vec2 _uv = sc/256.;
 
 	_uv += vec2(u_time * u_fog_speed, -sin(u_time * u_fog_speed) * .001);

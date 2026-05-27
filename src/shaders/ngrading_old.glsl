@@ -1,7 +1,6 @@
 extern Image u_lut;
 
-vec4 ngrading(vec4 color)
-{
+vec4 ngrading(vec4 color) {
 	number cdim = cellDimensions.x * cellDimensions.y - 1.0;
 	number cw = cellPixels * cellDimensions.x;
 	// Sampling must be done at 0.5-increments
@@ -18,7 +17,6 @@ vec4 ngrading(vec4 color)
 	return vec4(mix(p1.rgb, p2.rgb, zf), color.a);
 }
 
-vec4 ngrading(Image tex, vec2 uv)
-{
+vec4 ngrading(Image tex, vec2 uv) {
 	return ngrading(Texel(tex, uv));
 }

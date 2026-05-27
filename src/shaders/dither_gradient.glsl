@@ -11,8 +11,7 @@ extern int u_dither_size;
 extern float u_contrast;
 extern float u_offset;
 
-vec4 effect(vec4 color, Image tex, vec2 uv, vec2 _)
-{
+vec4 effect(vec4 color, Image tex, vec2 uv, vec2 _) {
 	vec2 screen_size = love_ScreenSize.xy / float(u_dither_size);
 	vec2 screen_sample_uv = floor(uv * screen_size) / screen_size;
 	vec3 screen_col = Texel(tex, screen_sample_uv).rgb;

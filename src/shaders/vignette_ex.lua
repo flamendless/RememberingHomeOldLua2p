@@ -10,7 +10,10 @@ function VignetteEx:new(...)
 	self.pulse_strength = 0
 	self.darkness = 0
 	self.panic = 0
-	self.scale = 1
+	self.scale = 1.3
+	self.layers = 6
+	self.rot_speed = 0.2
+	self.noise_intensity = 0.2
 
 	--TODO: find a better texture
 	self.tex_splat = Resources.data.images.vignette_part
@@ -19,6 +22,8 @@ function VignetteEx:new(...)
 
 	self.shader = love.graphics.newShader(Shaders.paths.vignette_ex)
 	self.shader:send("tex_vignette", self.tex_splat)
+	self.shader:send("layers", self.layers)
+	self.shader:send("rot_speed", self.rot_speed)
 end
 
 function VignetteEx:survival_on(values)
@@ -38,6 +43,12 @@ function VignetteEx:update(dt)
 	self.shader:send("darkness", self.darkness)
 	self.shader:send("panic", self.panic)
 	self.shader:send("scale", self.scale)
+	self.shader:send("noise_intensity", self.noise_intensity)
+
+	if DEV then
+		self.shader:send("layers", self.layers)
+		self.shader:send("rot_speed", self.rot_speed)
+	end
 end
 
 if DEV then
@@ -58,8 +69,11 @@ if DEV then
 		self.intensity, _ = UIWrapper.edit_range("intensity", self.intensity, 0, 1, false)
 		self.pulse_strength, _ = UIWrapper.edit_range("pulse_strength", self.pulse_strength, 0, 1, false)
 		self.panic, _ = UIWrapper.edit_range("panic", self.panic, 0, 1, false)
-		self.darkness, _ = UIWrapper.edit_range("darkness", self.darkness, 0, 1, false)
+		self.darkness, _ = UIWrapper.edit_range("darkness", self.darkness, 0, 3, false)
 		self.scale, _ = UIWrapper.edit_range("scale", self.scale, 0.1, 5.0, false)
+		self.layers, _ = UIWrapper.edit_range("layers", self.layers, 1, 10, true)
+		self.rot_speed, _ = UIWrapper.edit_range("rot_speed", self.rot_speed, 0.1, 3, false)
+		self.noise_intensity, _ = UIWrapper.edit_range("noise_intensity", self.noise_intensity, 0.0, 2.0, false)
 
 		Slab.EndWindow()
 	end

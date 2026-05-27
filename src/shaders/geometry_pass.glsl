@@ -3,8 +3,7 @@
 varying vec4 u_world_pos;
 
 #ifdef VERTEX
-vec4 position(mat4 transform_projection, vec4 vertex_position)
-{
+vec4 position(mat4 transform_projection, vec4 vertex_position) {
 	u_world_pos = TransformMatrix * vertex_position;
 	return transform_projection * vertex_position;
 }
@@ -13,8 +12,7 @@ vec4 position(mat4 transform_projection, vec4 vertex_position)
 #ifdef PIXEL
 uniform ArrayImage MainTex;
 
-void effect()
-{
+void effect() {
 	vec4 n = Texel(MainTex, vec3(VaryingTexCoord.xy, 1.0));
 	vec4 c = Texel(MainTex, vec3(VaryingTexCoord.xy, 0.0));
 	if(c.a == 0.0) discard;
