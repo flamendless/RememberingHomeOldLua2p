@@ -10,10 +10,12 @@ function VignetteEx:new(...)
 	self.pulse_strength = 0
 	self.darkness = 0
 	self.panic = 0
+	self.scale = 1
 
 	--TODO: find a better texture
 	self.tex_splat = Resources.data.images.vignette_part
 	self.tex_splat:setFilter("nearest", "nearest")
+	self.tex_splat:setWrap("clampzero", "clampzero")
 
 	self.shader = love.graphics.newShader(Shaders.paths.vignette_ex)
 	self.shader:send("tex_vignette", self.tex_splat)
@@ -35,6 +37,7 @@ function VignetteEx:update(dt)
 	self.shader:send("pulse_strength", self.pulse_strength)
 	self.shader:send("darkness", self.darkness)
 	self.shader:send("panic", self.panic)
+	self.shader:send("scale", self.scale)
 end
 
 if DEV then
@@ -56,6 +59,7 @@ if DEV then
 		self.pulse_strength, _ = UIWrapper.edit_range("pulse_strength", self.pulse_strength, 0, 1, false)
 		self.panic, _ = UIWrapper.edit_range("panic", self.panic, 0, 1, false)
 		self.darkness, _ = UIWrapper.edit_range("darkness", self.darkness, 0, 1, false)
+		self.scale, _ = UIWrapper.edit_range("scale", self.scale, 0.1, 5.0, false)
 
 		Slab.EndWindow()
 	end
