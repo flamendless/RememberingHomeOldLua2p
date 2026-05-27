@@ -4,16 +4,8 @@ local VignetteEx = class({
 
 function VignetteEx:new(...)
 	self.is_active = false
-
-	self.time = 0
-	self.intensity = 0
-	self.pulse_strength = 0
-	self.darkness = 0
-	self.panic = 0
-	self.scale = 1.3
-	self.layers = 6
-	self.rot_speed = 0.2
-	self.noise_intensity = 0.2
+	self.effects = tablex.copy(Data.Vignette.values.zero)
+	self.effects.time = 0
 
 	--TODO: find a better texture
 	self.tex_splat = Resources.data.images.vignette_part
@@ -22,32 +14,25 @@ function VignetteEx:new(...)
 
 	self.shader = love.graphics.newShader(Shaders.paths.vignette_ex)
 	self.shader:send("tex_vignette", self.tex_splat)
-	self.shader:send("layers", self.layers)
-	self.shader:send("rot_speed", self.rot_speed)
+	self.shader:send("layers", self.effects.layers)
+	self.shader:send("rot_speed", self.effects.rot_speed)
 end
 
-function VignetteEx:survival_on(values)
+function VignetteEx:update_effects(values)
 	assert(type(values) == "table")
-	self.intensity = math.max(0, math.min(1, values.intensity or self.intensity))
-	self.panic = math.max(0, math.min(1, values.panic or self.panic))
-	self.darkness = values.darkness or self.darkness
-	self.pulse_strength = values.pulse_strength or self.pulse_strength
+	for k, v in pairs(values) do
+		if self.effects[k] == nil then
+			error("attempt to set non-existing field " .. k)
+		end
+		self.effects[k] = v
+	end
 end
 
 function VignetteEx:update(dt)
 	if not self.is_active then return end
-	self.time = self.time + dt
-	self.shader:send("time", self.time)
-	self.shader:send("intensity", self.intensity)
-	self.shader:send("pulse_strength", self.pulse_strength)
-	self.shader:send("darkness", self.darkness)
-	self.shader:send("panic", self.panic)
-	self.shader:send("scale", self.scale)
-	self.shader:send("noise_intensity", self.noise_intensity)
-
-	if DEV then
-		self.shader:send("layers", self.layers)
-		self.shader:send("rot_speed", self.rot_speed)
+	self.effects.time = self.effects.time + dt
+	for k, v in pairs(self.effects) do
+		self.shader:send(k, v)
 	end
 end
 
@@ -63,17 +48,29 @@ if DEV then
 
 		Slab.Text("Time")
 		Slab.SameLine()
-		UIWrapper.edit_number("time", self.time, false)
+		UIWrapper.edit_number("time", self.effects.time, false)
 
 		local _
-		self.intensity, _ = UIWrapper.edit_range("intensity", self.intensity, 0, 1, false)
-		self.pulse_strength, _ = UIWrapper.edit_range("pulse_strength", self.pulse_strength, 0, 1, false)
-		self.panic, _ = UIWrapper.edit_range("panic", self.panic, 0, 1, false)
-		self.darkness, _ = UIWrapper.edit_range("darkness", self.darkness, 0, 3, false)
-		self.scale, _ = UIWrapper.edit_range("scale", self.scale, 0.1, 5.0, false)
-		self.layers, _ = UIWrapper.edit_range("layers", self.layers, 1, 10, true)
-		self.rot_speed, _ = UIWrapper.edit_range("rot_speed", self.rot_speed, 0.1, 3, false)
-		self.noise_intensity, _ = UIWrapper.edit_range("noise_intensity", self.noise_intensity, 0.0, 2.0, false)
+		self.effects.intensity, _ = UIWrapper.edit_range("intensity", self.effects.intensity, 0, 1, false)
+		self.effects.pulse_strength, _ = UIWrapper.edit_range("pulse_strength", self.effects.pulse_strength, 0, 1, false)
+		self.effects.darkness, _ = UIWrapper.edit_range("darkness", self.effects.darkness, 0, 3, false)
+		self.effects.panic, _ = UIWrapper.edit_range("panic", self.effects.panic, 0, 1, false)
+		self.effects.scale, _ = UIWrapper.edit_range("scale", self.effects.scale, 0.1, 5.0, false)
+		self.effects.layers, _ = UIWrapper.edit_range("layers", self.effects.layers, 1, 10, true)
+		self.effects.rot_speed, _ = UIWrapper.edit_range("rot_speed", self.effects.rot_speed, 0.1, 3, false)
+		self.effects.noise_intensity, _ = UIWrapper.edit_range("noise_intensity", self.effects.noise_intensity, 0.0, 2.0,
+			false)
+
+		if Slab.Button("Print") then
+			print("intensity", self.effects.intensity)
+			print("pulse_strength", self.effects.pulse_strength)
+			print("darkness", self.effects.darkness)
+			print("panic", self.effects.panic)
+			print("scale", self.effects.scale)
+			print("layers", self.effects.layers)
+			print("rot_speed", self.effects.rot_speed)
+			print("noise_intensity", self.effects.noise_intensity)
+		end
 
 		Slab.EndWindow()
 	end

@@ -66,7 +66,8 @@ Data = {
 	Lights = require("data.lights"),
 	Notes = require("data.notes"),
 	PlayerSpawnPoints = require("data.player_spawn_points"),
-	ResourcesList = require("data.resources_list")
+	ResourcesList = require("data.resources_list"),
+	Vignette = require("data.vignette"),
 }
 
 Renderers = {

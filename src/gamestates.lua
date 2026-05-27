@@ -62,7 +62,7 @@ function GameStates.start(resources)
 			flicker_sync = true,
 		}
 
-		GameStates.world.beforeEmit = function(world, event)
+		GameStates.world.beforeEmit = function(world, event, ...)
 			if
 				blacklisted[event] or
 				stringx.starts_with(event, "debug_") or
@@ -71,7 +71,7 @@ function GameStates.start(resources)
 			then
 				return
 			end
-			Log.trace("Emitted", event)
+			Log.trace("Emitted", event, ...)
 		end
 	end
 

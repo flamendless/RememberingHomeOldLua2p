@@ -1,5 +1,6 @@
 local Enums = {
 	bt = {},
+	ordered = {}
 }
 
 Enums.mode = Enum("fill", "line")
@@ -73,5 +74,25 @@ Enums.shaders = Enum(
 	"ngrading_multi",
 	"vignette_ex"
 )
+
+Enums.survival_state = Enum(
+	"normal",
+	"engaged",
+	"okayish",
+	"warning",
+	"critical",
+	"dead"
+)
+
+if DEV then
+	Enums.ordered.survival_state = {
+		Enums.survival_state.normal,
+		Enums.survival_state.engaged,
+		Enums.survival_state.okayish,
+		Enums.survival_state.warning,
+		Enums.survival_state.critical,
+		Enums.survival_state.dead,
+	}
+end
 
 return Enums

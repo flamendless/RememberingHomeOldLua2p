@@ -12,26 +12,38 @@ local Survival = Concord.system()
 function Survival:init(world)
 	self.world = world
 
-	self.state = false
+	self.state = Enums.survival_state.normal
+	self.is_active = false
 end
 
 function Survival:survival_toggle()
-	if self.state then
+	if self.is_active then
 		self:survival_off()
 	else
 		self:survival_on()
+		self.state = Enums.survival_state.engaged
+		self.world:emit("update_survival_effects", self.state)
 	end
 end
 
+function Survival:update_survival_effects(state)
+	assert(Enums.survival_state[state])
+	if state == Enums.survival_state.dead then
+		TODO("player dead")
+
+	elseif state == Enums.survival_state.normal then
+		self.world:emit("ev_pp_invoke", Enums.shaders.vignette_ex, "update_effects", Data.Vignette.values.zero)
+
+	else
+		self.world:emit("ev_pp_invoke", Enums.shaders.vignette_ex, "update_effects",Data.Vignette.values[self.state])
+	end
+end
+
+
 function Survival:survival_on()
-	self.state = true
+	self.is_active = true
 	self.world:emit("set_post_process_effect", Enums.shaders.vignette_ex, true)
-	self.world:emit("ev_pp_invoke", Enums.shaders.vignette_ex, "survival_on", {
-		intensity = 0.75,
-		pulse_strength = 0.25,
-		panic = 0.75,
-		darkness = 1.8,
-	})
+	-- self.world:emit("ev_pp_invoke", Enums.shaders.vignette_ex, "survival_on")
 	self.prev_state = {}
 
 	-- self.world:emit("shutdown_lights")
@@ -66,7 +78,7 @@ function Survival:survival_on()
 end
 
 function Survival:survival_off()
-	self.state = false
+	self.is_active = false
 
 	local e_player = self.world:getResource("e_player")
 	assert(e_player)
@@ -85,14 +97,14 @@ function Survival:survival_off()
 end
 
 function Survival:update(dt)
-	if not self.state then return end
+	if not self.is_active then return end
 	if self.timer_open_flashlight then
 		self.timer_open_flashlight:update(dt)
 	end
 end
 
 function Survival:draw()
-	if not self.state then return end
+	if not self.is_active then return end
 end
 
 if DEV then
@@ -103,13 +115,25 @@ if DEV then
 			Title = "Survival",
 			IsOpen = self.debug_show,
 		})
-		if Slab.CheckBox(self.state, "state") then
-			self.state = not self.state
-			if self.state then
+		if Slab.CheckBox(self.is_active, "state") then
+			self.is_active = not self.is_active
+			if self.is_active then
 				self:survival_on()
 			else
 				self:survival_off()
 			end
+		end
+
+		Slab.Text("State: " .. self.state)
+		if Slab.BeginComboBox("state", { Selected = self.state }) then
+			for _, v in ipairs(Enums.ordered.survival_state) do
+				if Slab.TextSelectable(v) then
+					self.state = v
+					self.world:emit("update_survival_effects", self.state)
+					break
+				end
+			end
+			Slab.EndComboBox()
 		end
 
 		if self.timer_open_flashlight then
