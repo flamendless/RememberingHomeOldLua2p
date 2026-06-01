@@ -60,6 +60,7 @@ function GameStates.start(resources)
 			update_light_dir = true,
 			update_light_diffuse = true,
 			flicker_sync = true,
+			set_camera_transform = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event, ...)

@@ -208,6 +208,9 @@ function DevTools.draw_stats()
 	local mem = collectgarbage("count")
 	Slab.Text("Mem (KB): " .. math.floor(mem * 10) / 10)
 
+	local _ = nil
+	GAME_SPEED_MULT, _ = UIWrapper.edit_range("Global Speed", GAME_SPEED_MULT, 1, 5, true)
+
 	for k, v in pairs(stats.stats) do
 		Slab.Text(k .. ": " .. v)
 	end

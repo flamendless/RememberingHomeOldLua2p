@@ -96,6 +96,18 @@ Concord.component("quad_transform", function(c, rotation, sx, sy, ox, oy, kx, ky
 	c.orig_sy = c.sy
 end)
 
+-- INFO: fake pulsing/animation via scale manipulation
+Concord.component("fake_pulse", function(c, sx, sy, speed)
+	assert(type(sx) == "number")
+	assert(type(sy) == "number")
+	assert(type(speed) == "number")
+	c.sx = sx
+	c.sy = sy
+	c.speed = speed
+	c.dirx = 1
+	c.diry = 1
+end)
+
 Concord.component("depth_zoom", function(c, zoom_factor)
 	if type(zoom_factor) ~= "number" then
 		error('Assertion failed: type(zoom_factor) == "number"')

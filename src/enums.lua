@@ -84,6 +84,19 @@ Enums.survival_state = Enum(
 	"dead"
 )
 
+Enums.tutorial_step = Enum(
+	"waiting",
+	"interact",
+	"walk_right",
+	"flashlight_toggle",
+	"walk_left"
+)
+
+Enums.show_keys = Enum(
+	"dialogue",
+	"inventory"
+)
+
 if DEV then
 	Enums.ordered.survival_state = {
 		Enums.survival_state.normal,

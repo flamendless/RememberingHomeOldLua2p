@@ -202,7 +202,7 @@ Inventory["on_list_item_interact_" .. "inventory_cells"] = function(self, e_hove
 		local alpha_range = e.alpha_range
 		e.color.value[4] = alpha_range.max
 	end
-	self.world:emit("show_key", "inventory", false)
+	self.world:emit("show_key", Enums.show_keys.inventory, false)
 	self.world:emit("set_focus_list", "inventory_choices")
 	self.in_choices = true
 end
@@ -220,7 +220,7 @@ Inventory["on_list_item_interact_" .. "inventory_choices"] = function(self, e_ho
 			e.color.value[4] = alpha_range.min
 		end
 		self.world:emit("set_focus_list", "inventory_cells")
-		self.world:emit("show_key", "inventory", true)
+		self.world:emit("show_key", Enums.show_keys.inventory, true)
 		self.in_choices = false
 	end
 end

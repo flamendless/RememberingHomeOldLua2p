@@ -54,7 +54,11 @@ function love.conf(t)
 	t.modules.video = false
 	t.modules.window = true
 
-	t.window.title = "Remembering Home"
+	local prefix = ""
+	if DEV then prefix = "[DEV] " end
+	if PROF then prefix = prefix .. "[PROF] " end
+
+	t.window.title = prefix .. "Remembering Home"
 	t.window.width = 1024
 	t.window.height = 640
 	t.window.resizable = false
@@ -63,5 +67,7 @@ function love.conf(t)
 	t.identity = "rememberinghome"
 	t.version = "11.5"
 
-	t.console = true
+	if DEV or PROF then
+		t.console = true
+	end
 end

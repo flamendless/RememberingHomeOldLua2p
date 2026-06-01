@@ -1,3 +1,5 @@
+GAME_SPEED_MULT = 1
+
 if DEV then
 	love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")
 	local os = love.system.getOS()

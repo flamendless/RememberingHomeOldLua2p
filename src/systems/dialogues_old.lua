@@ -49,7 +49,7 @@ function DialoguesSystem:create_tle()
 				end
 
 				if handle_self then
-					self.world:emit("show_key", "dialogue", true)
+					self.world:emit("show_key", Enums.show_keys.dialogue, true)
 					self.e_dialogue:remove("text_can_proceed"):remove("hidden"):give("text", current_line)
 				end
 
@@ -171,7 +171,7 @@ function DialoguesSystem:on_dialogue_reached_end(e)
 				:remove("item_id")
 				:remove("has_choices")
 		end
-		self.world:emit("show_key", "dialogue", false)
+		self.world:emit("show_key", Enums.show_keys.dialogue, false)
 	end
 	self.timeline:Pause()
 end

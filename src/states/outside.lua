@@ -5,6 +5,7 @@ local Outside = Concord.system({
 })
 
 local function tle_log(msg)
+	assert(type(msg) == "string")
 	local str = string.format("TLE: %s", msg)
 	Log.debug(str)
 end
@@ -99,9 +100,10 @@ function Outside:state_setup()
 end
 
 function Outside:state_init()
-	if DEV then
-		Fade.set_alpha(0)
-	end
+	-- if DEV then
+	-- 	Fade.set_alpha(0)
+	-- end
+
 	if self.prev_id == "StorageRoom" then
 		self.world:emit("spawn_player", function(e_player)
 			self.world:emit("toggle_component", e_player, "can_move", true)
@@ -123,26 +125,34 @@ function Outside:state_init()
 		return
 	end
 
-	if Save.data.outside_intro_done then
-		return
-	end
+	-- if Save.data.outside_intro_done then
+	-- 	return
+	-- end
 
 	--TEST
-	if DEV then
-		self.world:emit("spawn_player", function(e_player)
-			e_player:give("color_fade_in", 0.25)
-			self.world:emit("toggle_component", e_player, "can_move", true)
-			self.world:emit("toggle_component", e_player, "can_interact", true)
-			self.world:emit("toggle_component", e_player, "can_run", true)
-			self.world:emit("camera_follow", e_player, 0.25)
-			self.camera:setScale(3)
-			self.camera:setPosition(e_player.pos.x, e_player.pos.y)
-			self.e_player = e_player
-		end)
-	end
+	-- if DEV then
+	-- 	self.world:emit("spawn_player", function(e_player)
+	-- 		e_player:give("color_fade_in", 0.25)
+	-- 		self.world:emit("toggle_component", e_player, "can_move", true)
+	-- 		self.world:emit("toggle_component", e_player, "can_interact", true)
+	-- 		self.world:emit("toggle_component", e_player, "can_run", true)
+	-- 		self.world:emit("camera_follow", e_player, 0.25)
+	-- 		self.camera:setScale(3)
+	-- 		self.camera:setPosition(e_player.pos.x, e_player.pos.y)
+	-- 		self.e_player = e_player
+	-- 	end)
+	-- end
 
 	self.timeline = TLE.Do(function()
-		self.timeline:Pause()
+		-- INFO: Only do if in tutorial
+		if not Settings.current.tutorial then
+			tle_log("not in tutorial. skipping intro animations")
+			return
+		end
+
+		-- if DEV then
+		-- 	self.timeline:Pause()
+		-- end
 
 		Fade.set_alpha(0)
 		self.is_raining = true
@@ -205,6 +215,7 @@ function Outside:state_init()
 		self.world:emit("spawn_player", function(e)
 			e_player = e
 			e_player:give("color_fade_in", 0.25)
+			e_player:give("hidden")
 		end)
 		dt_cam.x, dt_cam.y = self.camera:getPosition()
 		dt_cam.scale = self.camera:getScale()
@@ -218,8 +229,7 @@ function Outside:state_init()
 			end)
 			:oncomplete(function()
 				self.world:emit("camera_follow", e_player, dur_camera_follow)
-				self.world:emit("toggle_component", e_player, "can_move", true)
-				self.world:emit("toggle_component", e_player, "can_interact", true)
+				self.world:emit("tutorial_step_set", Enums.tutorial_step.interact)
 			end)
 		self.timeline:Pause()
 	end)
@@ -296,9 +306,10 @@ function Outside:start_rain_fade()
 			self.ps2.system:stop()
 			tle_log("splashes stopped")
 
-			tle_log("fireflies start")
-			self.world:emit("show_fireflies", 5)
-			self.world:emit("move_fireflies")
+			-- TODO: fix this
+			-- tle_log("fireflies start")
+			-- self.world:emit("show_fireflies", 5)
+			-- self.world:emit("move_fireflies")
 			self.timeline:Unpause()
 
 			self.world:emit("cleanup_rain")

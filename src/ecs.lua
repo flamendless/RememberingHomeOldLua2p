@@ -98,6 +98,7 @@ state_systems.Outside = {
 	"path",
 	"fireflies",
 	"text_paint",
+	"tutorial",
 }
 
 state_systems.StorageRoom = {

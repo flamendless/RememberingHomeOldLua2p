@@ -5,6 +5,7 @@ local defaults = {
 	volume = 100,
 	graphics_quality = "low",
 	show_keys = true,
+	tutorial = true,
 }
 
 local Settings = {
@@ -17,6 +18,12 @@ local filename = "user_settings"
 function Settings.init()
 	local content, exists = Utils.serial.read(filename)
 	if exists then
+		for k, v in pairs(defaults) do
+			if content[k] == nil then
+				Log.warn(k, "setting key is in code's defaults but not in the existing saved settings file. Resolving by setting it to content with value", v)
+				content[k] = v
+			end
+		end
 		Settings.current = content
 		pretty.print(Settings.current)
 	else

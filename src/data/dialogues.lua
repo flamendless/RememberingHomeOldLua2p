@@ -168,4 +168,24 @@ Dialogues.office2 = {
 	fin = {},
 }
 
+for k, v in pairs(Dialogues) do
+	if not DEV then
+		if not v.start then
+			error("release mode? make sure it has start node " .. k)
+		end
+		if not v.fin then
+			error("release mode? make sure it has fin node " .. k)
+		end
+	end
+
+	if not v.start then
+		print("adding start node for", k)
+		v.start = {}
+	end
+	if not v.fin then
+		print("adding fin node for", k)
+		v.fin = {}
+	end
+end
+
 return Dialogues

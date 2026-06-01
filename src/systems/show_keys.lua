@@ -1,7 +1,9 @@
 local ShowKeys = Concord.system()
 
-local function Assemble(e, key)
-	e:give("atlas", Atlases.AtlasKeys.frames[key]):give("sprite", "atlas_keys"):give("ui_element")
+local function asm(e, key)
+	e:give("atlas", Atlases.AtlasKeys.frames[key])
+	:give("sprite", "atlas_keys")
+	:give("ui_element")
 end
 
 function ShowKeys:init(world)
@@ -11,15 +13,13 @@ function ShowKeys:init(world)
 end
 
 function ShowKeys:create_key_with_text(id, txt, key)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(txt) ~= "string" then
-		error('Assertion failed: type(txt) == "string"')
-	end
+	assert(type(id) == "string")
+	assert(type(txt) == "string")
+	assert(type(key) == "string")
+
 	local ww, wh = love.graphics.getDimensions()
 	self.keys[id] = Concord.entity(self.world)
-		:assemble(Assemble, key)
+		:assemble(asm, key)
 		:give("id", "key_" .. id)
 		:give("pos", ww - 8, wh - 8)
 		:give("transform", 0, 1, 1, 0.5, 1)
@@ -60,33 +60,26 @@ function ShowKeys:create_notes_key()
 end
 
 function ShowKeys:create_dialogue_key()
-	if not Settings.current.show_keys then
-		return
-	end
+	if not Settings.current.show_keys then return end
 	local w, h = love.graphics.getDimensions()
 	self.keys.dialogue = Concord.entity(self.world)
-		:assemble(Assemble, Inputs.rev_map.interact)
+		:assemble(asm, Inputs.rev_map.interact)
 		:give("id", "dialogue_proceed_key")
 		:give("pos", w - 8, h - 8)
-		:give("quad_transform", 0, 3, 3, 1, 1)
+		:give("quad_transform", 0, 2, 2, 0.5, 0.5)
+		:give("fake_pulse", 3, 3, 0.5)
 		:give("color", { 1, 1, 1, 1 })
 		:give("hidden")
 end
 
 function ShowKeys:show_key(id, bool)
-	if not Settings.current.show_keys then
-		return
-	end
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
-	end
+	if not Settings.current.show_keys then return end
+	assert(Enums.show_keys[id], id)
+	assert(type(bool) == "boolean")
+
 	local e = self.keys[id]
-	if e == nil then
-		error("Assertion failed: e ~= nil")
-	end
+	assert(e ~= nil, id)
+
 	if not bool then
 		e:give("hidden")
 	else
@@ -103,6 +96,18 @@ function ShowKeys:show_key(id, bool)
 	end
 end
 
+function ShowKeys:show_key_at(id, bool, pos)
+	if not Settings.current.show_keys then return end
+	assert(Enums.show_keys[id], id)
+	assert(type(bool) == "boolean")
+	assert(pos:type() == "vec2")
+
+	local e = self.keys[id]
+	e.pos.x = pos.x
+	e.pos.y = pos.y
+	self:show_key(id, bool)
+end
+
 function ShowKeys:destroy_key(id)
 	self.keys[id]:destroy()
 	local t = self.texts[id]
@@ -110,6 +115,31 @@ function ShowKeys:destroy_key(id)
 		t:destroy()
 	end
 	self.world:__flush()
+end
+
+function ShowKeys:update(dt)
+	if not Settings.current.show_keys then return end
+	for _, e in pairs(self.keys) do
+		if not e.hidden then
+			local qt = e.quad_transform
+			local fp = e.fake_pulse
+
+			if qt.sx > fp.sx then
+				fp.dirx = -1
+			elseif qt.sx < qt.orig_sx then
+				fp.dirx = 1
+			end
+
+			if qt.sy > fp.sy then
+				fp.diry = -1
+			elseif qt.sy < qt.orig_sy then
+				fp.diry = 1
+			end
+
+			qt.sx = qt.sx + dt * fp.dirx * fp.speed
+			qt.sy = qt.sy + dt * fp.diry * fp.speed
+		end
+	end
 end
 
 return ShowKeys

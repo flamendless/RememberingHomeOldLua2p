@@ -230,7 +230,7 @@ function Intro:state_update(dt)
 		self.world:emit("resume_timeline")
 	end
 
-	if (Save.data.intro_done or true) and not self.is_switching and Inputs.pressed("interact") then
+	if (Save.data.intro_done or DEV) and not self.is_switching and Inputs.pressed("interact") then
 		self.world:emit("destroy_key", "skip")
 		Fade.fade_out(function()
 			Save.toggle_flag("intro_done", true)

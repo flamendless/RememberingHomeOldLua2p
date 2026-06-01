@@ -19,12 +19,8 @@ local font = love.graphics.newFont("res/fonts/Jamboree.ttf", 32)
 font:setFilter("nearest", "nearest")
 
 local mode = "RELEASE"
-if DEV then
-	mode = "DEV"
-end
-if PROF then
-	mode = mode .. " PROF"
-end
+if DEV then mode = "DEV" end
+if PROF then mode = mode .. " PROF" end
 
 function love.load()
 	Log.info("Starting... Game Version:", Config.this_version)
@@ -51,14 +47,14 @@ function love.load()
 	-- GameStates.switch("Splash")
 	-- GameStates.switch("Menu")
 	-- GameStates.switch("Intro")
-	-- GameStates.switch("Outside")
+	GameStates.switch("Outside")
 	-- GameStates.switch("StorageRoom")
 	-- GameStates.switch("UtilityRoom")
 	-- GameStates.switch("Kitchen")
 	-- GameStates.switch("LivingRoom")
 	-- GameStates.switch("TotallyDarkRoom")
 	-- GameStates.switch("Office1")
-	GameStates.switch("Office2")
+	-- GameStates.switch("Office2")
 
 	DevTools.init()
 end
@@ -162,7 +158,7 @@ function love.run()
 		end
 
 		if love.update then
-			love.update(dt)
+			love.update(dt * GAME_SPEED_MULT)
 		end
 
 		if love.graphics and love.graphics.isActive() then
