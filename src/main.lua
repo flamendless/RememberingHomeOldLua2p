@@ -18,6 +18,14 @@ love.errhand = ErrorHandler.callback
 local font = love.graphics.newFont("res/fonts/Jamboree.ttf", 32)
 font:setFilter("nearest", "nearest")
 
+local mode = "RELEASE"
+if DEV then
+	mode = "DEV"
+end
+if PROF then
+	mode = mode .. " PROF"
+end
+
 function love.load()
 	Log.info("Starting... Game Version:", Config.this_version)
 	Log.info('Commit: "v2026-01-02.020dc1c"')
@@ -56,6 +64,8 @@ function love.load()
 end
 
 function love.update(dt)
+	JPROF.push("frame")
+
 	if DevTools.pause then
 		return
 	end
@@ -83,25 +93,30 @@ function love.draw()
 	end
 
 	if DEV then
+		JPROF.push("dev draw")
 		DevTools.draw()
 		love.graphics.setColor(1, 0, 0, 1)
 		if DevTools.show_fps then
 			love.graphics.setFont(font)
-			love.graphics.print(love.timer.getFPS())
-			love.graphics.print("dev", love.graphics.getWidth() - font:getWidth("dev"))
+			love.graphics.print(mode)
 		end
+
 		if DevTools.pause then
 			local ww, wh = love.graphics.getDimensions()
 			love.graphics.setFont(font)
-			love.graphics.printf("PAUSED", 0, wh/2, ww, "center")
+			love.graphics.printf("DEV PAUSED", 0, wh/2, ww, "center")
 		end
 		DevTools.end_draw()
+		JPROF.pop("dev draw")
 	end
+
+	JPROF.pop("frame")
 end
 
 function love.quit()
-	Lily.quit()
 	Log.info("Quitting...")
+	Lily.quit()
+	JPROF.write("prof.mpack")
 end
 
 function love.run()

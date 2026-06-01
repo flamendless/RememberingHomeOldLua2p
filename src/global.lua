@@ -10,6 +10,9 @@ if DEV then
 	print("Loaded luajit modules for ", os)
 end
 
+if PROF then PROF_CAPTURE = true end
+JPROF = require("modules.jprof.jprof")
+
 UTF8 = require("utf8")
 FFI = require("ffi")
 Socket = require("socket")

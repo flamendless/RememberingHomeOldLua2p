@@ -197,7 +197,7 @@ function profile()
 {
 	data=prof
 	dir_output=output_dev
-	run && prof_viewer
+	love "$dir_source" --dev --prof --git="$(git rev-parse --verify HEAD)" && prof_viewer
 }
 
 function prof_viewer()
@@ -205,6 +205,9 @@ function prof_viewer()
 	if [ $(uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/ip') ]; then
 		echo "This is Windows WSL!"
 		./build_win.sh prof_viewer
+	elif [[ $(uname) == "Darwin" ]]; then
+		echo "This is MacOS"
+		love modules/jprof rememberinghome prof.mpack
 	else
 		echo "This is Linux"
 		love modules/jprof rememberinghome prof.mpack

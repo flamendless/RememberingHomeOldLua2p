@@ -1,4 +1,5 @@
 DEV = false
+PROF = false
 GIT_COMMIT = ""
 
 local stringx = require("modules.batteries.stringx")
@@ -8,6 +9,8 @@ for _, v in pairs(args) do
 	if #arg >= 0 then
 		if arg[1] == "--dev" then
 			DEV = true
+		elseif arg[1] == "--prof" then
+			PROF = true
 		elseif arg[1] == "--git" then
 			GIT_COMMIT = arg[2]
 		end

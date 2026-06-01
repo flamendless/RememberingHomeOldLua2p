@@ -111,14 +111,18 @@ function GameStates.update(dt)
 	if not GameStates.is_ready then
 		return
 	end
+	JPROF.push("gs state update")
 	GameStates.world:emit("state_update", dt)
+	JPROF.pop("gs state update")
 end
 
 function GameStates.draw()
 	if not GameStates.is_ready then
 		return
 	end
+	JPROF.push("gs state draw")
 	GameStates.world:emit("state_draw")
+	JPROF.pop("gs state draw")
 end
 
 function GameStates.keypressed(key)

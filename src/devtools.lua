@@ -36,7 +36,7 @@ local DevTools = {
 local slab_components
 
 local stats = {
-	show = false,
+	show = true,
 	exclude_slab = true,
 	stats = {},
 	title = "Stats",
@@ -204,6 +204,10 @@ function DevTools.draw_stats()
 		stats.exclude_slab = not stats.exclude_slab
 	end
 	Slab.Text("FPS: " .. getFPS())
+
+	local mem = collectgarbage("count")
+	Slab.Text("Mem (KB): " .. math.floor(mem * 10) / 10)
+
 	for k, v in pairs(stats.stats) do
 		Slab.Text(k .. ": " .. v)
 	end
