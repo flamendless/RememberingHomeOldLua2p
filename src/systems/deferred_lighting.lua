@@ -440,6 +440,14 @@ if DEV then
 	}
 	local cache = {}
 
+	function DeferredLighting:dev_deffered_lighting_full_light()
+		local ac = self.ambiance
+		ac[1] = 1
+		ac[2] = 1
+		ac[3] = 1
+		ac[4] = 1
+	end
+
 	function DeferredLighting:debug_on_toggle(event)
 		if event ~= "deferred_lighting" then return end
 		self.debug_show = not self.debug_show
@@ -453,12 +461,19 @@ if DEV then
 			IsOpen = self.debug_show,
 		})
 
+		local ac = self.ambiance
+		if Slab.Button("lighten") then
+			ac[1] = 1
+			ac[2] = 1
+			ac[3] = 1
+			ac[4] = 1
+		end
+
 		if Slab.CheckBox(flags.group, "group") then
 			flags.group = not flags.group
 		end
 		Slab.SameLine()
 
-		local ac = self.ambiance
 		if Slab.CheckBox(flags.ambiance, "ambiance") then
 			flags.ambiance = not flags.ambiance
 			if not flags.ambiance then

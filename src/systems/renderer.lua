@@ -6,6 +6,7 @@ local Renderer = Concord.system({
 	pool_static_text = { "static_text", "pos", "font" },
 	pool_bg = { "bg", "sprite", "pos" },
 	pool_sprite = { "sprite", "pos", "!bg" },
+	pool_decals = { "decals", "pos", "!bg" },
 
 	pool_layer = { "sprite", "pos", "layer" },
 })
@@ -18,6 +19,7 @@ local renderer_per_pool = {
 	pool_static_text = Renderers.Text,
 	pool_bg = Renderers.Sprite,
 	pool_sprite = Renderers.Sprite,
+	pool_decals = Renderers.Decals,
 
 	pool_layer = Renderers.Sprite,
 }
@@ -98,8 +100,11 @@ end
 function Renderer:pool_on_added(pool, e)
 	local should_sort = false
 	if pool == self.pool_layer or pool == self.pool_sprite then
-		Renderers.Sprite.setup_sprite(e)
+		Renderers.Sprite.setup(e)
 		should_sort = e.z_index ~= nil
+	elseif pool == self.pool_decals then
+		Renderers.Decals.setup(e)
+		should_sort = false
 	elseif pool == self.pool_bg then
 		Renderers.Sprite.set_bg(e)
 	elseif pool == self.pool_text and e.sdf then
@@ -133,6 +138,20 @@ function Renderer:pool_on_removed(pool, e)
 	if list:remove(e) then
 		self:sort_by_z(list)
 	end
+	if pool == self.pool_layer or pool == self.pool_sprite then
+		Renderers.Sprite.remove(e)
+	elseif pool == self.pool_decals then
+		Renderers.Decals.remove(e)
+	end
+end
+
+function Renderer:update(dt)
+	local list = get_list(self, false)
+	for _, e in ipairs(list) do
+		if e.renderer.update then
+			e.renderer.update(dt, e)
+		end
+	end
 end
 
 function Renderer:draw_ui()
@@ -159,11 +178,11 @@ function Renderer:draw(is_ui)
 		local is_not_drawn = e.nf_renderer or e.hidden or culled
 
 		if not is_not_drawn then
-			local temp_shader
-			if e.no_shader then
-				temp_shader = love.graphics.getShader()
-				love.graphics.setShader()
-			end
+			-- local temp_shader
+			-- if e.no_shader then
+			-- 	temp_shader = love.graphics.getShader()
+			-- 	love.graphics.setShader()
+			-- end
 
 			local color = e.color
 			if color then
@@ -181,10 +200,11 @@ function Renderer:draw(is_ui)
 				Renderers.Sprite.debug_batching_update(e)
 			end
 
-			if e.no_shader then
-				love.graphics.setShader(temp_shader)
-			end
+			-- if e.no_shader then
+			-- 	love.graphics.setShader(temp_shader)
+			-- end
 		end
+
 		love.graphics.setColor(1, 1, 1, 1)
 	end
 end
@@ -198,7 +218,6 @@ function Renderer:cleanup()
 		end
 	end
 end
-
 
 if DEV then
 	local search = ""
@@ -231,9 +250,7 @@ if DEV then
 	end
 
 	function Renderer:debug_update(dt)
-		if not self.debug_show then
-			return
-		end
+		if not self.debug_show then return end
 		self.debug_show = Slab.BeginWindow("renderer", {
 			Title = "Renderer",
 			IsOpen = self.debug_show,
@@ -276,7 +293,7 @@ if DEV then
 		end
 		local camera = self.world:getResource("camera")
 		for _, v in pairs(Renderers) do
-			if v.debug_show and v.debug_draw then
+			if v.debug_show and v.debug_draw_ui then
 				v.debug_draw_ui(camera)
 			end
 		end

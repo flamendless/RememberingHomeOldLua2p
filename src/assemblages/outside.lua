@@ -1,6 +1,7 @@
 local Outside = {
 	colliders = {},
 	lights = {},
+	glows = {},
 }
 
 local z_index = {
@@ -106,6 +107,57 @@ end
 
 function Outside.lights.sl_frontdoor(e, id)
 	e:assemble(Assemblages.Light.spot, 316, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
+end
+
+Outside.glows.car = function(world)
+	local z = 9
+	local p = Data.PlayerSpawnPoints.Outside.default
+	local grid_center_x = p[1]
+	local grid_center_y = p[2] + 24
+
+	local rows, cols = 1, 3
+	local cellsize = 24
+	local es = {}
+	for _ = 1, rows * cols do
+		table.insert(es, Concord.entity(world))
+	end
+
+	Assemblages.BillboardGlow.create_grid(
+		es,
+		grid_center_x,
+		grid_center_y,
+		z,
+		rows,
+		cols,
+		cellsize,
+		cellsize,
+		1,
+		Palette.get_diffuse("car_glow"),
+		1
+	)
+
+	for i, e in ipairs(es) do
+		e:give("id", "car_glow" .. i):give("glow_group", "car_glow")
+	end
+
+	-- local bw, bh = 2, 13
+	-- local _ = Concord.entity(world)
+	-- 	:give("id", "car_glow_blocker1")
+	-- 	:give("pos", 774, 284, z)
+	-- 	:give("rect", bw, bh)
+	-- 	:give("glow_blocker")
+	--
+	-- local _ = Concord.entity(world)
+	-- 	:give("id", "car_glow_blocker2")
+	-- 	:give("pos", 794, 284, z)
+	-- 	:give("rect", bw, bh)
+	-- 	:give("glow_blocker")
+	--
+	-- local _ = Concord.entity(world)
+	-- 	:give("id", "car_glow_blocker3")
+	-- 	:give("pos", 813, 284, z)
+	-- 	:give("rect", bw, bh)
+	-- 	:give("glow_blocker")
 end
 
 return Outside

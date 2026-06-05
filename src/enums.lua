@@ -72,7 +72,8 @@ Enums.shaders = Enum(
 	"motion_blur",
 	"ngrading",
 	"ngrading_multi",
-	"vignette_ex"
+	"vignette_ex",
+	"hand"
 )
 
 Enums.survival_state = Enum(
@@ -95,6 +96,10 @@ Enums.tutorial_step = Enum(
 Enums.show_keys = Enum(
 	"dialogue",
 	"inventory"
+)
+
+Enums.decals = Enum(
+	"hand"
 )
 
 if DEV then

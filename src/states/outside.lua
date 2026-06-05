@@ -201,7 +201,7 @@ function Outside:state_init()
 		self:start_rain_fade()
 		self.timeline:Pause()
 
-		tle_log("car light off")
+		tle_log("car light flicker")
 		self.main_car_light
 			:give("d_light_flicker", 2.5, 0.75, 0.25)
 			:give("on_d_light_flicker_during", "flicker_sync", 0, self.main_car_light, self.pool_car_lights)
@@ -219,7 +219,7 @@ function Outside:state_init()
 		end)
 		dt_cam.x, dt_cam.y = self.camera:getPosition()
 		dt_cam.scale = self.camera:getScale()
-		Flux.to(dt_cam, 3, { x = e_player.pos.x, y = e_player.pos.y, scale = 3 })
+		Flux.to(dt_cam, 3, { x = e_player.pos.x, y = e_player.pos.y + 32, scale = 5 })
 			:onupdate(function()
 				self.world:emit("set_camera_transform", self.camera, {
 					x = dt_cam.x,
@@ -228,7 +228,8 @@ function Outside:state_init()
 				})
 			end)
 			:oncomplete(function()
-				self.world:emit("camera_follow", e_player, dur_camera_follow)
+				--INFO: this block is the start of "after all the animations and cutscenes"
+				-- self.world:emit("camera_follow", e_player, dur_camera_follow)
 				self.world:emit("tutorial_step_set", Enums.tutorial_step.interact)
 			end)
 		self.timeline:Pause()
@@ -256,6 +257,7 @@ end
 
 function Outside:state_draw()
 	self.world:emit("begin_deferred_lighting", self.camera, self.canvas)
+	self.world:emit("draw_billboard_glow", self.camera)
 	if self.is_raining then
 		local l, t = self.camera:getVisible()
 		local s = self.camera:getScale()
@@ -320,11 +322,17 @@ end
 function Outside:on_car_light_flicker_after()
 	for _, e in ipairs(self.pool_car_lights) do
 		local diff = e.diffuse
-		diff.value[1] = diff.orig_value[1]
-		diff.value[2] = diff.orig_value[2]
-		diff.value[3] = diff.orig_value[3]
+		-- diff.value[1] = diff.orig_value[1]
+		-- diff.value[2] = diff.orig_value[2]
+		-- diff.value[3] = diff.orig_value[3]
+		diff.value[1] = 0
+		diff.value[2] = 0
+		diff.value[3] = 0
 		self.world:emit("update_light_diffuse", e)
 	end
+
+	-- Assemblages.Outside.glows.car(self.world)
+
 	self.timeline:Unpause()
 end
 

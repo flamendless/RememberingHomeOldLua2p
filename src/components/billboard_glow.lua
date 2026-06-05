@@ -1,5 +1,6 @@
 Concord.component("glow_disabled")
 Concord.component("glow_blocker")
+Concord.component("glow_blocker_disabled")
 
 Concord.component("billboard_glow", function(c, intensity, size)
 	assert(type(intensity) == "number")

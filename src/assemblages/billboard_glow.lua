@@ -16,7 +16,19 @@ function BillboardGlow.create(e, x, y, z, intensity, color, size)
 	return e
 end
 
-function BillboardGlow.create_grid(es, center_x, center_y, z, rows, cols, cell_w, cell_h, intensity, color, size)
+function BillboardGlow.create_grid(
+	es,
+	center_x,
+	center_y,
+	z,
+	rows,
+	cols,
+	cell_w,
+	cell_h,
+	intensity,
+	color,
+	size
+)
 	assert(type(es) == "table")
 	assert(type(center_x) == "number")
 	assert(type(center_y) == "number")

@@ -101,9 +101,7 @@ if DEV then
 	end
 
 	function Glitch:debug_update(dt)
-		if not self.debug_show or not self.is_active then
-			return
-		end
+		if not self.debug_show or not self.is_active then return end
 		self.debug_show = Slab.BeginWindow("glitch_shader", {
 			Title = self:type(),
 			IsOpen = self.debug_show,

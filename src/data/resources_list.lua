@@ -23,6 +23,7 @@ local textures = {
 	{ "pause_bg", "res/textures/pause_bg.png" },
 	{ "bayer16", "res/textures/bayer16.png" },
 	{ "pal_hollow", "res/textures/pal_hollow.png" },
+	{ "tex_hand", "res/textures/hand.png" },
 }
 
 ResourcesList.Splash = {

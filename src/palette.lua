@@ -10,10 +10,13 @@ local Palette = {
 -- TODO: (Brandon) finalize colors
 
 Palette.colors = {
+	black = { 0, 0, 0 },
 	white = { 1, 1, 1 },
 	red = { 1, 0, 0 },
 	camera_clip = { 0, 0, 0 },
 	red_desaturated = { 0.450980, 0.086275, 0.058824 },
+
+	glow_hand_decals = { 1, 0, 0 },
 
 	menu_text = { 1.000000, 1.000000, 1.000000 },
 	menu_select = { 0.450980, 0.086275, 0.058824 },
@@ -51,15 +54,16 @@ Palette.diffuse = {
 	post = { 1, 1, 1 },
 
 	--TODO: finalize
-	ambiance_survival = {0, 0, 0, 0.5},
+	ambiance_survival = { 0, 0, 0, 0.5 },
 
 	--outside
-	ambiance_outside = { 0.7, 0.7, 0.7, 0.3 },
+	ambiance_outside = { 0.89, 0.6, 0.86, 0.91 },
 	firefly = { 3, 2.5, 0 },
 	car_headlight_pl = { 5, 4.5, 2.3 },
 	car_headlight_sl = { 3, 3, 1 },
 	door_pl = { 1.62, 1.46, 1.06 },
 	door_sl = { 4, 4, 1 },
+	car_glow = { 0.71, 0.7, 0.67 },
 
 	ambiance_storage_room = { 0.7, 0.7, 0.7, 0.3 },
 	storage_room_bulb_light = { 1.44, 1.64, 0.2 },

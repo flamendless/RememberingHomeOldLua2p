@@ -77,7 +77,7 @@ function BillboardGlow:create_blocker_mask(camera)
 	love.graphics.setColor(1, 1, 1, 1)
 
 	for _, e in ipairs(self.pool_blocker_rect) do
-		if not e.hidden then
+		if not e.hidden and not e.glow_blocker_disabled then
 			local pos = e.pos
 			local rect = e.rect
 			local sx, sy = camera:toScreen(pos.x, pos.y)
@@ -105,8 +105,7 @@ function BillboardGlow:create_blocker_mask(camera)
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.setCanvas(prev_canvas)
 
-	local img_data = self.mask_canvas:newImageData()
-	self.blocker_mask = love.graphics.newImage(img_data)
+	self.blocker_mask = self.mask_canvas
 end
 
 function BillboardGlow:draw_billboard_glow(camera)
@@ -283,6 +282,15 @@ if DEV then
 			local id = e.id and e.id.value or "rect_blocker"
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
+				local gd = e.glow_blocker_disabled
+				if Slab.CheckBox(gd, "Disabled") then
+					if gd then
+						e:remove("glow_blocker_disabled")
+					else
+						e:give("glow_blocker_disabled")
+					end
+				end
+
 				local pos = e.pos
 				local nx, _, _ = UIWrapper.edit_number("x", pos.x, true)
 				local ny, _, _ = UIWrapper.edit_number("y", pos.y, true)

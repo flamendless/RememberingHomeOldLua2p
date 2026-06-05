@@ -19,13 +19,22 @@ function Sprite.init()
 	tablex.clear(Sprite.debug_batched)
 end
 
-function Sprite.setup_sprite(e)
+function Sprite.setup(e)
 	if not DEV then return end
+	assert(e.__isEntity)
 	local sprite = e.sprite
 	local s_id = sprite.resource_id
 	if not Sprite.debug_batched[s_id] then
 		Sprite.debug_batched[s_id] = { highest = 0, total = 0, current = 0 }
 	end
+end
+
+function Sprite.remove(e)
+	if not DEV then return end
+	assert(e.__isEntity)
+	local sprite = e.sprite
+	local s_id = sprite.resource_id
+	Sprite.debug_batched[s_id] = nil
 end
 
 function Sprite.set_bg(e)
@@ -39,9 +48,7 @@ function Sprite.set_bg(e)
 end
 
 function Sprite.render_bg()
-	if not Sprite.e_bg then
-		return
-	end
+	if not Sprite.e_bg then return end
 	Sprite.render(Sprite.e_bg)
 end
 
@@ -75,7 +82,6 @@ end
 
 function Sprite.cleanup()
 	Sprite.e_bg = nil
-
 	tablex.clear(Sprite.debug_batched)
 end
 

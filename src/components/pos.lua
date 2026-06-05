@@ -32,12 +32,8 @@ Concord.component("ref_pos_vec2", function(c, x, y)
 end)
 
 Concord.component("size", function(c, w, h)
-	if type(w) ~= "number" then
-		error('Assertion failed: type(w) == "number"')
-	end
-	if type(h) ~= "number" then
-		error('Assertion failed: type(h) == "number"')
-	end
+	assert(type(w) == "number")
+	assert(type(h) == "number")
 	c.w = w
 	c.h = h
 end)

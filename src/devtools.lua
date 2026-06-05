@@ -209,7 +209,7 @@ function DevTools.draw_stats()
 	Slab.Text("Mem (KB): " .. math.floor(mem * 10) / 10)
 
 	local _ = nil
-	GAME_SPEED_MULT, _ = UIWrapper.edit_range("Global Speed", GAME_SPEED_MULT, 1, 5, true)
+	GAME_SPEED_MULT, _ = UIWrapper.edit_range("Global Speed", GAME_SPEED_MULT, 1, 10, true)
 
 	for k, v in pairs(stats.stats) do
 		Slab.Text(k .. ": " .. v)
@@ -764,7 +764,7 @@ function DevTools.keypressed(key)
 	elseif key == "c" then
 		GameStates.world:emit("debug_on_toggle", "camera")
 	elseif key == "l" then
-		GameStates.world:emit("debug_on_toggle", "deferred_lighting")
+		GameStates.world:emit("dev_deffered_lighting_full_light")
 	elseif key == "escape" and DevTools.show then
 		love.event.quit()
 	else

@@ -1,4 +1,5 @@
 GAME_SPEED_MULT = 1
+MAX_Z = 99
 
 if DEV then
 	love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")
@@ -82,7 +83,8 @@ Renderers = {
 	Rect = require("renderers.rect"),
 	Sprite = require("renderers.sprite"),
 	Text = require("renderers.text"),
-	UI = require("renderers.ui")
+	UI = require("renderers.ui"),
+	Decals = require("renderers.decals"),
 }
 
 ParticleSystems = {
