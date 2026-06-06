@@ -12,3 +12,8 @@ Concord.component("decals_shaders", function(c, shader, data)
 	c.data = data
 	c.orig_data = tablex.copy(data)
 end)
+
+Concord.component("decals_text", function(c, text)
+	assert(type(text) == "string")
+	c.value = text
+end)

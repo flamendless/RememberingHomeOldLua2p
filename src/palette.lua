@@ -16,7 +16,7 @@ Palette.colors = {
 	camera_clip = { 0, 0, 0 },
 	red_desaturated = { 0.450980, 0.086275, 0.058824 },
 
-	glow_hand_decals = { 1, 0, 0 },
+	glow_hand_decals = { 0.6, 0.6, 0.6 },
 
 	menu_text = { 1.000000, 1.000000, 1.000000 },
 	menu_select = { 0.450980, 0.086275, 0.058824 },

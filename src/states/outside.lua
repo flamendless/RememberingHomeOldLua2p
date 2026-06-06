@@ -55,7 +55,7 @@ function Outside:state_setup()
 	self.world:emit("parse_room_items", self.id)
 
 	Concord.entity(self.world):assemble(Assemblages.Outside.splashes)
-	self.world:emit("generate_fireflies")
+	-- self.world:emit("generate_fireflies")
 
 	self.world:emit("setup_post_process", {
 		Shaders.ngrading("lut_dusk"),
@@ -289,7 +289,7 @@ function Outside:ev_draw_ex()
 end
 
 function Outside:start_rain_fade()
-	local dur_fade_rain = 8
+	local dur_fade_rain = 4
 	for _, e in ipairs(self.pool_splashes) do
 		e:give("color_fade_out", dur_fade_rain)
 	end

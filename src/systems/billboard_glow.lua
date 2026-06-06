@@ -245,13 +245,13 @@ if DEV then
 				local nz, _, dz = UIWrapper.edit_range("z", pos.z, 1, 256, true)
 
 				local g = e.billboard_glow
-				local ns, _, _ = UIWrapper.edit_range("size", g.size, 1, 128, true)
+				local ns, _, _ = UIWrapper.edit_range("size", g.size, 0, 16, false)
 				local intensity, _, _ = UIWrapper.edit_range("intensity", g.intensity, 0, 5, false)
 
 				local pulse = e.glow_pulse
 				if pulse then
 					local speed, _, _ = UIWrapper.edit_range("speed", pulse.speed, 0, 10, true)
-					local amp, _, _ = UIWrapper.edit_range("amplitude", pulse.amplitude, 0, 10, true)
+					local amp, _, _ = UIWrapper.edit_range("amplitude", pulse.amplitude, 0, 10, false)
 					pulse.speed = speed
 					pulse.amplitude = amp
 				end

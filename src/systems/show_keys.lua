@@ -67,7 +67,7 @@ function ShowKeys:create_dialogue_key()
 		:give("id", "dialogue_proceed_key")
 		:give("pos", w - 8, h - 8)
 		:give("quad_transform", 0, 2, 2, 0.5, 0.5)
-		:give("fake_pulse", 3, 3, 0.5)
+		-- :give("fake_pulse", 3, 3, 0.5)
 		:give("color", { 1, 1, 1, 1 })
 		:give("hidden")
 end
@@ -120,9 +120,9 @@ end
 function ShowKeys:update(dt)
 	if not Settings.current.show_keys then return end
 	for _, e in pairs(self.keys) do
-		if not e.hidden then
+		local fp = e.fake_pulse
+		if not e.hidden and fp then
 			local qt = e.quad_transform
-			local fp = e.fake_pulse
 
 			if qt.sx > fp.sx then
 				fp.dirx = -1
