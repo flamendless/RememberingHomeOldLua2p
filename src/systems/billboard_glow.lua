@@ -15,6 +15,8 @@ function BillboardGlow:init(world)
 	self.glow_texture = self:generate_glow_texture(size)
 	self.batch = love.graphics.newSpriteBatch(self.glow_texture, 32, "stream")
 
+	self.world:setResource("tex_glow", self.glow_texture)
+
 	self.mask_canvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 	self.blocker_mask = nil
 
@@ -168,7 +170,7 @@ if DEV then
 	local flags = {
 		group = true,
 		blockers = true,
-		blockers_outline = true,
+		outline = true,
 	}
 
 	function BillboardGlow:debug_on_toggle(event)
@@ -191,8 +193,8 @@ if DEV then
 			flags.blockers = not flags.blockers
 		end
 		Slab.SameLine()
-		if Slab.CheckBox(flags.blockers_outline, "outline") then
-			flags.blockers_outline = not flags.blockers_outline
+		if Slab.CheckBox(flags.outline, "outline") then
+			flags.outline = not flags.outline
 		end
 
 		if flags.group then
@@ -244,6 +246,15 @@ if DEV then
 
 				local g = e.billboard_glow
 				local ns, _, _ = UIWrapper.edit_range("size", g.size, 1, 128, true)
+				local intensity, _, _ = UIWrapper.edit_range("intensity", g.intensity, 0, 5, false)
+
+				local pulse = e.glow_pulse
+				if pulse then
+					local speed, _, _ = UIWrapper.edit_range("speed", pulse.speed, 0, 10, true)
+					local amp, _, _ = UIWrapper.edit_range("amplitude", pulse.amplitude, 0, 10, true)
+					pulse.speed = speed
+					pulse.amplitude = amp
+				end
 
 				local color = e.color.value
 				local nr, _, _ = UIWrapper.edit_range("r", color[1], 0, 1)
@@ -256,6 +267,7 @@ if DEV then
 						e2.pos.y = e2.pos.y - dy
 						e2.pos.z = e2.pos.z - dz
 						e2.billboard_glow.size = ns
+						e2.billboard_glow.intensity = intensity
 						local color2 = e2.color.value
 						color2[1] = nr
 						color2[2] = ng
@@ -266,6 +278,7 @@ if DEV then
 					e.pos.y = ny
 					e.pos.z = nz
 					g.size = ns
+					g.intensity = intensity
 					color[1] = nr
 					color[2] = ng
 					color[3] = nb
@@ -338,12 +351,12 @@ if DEV then
 	end
 
 	function BillboardGlow:debug_draw_outlines(camera)
-		if not self.debug_show or not flags.blockers_outline then return end
+		if not self.debug_show then return end
+		if not flags.outline then return end
 
-		local prev_blend = love.graphics.getBlendMode()
-		love.graphics.setBlendMode("alpha")
+		local orig_lw = love.graphics.getLineWidth()
+		love.graphics.setLineWidth(1)
 		love.graphics.setColor(1, 0, 0, 1)
-
 		camera:attach()
 
 		for _, e in ipairs(self.pool_blocker_rect) do
@@ -360,10 +373,17 @@ if DEV then
 			love.graphics.circle("line", pos.x, pos.y, circle.radius, circle.segments)
 		end
 
-		camera:detach()
+		local tex = self.glow_texture
+		local w, h = tex:getDimensions()
+		for _, e in ipairs(self.pool) do
+			local pos = e.pos
+			local g = e.billboard_glow
+			love.graphics.circle("line", pos.x + w/2, pos.y + h/2, w/g.size, 32)
+		end
 
+		camera:detach()
 		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.setBlendMode(prev_blend)
+		love.graphics.setLineWidth(orig_lw)
 	end
 
 	function BillboardGlow:glow_group_set_disable(group_id, is_d, e)

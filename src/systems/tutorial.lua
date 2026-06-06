@@ -22,7 +22,7 @@ function Tutorial:tutorial_step_set(step)
 
 		local pos = e_player.pos
 		local col = e_player.collider
-		local tx, ty = pos.x - col.w_h, pos.y + col.h_h
+		local tx, ty = pos.x - col.w_h, pos.y + col.h_h + 8
 		local bx = tx - 72
 		local by = ty + 8
 		local n = 5
@@ -66,14 +66,15 @@ function Tutorial:tutorial_step_set(step)
 				:oncomplete(function()
 					if i == n then
 						local cam = self.world:getResource("camera")
-						local hx, hy = e_hand.pos.x, e_hand.pos.y
+						local tw, th = self.world:getResource("tex_glow"):getDimensions()
+						local hx, hy = e_hand.pos.x - tw / 2, e_hand.pos.y - th / 2
 						local keyx, keyy = cam:toScreen(hx, hy)
-						self.world:emit(
-							"show_key_at",
-							Enums.show_keys.dialogue,
-							true,
-							vec2(keyx, keyy)
-						)
+						-- self.world:emit(
+						-- 	"show_key_at",
+						-- 	Enums.show_keys.dialogue,
+						-- 	true,
+						-- 	vec2(keyx, keyy)
+						-- )
 						local _ = Concord.entity(self.world):assemble(
 							Assemblages.BillboardGlow.create,
 							hx,
@@ -82,16 +83,16 @@ function Tutorial:tutorial_step_set(step)
 							1,
 							Palette.colors.glow_hand_decals,
 							1
-						)
+						):give("glow_pulse", 1, 1)
 					else
 						Flux.to(
 							e_hand.decals_shaders.data,
 							dur * 0.75,
 							{ opacity = 0 }
 						):delay(delay * 0.8)
-						:oncomplete(function()
-							e_hand:destroy()
-						end)
+							:oncomplete(function()
+								e_hand:destroy()
+							end)
 					end
 				end)
 		end

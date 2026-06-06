@@ -61,17 +61,18 @@ function Decals.render_hand(e)
 	assert(e.__isEntity)
 	assert(e.decals.kind == Enums.decals.hand, e.decals.kind)
 
+	local rot = e.decals_shaders.data.rotation
 	local sx, sy = unpack(e.decals_shaders.data.scale)
 	local w, h = Decals.tex_hand:getDimensions()
 	love.graphics.draw(
 		Decals.tex_hand,
 		e.pos.x,
 		e.pos.y,
-		0,
+		rot,
 		sx,
 		sy,
-		w * sx / 2,
-		h * sy / 2
+		w / 2,
+		h / 2
 	)
 end
 
@@ -152,7 +153,13 @@ if DEV then
 			if c_decals.kind == Enums.decals.hand then
 				local sx, sy = unpack(e.decals_shaders.data.scale)
 				local w, h = Decals.tex_hand:getDimensions()
-				love.graphics.rectangle("line", e.pos.x, e.pos.y, w * sx, h * sy)
+				love.graphics.rectangle(
+					"line",
+					e.pos.x - w * sx/2,
+					e.pos.y - h * sy/2,
+					w * sx,
+					h * sy
+				)
 			end
 		end
 	end
