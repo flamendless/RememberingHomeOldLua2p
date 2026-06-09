@@ -77,16 +77,17 @@ function PlayerController:spawn_player(fn)
 	end
 end
 
+function PlayerController:player_stop()
+	local body = self.player.body
+	body.dx = 0
+	self.last_desired_dir = 0
+end
+
 function PlayerController:update(dt)
-	if not self.player then
-		return
-	end
-	if self.player.override_animation then
-		return
-	end
-	if not self.player.can_move then
-		return
-	end
+	if not self.player then return end
+	if self.player.override_animation then return end
+	if not self.player.can_move then return end
+
 	local within_int = self.player.within_interactive
 	local body = self.player.body
 	body.dx = 0
@@ -110,10 +111,13 @@ function PlayerController:update(dt)
 
 	local left_held = Inputs.held("left")
 	local right_held = Inputs.held("right")
+	local only_left = self.player.can_move_left_only
+	local only_right = self.player.can_move_right_only
+
 	local desired_dir = 0
-	if left_held then
+	if left_held and (only_right == nil) then
 		desired_dir = -1
-	elseif right_held then
+	elseif right_held and (only_left == nil) then
 		desired_dir = 1
 	end
 

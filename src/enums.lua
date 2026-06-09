@@ -92,13 +92,15 @@ Enums.tutorial_step = Enum(
 	"waiting_interact",
 	"done_waiting_interact",
 
-	"walk_right",
-	"flashlight_toggle",
-	"walk_left"
+	"show_left",
+	"waiting_left",
+	"waiting_left_interact"
 )
 
 Enums.show_keys = Enum(
 	"dialogue",
+	"left",
+	"right",
 	"inventory"
 )
 

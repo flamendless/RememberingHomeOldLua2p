@@ -5,6 +5,9 @@ Concord.component("can_run")
 Concord.component("can_open_door")
 Concord.component("can_interact")
 
+Concord.component("can_move_left_only")
+Concord.component("can_move_right_only")
+
 Concord.component("is_running", function(c)
 	c.value = false
 end)
