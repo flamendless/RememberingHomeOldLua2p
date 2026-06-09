@@ -15,7 +15,11 @@ local function draw(e, ...)
 	end
 end
 
-function Sprite.init()
+function Sprite.init(main_renderer, world)
+	assert(main_renderer.__isSystem)
+	assert(world.__isWorld)
+	Sprite.world = world
+
 	tablex.clear(Sprite.debug_batched)
 end
 

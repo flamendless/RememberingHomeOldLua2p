@@ -4,7 +4,11 @@ local Decals = {
 	debug_list = {},
 }
 
-function Decals.init()
+function Decals.init(main_renderer, world)
+	assert(main_renderer.__isSystem)
+	assert(world.__isWorld)
+	Decals.world = world
+
 	Decals.tex_hand = Resources.data.images.tex_hand
 	Decals.tex_hand:setFilter("nearest", "nearest")
 	Decals.tex_hand:setWrap("clampzero", "clampzero")
@@ -16,6 +20,12 @@ function Decals.setup(e)
 	local c_decals_shaders = e.decals_shaders
 	if c_decals_shaders then
 		c_decals_shaders.shader = love.graphics.newShader(Shaders.paths[c_decals_shaders.value])
+	end
+
+	local c_decals_embed = e.decals_embed
+	if c_decals_embed then
+		local e_other = Decals.world:getEntityByKey(c_decals_embed.value)
+		assert(e_other ~= nil)
 	end
 
 	if DEV then
@@ -134,7 +144,12 @@ if DEV then
 					data.distort_amount, _ = UIWrapper.edit_range("distort_amount", data.distort_amount, 0, 1, false)
 					data.scale[1], _ = UIWrapper.edit_range("sx", data.scale[1], 0, 10, false)
 					data.scale[2], _ = UIWrapper.edit_range("sy", data.scale[2], 0, 10, false)
-					data.rotation, _ = UIWrapper.edit_range("r", data.rotation, 0, 360, true)
+					data.rotation, _ = UIWrapper.edit_range("rot", data.rotation, 0, 360, true)
+				end
+
+				local c_color = e.color
+				if c_color then
+					UIWrapper.color(c_color.value)
 				end
 
 				Slab.EndTree()

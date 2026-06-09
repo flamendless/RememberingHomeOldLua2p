@@ -3,10 +3,11 @@ local UI = {
 	main_renderer = nil,
 }
 
-function UI.init(main_renderer)
-	if not main_renderer.__isSystem then
-		error("Assertion failed: main_renderer.__isSystem")
-	end
+function UI.init(main_renderer, world)
+	assert(main_renderer.__isSystem)
+	assert(world.__isWorld)
+	UI.world = world
+
 	UI.main_renderer = main_renderer
 end
 

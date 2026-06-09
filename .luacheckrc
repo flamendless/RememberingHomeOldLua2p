@@ -13,6 +13,8 @@ return {
 		"TODO",
 		"DIALOGUE_FIN",
 		"JPROF",
+		"MAX_Z",
+		"GAME_SPEED_MULT",
 
 		-- Standard libraries
 		"UTF8",

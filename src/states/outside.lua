@@ -210,7 +210,7 @@ function Outside:state_init()
 		self.timeline:Pause()
 
 		tle_log("show player")
-		local dur_camera_follow = 1.5
+		-- local dur_camera_follow = 1.5
 		local e_player
 		self.world:emit("spawn_player", function(e)
 			e_player = e

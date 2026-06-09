@@ -20,7 +20,7 @@ function Settings.init()
 	if exists then
 		for k, v in pairs(defaults) do
 			if content[k] == nil then
-				Log.warn(k, "setting key is in code's defaults but not in the existing saved settings file. Resolving by setting it to content with value", v)
+				Log.warn(k, "hardcoded defaults key not in the saved settings file. Resolving by setting value to", v)
 				content[k] = v
 			end
 		end

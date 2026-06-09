@@ -16,8 +16,6 @@ Palette.colors = {
 	camera_clip = { 0, 0, 0 },
 	red_desaturated = { 0.450980, 0.086275, 0.058824 },
 
-	glow_hand_decals = { 0.6, 0.6, 0.6 },
-
 	menu_text = { 1.000000, 1.000000, 1.000000 },
 	menu_select = { 0.450980, 0.086275, 0.058824 },
 	menu_disabled = { 0.298039, 0.298039, 0.298039 },
@@ -64,6 +62,8 @@ Palette.diffuse = {
 	door_pl = { 1.62, 1.46, 1.06 },
 	door_sl = { 4, 4, 1 },
 	car_glow = { 0.71, 0.7, 0.67 },
+	hand_decals = { 1, 0, 0, 0.7 },
+	glow_hand_decals = { 1, 0, 0, 1 },
 
 	ambiance_storage_room = { 0.7, 0.7, 0.7, 0.3 },
 	storage_room_bulb_light = { 1.44, 1.64, 0.2 },

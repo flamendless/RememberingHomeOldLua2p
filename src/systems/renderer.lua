@@ -64,7 +64,7 @@ function Renderer:init(world)
 
 	for _, renderer in pairs(Renderers) do
 		if renderer.init then
-			renderer.init(self)
+			renderer.init(self, world)
 		end
 	end
 

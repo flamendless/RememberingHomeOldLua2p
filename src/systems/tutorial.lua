@@ -45,7 +45,7 @@ function Tutorial:tutorial_step_set(step)
 				:give("id", "hand_decal" .. i)
 				:give("z_index", MAX_Z)
 				:give("pos", x, y)
-				:give("color", Palette.colors.white)
+				:give("color", Palette.diffuse.hand_decals)
 				:give("decals", Enums.decals.hand)
 				:give("decals_shaders", Enums.shaders.hand, {
 					time = 0,
@@ -60,11 +60,14 @@ function Tutorial:tutorial_step_set(step)
 			scale = scale + love.math.random(2, 4) / 100
 			r = r - love.math.random(15, 30)
 
-			-- if i == n then
-			-- 	e_hand:give("decals_text", "HHAHAHAHAHAHAHAH")
-			-- end
+			if i == n then
+				-- e_hand:give("decals_text", "HHAHAHAHAHAHAHAH")
+				e_hand:give("decals_embed", "dialogue_proceed_key")
+			end
 
 			local target_opacity = love.math.random(6, 9) / 10
+			if i == n then target_opacity = 0.9 end
+
 			local dur = love.math.random(3, 8) / 10
 			local delay = i + love.math.random(3, 7) / 10
 			Flux.to(
@@ -78,7 +81,8 @@ function Tutorial:tutorial_step_set(step)
 						local cam = self.world:getResource("camera")
 						local tw, th = self.world:getResource("tex_glow"):getDimensions()
 						local hx, hy = e_hand.pos.x - tw * scale / 2, e_hand.pos.y - th * scale / 2
-						local keyx, keyy = cam:toScreen(hx, hy)
+						local ox, oy = 3, 5
+						local keyx, keyy = cam:toScreen(hx + ox, hy + oy)
 						self.world:emit(
 							"show_key_at",
 							Enums.show_keys.dialogue,
@@ -87,11 +91,10 @@ function Tutorial:tutorial_step_set(step)
 						)
 						local _ = Concord.entity(self.world):assemble(
 								Assemblages.BillboardGlow.create,
-								hx,
-								hy,
+								hx, hy,
 								9,
 								0.4,
-								Palette.colors.glow_hand_decals,
+								Palette.diffuse.glow_hand_decals,
 								1.5
 							)
 							:give("glow_pulse", 6, 0.2)
