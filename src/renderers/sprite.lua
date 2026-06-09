@@ -57,6 +57,7 @@ function Sprite.render_bg()
 end
 
 function Sprite.render(e)
+	assert(e.__isEntity)
 	local rot, sx, sy, ox, oy, kx, ky
 	local pos = e.pos
 	local sprite = e.sprite

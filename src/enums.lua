@@ -87,7 +87,11 @@ Enums.survival_state = Enum(
 
 Enums.tutorial_step = Enum(
 	"waiting",
+
 	"interact",
+	"waiting_interact",
+	"done_waiting_interact",
+
 	"walk_right",
 	"flashlight_toggle",
 	"walk_left"
