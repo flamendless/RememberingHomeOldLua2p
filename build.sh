@@ -11,6 +11,7 @@ padding=4
 dir_modules=modules
 dir_res=res
 dir_output=output_dev
+dir_res_atlases="./res/images/atlases"
 dir_source=src
 
 dir_sub=(assemblages components shaders states systems)
@@ -163,6 +164,10 @@ function init()
 		utility_room
 		office1
 	)
+	if [ ! -d "$dir_res_atlases" ]; then
+		echo "creating $dir_res_atlases..."
+		mkdir $dir_res_atlases && echo "created $dir_res_atlases"
+	fi
 	gen_atlas "${exported_dirs[@]}"
 	copy_res
 }
