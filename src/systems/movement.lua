@@ -3,6 +3,17 @@ local Movement = Concord.system({
 	pool_walk = { "speed", "body", "movement", "can_move", "random_walk" },
 })
 
+function Movement:init(world)
+	self.world = world
+	self.pool.onRemoved = function(pool, e)
+		local c_body = e.body
+		if c_body then
+			c_body.dx = 0
+			c_body.vel_x = 0
+		end
+	end
+end
+
 function Movement:update(dt)
 	for _, e in ipairs(self.pool_walk) do
 		local random_walk = e.random_walk

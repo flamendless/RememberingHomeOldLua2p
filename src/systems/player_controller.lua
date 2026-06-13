@@ -78,9 +78,9 @@ function PlayerController:spawn_player(fn)
 end
 
 function PlayerController:player_stop()
-	local body = self.player.body
-	body.dx = 0
 	self.last_desired_dir = 0
+	local anim_name = self:player_update_animation()
+	self.world:emit("update_speed_data", self.player, anim_name)
 end
 
 function PlayerController:update(dt)
@@ -242,11 +242,11 @@ function PlayerController:on_leave_interact_or_inventory()
 	-- self.world:emit("remove_speech_bubble")
 end
 
-local function view_number(id, value, sl)
+local function view_number(id, value, sameline)
 	Slab.Text(id)
 	Slab.SameLine()
 	Slab.Input(id, { Text = value, ReadOnly = true, NumbersOnly = true })
-	if sl then
+	if sameline then
 		Slab.SameLine()
 	end
 end
@@ -314,6 +314,15 @@ function PlayerController:debug_update(dt)
 	view_number("h", qh)
 	view_number("rw", qsw, true)
 	view_number("rh", qsh)
+	Slab.Unindent()
+
+	Slab.Text("body")
+	local body = self.player.body
+	Slab.Indent()
+	view_number("dx", body.dx, true)
+	view_number("dir", body.dir, false)
+	view_number("vel_x", body.vel_x, true)
+	view_number("vel_y", body.vel_y, false)
 	Slab.Unindent()
 
 	Slab.CheckBox(self.player.can_move, "move")

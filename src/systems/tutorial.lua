@@ -192,6 +192,7 @@ function Tutorial:state_update(dt)
 
 		if progress >= 1 then
 			self.e_player:remove("can_move"):remove("can_move_left_only")
+			self.world:__flush()
 			self.world:emit("player_stop")
 			self:tutorial_step_set(Enums.tutorial_step.waiting_left_interact)
 		end
