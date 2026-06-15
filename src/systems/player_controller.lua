@@ -78,6 +78,7 @@ function PlayerController:spawn_player(fn)
 end
 
 function PlayerController:player_stop()
+	-- INFO: must remove can_move component first, then flush, before emitting this
 	self.last_desired_dir = 0
 	local anim_name = self:player_update_animation()
 	self.world:emit("update_speed_data", self.player, anim_name)

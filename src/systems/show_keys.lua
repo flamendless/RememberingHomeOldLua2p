@@ -86,6 +86,19 @@ function ShowKeys:create_left_key()
 		:give("hidden")
 end
 
+function ShowKeys:create_right_key()
+	if not Settings.current.show_keys then return end
+	local w, h = love.graphics.getDimensions()
+	self.keys.right = Concord.entity(self.world)
+		:assemble(asm, Inputs.rev_map.right)
+		:give("id", "right_proceed_key")
+		:give("key", "right_proceed_key")
+		:give("pos", w - 8, h - 8)
+		:give("quad_transform", 0, 2, 2, 0.5, 0.5)
+		:give("color", { 1, 1, 1, 1 })
+		:give("hidden")
+end
+
 function ShowKeys:show_key(id, bool)
 	if not Settings.current.show_keys then return end
 	assert(Enums.show_keys[id], id)

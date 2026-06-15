@@ -10,6 +10,7 @@ function Tutorial:init(world)
 	if self.state then
 		self.world:emit("create_dialogue_key")
 		self.world:emit("create_left_key")
+		self.world:emit("create_right_key")
 	end
 
 	self.step = Enums.tutorial_step.waiting
@@ -23,7 +24,8 @@ function Tutorial:show_hands_trail(
 	targety,
 	startrot,
 	show_key,
-	next_step
+	next_step,
+	is_instant
 )
 	assert(Enums.show_keys[show_key])
 	assert(Enums.tutorial_step[next_step])
@@ -63,6 +65,10 @@ function Tutorial:show_hands_trail(
 				rotation = r,
 			})
 
+		if i == n then
+			self.e_last_hand = e_hand
+		end
+
 		scale = scale + love.math.random(2, 4) / 100
 		r = r - love.math.random(15, 30)
 
@@ -71,6 +77,10 @@ function Tutorial:show_hands_trail(
 
 		local dur = love.math.random(3, 8) / 10
 		local delay = i + love.math.random(3, 7) / 10
+		if is_instant then
+			dur = 0
+			delay = 0
+		end
 
 		Flux.to(e_hand.decals_shaders.data, dur, { opacity = target_opacity })
 			:delay(delay)
@@ -123,24 +133,19 @@ function Tutorial:tutorial_step_set(step)
 		local tx, ty = pos.x - col.w_h + 8, pos.y + col.h_h + 4
 		local bx = tx - 72
 		local by = ty + 8
-		self:show_hands_trail(5, bx, by, tx, ty, 90, Enums.show_keys.dialogue, Enums.tutorial_step.waiting_interact)
+		self:show_hands_trail(5, bx, by, tx, ty, 90, Enums.show_keys.dialogue, Enums.tutorial_step.waiting_interact, false)
 
 	elseif self.step == Enums.tutorial_step.waiting_interact then
 		self.hold_interact_timer = 0
-		self.e_key = self.world:getEntityByKey("dialogue_proceed_key")
-		assert(self.e_key ~= nil)
-		self.e_hand = self.world:getEntityByKey(Enums.tutorial_step.interact .. "_hand_decal5")
-		assert(self.e_hand ~= nil)
+		self.e_interact_key = self.world:getEntityByKey("dialogue_proceed_key")
 
 	elseif self.step == Enums.tutorial_step.done_waiting_interact then
 		--TODO: play car door open sound
-		self.e_key:destroy()
+		self.e_interact_key:destroy()
 		self.e_glow:destroy()
-		self.e_hand:destroy()
+		self.e_last_hand:destroy()
 		self.hold_interact_timer = nil
 		self.e_player:remove("hidden")
-			-- :give("can_move")
-			-- :give("can_move_left_only")
 		self:tutorial_step_set(Enums.tutorial_step.show_left)
 
 	elseif self.step == Enums.tutorial_step.show_left then
@@ -149,12 +154,44 @@ function Tutorial:tutorial_step_set(step)
 		local tx, ty = pos.x - col.w_h - 60, pos.y + col.h_h
 		local bx = self.prev_hx
 		local by = self.prev_hy
-		self:show_hands_trail(5, bx, by, tx, ty, 270, Enums.show_keys.left, Enums.tutorial_step.waiting_left)
+		self:show_hands_trail(5, bx, by, tx, ty, 270, Enums.show_keys.left, Enums.tutorial_step.waiting_left, false)
 		self.left_start_x = self.e_player.pos.x
-		self.left_target_x = tx + 16
+		self.left_target_x = tx + 7
+
+		self.e_left_key = self.world:getEntityByKey("left_proceed_key")
+		assert(self.e_left_key ~= nil)
 
 	elseif self.step == Enums.tutorial_step.waiting_left then
 		self.e_player:give("can_move") :give("can_move_left_only")
+
+	elseif self.step == Enums.tutorial_step.show_left_interact then
+		self.world:emit("create_dialogue_key")
+
+		assert(self.e_left_key ~= nil)
+		self.e_left_key:destroy()
+
+		local tx, ty = self.e_last_hand.pos.x, self.e_last_hand.pos.y
+		self.e_last_hand:destroy()
+		self.e_glow:destroy()
+
+		Timer.after(1, function ()
+			self:show_hands_trail(
+				5,
+				tx, ty,
+				tx, ty,
+				0,
+				Enums.show_keys.dialogue,
+				Enums.tutorial_step.waiting_left_interact,
+				true
+			)
+		end)
+
+	elseif self.step == Enums.tutorial_step.waiting_left_interact then
+		self.e_interact_key = self.world:getEntityByKey("dialogue_proceed_key")
+		assert(self.e_interact_key ~= nil)
+
+	elseif self.step == Enums.tutorial_step.next_step_err then
+		error("unimplemented")
 	end
 end
 
@@ -162,19 +199,17 @@ function Tutorial:state_update(dt)
 	if not self.state then return end
 
 	if self.step == Enums.tutorial_step.waiting_interact then
-		if Inputs.down("interact") then
-			self.hold_interact_timer = self.hold_interact_timer + dt
-		else
-			self.hold_interact_timer = self.hold_interact_timer - dt * 1.5
+		if Inputs.pressed("interact") or Inputs.down("interact") then
+			self.hold_interact_timer = self.hold_interact_timer + dt * 1.5
 		end
 
 		self.hold_interact_timer = mathx.clamp(self.hold_interact_timer, 0, MAX_HOLD_INTERACT_TIMER)
 
 		local progress = mathx.clamp(self.hold_interact_timer, 0, 1)
-		self.e_key.color.value[4] = 1 - progress
-		self.e_hand.decals_shaders.data.blood_amount = progress
-		self.e_hand.decals_shaders.data.damage_amount = progress
-		self.e_hand.decals_shaders.data.distort_amount = progress
+		self.e_interact_key.color.value[4] = 1 - progress
+		self.e_last_hand.decals_shaders.data.blood_amount = progress
+		self.e_last_hand.decals_shaders.data.damage_amount = progress
+		self.e_last_hand.decals_shaders.data.distort_amount = progress
 
 		if progress >= 1 then
 			self:tutorial_step_set(Enums.tutorial_step.done_waiting_interact)
@@ -185,16 +220,33 @@ function Tutorial:state_update(dt)
 		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
 		progress = mathx.clamp(progress, 0, 1)
 
-		self.e_key.color.value[4] = 1 - progress
-		self.e_hand.decals_shaders.data.blood_amount = progress
-		self.e_hand.decals_shaders.data.damage_amount = progress
-		self.e_hand.decals_shaders.data.distort_amount = progress
+		self.e_left_key.color.value[4] = 1 - progress
+		self.e_last_hand.decals_shaders.data.blood_amount = progress
+		self.e_last_hand.decals_shaders.data.damage_amount = progress
+		self.e_last_hand.decals_shaders.data.distort_amount = progress
 
 		if progress >= 1 then
 			self.e_player:remove("can_move"):remove("can_move_left_only")
 			self.world:__flush()
 			self.world:emit("player_stop")
-			self:tutorial_step_set(Enums.tutorial_step.waiting_left_interact)
+			self:tutorial_step_set(Enums.tutorial_step.show_left_interact)
+		end
+
+	elseif self.step == Enums.tutorial_step.waiting_left_interact and not self.is_waiting then
+		if Inputs.pressed("interact") then
+			self.is_waiting = true
+			local progress = {value = 0}
+			Flux.to(progress, 2, { value = 1 }):onupdate(function()
+				self.e_interact_key.color.value[4] = 1 - progress.value
+				self.e_last_hand.decals_shaders.data.blood_amount = progress.value
+				self.e_last_hand.decals_shaders.data.damage_amount = progress.value
+				self.e_last_hand.decals_shaders.data.distort_amount = progress.value
+			end):oncomplete(function()
+				self.e_interact_key:destroy()
+				self.e_last_hand:destroy()
+				self.e_glow:destroy()
+				self:tutorial_step_set(Enums.tutorial_step.done_left_interact)
+			end)
 		end
 	end
 end

@@ -94,7 +94,11 @@ Enums.tutorial_step = Enum(
 
 	"show_left",
 	"waiting_left",
-	"waiting_left_interact"
+	"show_left_interact",
+	"waiting_left_interact",
+	"done_left_interact",
+
+	"next_step_err"
 )
 
 Enums.show_keys = Enum(
