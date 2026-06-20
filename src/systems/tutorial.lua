@@ -11,6 +11,9 @@ function Tutorial:init(world)
 		self.world:emit("create_dialogue_key")
 		self.world:emit("create_left_key")
 		self.world:emit("create_right_key")
+		self.e_dialogue_car1 = Concord.entity(self.world)
+			:give("id", "dialogue_car1")
+			:give("dialogue_key", "car1")
 	end
 
 	self.step = Enums.tutorial_step.waiting
@@ -122,6 +125,7 @@ end
 function Tutorial:tutorial_step_set(step)
 	assert(Enums.tutorial_step[step], step)
 	Log.info("Tutorial step", "from:", self.step, "to:", step)
+	self.world:emit("display_bars")
 	self.step = step
 
 	if self.step == Enums.tutorial_step.interact then
@@ -137,6 +141,7 @@ function Tutorial:tutorial_step_set(step)
 
 	elseif self.step == Enums.tutorial_step.waiting_interact then
 		self.hold_interact_timer = 0
+		self.hit_n = 0
 		self.e_interact_key = self.world:getEntityByKey("dialogue_proceed_key")
 
 	elseif self.step == Enums.tutorial_step.done_waiting_interact then
@@ -189,8 +194,13 @@ function Tutorial:tutorial_step_set(step)
 	elseif self.step == Enums.tutorial_step.waiting_left_interact then
 		self.e_interact_key = self.world:getEntityByKey("dialogue_proceed_key")
 		assert(self.e_interact_key ~= nil)
+		self.is_fluxing = false
 
-	elseif self.step == Enums.tutorial_step.next_step_err then
+	elseif self.step == Enums.tutorial_step.done_left_interact then
+		-- TODO: show dialogue
+		self.world:emit("start_dialogue", self.e_player, self.e_dialogue_car1)
+
+	else
 		error("unimplemented")
 	end
 end
@@ -200,7 +210,7 @@ function Tutorial:state_update(dt)
 
 	if self.step == Enums.tutorial_step.waiting_interact then
 		if Inputs.pressed("interact") or Inputs.down("interact") then
-			self.hold_interact_timer = self.hold_interact_timer + dt * 1.5
+			self.hold_interact_timer = self.hold_interact_timer + dt * 0.3
 		end
 
 		self.hold_interact_timer = mathx.clamp(self.hold_interact_timer, 0, MAX_HOLD_INTERACT_TIMER)
@@ -210,6 +220,22 @@ function Tutorial:state_update(dt)
 		self.e_last_hand.decals_shaders.data.blood_amount = progress
 		self.e_last_hand.decals_shaders.data.damage_amount = progress
 		self.e_last_hand.decals_shaders.data.distort_amount = progress
+
+		-- TODO: every quarter of progress, play sound of like hitting car door to open, add shake effect as well
+		local shake_dur = 0.2
+		if self.hit_n == 0 and progress >= 0.1 and progress <= 0.25 then
+			self.hit_n = 1
+			self.world:emit("screen_shake", shake_dur, 0.1)
+		elseif self.hit_n == 1 and progress > 0.25 and progress <= 0.5 then
+			self.hit_n = 2
+			self.world:emit("screen_shake", shake_dur, 0.2)
+		elseif self.hit_n == 2 and progress > 0.5 and progress <= 0.75 then
+			self.hit_n = 3
+			self.world:emit("screen_shake", shake_dur, 0.3)
+		elseif self.hit_n == 3 and progress > 0.75 and progress <= 0.99 then
+			self.hit_n = 4
+			self.world:emit("screen_shake", shake_dur, 0.5)
+		end
 
 		if progress >= 1 then
 			self:tutorial_step_set(Enums.tutorial_step.done_waiting_interact)
@@ -232,9 +258,9 @@ function Tutorial:state_update(dt)
 			self:tutorial_step_set(Enums.tutorial_step.show_left_interact)
 		end
 
-	elseif self.step == Enums.tutorial_step.waiting_left_interact and not self.is_waiting then
+	elseif self.step == Enums.tutorial_step.waiting_left_interact and not self.is_fluxing then
 		if Inputs.pressed("interact") then
-			self.is_waiting = true
+			self.is_fluxing = true
 			local progress = {value = 0}
 			Flux.to(progress, 2, { value = 1 }):onupdate(function()
 				self.e_interact_key.color.value[4] = 1 - progress.value
@@ -251,7 +277,7 @@ function Tutorial:state_update(dt)
 	end
 end
 
-function Tutorial:state_draw()
+function Tutorial:state_draw_ex()
 	if not self.state then return end
 	if DEV then
 		love.graphics.setColor(1, 0, 0, 1)

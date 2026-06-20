@@ -43,7 +43,7 @@ function DialoguesSystem:state_setup()
 	self.ui.on_choice_made = function(index)
 		self.current_content = self.dialogue:choose(index)
 		self.ui:showContent(self.current_content)
-		self:on_dialogue_fin()
+		self:check_if_fin()
 	end
 end
 
@@ -76,12 +76,16 @@ function DialoguesSystem:start_dialogue(e, e_other)
 	end
 end
 
-function DialoguesSystem:on_dialogue_fin()
+function DialoguesSystem:check_if_fin()
 	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+		self.world:emit("ev_dialogue_fin")
+		--TODO: Finalize
 		local e_player = self.world:getResource("e_player")
-		self.world:emit("toggle_component", e_player, "can_move", true)
-		self.world:emit("toggle_component", e_player, "can_interact", true)
-		self.world:emit("toggle_component", e_player, "can_run", true)
+		if e_player then
+			self.world:emit("toggle_component", e_player, "can_move", true)
+			self.world:emit("toggle_component", e_player, "can_interact", true)
+			self.world:emit("toggle_component", e_player, "can_run", true)
+		end
 		self.current_content = nil
 	end
 end
@@ -95,7 +99,7 @@ function DialoguesSystem:ev_advance()
 			self.ui:skipTypewriter()
 		end
 
-		self:on_dialogue_fin()
+		self:check_if_fin()
 	end
 end
 
@@ -118,7 +122,9 @@ end
 function DialoguesSystem:state_draw()
 	if not self.dialogue then return end
 	if not self.dialogue:hasEnded() and self.current_content then
+		local f = love.graphics.getFont()
 		self.ui:draw()
+		love.graphics.setFont(f)
 	end
 end
 

@@ -123,6 +123,9 @@ function GameStates.draw()
 	end
 	JPROF.push("gs state draw")
 	GameStates.world:emit("state_draw")
+	if DEV then
+		GameStates.world:emit("state_draw_ex")
+	end
 	JPROF.pop("gs state draw")
 end
 

@@ -155,6 +155,19 @@ Dialogues.kitchen = {
 	},
 }
 
+Dialogues.outside = {
+	start = {},
+	car1 = {
+		LoveInk.Helpers.text("Test from LoveInk"),
+		LoveInk.Helpers.choice("check shelf?", {
+			{ "yes",       divert = DIALOGUE_FIN },
+			{ "im scared", divert = "car1" },
+		}),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
+	},
+	fin = {},
+}
+
 Dialogues.office2 = {
 	start = {},
 	test = {

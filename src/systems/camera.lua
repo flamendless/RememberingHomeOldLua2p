@@ -3,7 +3,7 @@ local Camera = Concord.system({
 	pool_clip = { "camera", "camera_clip" },
 })
 
-local dur_transition = 0.15
+local DUR_TRANSITION = 0.15
 
 function Camera:init(world)
 	self.world = world
@@ -158,7 +158,7 @@ function Camera:tween_camera(dir)
 	self.target_scale = dir == 1 and cs + 0.25 or cs - 0.25
 	self.target_state = dir == 1 and Enums.camera_state.zoomed_in or Enums.camera_state.zoomed_out
 
-	self.flux = Flux.to(self, dur_transition, { scale = self.target_scale })
+	self.flux = Flux.to(self, DUR_TRANSITION, { scale = self.target_scale })
 		:ease("circout")
 		:onupdate(function()
 			self.main_camera:setScale(self.scale)
@@ -201,20 +201,41 @@ function Camera:display_bars()
 	self.bars = true
 	self.bar_top = { x = l, y = t, w = w, h = 0 }
 	self.bar_bot = { x = l, y = h, w = w, h = 0 }
-	Flux.to(self.bar_top, dur_transition, { h = h * p }):ease("circout")
-	Flux.to(self.bar_bot, dur_transition, { h = -h * p }):ease("circout")
+	Flux.to(self.bar_top, DUR_TRANSITION, { h = h * p }):ease("circout")
+	Flux.to(self.bar_bot, DUR_TRANSITION, { h = -h * p }):ease("circout")
 	for _, e in ipairs(self.pool) do
 		e:give("bar_height", h * p)
 	end
 end
 
 function Camera:hide_bars()
-	Flux.to(self.bar_top, dur_transition, { h = 0 }):ease("circout")
-	Flux.to(self.bar_bot, dur_transition, { h = 0 }):ease("circout"):oncomplete(function()
+	Flux.to(self.bar_top, DUR_TRANSITION, { h = 0 }):ease("circout")
+	Flux.to(self.bar_bot, DUR_TRANSITION, { h = 0 }):ease("circout"):oncomplete(function()
 		self.bars = false
 	end)
 end
 
+function Camera:screen_shake(dur, intensity)
+	assert(type(dur) == "number" and dur > 0, dur)
+	assert(type(intensity) == "number" and intensity > 0.0 and intensity < 1.0, intensity)
+
+	local init_x, init_y = self.main_camera:getPosition()
+	local init_scale = self.main_camera:getScale()
+
+	Timer.during(
+		dur,
+		function()
+			local x = init_x + love.math.random(intensity) * mathx.random_sign()
+			local y = init_y + love.math.random(intensity) * mathx.random_sign()
+			local scale = init_scale + love.math.random(intensity) * mathx.random_sign()
+			self.main_camera:setPosition(x, y)
+			self.main_camera:setScale(scale)
+		end,
+		function()
+			self.main_camera:setPosition(init_x, init_y)
+			self.main_camera:setScale(init_scale)
+		end)
+end
 
 if DEV then
 	local format = string.format
