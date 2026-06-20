@@ -215,25 +215,33 @@ function Camera:hide_bars()
 	end)
 end
 
+function Camera:prepare_screen_shake()
+	self.init_screen_shake = {}
+	self.init_screen_shake.x, self.init_screen_shake.y = self.main_camera:getPosition()
+	self.init_screen_shake.scale = self.main_camera:getScale()
+end
+
+function Camera:finalize_screen_shake()
+	assert(self.init_screen_shake ~= nil, "make sure to emit 'prepare_screen_shake' first")
+	self.main_camera:setPosition(self.init_screen_shake.x, self.init_screen_shake.y)
+	self.main_camera:setScale(self.init_screen_shake.scale)
+end
+
 function Camera:screen_shake(dur, intensity)
 	assert(type(dur) == "number" and dur > 0, dur)
 	assert(type(intensity) == "number" and intensity > 0.0 and intensity < 1.0, intensity)
-
-	local init_x, init_y = self.main_camera:getPosition()
-	local init_scale = self.main_camera:getScale()
-
+	assert(self.init_screen_shake ~= nil, "make sure to emit 'prepare_screen_shake' first")
 	Timer.during(
 		dur,
 		function()
-			local x = init_x + love.math.random(intensity) * mathx.random_sign()
-			local y = init_y + love.math.random(intensity) * mathx.random_sign()
-			local scale = init_scale + love.math.random(intensity) * mathx.random_sign()
+			local x = self.init_screen_shake.x + love.math.random(intensity) * mathx.random_sign()
+			local y = self.init_screen_shake.y + love.math.random(intensity) * mathx.random_sign()
+			local scale = self.init_screen_shake.scale + love.math.random(intensity) * mathx.random_sign()
 			self.main_camera:setPosition(x, y)
 			self.main_camera:setScale(scale)
 		end,
 		function()
-			self.main_camera:setPosition(init_x, init_y)
-			self.main_camera:setScale(init_scale)
+			self:finalize_screen_shake()
 		end)
 end
 

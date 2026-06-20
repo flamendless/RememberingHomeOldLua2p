@@ -221,23 +221,24 @@ function Tutorial:state_update(dt)
 		self.e_last_hand.decals_shaders.data.damage_amount = progress
 		self.e_last_hand.decals_shaders.data.distort_amount = progress
 
-		-- TODO: every quarter of progress, play sound of like hitting car door to open, add shake effect as well
-		local shake_dur = 0.2
+		-- TODO: every quarter of progress, play sound of like hitting car door to open
 		if self.hit_n == 0 and progress >= 0.1 and progress <= 0.25 then
+			self.world:emit("prepare_screen_shake")
 			self.hit_n = 1
-			self.world:emit("screen_shake", shake_dur, 0.1)
+			self.world:emit("screen_shake", 0.2, 0.05)
 		elseif self.hit_n == 1 and progress > 0.25 and progress <= 0.5 then
 			self.hit_n = 2
-			self.world:emit("screen_shake", shake_dur, 0.2)
+			self.world:emit("screen_shake", 0.3, 0.1)
 		elseif self.hit_n == 2 and progress > 0.5 and progress <= 0.75 then
 			self.hit_n = 3
-			self.world:emit("screen_shake", shake_dur, 0.3)
+			self.world:emit("screen_shake", 0.35, 0.15)
 		elseif self.hit_n == 3 and progress > 0.75 and progress <= 0.99 then
 			self.hit_n = 4
-			self.world:emit("screen_shake", shake_dur, 0.5)
+			self.world:emit("screen_shake", 0.4, 0.3)
 		end
 
 		if progress >= 1 then
+			self.world:emit("finalize_screen_shake")
 			self:tutorial_step_set(Enums.tutorial_step.done_waiting_interact)
 		end
 
