@@ -238,7 +238,7 @@ function Tutorial:state_update(dt)
 		end
 
 		if progress >= 1 then
-			self.world:emit("finalize_screen_shake")
+			self.world:emit("finalize_screen_shake", true)
 			self:tutorial_step_set(Enums.tutorial_step.done_waiting_interact)
 		end
 

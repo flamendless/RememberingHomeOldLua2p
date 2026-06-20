@@ -221,10 +221,14 @@ function Camera:prepare_screen_shake()
 	self.init_screen_shake.scale = self.main_camera:getScale()
 end
 
-function Camera:finalize_screen_shake()
+function Camera:finalize_screen_shake(very_final)
+	if very_final then assert(type(very_final) == "boolean", very_final) end
 	assert(self.init_screen_shake ~= nil, "make sure to emit 'prepare_screen_shake' first")
 	self.main_camera:setPosition(self.init_screen_shake.x, self.init_screen_shake.y)
 	self.main_camera:setScale(self.init_screen_shake.scale)
+	if very_final then
+		self.init_screen_shake = nil
+	end
 end
 
 function Camera:screen_shake(dur, intensity)
