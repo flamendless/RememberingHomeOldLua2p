@@ -1,5 +1,6 @@
 GAME_SPEED_MULT = 1
 MAX_Z = 99
+CAM_BAR_RATIO = 0.2
 
 if DEV then
 	love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";modules/?.lua")

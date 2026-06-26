@@ -15,30 +15,50 @@ function DialoguesSystem:state_setup()
 	end
 
 	self.dialogue = LoveInk.Dialogue.new(data, "start")
+end
 
-	--TODO: customize. Should we defer this to renderer system?
+function DialoguesSystem:ev_main_camera_setup(cam)
+	assert(type(cam) == "table")
+
+	--TODO: finalize values
+	local font = Resources.data.fonts.dialogue
+	local ww, wh = love.graphics.getDimensions()
+	local _, _, _, h = cam:getWindow()
+	local barh = h * CAM_BAR_RATIO
+	local basey = wh - barh + 12
+	local offx = 32
+
 	local cfg = {
 		textbox = {
-			x = 50,
-			y = love.graphics.getHeight() - 180,
-			width = love.graphics.getWidth() - 100,
-			height = 150,
+			x = offx,
+			y = basey,
+			width = ww - offx * 2,
+			height = font:getHeight(),
 			typewriter_speed = 40,
-			font = love.graphics.newFont(18)
+			font = font,
+			padding = 0,
+			background_color = Palette.colors.black,
+			border_color = Palette.colors.black,
 		},
 		choicelist = {
-			x = 100,
-			y = 200,
-			width = love.graphics.getWidth() - 200,
-			button_height = 50,
-			font = love.graphics.newFont(16)
+			x = offx,
+			y = basey,
+			width = ww - offx * 2,
+			button_height = font:getHeight(),
+			font = font,
+			padding = 0,
+			background_color = Palette.colors.black,
+			border_color = Palette.colors.black,
 		}
 
 	}
+
 	self.ui = LoveInk.DialogueUI.new(cfg)
 
-	-- self.current_content = self.dialogue:getNext()
-	-- self.ui:showContent(self.current_content)
+	local orig_draw = self.ui.draw
+	self.ui.draw = function()
+		orig_draw(self.ui)
+	end
 
 	self.ui.on_choice_made = function(index)
 		self.current_content = self.dialogue:choose(index)
@@ -52,7 +72,9 @@ function DialoguesSystem:start_dialogue(e, e_other)
 	assert(e_other.__isEntity)
 	local dialogue_key = e_other.dialogue_key.value
 	assert(type(dialogue_key) == "string")
+
 	if self.dialogue:getCurrentKnot() ~= dialogue_key then
+		self.e_dialogue = e_other
 		self.dialogue:divertTo(dialogue_key)
 		self.current_content = self.dialogue:getNext()
 		self.ui:showContent(self.current_content)
@@ -87,6 +109,7 @@ function DialoguesSystem:check_if_fin()
 			self.world:emit("toggle_component", e_player, "can_run", true)
 		end
 		self.current_content = nil
+		self.e_dialogue = nil
 	end
 end
 
@@ -120,8 +143,11 @@ function DialoguesSystem:state_update(dt)
 end
 
 function DialoguesSystem:state_draw()
+end
+
+function DialoguesSystem:draw_ui()
 	if not self.dialogue then return end
-	if not self.dialogue:hasEnded() and self.current_content then
+	if self.current_content and not self.dialogue:hasEnded() then
 		local f = love.graphics.getFont()
 		self.ui:draw()
 		love.graphics.setFont(f)
@@ -158,6 +184,9 @@ if DEV then
 		--TODO: Maybe store knots in a map so that map[knot_name]count
 		Slab.Text("Dialogue:")
 		Slab.Indent()
+		if self.e_dialogue then
+			Slab.Text("Dialogue Entity ID: " .. self.e_dialogue.id.value)
+		end
 		Slab.Text("Current Knot: " .. self.dialogue:getCurrentKnot())
 		Slab.Text("Visit Count: " .. self.dialogue:getKnotVisitCount(self.dialogue:getCurrentKnot()))
 		Slab.Unindent()

@@ -25,6 +25,7 @@ function Camera:init(world)
 		if camera.is_main then
 			self.e_camera = e
 			self.main_camera = camera.camera
+			self.world:emit("ev_main_camera_setup", self.main_camera)
 		end
 		self.scale = self.main_camera:getScale()
 		self.world:setResource("camera", self.main_camera)
@@ -197,14 +198,13 @@ end
 
 function Camera:display_bars()
 	local l, t, w, h = self.main_camera:getWindow()
-	local p = 0.15
 	self.bars = true
 	self.bar_top = { x = l, y = t, w = w, h = 0 }
 	self.bar_bot = { x = l, y = h, w = w, h = 0 }
-	Flux.to(self.bar_top, DUR_TRANSITION, { h = h * p }):ease("circout")
-	Flux.to(self.bar_bot, DUR_TRANSITION, { h = -h * p }):ease("circout")
+	Flux.to(self.bar_top, DUR_TRANSITION, { h = h * CAM_BAR_RATIO }):ease("circout")
+	Flux.to(self.bar_bot, DUR_TRANSITION, { h = -h * CAM_BAR_RATIO }):ease("circout")
 	for _, e in ipairs(self.pool) do
-		e:give("bar_height", h * p)
+		e:give("bar_height", h * CAM_BAR_RATIO)
 	end
 end
 
