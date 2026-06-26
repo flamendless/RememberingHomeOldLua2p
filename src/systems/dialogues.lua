@@ -55,11 +55,6 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 
 	self.ui = LoveInk.DialogueUI.new(cfg)
 
-	local orig_draw = self.ui.draw
-	self.ui.draw = function()
-		orig_draw(self.ui)
-	end
-
 	self.ui.on_choice_made = function(index)
 		self.current_content = self.dialogue:choose(index)
 		self.ui:showContent(self.current_content)
@@ -149,8 +144,101 @@ function DialoguesSystem:draw_ui()
 	if not self.dialogue then return end
 	if self.current_content and not self.dialogue:hasEnded() then
 		local f = love.graphics.getFont()
-		self.ui:draw()
+		self:custom_dialogue_ui_draw()
+		-- self.ui:draw() -- original
 		love.graphics.setFont(f)
+	end
+end
+
+function DialoguesSystem:custom_textbox_ui_draw(component)
+	if not component.visible then return end
+	local fh = component.font:getHeight()
+
+	love.graphics.setColor(component.background_color)
+	love.graphics.rectangle("fill", component.x, component.y, component.width, component.height)
+
+	love.graphics.setColor(component.border_color)
+	love.graphics.rectangle("line", component.x, component.y, component.width, component.height)
+
+	local text_y = component.y + component.padding
+
+	love.graphics.setColor(component.text_color)
+	love.graphics.setFont(component.font)
+
+	local max_width = component.width - (component.padding * 2)
+	local _, wrapped_text = component.font:getWrap(component.display_text, max_width)
+
+	for _, line in ipairs(wrapped_text) do
+		-- love.graphics.print(line, component.x + component.padding, text_y)
+		love.graphics.printf(line, component.x + component.padding, text_y, component.width, "center")
+		text_y = text_y + fh
+	end
+
+	if component.is_complete then
+		love.graphics.setColor(1, 1, 1, 0.5 + 0.5 * math.sin(love.timer.getTime() * 4))
+		local indicator = Inputs.rev_map.interact
+		local indicator_width = component.font:getWidth(indicator)
+		love.graphics.print(indicator,
+			component.x + component.width - component.padding - indicator_width,
+			component.y + component.height - component.padding - fh)
+	end
+end
+
+function DialoguesSystem:custom_choicelist_ui_draw(component)
+	if not component.visible or #component.choices == 0 then return end
+	local fh = component.font:getHeight()
+	local draw_y = component.y
+
+	if component.prompt then
+		love.graphics.setColor(component.text_color)
+		love.graphics.setFont(component.font)
+		-- love.graphics.print(component.prompt, component.x, draw_y)
+		love.graphics.printf(component.prompt, component.x, draw_y, component.width, "center")
+		draw_y = draw_y + fh + component.spacing
+	end
+
+	for i, choice in ipairs(component.choices) do
+		local button_y = draw_y + (i - 1) * (component.button_height + component.spacing)
+		local is_hovered = (i == component.hovered_index)
+
+		if is_hovered then
+			love.graphics.setColor(component.hover_color)
+		else
+			love.graphics.setColor(component.normal_color)
+		end
+
+		local choice_text = type(choice) == "string" and choice or choice[1]
+		local tw = component.font:getWidth(choice_text)
+
+		-- TODO: fix coords
+		local bx = ((component.x + component.width)/2) - tw/2
+		love.graphics.rectangle("fill", bx, button_y, tw, fh)
+
+		love.graphics.setColor(component.border_color)
+		love.graphics.rectangle("line", bx, button_y, tw, fh)
+
+		love.graphics.setColor(component.text_color)
+		love.graphics.setFont(component.font)
+
+		local text_x = component.x + component.padding
+		local text_y = button_y + (component.button_height - fh) / 2
+
+		love.graphics.printf(choice_text, text_x, text_y, component.width, "center")
+	end
+end
+
+local mapping = {
+	textbox = DialoguesSystem.custom_textbox_ui_draw,
+	choicelist = DialoguesSystem.custom_choicelist_ui_draw,
+}
+
+function DialoguesSystem:custom_dialogue_ui_draw()
+	for _, component in ipairs(self.ui.components) do
+		local fn = mapping[component.id]
+		if DEV then
+			assert(fn ~= nil, "unimplemented custom renderer for component " .. component.id)
+		end
+		fn(DialoguesSystem, component)
 	end
 end
 

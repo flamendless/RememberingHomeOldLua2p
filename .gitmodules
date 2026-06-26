@@ -70,3 +70,4 @@
 [submodule "modules/loveink"]
 	path = modules/loveink
 	url = https://github.com/flamendless/LoveInk
+	branch = main
