@@ -219,6 +219,7 @@ function Camera:prepare_screen_shake()
 	self.init_screen_shake = {}
 	self.init_screen_shake.x, self.init_screen_shake.y = self.main_camera:getPosition()
 	self.init_screen_shake.scale = self.main_camera:getScale()
+	self.init_screen_shake.rotation = self.main_camera:getAngle()
 end
 
 function Camera:finalize_screen_shake(very_final)
@@ -226,6 +227,7 @@ function Camera:finalize_screen_shake(very_final)
 	assert(self.init_screen_shake ~= nil, "make sure to emit 'prepare_screen_shake' first")
 	self.main_camera:setPosition(self.init_screen_shake.x, self.init_screen_shake.y)
 	self.main_camera:setScale(self.init_screen_shake.scale)
+	self.main_camera:setAngle(self.init_screen_shake.rotation)
 	if very_final then
 		self.init_screen_shake = nil
 	end
@@ -241,8 +243,10 @@ function Camera:screen_shake(dur, intensity)
 			local x = self.init_screen_shake.x + love.math.random(intensity) * mathx.random_sign()
 			local y = self.init_screen_shake.y + love.math.random(intensity) * mathx.random_sign()
 			local scale = self.init_screen_shake.scale + love.math.random(intensity) * mathx.random_sign()
+			local rotation = self.init_screen_shake.rotation + math.rad(love.math.random(intensity)) * mathx.random_sign()
 			self.main_camera:setPosition(x, y)
 			self.main_camera:setScale(scale)
+			self.main_camera:setAngle(rotation)
 		end,
 		function()
 			self:finalize_screen_shake()

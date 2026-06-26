@@ -225,16 +225,16 @@ function Tutorial:state_update(dt)
 		if self.hit_n == 0 and progress >= 0.1 and progress <= 0.25 then
 			self.world:emit("prepare_screen_shake")
 			self.hit_n = 1
-			self.world:emit("screen_shake", 0.2, 0.05)
+			self.world:emit("screen_shake", 0.1, 0.005)
 		elseif self.hit_n == 1 and progress > 0.25 and progress <= 0.5 then
 			self.hit_n = 2
-			self.world:emit("screen_shake", 0.3, 0.1)
+			self.world:emit("screen_shake", 0.15, 0.01)
 		elseif self.hit_n == 2 and progress > 0.5 and progress <= 0.75 then
 			self.hit_n = 3
-			self.world:emit("screen_shake", 0.35, 0.15)
+			self.world:emit("screen_shake", 0.2, 0.015)
 		elseif self.hit_n == 3 and progress > 0.75 and progress <= 0.99 then
 			self.hit_n = 4
-			self.world:emit("screen_shake", 0.4, 0.3)
+			self.world:emit("screen_shake", 0.3, 0.03)
 		end
 
 		if progress >= 1 then
