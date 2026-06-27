@@ -36,6 +36,7 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 * [log](https://github.com/flamendless/log.lua) - for logging
 * [lume](https://github.com/rxi/lume) - for some utility functions
 * [love-sdf-text](https://github.com/Tjakka5/love-sdf-text) - for SDF rendering
+* [LoveInk](https://github.com/adam85sims/LoveInk) - for Dialogues
 * [ngrading](https://github.com/MikuAuahDark/NPad93/tree/master/ngrading) - color grading (heavily modified for this project)
 * [Outliner](https://love2d.org/forums/viewtopic.php?p=221215#p221215) - for Outline shader (modified for this project)
 * [ReflowPrint](https://github.com/josefnpat/reflowprint) - for alignment of text that is shown one character at a time
@@ -51,7 +52,7 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 * [HotParticles](https://github.com/ReFreezed/HotParticles) - for testing/playing with particle systems.
 * [Luapreprocess](https://github.com/ReFreezed/LuaPreprocess) - for preprocessing `.lua2p` files to `.lua`
 * [msdf-bmfont](https://www.npmjs.com/package/msdf-bmfont) - for converting `.ttf` font files to SDF
-* [love-build](https://github.com/ellraiser/love-build)
+* [love-build](https://github.com/ellraiser/love-build) - for building executables for different OS
 
 ## Credits:
 
@@ -59,10 +60,9 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 
 ## Dependencies:
 
-* [LOVE framework](https://love2d.org) - version 11.3 is used for development
+* [LOVE framework](https://love2d.org) - version 11.5 is used for development
 * [rsync](https://rsync.samba.org/) - for copying/moving
 * [luacheck](https://github.com/mpeterv/luacheck)
-* [love-build](https://github.com/ellraiser/love-build)
 
 ## Setup:
 * `git clone <this_repo>`
@@ -73,7 +73,7 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 
 ## Coding Style Guide
 
-* [Look at my coding style guide for Lua](https://flamendless.github.io/lua-coding-style-guide/)
+* [Look at my coding style guide for Lua](https://flamendless.github.io/lua-coding-style-guide/) (though might not be followed anymore LOL)
 
 ## LICENSE:
 
