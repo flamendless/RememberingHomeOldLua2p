@@ -52,10 +52,13 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 
 	}
 
-	self.blood_bar = BloodBar({
-		speed = 2,
-	})
-	self.blood_bar.enabled = true
+	self.blood_bars = {
+		BloodBar({speed = 1}),
+		BloodBar({speed = 1}),
+	}
+	self.blood_bars[1].enabled = true
+	self.blood_bars[2].enabled = true
+
 	self.ui = LoveInk.DialogueUI.new(cfg)
 
 	self.ui.on_choice_made = function(index)
@@ -127,10 +130,6 @@ end
 function DialoguesSystem:state_update(dt)
 	if not self.dialogue then return end
 
-	if self.blood_bar then
-		self.blood_bar:update(dt)
-	end
-
 	-- if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 	-- 	self.current_content = nil
 	-- end
@@ -140,11 +139,13 @@ function DialoguesSystem:state_update(dt)
 		self:ev_advance()
 	end
 
+	local hovered_index
 	for _, component in ipairs(self.ui.components) do
 		if component.enabled then
 			if component.id == "textbox" then
 				component:update(dt)
 			elseif component.id == "choicelist" then
+				hovered_index = component.hovered_index
 				if Inputs.released("left") then
 					component.hovered_index = 1
 				elseif Inputs.released("right") then
@@ -157,6 +158,17 @@ function DialoguesSystem:state_update(dt)
 			end
 		end
 	end
+
+	if self.blood_bars then
+		for i, bb in ipairs(self.blood_bars) do
+			local hovered = (i == hovered_index)
+			bb.data.speed = hovered and 1.2 or 0.6
+			bb.data.tint = hovered and 2 or 1
+			bb.data.opacity = 1.0
+			bb:update(dt)
+		end
+	end
+
 end
 
 function DialoguesSystem:state_draw()
@@ -229,19 +241,19 @@ function DialoguesSystem:custom_choicelist_ui_draw(component)
 	for i, choice in ipairs(component.choices) do
 		local choice_text = type(choice) == "string" and choice or choice[1]
 
-		local rw = max_tw + component.padding
-		local rh = fh + component.padding/2
-		local by = draw_y - rh/4
+		local rw = max_tw + component.padding * 2
+		local rh = fh + component.padding/3
+		local by = draw_y - rh/6
 		local bx = 0
+
 		if i == 1 then
 			bx = component.x + component.width / 4 - rw/2
 		elseif i == 2 then
 			bx = component.x + component.width * 0.75 - rw/2
 		end
 
-		if i == component.hovered_index then
-			self.blood_bar:draw(bx, by, rw, rh)
-		end
+		local bb = self.blood_bars[i]
+		bb:draw(bx, by, rw, rh)
 
 		love.graphics.setColor(component.text_color)
 		love.graphics.setFont(component.font)

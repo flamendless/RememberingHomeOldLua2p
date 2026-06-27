@@ -1,6 +1,7 @@
 extern number time;
 extern number opacity;
 extern number fade_width;
+extern number tint;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -55,6 +56,8 @@ vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
 	float topLine = smoothstep(0.018, 0.0, uv.y);
 	float botLine = smoothstep(0.982, 1.0, uv.y);
 	col = mix(col, vec3(0.38, 0.12, 0.12), max(topLine, botLine) * 0.18);
+
+	col *= tint;
 
 	float alpha = edgeFade * opacity * color.a;
 	return vec4(col * color.rgb, alpha);
