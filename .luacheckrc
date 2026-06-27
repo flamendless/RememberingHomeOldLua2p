@@ -80,6 +80,7 @@ return {
 		"Fade",
 		"Generator",
 		"Helper",
+		"BloodBar",
 		"Image",
 		"Info",
 		"Inputs",

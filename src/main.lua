@@ -31,6 +31,7 @@ function love.load()
 	local modules = {
 		WindowMode,
 		Shaders,
+		BloodBar,
 		LoadingScreen,
 		Info,
 		Save,

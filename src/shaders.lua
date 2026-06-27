@@ -11,6 +11,7 @@ Shaders.paths = {
 	glitch = "shaders/glitch.glsl",
 	vignette_ex = "shaders/vignette_ex.glsl",
 	hand = "shaders/hand.glsl",
+	blood_bar = "shaders/blood_bar.glsl",
 
 	ngrading = true,
 	ngrading_old = "shaders/ngrading_old.glsl",

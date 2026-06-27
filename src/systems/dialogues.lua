@@ -20,7 +20,6 @@ end
 function DialoguesSystem:ev_main_camera_setup(cam)
 	assert(type(cam) == "table")
 
-	--TODO: finalize values
 	local font = Resources.data.fonts.dialogue
 	local ww, wh = love.graphics.getDimensions()
 	local _, _, _, h = cam:getWindow()
@@ -53,6 +52,10 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 
 	}
 
+	self.blood_bar = BloodBar({
+		speed = 2,
+	})
+	self.blood_bar.enabled = true
 	self.ui = LoveInk.DialogueUI.new(cfg)
 
 	self.ui.on_choice_made = function(index)
@@ -123,6 +126,10 @@ end
 
 function DialoguesSystem:state_update(dt)
 	if not self.dialogue then return end
+
+	if self.blood_bar then
+		self.blood_bar:update(dt)
+	end
 
 	-- if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 	-- 	self.current_content = nil
@@ -220,12 +227,6 @@ function DialoguesSystem:custom_choicelist_ui_draw(component)
 	local centerx = component.x + component.width / 2
 
 	for i, choice in ipairs(component.choices) do
-		if i == component.hovered_index then
-			love.graphics.setColor(component.hover_color)
-		else
-			love.graphics.setColor(component.normal_color)
-		end
-
 		local choice_text = type(choice) == "string" and choice or choice[1]
 
 		local rw = max_tw + component.padding
@@ -238,10 +239,9 @@ function DialoguesSystem:custom_choicelist_ui_draw(component)
 			bx = component.x + component.width * 0.75 - rw/2
 		end
 
-		love.graphics.rectangle("fill", bx, by, rw, rh)
-
-		love.graphics.setColor(component.border_color)
-		love.graphics.rectangle("line", bx, by, rw, rh)
+		if i == component.hovered_index then
+			self.blood_bar:draw(bx, by, rw, rh)
+		end
 
 		love.graphics.setColor(component.text_color)
 		love.graphics.setFont(component.font)
@@ -266,7 +266,7 @@ function DialoguesSystem:custom_dialogue_ui_draw()
 		if DEV then
 			assert(fn ~= nil, "unimplemented custom renderer for component " .. component.id)
 		end
-		fn(DialoguesSystem, component)
+		fn(self, component)
 	end
 end
 
