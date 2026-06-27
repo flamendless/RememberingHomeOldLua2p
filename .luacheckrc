@@ -15,6 +15,7 @@ return {
 		"JPROF",
 		"MAX_Z",
 		"GAME_SPEED_MULT",
+		"CAM_BAR_RATIO",
 
 		-- Standard libraries
 		"UTF8",

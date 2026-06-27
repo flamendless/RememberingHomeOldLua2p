@@ -46,7 +46,7 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 			width = ww - offx * 2,
 			button_height = font:getHeight(),
 			font = font,
-			padding = 0,
+			padding = 48,
 			background_color = Palette.colors.black,
 			border_color = Palette.colors.black,
 		}
@@ -133,8 +133,23 @@ function DialoguesSystem:state_update(dt)
 		self:ev_advance()
 	end
 
-	--TODO: if dialogue is active, what entities/systems do we want to pause/block?? How??
-	self.ui:update(dt)
+	for _, component in ipairs(self.ui.components) do
+		if component.enabled then
+			if component.id == "textbox" then
+				component:update(dt)
+			elseif component.id == "choicelist" then
+				if Inputs.released("left") then
+					component.hovered_index = 1
+				elseif Inputs.released("right") then
+					component.hovered_index = 2
+				elseif Inputs.released("interact") then
+					if component.hovered_index and component.on_choice then
+						component.on_choice(component.hovered_index)
+					end
+				end
+			end
+		end
+	end
 end
 
 function DialoguesSystem:state_draw()
@@ -192,38 +207,51 @@ function DialoguesSystem:custom_choicelist_ui_draw(component)
 	if component.prompt then
 		love.graphics.setColor(component.text_color)
 		love.graphics.setFont(component.font)
-		-- love.graphics.print(component.prompt, component.x, draw_y)
 		love.graphics.printf(component.prompt, component.x, draw_y, component.width, "center")
 		draw_y = draw_y + fh + component.spacing
 	end
 
-	for i, choice in ipairs(component.choices) do
-		local button_y = draw_y + (i - 1) * (component.button_height + component.spacing)
-		local is_hovered = (i == component.hovered_index)
+	local max_tw = 0
+	for _, choice in ipairs(component.choices) do
+		local choice_text = type(choice) == "string" and choice or choice[1]
+		max_tw = math.max(max_tw, component.font:getWidth(choice_text))
+	end
 
-		if is_hovered then
+	local centerx = component.x + component.width / 2
+
+	for i, choice in ipairs(component.choices) do
+		if i == component.hovered_index then
 			love.graphics.setColor(component.hover_color)
 		else
 			love.graphics.setColor(component.normal_color)
 		end
 
 		local choice_text = type(choice) == "string" and choice or choice[1]
-		local tw = component.font:getWidth(choice_text)
 
-		-- TODO: fix coords
-		local bx = ((component.x + component.width)/2) - tw/2
-		love.graphics.rectangle("fill", bx, button_y, tw, fh)
+		local rw = max_tw + component.padding
+		local rh = fh + component.padding/2
+		local by = draw_y - rh/4
+		local bx = 0
+		if i == 1 then
+			bx = component.x + component.width / 4 - rw/2
+		elseif i == 2 then
+			bx = component.x + component.width * 0.75 - rw/2
+		end
+
+		love.graphics.rectangle("fill", bx, by, rw, rh)
 
 		love.graphics.setColor(component.border_color)
-		love.graphics.rectangle("line", bx, button_y, tw, fh)
+		love.graphics.rectangle("line", bx, by, rw, rh)
 
 		love.graphics.setColor(component.text_color)
 		love.graphics.setFont(component.font)
 
-		local text_x = component.x + component.padding
-		local text_y = button_y + (component.button_height - fh) / 2
-
-		love.graphics.printf(choice_text, text_x, text_y, component.width, "center")
+		local limit = component.width/2
+		if i == 1 then
+			love.graphics.printf(choice_text, component.x, draw_y, limit, "center")
+		elseif i == 2 then
+			love.graphics.printf(choice_text, centerx, draw_y, limit, "center")
+		end
 	end
 end
 
@@ -239,14 +267,6 @@ function DialoguesSystem:custom_dialogue_ui_draw()
 			assert(fn ~= nil, "unimplemented custom renderer for component " .. component.id)
 		end
 		fn(DialoguesSystem, component)
-	end
-end
-
--- TODO: ponder whether we want mouse or key based interactions
-function DialoguesSystem:state_mousepressed(mx, my, mb)
-	if not self.dialogue then return end
-	if self.ui:mousepressed(mx, my, mb) then
-		return
 	end
 end
 

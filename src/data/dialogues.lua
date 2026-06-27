@@ -6,17 +6,17 @@ local Dialogues = {}
 -- 	player = "player",
 -- }
 
-Dialogues._none = {
-	_none = {},
-}
-
 Dialogues.items = {
+	start = {},
+	fin = {},
 	no_batteries = {
 		"Batteries ran out of juice",
 	},
 }
 
 Dialogues.common = {
+	start = {},
+	fin = {},
 	item_without = {
 		"there is nothing to use this item with",
 	},
@@ -26,6 +26,8 @@ Dialogues.common = {
 }
 
 Dialogues.outside = {
+	start = {},
+	fin = {},
 	car = {
 		"An old but reliable car",
 		choices = {
@@ -78,6 +80,8 @@ Dialogues.outside = {
 }
 
 Dialogues.utility_room = {
+	start = {},
+	fin = {},
 	light_switch = {
 		"_toggle_light_switch",
 	},
@@ -99,6 +103,8 @@ Dialogues.utility_room = {
 }
 
 Dialogues.storage_room = {
+	start = {},
+	fin = {},
 	light_switch = {
 		"_toggle_light_switch",
 	},
@@ -142,6 +148,8 @@ Dialogues.storage_room = {
 }
 
 Dialogues.kitchen = {
+	start = {},
+	fin = {},
 	ref = {
 		"A refrigerator",
 	},
@@ -181,23 +189,22 @@ Dialogues.office2 = {
 	fin = {},
 }
 
-for k, v in pairs(Dialogues) do
-	if not DEV then
+if DEV then
+	for k, v in pairs(Dialogues) do
 		if not v.start then
-			error("release mode? make sure it has start node " .. k)
+			error("make sure it has start node for dialogue " .. k)
 		end
 		if not v.fin then
-			error("release mode? make sure it has fin node " .. k)
+			error("make sure it has fin node for dialogue " .. k)
 		end
-	end
 
-	if not v.start then
-		print("adding start node for", k)
-		v.start = {}
-	end
-	if not v.fin then
-		print("adding fin node for", k)
-		v.fin = {}
+		for id, subt in pairs(v) do
+			for _, d in ipairs(subt) do
+				if d.type == "choice" then
+					assert(#d.options == 2, "enforce 2 options for choice " .. id .. " of dialogue " .. k)
+				end
+			end
+		end
 	end
 end
 
