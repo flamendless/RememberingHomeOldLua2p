@@ -13,7 +13,7 @@ function Tutorial:init(world)
 		self.world:emit("create_right_key")
 		self.e_dialogue_car1 = Concord.entity(self.world)
 			:give("id", "dialogue_car1")
-			:give("dialogue_key", "car1")
+			:give("dialogue_key", "car_doors")
 	end
 
 	self.step = Enums.tutorial_step.waiting
@@ -30,6 +30,18 @@ function Tutorial:show_hands_trail(
 	next_step,
 	is_instant
 )
+	Log.debug(
+		"show_handsl_trail",
+		n,
+		startx,
+		starty,
+		targetx,
+		targety,
+		startrot,
+		show_key,
+		next_step,
+		is_instant
+	)
 	assert(Enums.show_keys[show_key])
 	assert(Enums.tutorial_step[next_step])
 
@@ -125,10 +137,10 @@ end
 function Tutorial:tutorial_step_set(step)
 	assert(Enums.tutorial_step[step], step)
 	Log.info("Tutorial step", "from:", self.step, "to:", step)
-	self.world:emit("display_bars")
 	self.step = step
 
 	if self.step == Enums.tutorial_step.interact then
+		self.world:emit("display_bars")
 		self.e_player = self.world:getResource("e_player")
 		assert(self.e_player ~= nil)
 
@@ -145,6 +157,7 @@ function Tutorial:tutorial_step_set(step)
 		self.e_interact_key = self.world:getEntityByKey("dialogue_proceed_key")
 
 	elseif self.step == Enums.tutorial_step.done_waiting_interact then
+		self.world:emit("force_end_dialogue")
 		--TODO: play car door open sound
 		self.e_interact_key:destroy()
 		self.e_glow:destroy()
@@ -167,7 +180,7 @@ function Tutorial:tutorial_step_set(step)
 		assert(self.e_left_key ~= nil)
 
 	elseif self.step == Enums.tutorial_step.waiting_left then
-		self.e_player:give("can_move") :give("can_move_left_only")
+		self.e_player:give("can_move"):give("can_move_left_only")
 
 	elseif self.step == Enums.tutorial_step.show_left_interact then
 		self.world:emit("create_dialogue_key")
@@ -197,11 +210,83 @@ function Tutorial:tutorial_step_set(step)
 		self.is_fluxing = false
 
 	elseif self.step == Enums.tutorial_step.done_left_interact then
-		-- TODO: show dialogue
-		self.world:emit("start_dialogue", self.e_player, self.e_dialogue_car1)
+		self.world:emit(
+			"start_dialogue",
+			self.e_player,
+			self.e_dialogue_car1,
+			"car_headlights"
+		)
+
+	elseif self.step == Enums.tutorial_step.show_right then
+		local startx, starty = self.e_last_hand.pos.x, self.e_last_hand.pos.y
+
+		local pos = self.e_player.pos
+		local col = self.e_player.collider
+		local tx, ty = pos.x - col.w_h + 144, pos.y + col.h_h + 4
+		self:show_hands_trail(
+			8,
+			startx, starty,
+			tx, ty,
+			0,
+			Enums.show_keys.right,
+			Enums.tutorial_step.waiting_right,
+			false
+		)
+
+		self.right_start_x = self.e_player.pos.x
+		self.right_target_x = tx + 7
+
+		self.e_right_key = self.world:getEntityByKey("right_proceed_key")
+		assert(self.e_right_key ~= nil)
+
+	elseif self.step == Enums.tutorial_step.waiting_right then
+		self.e_player:give("can_move"):remove("can_move_left_only"):give("can_move_right_only")
+
+	elseif self.step == Enums.tutorial_step.show_right_interact then
+		self.world:emit("player_force_face_dir", -1)
+		self.world:emit("create_dialogue_key")
+
+		assert(self.e_right_key ~= nil)
+		self.e_right_key:destroy()
+
+		local tx, ty = self.e_last_hand.pos.x, self.e_last_hand.pos.y
+		self.e_last_hand:destroy()
+		self.e_glow:destroy()
+
+		Timer.after(1, function ()
+			self:show_hands_trail(
+				5,
+				tx, ty,
+				tx, ty,
+				0,
+				Enums.show_keys.dialogue,
+				Enums.tutorial_step.waiting_right_interact,
+				true
+			)
+		end)
+
+	elseif self.step == Enums.tutorial_step.waiting_right_interact then
+		self.world:emit("player_force_face_dir", -1)
+		self.is_fluxing = false
+		self.e_interact_key = self.world:getEntityByKey("dialogue_proceed_key")
+		assert(self.e_interact_key)
+
+	elseif self.step == Enums.tutorial_step.done_right_interact then
+		self.e_interact_key:destroy()
+		self.world:emit("player_force_face_dir", -1)
+		-- TODO: open the trunk animation?
+		-- TODO: play trunk open sound
+		Timer.after(1, function()
+			self.world:emit(
+				"start_dialogue",
+				self.e_player,
+				self.e_dialogue_car1,
+				"car_trunk"
+			)
+		end)
 
 	else
-		error("unimplemented")
+		error("unimplemented " .. self.step)
 	end
 end
 
@@ -226,15 +311,33 @@ function Tutorial:state_update(dt)
 			self.world:emit("prepare_screen_shake")
 			self.hit_n = 1
 			self.world:emit("screen_shake", 0.1, 0.005)
+			self.world:emit(
+				"start_dialogue",
+				self.e_player,
+				self.e_dialogue_car1,
+				"car_doors"
+			)
 		elseif self.hit_n == 1 and progress > 0.25 and progress <= 0.5 then
 			self.hit_n = 2
 			self.world:emit("screen_shake", 0.15, 0.01)
 		elseif self.hit_n == 2 and progress > 0.5 and progress <= 0.75 then
 			self.hit_n = 3
 			self.world:emit("screen_shake", 0.2, 0.015)
+			self.world:emit(
+				"start_dialogue",
+				self.e_player,
+				self.e_dialogue_car1,
+				"car_doors2"
+			)
 		elseif self.hit_n == 3 and progress > 0.75 and progress <= 0.99 then
 			self.hit_n = 4
 			self.world:emit("screen_shake", 0.3, 0.03)
+			self.world:emit(
+				"start_dialogue",
+				self.e_player,
+				self.e_dialogue_car1,
+				"car_doors3"
+			)
 		end
 
 		if progress >= 1 then
@@ -275,6 +378,41 @@ function Tutorial:state_update(dt)
 				self:tutorial_step_set(Enums.tutorial_step.done_left_interact)
 			end)
 		end
+
+	elseif self.step == Enums.tutorial_step.waiting_right then
+		local current = self.e_player.pos.x
+		local progress = (self.right_start_x - current) / (self.right_start_x - self.right_target_x)
+		progress = mathx.clamp(progress, 0, 1)
+
+		self.e_right_key.color.value[4] = 1 - progress
+		self.e_last_hand.decals_shaders.data.blood_amount = progress
+		self.e_last_hand.decals_shaders.data.damage_amount = progress
+		self.e_last_hand.decals_shaders.data.distort_amount = progress
+
+		if progress >= 1 then
+			self.e_player:remove("can_move"):remove("can_move_right_only")
+			self.world:__flush()
+			self.world:emit("player_stop")
+			self.world:emit("player_force_face_dir", -1)
+			self:tutorial_step_set(Enums.tutorial_step.show_right_interact)
+		end
+
+	elseif self.step == Enums.tutorial_step.waiting_right_interact and not self.is_fluxing then
+		if Inputs.pressed("interact") then
+			self.is_fluxing = true
+			local progress = {value = 0}
+			Flux.to(progress, 2, { value = 1 }):onupdate(function()
+				self.e_interact_key.color.value[4] = 1 - progress.value
+				self.e_last_hand.decals_shaders.data.blood_amount = progress.value
+				self.e_last_hand.decals_shaders.data.damage_amount = progress.value
+				self.e_last_hand.decals_shaders.data.distort_amount = progress.value
+			end):oncomplete(function()
+				self.e_interact_key:destroy()
+				self.e_last_hand:destroy()
+				self.e_glow:destroy()
+				self:tutorial_step_set(Enums.tutorial_step.done_right_interact)
+			end)
+		end
 	end
 end
 
@@ -283,6 +421,14 @@ function Tutorial:state_draw_ex()
 	if DEV then
 		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.print("IN TUTORIAL: " .. self.step, 0, 38)
+	end
+end
+
+function Tutorial:ev_dialogue_fin()
+	if self.step == Enums.tutorial_step.done_left_interact then
+		self:tutorial_step_set(Enums.tutorial_step.show_right)
+	elseif self.step == Enums.tutorial_step.done_right_interact then
+		self:tutorial_step_set(Enums.tutorial_step.fin)
 	end
 end
 

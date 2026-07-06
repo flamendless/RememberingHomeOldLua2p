@@ -68,10 +68,11 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 	end
 end
 
-function DialoguesSystem:start_dialogue(e, e_other)
+function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert(e.__isEntity)
 	assert(e_other.__isEntity)
-	local dialogue_key = e_other.dialogue_key.value
+	if override_dialogue_key then assert(type(override_dialogue_key) == "string", override_dialogue_key) end
+	local dialogue_key = override_dialogue_key or e_other.dialogue_key.value
 	assert(type(dialogue_key) == "string")
 
 	if self.dialogue:getCurrentKnot() ~= dialogue_key then
@@ -79,11 +80,6 @@ function DialoguesSystem:start_dialogue(e, e_other)
 		self.dialogue:divertTo(dialogue_key)
 		self.current_content = self.dialogue:getNext()
 		self.ui:showContent(self.current_content)
-
-		-- for now let's just pause the player
-		self.world:emit("toggle_component", e, "can_move", false)
-		self.world:emit("toggle_component", e, "can_interact", false)
-		self.world:emit("toggle_component", e, "can_run", false)
 
 		--TODO: Implement pause (b)
 		if e_other.dialogue_force_pause then
@@ -99,16 +95,14 @@ function DialoguesSystem:start_dialogue(e, e_other)
 	end
 end
 
+function DialoguesSystem:force_end_dialogue()
+	self.dialogue:divertTo(DIALOGUE_FIN)
+	self:check_if_fin()
+end
+
 function DialoguesSystem:check_if_fin()
 	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
 		self.world:emit("ev_dialogue_fin")
-		--TODO: Finalize
-		local e_player = self.world:getResource("e_player")
-		if e_player then
-			self.world:emit("toggle_component", e_player, "can_move", true)
-			self.world:emit("toggle_component", e_player, "can_interact", true)
-			self.world:emit("toggle_component", e_player, "can_run", true)
-		end
 		self.current_content = nil
 		self.e_dialogue = nil
 	end

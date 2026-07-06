@@ -169,6 +169,13 @@ function PlayerController:update(dt)
 	self.world:emit("update_speed_data", self.player, anim_name)
 end
 
+function PlayerController:player_force_face_dir(dir)
+	assert(type(dir) == "number", dir)
+	self.player.body.dir = dir
+	local anim_name = self:player_update_animation()
+	self.world:emit("update_speed_data", self.player, anim_name)
+end
+
 function PlayerController:player_update_animation(override_name, override_variant)
 	local anim_name = override_name
 	local anim_variant = override_variant or ""
@@ -243,98 +250,104 @@ function PlayerController:on_leave_interact_or_inventory()
 	-- self.world:emit("remove_speech_bubble")
 end
 
-local function view_number(id, value, sameline)
-	Slab.Text(id)
-	Slab.SameLine()
-	Slab.Input(id, { Text = value, ReadOnly = true, NumbersOnly = true })
-	if sameline then
+if DEV then
+	local function view_number(id, value, sameline)
+		Slab.Text(id)
 		Slab.SameLine()
-	end
-end
-
-function PlayerController:debug_update(dt)
-	if not self.debug_show then
-		return
-	end
-	self.debug_show = Slab.BeginWindow("player", {
-		Title = "PlayerController",
-		IsOpen = self.debug_show,
-	})
-
-	if self.player == nil then
-		if Slab.Button("Spawn Player") then
-			self:spawn_player()
+		Slab.Input(id, { Text = value, ReadOnly = true, NumbersOnly = true })
+		if sameline then
+			Slab.SameLine()
 		end
-		Slab.EndWindow()
-		return
 	end
 
-	local pos = self.player.pos
-	Slab.Text("Pos")
-	Slab.Indent()
-	view_number("x", pos.x, true)
-	view_number("y", pos.y)
-	Slab.Unindent()
+	function PlayerController:debug_update(dt)
+		if not self.debug_show then
+			return
+		end
+		self.debug_show = Slab.BeginWindow("player", {
+			Title = "PlayerController",
+			IsOpen = self.debug_show,
+		})
 
-	local transform = self.player.transform
-	Slab.Text("Transform")
-	Slab.Indent()
-	view_number("sx", transform.sx, true)
-	view_number("sy", transform.sy)
-	view_number("ox", transform.ox, true)
-	view_number("oy", transform.oy)
-	Slab.Unindent()
+		if self.player == nil then
+			if Slab.Button("Spawn Player") then
+				self:spawn_player()
+			end
+			Slab.EndWindow()
+			return
+		end
 
-	local qt = self.player.quad_transform
-	if qt then
-		Slab.Text("Quad Transform")
+		local pos = self.player.pos
+		Slab.Text("Pos")
 		Slab.Indent()
-		view_number("qsx", qt.sx, true)
-		view_number("qsy", qt.sy)
-		view_number("qox", qt.ox, true)
-		view_number("qoy", qt.oy)
+		view_number("x", pos.x, true)
+		view_number("y", pos.y)
 		Slab.Unindent()
+
+		local transform = self.player.transform
+		Slab.Text("Transform")
+		Slab.Indent()
+		view_number("sx", transform.sx, true)
+		view_number("sy", transform.sy)
+		view_number("ox", transform.ox, true)
+		view_number("oy", transform.oy)
+		Slab.Unindent()
+
+		local qt = self.player.quad_transform
+		if qt then
+			Slab.Text("Quad Transform")
+			Slab.Indent()
+			view_number("qsx", qt.sx, true)
+			view_number("qsy", qt.sy)
+			view_number("qox", qt.ox, true)
+			view_number("qoy", qt.oy)
+			Slab.Unindent()
+		end
+
+		local current_frame = self.player.current_frame
+		Slab.Text("animation")
+		Slab.Indent()
+		Slab.Input("anim_tag", { Text = self.player.animation.current_tag, ReadOnly = true })
+		Slab.SameLine()
+		view_number("frame", current_frame.value)
+		Slab.Unindent()
+
+		local quad = self.player.quad
+		local qx, qy, qw, qh = quad.quad:getViewport()
+		local qsw, qsh = quad.quad:getTextureDimensions()
+		Slab.Text("quad")
+		Slab.Indent()
+		view_number("x", qx, true)
+		view_number("y", qy)
+		view_number("w", qw, true)
+		view_number("h", qh)
+		view_number("rw", qsw, true)
+		view_number("rh", qsh)
+		Slab.Unindent()
+
+		Slab.Text("body")
+		local body = self.player.body
+		Slab.Indent()
+		view_number("dx", body.dx, true)
+		view_number("dir", body.dir, false)
+		view_number("vel_x", body.vel_x, true)
+		view_number("vel_y", body.vel_y, false)
+		Slab.Unindent()
+
+		Slab.CheckBox(self.player.can_move, "move")
+		Slab.SameLine()
+		Slab.CheckBox(self.player.can_move_left_only, "left only")
+		Slab.SameLine()
+		Slab.CheckBox(self.player.can_move_right_only, "right only")
+		Slab.SameLine()
+		Slab.CheckBox(self.player.can_run, "run")
+		Slab.SameLine()
+		Slab.CheckBox(self.player.can_interact, "interact")
+		Slab.SameLine()
+		Slab.CheckBox(self.player.can_open_door, "open_door")
+
+		Slab.EndWindow()
 	end
-
-	local current_frame = self.player.current_frame
-	Slab.Text("animation")
-	Slab.Indent()
-	Slab.Input("anim_tag", { Text = self.player.animation.current_tag, ReadOnly = true })
-	Slab.SameLine()
-	view_number("frame", current_frame.value)
-	Slab.Unindent()
-
-	local quad = self.player.quad
-	local qx, qy, qw, qh = quad.quad:getViewport()
-	local qsw, qsh = quad.quad:getTextureDimensions()
-	Slab.Text("quad")
-	Slab.Indent()
-	view_number("x", qx, true)
-	view_number("y", qy)
-	view_number("w", qw, true)
-	view_number("h", qh)
-	view_number("rw", qsw, true)
-	view_number("rh", qsh)
-	Slab.Unindent()
-
-	Slab.Text("body")
-	local body = self.player.body
-	Slab.Indent()
-	view_number("dx", body.dx, true)
-	view_number("dir", body.dir, false)
-	view_number("vel_x", body.vel_x, true)
-	view_number("vel_y", body.vel_y, false)
-	Slab.Unindent()
-
-	Slab.CheckBox(self.player.can_move, "move")
-	Slab.SameLine()
-	Slab.CheckBox(self.player.can_run, "run")
-	Slab.SameLine()
-	Slab.CheckBox(self.player.can_interact, "interact")
-	Slab.SameLine()
-	Slab.CheckBox(self.player.can_open_door, "open_door")
-
-	Slab.EndWindow()
 end
 
 return PlayerController

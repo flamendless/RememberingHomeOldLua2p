@@ -25,60 +25,6 @@ Dialogues.common = {
 	},
 }
 
-Dialogues.outside = {
-	start = {},
-	fin = {},
-	car = {
-		"An old but reliable car",
-		choices = {
-			{ "drive",         "Maybe tomorrow",    "For now I need to get in shelter and rest" },
-			{
-				"search",
-				"There might be something in the glove box",
-				"_get_flashlight",
-				get_flashlight = {
-					"A very handy flashlight",
-					"Let's hope the power is not out",
-					"Or else it will be a fumbling in the dark again",
-				},
-				has_flashlight_already = {
-					"There is nothing useful here anymore",
-				},
-			},
-			{ "toggle lights", "__toggle_car_power" },
-			{ "nothing" },
-		},
-	},
-
-	frontdoor_locked = {
-		"This door leads to the house",
-		choices = {
-			{
-				"open",
-				"__check_frontdoor",
-				door_locked = {
-					"the door is locked",
-					"I do not have the key",
-					"I must have left it in work",
-				},
-				door_unlocked = {
-					"the door is unlocked",
-					--TODO: (Brandon) remove dialogue component
-				},
-			},
-			{ "do nothing" },
-		},
-	},
-
-	backdoor = {
-		"_check_backdoor",
-		no_flashlight_yet = {
-			"I need to get my things first from the car",
-			"_make_car_interactive",
-		},
-	},
-}
-
 Dialogues.utility_room = {
 	start = {},
 	fin = {},
@@ -165,13 +111,36 @@ Dialogues.kitchen = {
 
 Dialogues.outside = {
 	start = {},
-	car1 = {
-		LoveInk.Helpers.text("Test from LoveInk"),
-		LoveInk.Helpers.choice("check shelf?", {
-			{ "yes",       divert = DIALOGUE_FIN },
-			{ "im scared", divert = "car1" },
-		}),
+	car_doors = {
+		LoveInk.Helpers.text("Handle is a little bit stuck..."),
 		LoveInk.Helpers.divert(DIALOGUE_FIN),
+	},
+	car_doors2 = {
+		LoveInk.Helpers.text("Just a little bit more..."),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
+	},
+	car_doors3 = {
+		LoveInk.Helpers.text("There!"),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
+	},
+	car_headlights = {
+		LoveInk.Helpers.text("Headlights busted..."),
+		LoveInk.Helpers.text("Doe might have gutted out the trunk..."),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
+	},
+	car_trunk = {
+		LoveInk.Helpers.text("There's a few items here..."),
+		LoveInk.Helpers.divert("car_flashlight"),
+	},
+	car_flashlight = {
+		LoveInk.Helpers.choice("Take the flashlight?", {
+			{ "yes", divert = DIALOGUE_FIN },
+			{ "no",  divert = "car_flashlight_prompt" },
+		}),
+	},
+	car_flashlight_prompt = {
+		LoveInk.Helpers.text("It's dark..."),
+		LoveInk.Helpers.divert("car_flashlight"),
 	},
 	fin = {},
 }

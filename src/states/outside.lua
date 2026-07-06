@@ -216,6 +216,8 @@ function Outside:state_init()
 			e_player = e
 			e_player:give("color_fade_in", 0.25)
 			e_player:give("hidden")
+			self.world:emit("toggle_component", e_player, "can_move", false)
+			self.world:emit("toggle_component", e_player, "can_interact", false)
 		end)
 		dt_cam.x, dt_cam.y = self.camera:getPosition()
 		dt_cam.scale = self.camera:getScale()
