@@ -174,7 +174,7 @@ function Tutorial:tutorial_step_set(step)
 		local by = self.prev_hy
 		self:show_hands_trail(5, bx, by, tx, ty, 270, Enums.show_keys.left, Enums.tutorial_step.waiting_left, false)
 		self.left_start_x = self.e_player.pos.x
-		self.left_target_x = tx + 7
+		self.left_target_x = tx - 18
 
 		self.e_left_key = self.world:getEntityByKey("left_proceed_key")
 		assert(self.e_left_key ~= nil)
@@ -359,6 +359,7 @@ function Tutorial:state_update(dt)
 			self.e_player:remove("can_move"):remove("can_move_left_only")
 			self.world:__flush()
 			self.world:emit("player_stop")
+			self.world:emit("player_force_face_dir", 1)
 			self:tutorial_step_set(Enums.tutorial_step.show_left_interact)
 		end
 
