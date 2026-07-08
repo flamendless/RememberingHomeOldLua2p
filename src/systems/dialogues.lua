@@ -1,5 +1,22 @@
 local DialoguesSystem = Concord.system()
 
+local function create_choice_bloodbar_mid(cfg)
+	return {
+		instance = BloodBar({
+			speed = 8,
+			opacity = 1,
+			tint = 2,
+			direction = {0, -1},
+			enabled = true,
+		}),
+		x = cfg.choicelist.x + cfg.choicelist.width/2,
+		y = cfg.choicelist.y + 36,
+		w = 24,
+		h = 60,
+		tween = nil,
+	}
+end
+
 function DialoguesSystem:init(world)
 	self.world = world
 end
@@ -27,7 +44,7 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 	local basey = wh - barh + 12
 	local offx = 32
 
-	local cfg = {
+	self.cfg = {
 		textbox = {
 			x = offx,
 			y = basey,
@@ -52,14 +69,13 @@ function DialoguesSystem:ev_main_camera_setup(cam)
 
 	}
 
+	self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
 	self.blood_bars = {
-		BloodBar({speed = 1}),
-		BloodBar({speed = 1}),
+		BloodBar({speed = 1, opacity = 0, enabled = true}),
+		BloodBar({speed = 1, opacity = 0, enabled = true}),
 	}
-	self.blood_bars[1].enabled = true
-	self.blood_bars[2].enabled = true
 
-	self.ui = LoveInk.DialogueUI.new(cfg)
+	self.ui = LoveInk.DialogueUI.new(self.cfg)
 
 	self.ui.on_choice_made = function(index)
 		self.current_content = self.dialogue:choose(index)
@@ -76,6 +92,8 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert(type(dialogue_key) == "string")
 
 	if self.dialogue:getCurrentKnot() ~= dialogue_key then
+		self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
+
 		self.e_dialogue = e_other
 		self.dialogue:divertTo(dialogue_key)
 		self.current_content = self.dialogue:getNext()
@@ -142,8 +160,12 @@ function DialoguesSystem:state_update(dt)
 				hovered_index = component.hovered_index
 				if Inputs.released("left") then
 					component.hovered_index = 1
+					hovered_index = 1
+					self.blood_bars[hovered_index].data.opacity = 1
 				elseif Inputs.released("right") then
 					component.hovered_index = 2
+					hovered_index = 2
+					self.blood_bars[hovered_index].data.opacity = 1
 				elseif Inputs.released("interact") then
 					if component.hovered_index and component.on_choice then
 						component.on_choice(component.hovered_index)
@@ -153,16 +175,28 @@ function DialoguesSystem:state_update(dt)
 		end
 	end
 
-	if self.blood_bars then
-		for i, bb in ipairs(self.blood_bars) do
-			local hovered = (i == hovered_index)
-			bb.data.speed = hovered and 1.2 or 0.6
-			bb.data.tint = hovered and 2 or 1
-			bb.data.opacity = 1.0
-			bb:update(dt)
-		end
+	if not self.blood_bar_mid.tween and hovered_index then
+		self.blood_bar_mid.tween = Flux.to(
+			self.blood_bar_mid.instance.data,
+			1,
+			{ opacity = 0 }
+		):onupdate(function()
+			self.blood_bar_mid.instance:update(dt)
+		end)
+
+		local bb = self.blood_bars[hovered_index]
+		Flux.to(bb.data, 0.5, {opacity = 1}):onupdate(function() bb:update(dt) end)
 	end
 
+	self.blood_bar_mid.instance:update(dt)
+
+	for i, bb in ipairs(self.blood_bars) do
+		local hovered = (i == hovered_index)
+		bb.data.speed = hovered and 1.2 or 0.6
+		bb.data.tint = hovered and 2 or 1
+		bb.data.opacity = hovered and 1.0 or 0
+		bb:update(dt)
+	end
 end
 
 function DialoguesSystem:state_draw()
@@ -231,6 +265,13 @@ function DialoguesSystem:custom_choicelist_ui_draw(component)
 	end
 
 	local centerx = component.x + component.width / 2
+
+	self.blood_bar_mid.instance:draw(
+		self.blood_bar_mid.x - self.blood_bar_mid.w / 2,
+		self.blood_bar_mid.y,
+		self.blood_bar_mid.w,
+		self.blood_bar_mid.h
+	)
 
 	for i, choice in ipairs(component.choices) do
 		local choice_text = type(choice) == "string" and choice or choice[1]

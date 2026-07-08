@@ -113,11 +113,19 @@ Dialogues.outside = {
 	start = {},
 	car_doors = {
 		LoveInk.Helpers.text("Handle is a little bit stuck..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.choice("Take the flashlight?", {
+			{ "yes", divert = DIALOGUE_FIN },
+			{ "no",  divert = "car_flashlight_prompt" },
+		}),
+		-- LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	car_doors2 = {
 		LoveInk.Helpers.text("Just a little bit more..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.choice("Take the flashlight?", {
+			{ "yes", divert = DIALOGUE_FIN },
+			{ "no",  divert = "car_flashlight_prompt" },
+		}),
+		-- LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	car_doors3 = {
 		LoveInk.Helpers.text("There!"),

@@ -2,6 +2,7 @@ extern number time;
 extern number opacity;
 extern number fade_width;
 extern number tint;
+extern vec2 direction = vec2(1.0, 0.0);
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -26,12 +27,19 @@ vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
 	float fade = fade_width;
 	float edgeFade = smoothstep(0.0, fade, uv.x) * smoothstep(1.0, 1.0 - fade, uv.x);
 
+	vec2 dir = normalize(direction);
+	if (length(direction) < 0.001)
+		dir = vec2(1.0, 0.0);
+
+	vec2 perp = vec2(-dir.y, dir.x);
+	vec2 ruv = vec2(dot(uv, dir), dot(uv, perp));
+
 	vec2 flow = vec2(time * 0.18, time * 0.04);
 	vec2 warp = vec2(
-		noise(uv * vec2(4.0, 2.0) + flow) - 0.5,
-		noise(uv * vec2(4.0, 2.0) + flow + vec2(4.1, 2.7)) - 0.5
+		noise(ruv * vec2(4.0, 2.0) + flow) - 0.5,
+		noise(ruv * vec2(4.0, 2.0) + flow + vec2(4.1, 2.7)) - 0.5
 	);
-	vec2 wuv = uv + warp * 0.12;
+	vec2 wuv = ruv + warp * 0.12;
 
 	vec2 drift1 = vec2(time * 0.22, sin(time * 0.35) * 0.06);
 	vec2 drift2 = vec2(-time * 0.14, cos(time * 0.28) * 0.05);

@@ -13,13 +13,18 @@ end
 function BloodBar:new(opts)
 	opts = opts or {}
 	self.shader = love.graphics.newShader(Shaders.paths.blood_bar)
-	self.enabled = false
+	if opts.enabled then
+		self.enabled = opts.enabled
+	else
+		self.enabled = false
+	end
 	self.data = {
 		time = 0,
 		speed = opts.speed or 1,
 		opacity = opts.opacity or 1.0,
 		fade_width = opts.fade_width or 0.15,
 		tint = opts.tint or 1.0,
+		direction = opts.direction or {1, 0},
 	}
 end
 
@@ -34,6 +39,7 @@ function BloodBar:draw(x, y, w, h)
 	self.shader:send("opacity", self.data.opacity)
 	self.shader:send("fade_width", self.data.fade_width)
 	self.shader:send("tint", self.data.tint)
+	self.shader:send("direction", self.data.direction)
 
 	local prev_shader = love.graphics.getShader()
 	local r, g, b, a = love.graphics.getColor()
