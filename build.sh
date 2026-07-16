@@ -163,6 +163,7 @@ function init()
 		storage_room
 		utility_room
 		office1
+		items
 	)
 	if [ ! -d "$dir_res_atlases" ]; then
 		echo "creating $dir_res_atlases..."

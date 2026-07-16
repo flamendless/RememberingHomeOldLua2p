@@ -1,6 +1,7 @@
 local DialoguesSystem = Concord.system()
 
 local function create_choice_bloodbar_mid(cfg)
+	Log.info("created new choice bloodbar mid")
 	return {
 		instance = BloodBar({
 			speed = 8,
@@ -32,6 +33,7 @@ function DialoguesSystem:state_setup()
 	end
 
 	self.dialogue = LoveInk.Dialogue.new(data, "start")
+	self.choices_history = {}
 end
 
 function DialoguesSystem:ev_main_camera_setup(cam)
@@ -127,12 +129,16 @@ function DialoguesSystem:check_if_fin()
 end
 
 function DialoguesSystem:ev_advance()
-	if self.current_content and self.current_content.type == "text" then
-		if self.ui:isTextComplete() then
-			self.current_content = self.dialogue:getNext()
-			self.ui:showContent(self.current_content)
-		else
-			self.ui:skipTypewriter()
+	if self.current_content then
+		if self.current_content.type == "text" then
+			if self.ui:isTextComplete() then
+				self.current_content = self.dialogue:getNext()
+				self.ui:showContent(self.current_content)
+			else
+				self.ui:skipTypewriter()
+			end
+		elseif self.current_content.type == "choice" then
+			self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
 		end
 
 		self:check_if_fin()
@@ -152,12 +158,22 @@ function DialoguesSystem:state_update(dt)
 	end
 
 	local hovered_index
+	local is_repeat_choice
 	for _, component in ipairs(self.ui.components) do
 		if component.enabled then
 			if component.id == "textbox" then
 				component:update(dt)
+
 			elseif component.id == "choicelist" then
 				hovered_index = component.hovered_index
+				if hovered_index then
+					if self.choices_history[component] then
+						is_repeat_choice = true
+					else
+						self.choices_history[component] = true
+					end
+				end
+
 				if Inputs.released("left") then
 					component.hovered_index = 1
 					hovered_index = 1
@@ -175,7 +191,7 @@ function DialoguesSystem:state_update(dt)
 		end
 	end
 
-	if not self.blood_bar_mid.tween and hovered_index then
+	if not self.blood_bar_mid.tween and hovered_index and not is_repeat_choice then
 		self.blood_bar_mid.tween = Flux.to(
 			self.blood_bar_mid.instance.data,
 			1,
@@ -355,6 +371,18 @@ if DEV then
 			Slab.Text("Speaker: " .. (self.current_content.speaker or ""))
 			Slab.Unindent()
 		end
+
+		-- if self.blood_bar_mid then
+		-- 	Slab.Text("BloodBar Mid:")
+		-- 	Slab.Indent()
+		-- 	Slab.Text("X: " .. self.blood_bar_mid.x)
+		-- 	Slab.Text("Y: " .. self.blood_bar_mid.y)
+		-- 	Slab.Text("W: " .. self.blood_bar_mid.w)
+		-- 	Slab.Text("H: " .. self.blood_bar_mid.h)
+		-- 	Slab.Text("Opacity: " .. self.blood_bar_mid.instance.data.opacity)
+		-- 	Slab.Text("Tint: " .. self.blood_bar_mid.instance.data.tint)
+		-- 	Slab.Unindent()
+		-- end
 		Slab.EndWindow()
 	end
 end

@@ -104,6 +104,14 @@ Enums.tutorial_step = Enum(
 	"waiting_right_interact",
 	"done_right_interact",
 
+	"show_lighter",
+	"wait_lighter_trigger",
+	"done_lighter_trigger",
+
+	"explore",
+
+	"run",
+
 	"fin"
 )
 
@@ -111,10 +119,12 @@ Enums.show_keys = Enum(
 	"dialogue",
 	"left",
 	"right",
-	"inventory"
+	"inventory",
+	"lighter"
 )
 
 Enums.decals = Enum(
+	-- TODO: foot decal for walking/running?
 	"hand"
 )
 

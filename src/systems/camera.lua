@@ -212,6 +212,7 @@ function Camera:hide_bars()
 	Flux.to(self.bar_top, DUR_TRANSITION, { h = 0 }):ease("circout")
 	Flux.to(self.bar_bot, DUR_TRANSITION, { h = 0 }):ease("circout"):oncomplete(function()
 		self.bars = false
+		self.world:emit("ev_on_hide_bars_complete")
 	end)
 end
 

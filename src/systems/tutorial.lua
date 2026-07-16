@@ -11,6 +11,7 @@ function Tutorial:init(world)
 		self.world:emit("create_dialogue_key")
 		self.world:emit("create_left_key")
 		self.world:emit("create_right_key")
+		self.world:emit("create_lighter_key")
 		self.e_dialogue_car1 = Concord.entity(self.world)
 			:give("id", "dialogue_car1")
 			:give("dialogue_key", "car_doors")
@@ -281,9 +282,53 @@ function Tutorial:tutorial_step_set(step)
 				"start_dialogue",
 				self.e_player,
 				self.e_dialogue_car1,
+				"car_trunk_pre"
+			)
+		end)
+
+	elseif self.step == Enums.tutorial_step.show_lighter then
+		local tx, ty = self.e_last_hand.pos.x, self.e_last_hand.pos.y
+		self:show_hands_trail(
+			5,
+			tx, ty,
+			tx, ty,
+			0,
+			Enums.show_keys.lighter,
+			Enums.tutorial_step.wait_lighter_trigger,
+			true
+		)
+
+	elseif self.step == Enums.tutorial_step.wait_lighter_trigger then
+		self.e_lighter_key = self.world:getEntityByKey("dialogue_lighter_key")
+		self.triggered_lighter = false
+
+	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
+		-- TODO: show lighter / play animation
+		Timer.after(1, function()
+			self.world:emit(
+				"start_dialogue",
+				self.e_player,
+				self.e_dialogue_car1,
 				"car_trunk"
 			)
 		end)
+
+	elseif self.step == Enums.tutorial_step.explore then
+		local cam = self.world:getResource("camera")
+		local dt_cam = {}
+		dt_cam.scale = cam:getScale()
+		Flux.to(dt_cam, 6, { scale = dt_cam.scale * 0.7 })
+			:onupdate(function()
+				self.world:emit("set_camera_transform", cam, {
+					scale = dt_cam.scale,
+				})
+			end)
+			:oncomplete(function()
+				self.world:emit("hide_bars")
+			end)
+
+	elseif self.step == Enums.tutorial_step.run then
+		print("111")
 
 	else
 		error("unimplemented " .. self.step)
@@ -414,6 +459,24 @@ function Tutorial:state_update(dt)
 				self:tutorial_step_set(Enums.tutorial_step.done_right_interact)
 			end)
 		end
+
+	elseif self.step == Enums.tutorial_step.wait_lighter_trigger and not self.triggered_lighter then
+		if Inputs.pressed("lighter") then
+			self.triggered_lighter = true
+			--TODO: instead of fading out, the decal should like explode/burn quickly because of the light?
+			local progress = {value = 0}
+			Flux.to(progress, 1, { value = 1 }):onupdate(function()
+				self.e_lighter_key.color.value[4] = 1 - progress.value
+				self.e_last_hand.decals_shaders.data.blood_amount = progress.value
+				self.e_last_hand.decals_shaders.data.damage_amount = progress.value
+				self.e_last_hand.decals_shaders.data.distort_amount = progress.value
+			end):oncomplete(function()
+				self.e_lighter_key:destroy()
+				self.e_last_hand:destroy()
+				self.e_glow:destroy()
+				self:tutorial_step_set(Enums.tutorial_step.done_lighter_trigger)
+			end):ease("backinout")
+		end
 	end
 end
 
@@ -426,11 +489,23 @@ function Tutorial:state_draw_ex()
 end
 
 function Tutorial:ev_dialogue_fin()
+	print("ev_dialogue_fin", self.step)
 	if self.step == Enums.tutorial_step.done_left_interact then
 		self:tutorial_step_set(Enums.tutorial_step.show_right)
 	elseif self.step == Enums.tutorial_step.done_right_interact then
-		self:tutorial_step_set(Enums.tutorial_step.fin)
+		self:tutorial_step_set(Enums.tutorial_step.show_lighter)
+	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
+		self:tutorial_step_set(Enums.tutorial_step.explore)
 	end
+end
+
+function Tutorial:ev_on_hide_bars_complete()
+	if self.step ~= Enums.tutorial_step.explore then
+		return
+	end
+	self.world:emit("toggle_component", self.e_player, "can_move", true)
+	self.world:emit("toggle_component", self.e_player, "can_interact", true)
+	self.world:emit("toggle_component", self.e_player, "can_run", false)
 end
 
 return Tutorial

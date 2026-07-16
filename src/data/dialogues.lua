@@ -113,19 +113,11 @@ Dialogues.outside = {
 	start = {},
 	car_doors = {
 		LoveInk.Helpers.text("Handle is a little bit stuck..."),
-		LoveInk.Helpers.choice("Take the flashlight?", {
-			{ "yes", divert = DIALOGUE_FIN },
-			{ "no",  divert = "car_flashlight_prompt" },
-		}),
-		-- LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	car_doors2 = {
 		LoveInk.Helpers.text("Just a little bit more..."),
-		LoveInk.Helpers.choice("Take the flashlight?", {
-			{ "yes", divert = DIALOGUE_FIN },
-			{ "no",  divert = "car_flashlight_prompt" },
-		}),
-		-- LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	car_doors3 = {
 		LoveInk.Helpers.text("There!"),
@@ -136,19 +128,30 @@ Dialogues.outside = {
 		LoveInk.Helpers.text("Doe might have gutted out the trunk..."),
 		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
+	car_trunk_pre = {
+		LoveInk.Helpers.text("It's too dark to see..."),
+		LoveInk.Helpers.text("Good thing I brought my pal..."),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
+	},
 	car_trunk = {
 		LoveInk.Helpers.text("There's a few items here..."),
-		LoveInk.Helpers.divert("car_flashlight"),
+		LoveInk.Helpers.divert("car_lighter"),
 	},
-	car_flashlight = {
-		LoveInk.Helpers.choice("Take the flashlight?", {
-			{ "yes", divert = DIALOGUE_FIN },
-			{ "no",  divert = "car_flashlight_prompt" },
+	car_lighter = {
+		LoveInk.Helpers.choice("Take the lighter?", {
+			{ "yes", divert = "car_run_to_house" },
+			{ "no",  divert = "car_lighter_prompt" },
 		}),
 	},
-	car_flashlight_prompt = {
-		LoveInk.Helpers.text("It's dark..."),
-		LoveInk.Helpers.divert("car_flashlight"),
+	car_lighter_prompt = {
+		LoveInk.Helpers.text("It's getting dark..."),
+		LoveInk.Helpers.text("Might need it later..."),
+		LoveInk.Helpers.divert("car_lighter"),
+	},
+	car_run_to_house = {
+		LoveInk.Helpers.text("It might rain again soon..."),
+		LoveInk.Helpers.text("I better get going..."),
+		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	fin = {},
 }

@@ -73,6 +73,20 @@ function ShowKeys:create_dialogue_key()
 		:give("hidden")
 end
 
+function ShowKeys:create_lighter_key()
+	if not Settings.current.show_keys then return end
+	local w, h = love.graphics.getDimensions()
+	self.keys.lighter = Concord.entity(self.world)
+		:assemble(asm, Inputs.rev_map.lighter)
+		:give("id", "dialogue_lighter_key")
+		:give("key", "dialogue_lighter_key")
+		:give("pos", w - 8, h - 8)
+		:give("quad_transform", 0, 2, 2, 0.5, 0.5)
+		-- :give("fake_pulse", 3, 3, 0.5)
+		:give("color", { 1, 1, 1, 1 })
+		:give("hidden")
+end
+
 function ShowKeys:create_left_key()
 	if not Settings.current.show_keys then return end
 	local w, h = love.graphics.getDimensions()
