@@ -14,6 +14,8 @@ local player = {
 	{ "sheet_player_walk_f",      "res/images/player/sheet_player_walk_flashlight.png" },
 	{ "sheet_player_run_f",       "res/images/player/sheet_player_run_flashlight.png" },
 	{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+	{ "lighter1",                 "res/images/items/lighter1.png" },
+	{ "lighter2",                 "res/images/items/lighter2.png" },
 }
 
 local enemy = {
@@ -235,8 +237,6 @@ ResourcesList.LivingRoom = {
 	array_images = {
 		{ "living_room",             "res/images/living_room/living_room.png" },
 		{ "atlas_living_room_items", "res/images/atlases/living_room.png" },
-		unpack(player),
-		unpack(enemy),
 	},
 	image_data = {
 		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
@@ -250,6 +250,8 @@ ResourcesList.LivingRoom = {
 		unpack(fnt_common),
 	},
 }
+ResourcesList.LivingRoom.array_images = tablex.append(ResourcesList.LivingRoom.array_images, player)
+ResourcesList.LivingRoom.array_images = tablex.append(ResourcesList.LivingRoom.array_images, enemy)
 
 ResourcesList.Office1 = {
 	images = {

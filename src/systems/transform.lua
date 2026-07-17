@@ -133,9 +133,8 @@ function Transform:update_anchor(e)
 	end
 	local target_pos = e_target.pos
 	local target_sprite = e_target.sprite
-	if target_sprite.image:type() ~= "Image" then
-		error('Assertion failed: target_sprite.image:type() == "Image"')
-	end
+	assert(target_sprite.image:type() == "Image")
+
 	local sx, sy, ox, oy = 1, 1, 0, 0
 	local target_transform = e_target.transform
 	if target_transform then
@@ -153,7 +152,13 @@ function Transform:update_anchor(e)
 		oy = target_qt.oy or oy
 	end
 
-	local w, h = target_sprite.iw * sx, target_sprite.ih * sy
+	local iw, ih = target_sprite.iw, target_sprite.ih
+	if e_target:has("animation_data") then
+		iw = e_target.animation_data.frame_width
+		ih = e_target.animation_data.frame_height
+	end
+
+	local w, h = iw * sx, ih * sy
 	local x = target_pos.x - ox * sx
 	local y = target_pos.y - oy * sy
 

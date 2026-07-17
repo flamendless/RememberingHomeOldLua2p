@@ -222,7 +222,7 @@ state_systems.LivingRoom = {
 	"entity",
 	"gamestates",
 	"interactive",
-	"inventory",
+	-- "inventory",
 	"items",
 	"movement",
 	"outline",
@@ -243,6 +243,7 @@ state_systems.LivingRoom = {
 	"animation_state",
 	"behavior_tree",
 	"enemy_controller",
+	"lighter",
 }
 state_systems.TotallyDarkRoom = state_systems.LivingRoom
 

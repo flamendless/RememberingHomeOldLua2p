@@ -32,12 +32,12 @@ function PlayerController:init(world)
 	end
 	self.last_desired_dir = 0
 
-	self.pool.onAdded = function(_, e)
-		local e_player = self.world:getResource("e_player")
-		if not e_player then
-			self.world:setResource("e_player", e)
-		end
-	end
+	-- self.pool.onAdded = function(_, e)
+	-- 	local e_player = self.world:getResource("e_player")
+	-- 	if not e_player then
+	-- 		self.world:setResource("e_player", e)
+	-- 	end
+	-- end
 end
 
 function PlayerController:on_toggle_equip_flashlight()
@@ -55,13 +55,18 @@ function PlayerController:on_toggle_equip_flashlight()
 	self.player:give("change_animation_tag", tag, true)
 end
 
+function PlayerController:on_toggle_equip_lighter()
+	if DEV then
+		Items.add("lighter1")
+		Items.toggle_equip("lighter1")
+	end
+	local has_l = Items.is_equipped("lighter1")
+	self.world:emit("flip_e_id_component", "lighter1", "hidden")
+end
+
 function PlayerController:spawn_player(fn)
-	if fn and type(fn) ~= "function" then
-		error('Assertion failed: type(fn) == "function"')
-	end
-	if self.player ~= nil then
-		error("Player already exists")
-	end
+	if fn then assert(type(fn) == "function") end
+	if self.player ~= nil then error("Player already exists") end
 
 	-- local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
 	local x, y, face = get_spawn_points(GameStates.current_id, GameStates.prev_id)
@@ -75,6 +80,9 @@ function PlayerController:spawn_player(fn)
 	if fn then
 		fn(self.player)
 	end
+
+	self.world:setResource("e_player", self.player)
+	self.world:emit("spawn_lighter", self.player)
 end
 
 function PlayerController:player_stop()
@@ -167,6 +175,7 @@ function PlayerController:update(dt)
 
 	local anim_name = self:player_update_animation()
 	self.world:emit("update_speed_data", self.player, anim_name)
+	self.world:emit("lighter_update_pos", self.player)
 end
 
 function PlayerController:player_force_face_dir(dir)

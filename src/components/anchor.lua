@@ -1,23 +1,21 @@
-local c_anchor = Concord.component("anchor", function(c, entity, ax, ay, padding_x, padding_y)
-	if not entity.__isEntity then
-		error("Assertion failed: entity.__isEntity")
-	end
-	if type(ax) ~= "string" then
-		error('Assertion failed: type(ax) == "string"')
-	end
-	if type(ay) ~= "string" then
-		error('Assertion failed: type(ay) == "string"')
-	end
+local c_anchor = Concord.component("anchor", function(
+	c,
+	entity,
+	ax,
+	ay,
+	padding_x,
+	padding_y
+)
+	assert(entity.__isEntity, entity)
+	assert(type(ax) == "string", ax)
+	assert(type(ay) == "string", ay)
 	if padding_x then
-		if type(padding_x) ~= "number" then
-			error('Assertion failed: type(padding_x) == "number"')
-		end
+		assert(type(padding_x) == "number", padding_x)
 	end
 	if padding_y then
-		if type(padding_y) ~= "number" then
-			error('Assertion failed: type(padding_y) == "number"')
-		end
+		assert(type(padding_y) == "number", padding_y)
 	end
+
 	entity:ensure("key")
 	c.key = entity.key.value
 	c.anchor_x = ax

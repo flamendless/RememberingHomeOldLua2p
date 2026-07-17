@@ -31,7 +31,16 @@ local DevTools = {
 		remove = {},
 	},
 	debug_pos = {},
+	cli = {
+		show = false,
+		font = nil,
+		buffer = "",
+	}
 }
+
+if DEV then
+	DevTools.cli.font = love.graphics.newFont(32)
+end
 
 local slab_components
 
@@ -162,12 +171,28 @@ function DevTools.update(dt)
 end
 
 function DevTools.draw()
-	if not DevTools.show then
-		return
+	if DevTools.cli.show then
+		local ww, wh = love.graphics.getDimensions()
+		love.graphics.setColor(0.2, 0.2, 0.2, 0.6)
+		love.graphics.rectangle("fill", 0, 0, ww, wh * 0.1)
+
+		local temp_fnt = love.graphics.getFont()
+		love.graphics.setColor(1, 0, 0, 1)
+		love.graphics.setFont(DevTools.cli.font)
+		local cmd = "> "
+		local bx = ww * 0.3
+		love.graphics.print(cmd, bx, 8)
+		love.graphics.print(
+			DevTools.cli.buffer,
+			bx + DevTools.cli.font:getWidth(cmd),
+			8
+		)
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.setFont(temp_fnt)
 	end
-	if not GameStates.world then
-		return
-	end
+
+	if not DevTools.show then return end
+	if not GameStates.world then return end
 
 	love.graphics.setFont(font)
 	if DevTools.camera then
@@ -735,16 +760,37 @@ function DevTools.end_draw()
 end
 
 function DevTools.keypressed(key)
-	if not GameStates.world then
+	if not GameStates.world then return end
+
+	if DevTools.cli.show then
+		if key == "return" then
+			GameStates.world:emit(DevTools.cli.buffer)
+			DevTools.cli.buffer = ""
+			DevTools.cli.show = false
+		elseif key == "backspace" then
+			DevTools.cli.buffer = string.sub(DevTools.cli.buffer, 0, #DevTools.cli.buffer-1)
+		elseif key == "escape" then
+			DevTools.cli.buffer = ""
+			DevTools.cli.show = false
+		elseif key == "lshift" or key == "rshift" then
+		else
+			if key == "-" then key = "_" end --INFO: VERY HACKY!
+			DevTools.cli.buffer = DevTools.cli.buffer .. key
+		end
 		return
 	end
+
 	if Slab.IsAnyInputFocused() then
 		return
 	end
 
 	if key == "`" then
-		DevTools.show = not DevTools.show
-		Slab.EnableStats(DevTools.show)
+		if love.keyboard.isDown("lshift") then
+			DevTools.cli.show = not DevTools.cli.show
+		else
+			DevTools.show = not DevTools.show
+			Slab.EnableStats(DevTools.show)
+		end
 	-- elseif key == "m" then
 	-- 	GameStates.world:emit("save_game")
 	-- elseif key == "l" then

@@ -61,6 +61,7 @@ function GameStates.start(resources)
 			update_light_diffuse = true,
 			flicker_sync = true,
 			set_camera_transform = true,
+			lighter_update_pos = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event, ...)
@@ -113,6 +114,7 @@ function GameStates.update(dt)
 		return
 	end
 	JPROF.push("gs state update")
+	if DEV and DevTools.cli.show then return end
 	GameStates.world:emit("state_update", dt)
 	JPROF.pop("gs state update")
 end

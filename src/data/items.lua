@@ -14,6 +14,16 @@ local Items = {
 		name = "key",
 		desc = "a key",
 	},
+	lighter1 = {
+		id = "lighter1",
+		name = "lighter",
+		desc = "lighter",
+	},
+	lighter2 = {
+		id = "lighter2",
+		name = "lighter",
+		desc = "lighter",
+	}
 }
 
 return Items
