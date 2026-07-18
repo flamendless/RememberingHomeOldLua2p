@@ -37,6 +37,8 @@ Palette.colors = {
 	inventory_cell = { 0.623529411765, 0.63137254902, 0.556862745098 },
 	note_list = { 0, 0, 0 },
 	note_on_hovered = { 1, 0, 0 },
+
+	dialogue_important = { 0.8, 0, 0 },
 }
 
 for k, v in pairs(Palette.colors) do

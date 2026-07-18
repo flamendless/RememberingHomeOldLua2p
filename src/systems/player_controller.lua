@@ -60,7 +60,8 @@ function PlayerController:on_toggle_equip_lighter()
 		Items.add("lighter1")
 		Items.toggle_equip("lighter1")
 	end
-	local has_l = Items.is_equipped("lighter1")
+	-- local has_l = Items.is_equipped("lighter1")
+	self.world:emit("lighter_update_pos", self.player)
 	self.world:emit("flip_e_id_component", "lighter1", "hidden")
 end
 

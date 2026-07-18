@@ -129,24 +129,26 @@ Dialogues.outside = {
 		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	car_trunk_pre = {
-		LoveInk.Helpers.text("It's too dark to see..."),
+		LoveInk.Helpers.text("It's too dark to see...", nil, {Enums.dialogue_tags.important}),
 		LoveInk.Helpers.text("Good thing I brought my pal..."),
 		LoveInk.Helpers.divert(DIALOGUE_FIN),
 	},
 	car_trunk = {
+		LoveInk.Helpers.text("I can't move while using it though...", nil, {Enums.dialogue_tags.important}),
+		LoveInk.Helpers.text("the flame goes out right away...", nil, {Enums.dialogue_tags.important}),
 		LoveInk.Helpers.text("There's a few items here..."),
-		LoveInk.Helpers.divert("car_lighter"),
+		LoveInk.Helpers.divert("car_flashlight"),
 	},
-	car_lighter = {
+	car_flashlight = {
 		LoveInk.Helpers.choice("Take the lighter?", {
 			{ "yes", divert = "car_run_to_house" },
-			{ "no",  divert = "car_lighter_prompt" },
+			{ "no",  divert = "car_flashlight_prompt" },
 		}),
 	},
-	car_lighter_prompt = {
+	car_flashlight_prompt = {
 		LoveInk.Helpers.text("It's getting dark..."),
 		LoveInk.Helpers.text("Might need it later..."),
-		LoveInk.Helpers.divert("car_lighter"),
+		LoveInk.Helpers.divert("car_flashlight"),
 	},
 	car_run_to_house = {
 		LoveInk.Helpers.text("It might rain again soon..."),

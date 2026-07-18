@@ -241,6 +241,15 @@ function DialoguesSystem:custom_textbox_ui_draw(component)
 	local text_y = component.y + component.padding
 
 	love.graphics.setColor(component.text_color)
+	if self.current_content.tags then
+		for _, tag in ipairs(self.current_content.tags) do
+			if tag == Enums.dialogue_tags.important then
+				love.graphics.setColor(Palette.colors.dialogue_important)
+				break
+			end
+			if DEV then Log.warn("unhandled dialogue tag", tag) end
+		end
+	end
 	love.graphics.setFont(component.font)
 
 	local max_width = component.width - (component.padding * 2)

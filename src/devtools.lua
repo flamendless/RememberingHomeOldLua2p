@@ -773,6 +773,7 @@ function DevTools.keypressed(key)
 			DevTools.cli.buffer = ""
 			DevTools.cli.show = false
 		elseif key == "lshift" or key == "rshift" then
+			Log.warn("unhandled", key)
 		else
 			if key == "-" then key = "_" end --INFO: VERY HACKY!
 			DevTools.cli.buffer = DevTools.cli.buffer .. key

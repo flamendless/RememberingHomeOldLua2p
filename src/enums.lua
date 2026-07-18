@@ -128,6 +128,10 @@ Enums.decals = Enum(
 	"hand"
 )
 
+Enums.dialogue_tags = Enum(
+	"important"
+)
+
 if DEV then
 	Enums.ordered.survival_state = {
 		Enums.survival_state.normal,

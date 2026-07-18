@@ -74,7 +74,7 @@ state_systems.Outside = {
 	"entity",
 	"gamestates",
 	"interactive",
-	"inventory",
+	-- "inventory",
 	"items",
 	"movement",
 	"outline",
@@ -100,6 +100,7 @@ state_systems.Outside = {
 	"text_paint",
 	"tutorial",
 	"billboard_glow",
+	"lighter",
 }
 
 state_systems.StorageRoom = {

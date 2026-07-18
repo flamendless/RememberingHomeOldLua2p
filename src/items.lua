@@ -19,14 +19,10 @@ local function get_item(id)
 end
 
 function Items.add(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Items[id] then
-		error("no " .. id .. " in data.items")
-	end
-	if Items.has(id) then
-		error(id .. " was already added")
+	assert(type(id) == "string", id)
+	assert(Data.Items[id], "no " .. id .. " in data.items")
+	if DEV and Items.has(id) then
+		Log.warn(id .. " was already added")
 	end
 	table.insert(acquired, { id = id, equipped = false })
 	Log.info("item:", id, "was added")

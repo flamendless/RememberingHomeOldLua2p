@@ -303,6 +303,7 @@ function Tutorial:tutorial_step_set(step)
 		self.triggered_lighter = false
 
 	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
+		self.world:emit("on_toggle_equip_lighter")
 		-- TODO: show lighter / play animation
 		Timer.after(1, function()
 			self.world:emit(
@@ -489,12 +490,12 @@ function Tutorial:state_draw_ex()
 end
 
 function Tutorial:ev_dialogue_fin()
-	print("ev_dialogue_fin", self.step)
 	if self.step == Enums.tutorial_step.done_left_interact then
 		self:tutorial_step_set(Enums.tutorial_step.show_right)
 	elseif self.step == Enums.tutorial_step.done_right_interact then
 		self:tutorial_step_set(Enums.tutorial_step.show_lighter)
 	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
+		self.world:emit("on_toggle_equip_lighter")
 		self:tutorial_step_set(Enums.tutorial_step.explore)
 	end
 end
