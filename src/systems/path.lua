@@ -122,11 +122,9 @@ if DEV then
 	local alpha = 0.01
 
 	function Path:debug_toggle_path(bool, filter)
-		if type(bool) ~= "boolean" then
-			error('Assertion failed: type(bool) == "boolean"')
-		end
-		if filter and type(filter) ~= "string" then
-			error('Assertion failed: type(filter) == "string"')
+		assert(type(bool) == "boolean", bool)
+		if filter then
+			assert(type(filter) == "string", filter)
 		end
 		self.debug_show = bool
 		flags.path = bool

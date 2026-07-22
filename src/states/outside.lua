@@ -339,12 +339,8 @@ function Outside:on_car_light_flicker_after()
 end
 
 function Outside:get_flashlight(e, dialogues_t)
-	if not (e.__isEntity and e.dialogue_meta) then
-		error("Assertion failed: e.__isEntity and e.dialogue_meta")
-	end
-	if type(dialogues_t) ~= "table" then
-		error('Assertion failed: type(dialogues_t) == "table"')
-	end
+	assert((e.__isEntity and e.dialogue_meta), e)
+	assert(type(dialogues_t) == "table", dialogues_t)
 	local has_flashlight = Items.has("flashlight")
 	if not has_flashlight then
 		Items.add("flashlight")
@@ -388,12 +384,8 @@ function Outside:toggle_car_power_after(ent, flag)
 end
 
 function Outside:check_frontdoor(e, dialogues_t)
-	if not (e.__isEntity and e.dialogue_meta) then
-		error("Assertion failed: e.__isEntity and e.dialogue_meta")
-	end
-	if type(dialogues_t) ~= "table" then
-		error('Assertion failed: type(dialogues_t) == "table"')
-	end
+	assert((e.__isEntity and e.dialogue_meta), e)
+	assert(type(dialogues_t) == "table", dialogues_t)
 	self.world:emit("remove_choices")
 	if not Items.has("frontdoor_key") then
 		local t = tablex.copy(dialogues_t.door_locked)
@@ -411,15 +403,9 @@ function Outside:make_car_interactive()
 end
 
 function Outside:check_backdoor(e, dialogues_t)
-	if not (e.__isEntity and e.dialogue_meta) then
-		error("Assertion failed: e.__isEntity and e.dialogue_meta")
-	end
-	if not (e.__isEntity and self.e_player) then
-		error("Assertion failed: self.e_player")
-	end
-	if type(dialogues_t) ~= "table" then
-		error('Assertion failed: type(dialogues_t) == "table"')
-	end
+	assert((e.__isEntity and e.dialogue_meta), e)
+	assert((e.__isEntity and self.e_player), e)
+	assert(type(dialogues_t) == "table", dialogues_t)
 	local has_flashlight = Items.has("flashlight")
 	if not has_flashlight then
 		local t = tablex.copy(dialogues_t.no_flashlight_yet)

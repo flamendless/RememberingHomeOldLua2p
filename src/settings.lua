@@ -48,15 +48,9 @@ end
 
 function Settings.set(id, value, should_overwrite)
 	should_overwrite = should_overwrite or false
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(value) ~= "boolean" or type(value) ~= "number" then
-		error('Assertion failed: type(value) == "boolean" or type(value) == "number"')
-	end
-	if type(should_overwrite) ~= "boolean" then
-		error('Assertion failed: type(should_overwrite) == "boolean"')
-	end
+	assert(type(id) == "string", id)
+	assert(type(value) == "boolean" or type(value) == "number", value)
+	assert(type(should_overwrite) == "boolean", should_overwrite)
 
 	local prev = Settings.current[id]
 	if prev ~= value then
@@ -69,16 +63,10 @@ function Settings.set(id, value, should_overwrite)
 end
 
 function Settings.set_from_table(t, should_overwrite)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
-	if type(should_overwrite) ~= "boolean" then
-		error('Assertion failed: type(should_overwrite) == "boolean"')
-	end
+	assert(type(t) == "table", t)
+	assert(type(should_overwrite) == "boolean", should_overwrite)
 	for k, v in pairs(t) do
-		if Settings.current[k] == nil then
-			error("invalid " .. k .. " key")
-		end
+		assert(Settings.current[k] ~= nil, "invalid " .. k .. " key")
 		Settings.current[k] = v
 		Log.info(string.format("set %s to %s", k, v))
 	end

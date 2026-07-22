@@ -1,6 +1,4 @@
 Concord.component("line_of_sight", function(c, value)
-	if type(value) ~= "number" then
-		error('Assertion failed: type(value) == "number"')
-	end
+	assert(type(value) == "number", value)
 	c.value = value
 end)

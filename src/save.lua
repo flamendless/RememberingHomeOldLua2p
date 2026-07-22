@@ -13,9 +13,7 @@ local save_filename = "save_data"
 local key_filename = "data_store"
 
 local function validate_checkpoints(data)
-	if type(data) ~= "table" then
-		error('Assertion failed: type(data) == "table"')
-	end
+	assert(type(data) == "table", data)
 end
 
 function Save.init()
@@ -55,16 +53,10 @@ function Save.overwrite()
 end
 
 function Save.toggle_flag(id, should_overwrite)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if Save.data[id] == nil then
-		error("Assertion failed: Save.data[id] ~= nil")
-	end
+	assert(type(id) == "string", id)
+	assert(Save.data[id] ~= nil, id)
 	if should_overwrite then
-		if type(should_overwrite) ~= "boolean" then
-			error('Assertion failed: type(should_overwrite) == "boolean"')
-		end
+		assert(type(should_overwrite) == "boolean", should_overwrite)
 	end
 	Save.data[id] = not Save.data[id]
 	if should_overwrite then
@@ -73,19 +65,11 @@ function Save.toggle_flag(id, should_overwrite)
 end
 
 function Save.set_flag(id, value, should_overwrite)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if Save.data[id] == nil then
-		error("Assertion failed: Save.data[id] ~= nil")
-	end
-	if type(value) ~= "boolean" then
-		error('Assertion failed: type(value) == "boolean"')
-	end
+	assert(type(id) == "string", id)
+	assert(Save.data[id] ~= nil, id)
+	assert(type(value) == "boolean", value)
 	if should_overwrite then
-		if type(should_overwrite) ~= "boolean" then
-			error('Assertion failed: type(should_overwrite) == "boolean"')
-		end
+		assert(type(should_overwrite) == "boolean", should_overwrite)
 	end
 	Save.data[id] = value
 	if should_overwrite then

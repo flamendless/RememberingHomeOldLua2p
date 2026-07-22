@@ -34,13 +34,9 @@ function Shaders.init()
 		if type(path) == "string" and not stringx.starts_with(k, "ngrading_") then
 			Log.debug("checking:", path)
 			local status, message = love.graphics.validateShader(is_mobile, path)
-			if not status then
-				error(path .. "- error with validateShader: " .. message)
-			end
+			assert(status, path .. "- error with validateShader: " .. message)
 			local shader = love.graphics.newShader(path)
-			if not shader then
-				error(path .. "- error with newShader: " .. message)
-			end
+			assert(shader, path .. "- error with newShader: " .. message)
 		end
 	end
 end

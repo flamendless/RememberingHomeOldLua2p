@@ -54,22 +54,16 @@ function BoundingBox.debug_draw_ui(camera)
 	if not BoundingBox.debug_show or not show_borders_ui then
 		return
 	end
-	if not camera then
-		error(camera.__camera)
-	end
+	assert(camera, camera.__camera)
 	for _, e in ipairs(BoundingBox.list_ui) do
 		BoundingBox.render(e, camera)
 	end
 end
 
 function BoundingBox.render(e, camera)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
+	assert(e.__isEntity, e)
 	if camera then
-		if not camera.__camera then
-			error("Assertion failed: camera.__camera")
-		end
+		assert(camera.__camera, camera)
 	end
 	local w, h = 0, 0
 	local sprite = e.sprite

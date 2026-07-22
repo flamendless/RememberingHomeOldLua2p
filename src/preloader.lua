@@ -11,15 +11,9 @@ local keys = {
 }
 
 function Preloader.start(resources, container, on_complete)
-	if type(resources) ~= "table" then
-		error('Assertion failed: type(resources) == "table"')
-	end
-	if type(container) ~= "table" then
-		error('Assertion failed: type(container) == "table"')
-	end
-	if type(on_complete) ~= "function" then
-		error('Assertion failed: type(on_complete) == "function"')
-	end
+	assert(type(resources) == "table", resources)
+	assert(type(container) == "table", container)
+	assert(type(on_complete) == "function", on_complete)
 	Preloader.percent = 0
 	local i = 1
 	local data = {}
@@ -53,9 +47,7 @@ function Preloader.start(resources, container, on_complete)
 end
 
 function Preloader.load(data, userdata, container, on_complete)
-	if type(data) ~= "table" then
-		error('Assertion failed: type(data) == "table"')
-	end
+	assert(type(data) == "table", data)
 	local preloader = Lily.loadMulti(data)
 	preloader:setUserData(userdata)
 	preloader:onLoaded(function(_, _, _)
@@ -74,29 +66,19 @@ function Preloader.load(data, userdata, container, on_complete)
 				local tt = pdata:getTextureType()
 				pdata:setFilter("nearest", "nearest")
 				if tt == "array" then
-					if type(container.array_images) ~= "table" then
-						error('Assertion failed: type(container.array_images) == "table"')
-					end
+					assert(type(container.array_images) == "table", container.array_images)
 					container.array_images[pid] = pdata
 				end
-				if type(container.images) ~= "table" then
-					error('Assertion failed: type(container.images) == "table"')
-				end
+				assert(type(container.images) == "table", container.images)
 				container.images[pid] = pdata
 			elseif data_type == "ImageData" then
-				if type(container.image_data) ~= "table" then
-					error('Assertion failed: type(container.image_data) == "table"')
-				end
+				assert(type(container.image_data) == "table", container.image_data)
 				container.image_data[pid] = pdata
 			elseif data_type == "Source" then
-				if type(container.sources) ~= "table" then
-					error('Assertion failed: type(container.sources) == "table"')
-				end
+				assert(type(container.sources) == "table", container.sources)
 				container.sources[pid] = pdata
 			elseif data_type == "Font" then
-				if type(container.fonts) ~= "table" then
-					error('Assertion failed: type(container.fonts) == "table"')
-				end
+				assert(type(container.fonts) == "table", container.fonts)
 				pdata:setFilter("nearest", "nearest")
 				container.fonts[pid] = pdata
 			end

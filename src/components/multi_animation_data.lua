@@ -5,7 +5,7 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 
 	for _, v in pairs(data) do
 		assert(type(v.resource_id) == "string", v.resource_id)
-		-- assert(not type(v.delay) == "string" and not type(v.delay) == "table", v.delay)
+		assert(type(v.delay) ~= "string" and type(v.delay) ~= "table", v.delay)
 		assert(type(v.rows_count) == "number", v.rows_count)
 		assert(type(v.columns_count) == "number", v.columns_count)
 		assert(type(v.n_frames) == "number", v.n_frames)
@@ -17,8 +17,8 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 	if modifier then
 		for id, v in pairs(modifier) do
 			assert(data[id], id)
-			assert(type(v[1] == "string"), v[1])
-			assert(type(v[2] == "string"), v[2])
+			assert(type(v[1]) == "string", v[1])
+			assert(type(v[2]) == "string", v[2])
 		end
 	end
 

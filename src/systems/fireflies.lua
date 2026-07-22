@@ -33,9 +33,7 @@ function Fireflies:generate_fireflies()
 end
 
 function Fireflies:show_fireflies(dur)
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
 		e:remove("light_disabled")
 		Flux.to(e.diffuse.value, dur, {
@@ -57,9 +55,7 @@ function Fireflies:show_fireflies(dur)
 end
 
 function Fireflies:hide_fireflies(dur)
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
 		e:remove("light_fading")
 		Flux.to(e.diffuse.value, dur, {

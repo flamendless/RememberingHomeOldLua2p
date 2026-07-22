@@ -8,16 +8,11 @@ local function get_spawn_points(current_id, prev_id)
 		prev_id = "default"
 	end
 	local d = Data.PlayerSpawnPoints[current_id][prev_id]
-	if not d then
-		error("No data given current_id " .. current_id .. " and prev_id " .. prev_id)
-	end
+	assert(d, "No data given current_id " .. current_id .. " and prev_id " .. prev_id)
 	if not d[3] then
 		d[3] = Enums.face_dir.left
 	end
-	if not (type(d[3]) == "string" and (d[3] == Enums.face_dir.left or d[3] == Enums.face_dir.right)) then
-		error('Assertion failed: type(d[3]) == "string" and\
-\9\9(d[3] == Enums.face_dir.left or d[3] == Enums.face_dir.right)')
-	end
+	assert(type(d[3]) == "string" and (d[3] == Enums.face_dir.left or d[3] == Enums.face_dir.right), d[3])
 	return unpack(d)
 end
 
@@ -67,7 +62,7 @@ end
 
 function PlayerController:spawn_player(fn)
 	if fn then assert(type(fn) == "function") end
-	if self.player ~= nil then error("Player already exists") end
+	assert(self.player == nil, "Player already exists")
 
 	-- local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
 	local x, y, face = get_spawn_points(GameStates.current_id, GameStates.prev_id)
@@ -213,12 +208,8 @@ function PlayerController:player_update_animation(override_name, override_varian
 end
 
 function PlayerController:on_player_interact(player, e_interactive)
-	if not (player.__isEntity and player.player) then
-		error("Assertion failed: player.__isEntity and player.player")
-	end
-	if not (e_interactive.__isEntity and e_interactive.interactive) then
-		error("Assertion failed: interactive.__isEntity and interactive.interactive")
-	end
+	assert((player.__isEntity and player.player), player)
+	assert((e_interactive.__isEntity and e_interactive.interactive), e_interactive)
 	self.player.is_interacting.value = true
 	-- self.world:emit("on_interact_or_inventory")
 	-- self.world:emit("create_speech_bubble", player)

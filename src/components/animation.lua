@@ -2,9 +2,7 @@ Concord.component("override_animation")
 
 local c_anim = Concord.component("animation", function(c, stop_on_last)
 	if stop_on_last then
-		if type(stop_on_last) ~= "boolean" then
-			error('Assertion failed: type(stop_on_last) == "boolean"')
-		end
+		assert(type(stop_on_last) == "boolean", stop_on_last)
 	end
 	c.grid = nil
 	c.anim8 = nil
@@ -28,13 +26,9 @@ function c_anim:deserialize(data)
 end
 
 Concord.component("change_animation_tag", function(c, new_tag, override)
-	if type(new_tag) ~= "string" then
-		error('Assertion failed: type(new_tag) == "string"')
-	end
+	assert(type(new_tag) == "string", new_tag)
 	if override then
-		if type(override) ~= "boolean" then
-			error('Assertion failed: type(override) == "boolean"')
-		end
+		assert(type(override) == "boolean", override)
 	end
 	c.new_tag = new_tag
 	c.override = override
@@ -42,33 +36,25 @@ end)
 
 Concord.component("animation_pause_at", function(c, at_frame)
 	if type(at_frame) == "string" then
-		if not Enums.pause_at[at_frame] then
-			error("Invalid 'at_frame'. Got " .. at_frame)
-		end
+		assert(Enums.pause_at[at_frame], "Invalid 'at_frame'. Got " .. at_frame)
 	end
 	c.at_frame = at_frame
 end)
 
 Concord.component("animation_stop", function(c, event)
-	if type(event) ~= "string" then
-		error('Assertion failed: type(event) == "string"')
-	end
+	assert(type(event) == "string", event)
 	c.event = event
 end)
 
 Concord.component("current_frame", function(c, max)
 	if max then
-		if not (type(max) == "number" and max > 0) then
-			error('Assertion failed: type(max) == "number" and max > 0')
-		end
+		assert((type(max) == "number" and max > 0), max)
 	end
 	c.value = 0
 	c.max = max
 end)
 
 Concord.component("animation_ev_update", function(c, ev_update)
-	if type(ev_update) ~= "string" then
-		error('Assertion failed: type(ev_update) == "string"')
-	end
+	assert(type(ev_update) == "string", ev_update)
 	c.value = ev_update
 end)

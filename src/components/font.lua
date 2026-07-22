@@ -1,7 +1,5 @@
 local c_font = Concord.component("font", function(c, resource_id)
-	if type(resource_id) ~= "string" then
-		error('Assertion failed: type(resource_id) == "string"')
-	end
+	assert(type(resource_id) == "string", resource_id)
 	c.resource_id = resource_id
 	c.value = Resources.data.fonts[resource_id]
 end)
@@ -17,12 +15,8 @@ function c_font:deserialize(data)
 end
 
 local c_font_sdf = Concord.component("font_sdf", function(c, fnt, png)
-	if type(fnt) ~= "string" then
-		error('Assertion failed: type(fnt) == "string"')
-	end
-	if type(png) ~= "string" then
-		error('Assertion failed: type(png) == "string"')
-	end
+	assert(type(fnt) == "string", fnt)
+	assert(type(png) == "string", png)
 	c.resource_fnt = fnt
 	c.resource_png = png
 	c.value = love.graphics.newFontMSDF(fnt, png)
@@ -41,14 +35,10 @@ end
 
 Concord.component("sdf", function(c, sx, sy)
 	if sx then
-		if type(sx) ~= "number" then
-			error('Assertion failed: type(sx) == "number"')
-		end
+		assert(type(sx) == "number", sx)
 	end
 	if sy then
-		if type(sy) ~= "number" then
-			error('Assertion failed: type(sy) == "number"')
-		end
+		assert(type(sy) == "number", sy)
 	end
 	c.sx = sx or 1
 	c.sy = sy or 1

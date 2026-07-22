@@ -4,13 +4,9 @@ Concord.component("bg")
 Concord.component("array_image")
 
 local c_sprite = Concord.component("sprite", function(c, resource_id, container)
-	if type(resource_id) ~= "string" then
-		error('Assertion failed: type(resource_id) == "string"')
-	end
+	assert(type(resource_id) == "string", resource_id)
 	if container then
-		if type(container) ~= "string" then
-			error('Assertion failed: type(container) == "string"')
-		end
+		assert(type(container) == "string", container)
 	end
 	c.resource_id = resource_id
 	c.container = container or "images"
@@ -31,12 +27,8 @@ end
 
 --TODO: (Brandon) remove with fog?
 local c_noise_tex = Concord.component("noise_texture", function(c, w, h)
-	if type(w) ~= "number" then
-		error('Assertion failed: type(w) == "number"')
-	end
-	if type(h) ~= "number" then
-		error('Assertion failed: type(h) == "number"')
-	end
+	assert(type(w) == "number", w)
+	assert(type(h) == "number", h)
 	c.w = w
 	c.h = h
 	c.texture = love.graphics.newImage(Image.generate_noise(w, h))

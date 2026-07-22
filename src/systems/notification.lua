@@ -8,15 +8,9 @@ function Notification:init(world)
 end
 
 function Notification:speech_bubble_update(_, e)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if not e.notification then
-		error("Assertion failed: e.notification")
-	end
-	if e.id.value ~= "speech_bubble" then
-		error("got " .. e.id.value)
-	end
+	assert(e.__isEntity, e)
+	assert(e.notification, e)
+	assert(e.id.value == "speech_bubble", "got " .. e.id.value)
 	local data = e.animation_data
 	if e.current_frame.value == data.n_frames then
 		local anim8 = e.animation.anim8
@@ -25,9 +19,7 @@ function Notification:speech_bubble_update(_, e)
 end
 
 function Notification:create_speech_bubble(e_player)
-	if not (e_player.__isEntity and e_player.player) then
-		error("Assertion failed: e_player.__isEntity and e_player.player")
-	end
+	assert((e_player.__isEntity and e_player.player), e_player)
 	local pos = e_player.pos
 	local _ = Concord.entity(self.world):assemble(Assemblages.ui.speech_bubble, e_player, pos.x, pos.y)
 end

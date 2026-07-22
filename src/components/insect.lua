@@ -3,9 +3,7 @@ Concord.component("ant")
 Concord.component("firefly")
 
 Concord.component("fly", function (c, radius)
-	if type(radius) ~= "number" then
-		error('Assertion failed: type(radius) == "number"')
-	end
+	assert(type(radius) == "number", radius)
 	c.max_radius = radius * (1.1 + love.math.random() * 0.4)
 	c.pull = radius * love.math.random(2, 4)
 	c.vel_x = (love.math.random() - 0.5) * 7

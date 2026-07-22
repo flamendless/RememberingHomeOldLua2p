@@ -5,15 +5,9 @@ function TextPaintIntro:init(world)
 end
 
 function TextPaintIntro:fade_text(e, dur, on_finish)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
-	if type(on_finish) ~= "function" then
-		error('Assertion failed: type(on_finish) == "function"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(dur) == "number", dur)
+	assert(type(on_finish) == "function", on_finish)
 	self:generate_paint(e, dur)
 	e:remove("hidden")
 
@@ -24,16 +18,10 @@ function TextPaintIntro:fade_text(e, dur, on_finish)
 end
 
 function TextPaintIntro:generate_paint(e, dur_in, dur_out)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(dur_in) ~= "number" then
-		error('Assertion failed: type(dur_in) == "number"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(dur_in) == "number", dur_in)
 	if dur_out then
-		if type(dur_out) ~= "number" then
-			error('Assertion failed: type(dur_out) == "number"')
-		end
+		assert(type(dur_out) == "number", dur_out)
 	end
 	local transform = e.transform
 	local text = e.static_text.value

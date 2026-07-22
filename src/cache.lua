@@ -5,9 +5,7 @@ local Cache = {
 }
 
 function Cache.add_entity(e)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
+	assert(e.__isEntity, e)
 	local id = e.id.value
 	Cache.entities[id] = e
 	Log.info(id, "added to cache")
@@ -18,16 +16,12 @@ function Cache.has_entity(e)
 end
 
 function Cache.get_entity(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
+	assert(type(id) == "string", id)
 	return Cache.entities[id]
 end
 
 function Cache.remove_entity(e)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
+	assert(e.__isEntity, e)
 	local id = e.id.value
 	if Cache.entities[id] then
 		Cache.entities[id] = nil
@@ -36,28 +30,16 @@ function Cache.remove_entity(e)
 end
 
 function Cache.get(t_id, id)
-	if type(t_id) ~= "string" then
-		error('Assertion failed: type(t_id) == "string"')
-	end
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Cache[t_id] then
-		error(t_id .. " is not valid")
-	end
+	assert(type(t_id) == "string", t_id)
+	assert(type(id) == "string", id)
+	assert(Cache[t_id], t_id .. " is not valid")
 	return Cache[t_id][id]
 end
 
 function Cache.store(t_id, id, v)
-	if type(t_id) ~= "string" then
-		error('Assertion failed: type(t_id) == "string"')
-	end
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if v == nil then
-		error("Assertion failed: v ~= nil")
-	end
+	assert(type(t_id) == "string", t_id)
+	assert(type(id) == "string", id)
+	assert(v ~= nil, v)
 	Cache[t_id][id] = v
 end
 
@@ -67,21 +49,13 @@ end
 
 function Cache.clean_resources()
 	tablex.clear(Cache.resources)
-	if #Cache.resources ~= 0 then
-		error("Assertion failed: #Cache.resources == 0")
-	end
+	assert(#Cache.resources == 0, Cache.resources)
 end
 
 function Cache.manage_resources(resources, list, prev_res)
-	if type(resources) ~= "table" then
-		error('Assertion failed: type(resources) == "table"')
-	end
-	if type(list) ~= "table" then
-		error('Assertion failed: type(list) == "table"')
-	end
-	if type(prev_res) ~= "table" then
-		error('Assertion failed: type(prev_res) == "table"')
-	end
+	assert(type(resources) == "table", resources)
+	assert(type(list) == "table", list)
+	assert(type(prev_res) == "table", prev_res)
 	for kind, t in pairs(list) do
 		local res = prev_res[kind]
 		if res then

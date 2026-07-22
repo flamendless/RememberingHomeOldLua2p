@@ -49,26 +49,16 @@ function Camera:update(dt)
 end
 
 function Camera:set_camera_transform(camera, t)
-	if not (Gamera.isCamera(camera)) then
-		error("Assertion failed: Gamera.isCamera(camera)")
-	end
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
+	assert(Gamera.isCamera(camera), camera)
+	assert(type(t) == "table", t)
 	if t.x then
-		if type(t.x) ~= "number" then
-			error('Assertion failed: type(t.x) == "number"')
-		end
+		assert(type(t.x) == "number", t.x)
 	end
 	if t.y then
-		if type(t.y) ~= "number" then
-			error('Assertion failed: type(t.y) == "number"')
-		end
+		assert(type(t.y) == "number", t.y)
 	end
 	if t.scale then
-		if type(t.scale) ~= "number" then
-			error('Assertion failed: type(t.scale) == "number"')
-		end
+		assert(type(t.scale) == "number", t.scale)
 	end
 	--INFO: ALWAYS SET SCALE FIRST BEFORE POSITION
 	local scale = camera:getScale()
@@ -78,9 +68,7 @@ function Camera:set_camera_transform(camera, t)
 end
 
 function Camera:get_follow_coords(target)
-	if not target.__isEntity then
-		error("Assertion failed: target.__isEntity")
-	end
+	assert(target.__isEntity, target)
 	local pos = target.pos
 	local x, y = pos.x, pos.y
 	if target.camera_follow_offset then
@@ -96,12 +84,8 @@ function Camera:camera_unfollow()
 end
 
 function Camera:camera_follow(target, dur)
-	if not target.__isEntity then
-		error("Assertion failed: target.__isEntity")
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert(target.__isEntity, target)
+	assert(type(dur) == "number", dur)
 	self.follow = true
 	local cx, cy = self.main_camera:getPosition()
 	local tx, ty = self:get_follow_coords(target)
@@ -140,9 +124,7 @@ function Camera:draw_clip()
 end
 
 function Camera:force(dir)
-	if not (type(dir) == "number" and (dir == 1 or dir == -1)) then
-		error('Assertion failed: type(dir) == "number" and (dir == 1 or dir == -1)')
-	end
+	assert((type(dir) == "number" and (dir == 1 or dir == -1)), dir)
 	self.flux:stop()
 	self.main_camera:setScale(self.target_scale)
 	self.state = self.target_state
@@ -152,9 +134,7 @@ function Camera:force(dir)
 end
 
 function Camera:tween_camera(dir)
-	if not (type(dir) == "number" and (dir == 1 or dir == -1)) then
-		error('Assertion failed: type(dir) == "number" and (dir == 1 or dir == -1)')
-	end
+	assert((type(dir) == "number" and (dir == 1 or dir == -1)), dir)
 	local cs = self.main_camera:getScale()
 	self.target_scale = dir == 1 and cs + 0.25 or cs - 0.25
 	self.target_state = dir == 1 and Enums.camera_state.zoomed_in or Enums.camera_state.zoomed_out
@@ -448,9 +428,7 @@ if DEV then
 	end
 
 	function Camera:debug_on_drag(bool)
-		if type(bool) ~= "boolean" then
-			error('Assertion failed: type(bool) == "boolean"')
-		end
+		assert(type(bool) == "boolean", bool)
 		self.follow = not bool
 	end
 

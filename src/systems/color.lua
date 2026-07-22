@@ -235,19 +235,11 @@ function Color:start_colors_lerp()
 end
 
 function Color:lerp_color(e, color, dur, ease)
-	if not (e.__isEntity and e.color) then
-		error("Assertion failed: e.__isEntity and e.color")
-	end
-	if type(color) ~= "table" then
-		error('Assertion failed: type(color) == "table"')
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert((e.__isEntity and e.color), e)
+	assert(type(color) == "table", color)
+	assert(type(dur) == "number", dur)
 	if ease then
-		if type(ease) ~= "string" then
-			error('Assertion failed: type(ease) == "string"')
-		end
+		assert(type(ease) == "string", ease)
 	end
 	Flux.to(e.color.value, dur, {
 		[1] = color[1],

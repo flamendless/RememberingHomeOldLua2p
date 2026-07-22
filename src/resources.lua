@@ -18,12 +18,8 @@ end
 Resources.meta = Data.ResourcesList
 
 function Resources.get_meta(key)
-	if type(key) ~= "string" then
-		error('Assertion failed: type(key) == "string"')
-	end
-	if not Resources.meta[key] then
-		error(key .. " is invalid")
-	end
+	assert(type(key) == "string", key)
+	assert(Resources.meta[key], key .. " is invalid")
 	local t = tablex.copy(Resources.meta[key])
 
 	t.images = tablex.append({}, t.images, t.array_images)
@@ -36,13 +32,9 @@ function Resources.get_meta(key)
 end
 
 function Resources.set_resources(t)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
+	assert(type(t) == "table", t)
 	tablex.clear(Resources.data)
-	if #Resources.data ~= 0 then
-		error("Assertion failed: #Resources.data == 0")
-	end
+	assert(#Resources.data == 0, Resources.data)
 	for k, _ in pairs(t) do
 		Resources.data[k] = t[k]
 
@@ -51,9 +43,7 @@ function Resources.set_resources(t)
 end
 
 function Resources.copy_array_images(resources)
-	if type(resources) ~= "table" then
-		error('Assertion failed: type(resources) == "table"')
-	end
+	assert(type(resources) == "table", resources)
 	for k, v in pairs(resources.array_images) do
 		resources.images[k] = v
 	end

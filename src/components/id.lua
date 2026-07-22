@@ -1,11 +1,7 @@
 Concord.component("id", function(c, id, sub_id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
+	assert(type(id) == "string", id)
 	if sub_id then
-		if type(sub_id) ~= "string" then
-			error('Assertion failed: type(sub_id) == "string"')
-		end
+		assert(type(sub_id) == "string", sub_id)
 	end
 	c.value = id
 	c.sub_id = sub_id

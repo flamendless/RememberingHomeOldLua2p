@@ -9,14 +9,10 @@ function AnimationSync:init(world)
 		local e_target = self.world:getEntityByKey(e.anim_sync_with.key)
 		local c_name = e.anim_sync_data.c_name
 		local target_c = e_target[c_name]
-		if not target_c then
-			error("sync target must have component: " .. c_name)
-		end
+		assert(target_c, "sync target must have component: " .. c_name)
 		local c_props = e.anim_sync_data.c_props
 		for _, prop in ipairs(c_props) do
-			if not target_c[prop] then
-				error("target component must have property: " .. prop)
-			end
+			assert(target_c[prop], "target component must have property: " .. prop)
 		end
 
 		local md = e_target.multi_animation_data
@@ -24,14 +20,10 @@ function AnimationSync:init(world)
 			md = md.data
 			local data = e.anim_sync_data.data
 			for k, v in pairs(data) do
-				if not md[k] then
-					error("multi_animation_data must have key: " .. k)
-				end
+				assert(md[k], "multi_animation_data must have key: " .. k)
 				for _, t in ipairs(v) do
 					for _, prop in ipairs(c_props) do
-						if not t[prop] then
-							error("subdata must have property: " .. prop)
-						end
+						assert(t[prop], "subdata must have property: " .. prop)
 					end
 				end
 			end

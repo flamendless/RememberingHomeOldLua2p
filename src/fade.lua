@@ -24,19 +24,13 @@ function Fade.fade_out(on_complete, duration, delay)
 	end
 
 	if on_complete then
-		if type(on_complete) ~= "function" then
-			error('Assertion failed: type(on_complete) == "function"')
-		end
+		assert(type(on_complete) == "function", on_complete)
 	end
 	if duration then
-		if type(duration) ~= "number" then
-			error('Assertion failed: type(duration) == "number"')
-		end
+		assert(type(duration) == "number", duration)
 	end
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	local f = Flux.to(f_color, duration or f_duration, { [4] = 1 }):delay(delay or f_delay)
 
@@ -51,19 +45,13 @@ function Fade.fade_in(on_complete, duration, delay)
 	end
 
 	if on_complete then
-		if type(on_complete) ~= "function" then
-			error('Assertion failed: type(on_complete) == "function"')
-		end
+		assert(type(on_complete) == "function", on_complete)
 	end
 	if duration then
-		if type(duration) ~= "number" then
-			error('Assertion failed: type(duration) == "number"')
-		end
+		assert(type(duration) == "number", duration)
 	end
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	local f = Flux.to(
 		f_color,
@@ -77,9 +65,7 @@ function Fade.fade_in(on_complete, duration, delay)
 end
 
 function Fade.set_alpha(a)
-	if type(a) ~= "number" then
-		error('Assertion failed: type(a) == "number"')
-	end
+	assert(type(a) == "number", a)
 	f_color[4] = a
 end
 
@@ -90,9 +76,7 @@ function Fade.draw()
 end
 
 function Fade.set_color(color)
-	if type(color) ~= "table" then
-		error('Assertion failed: type(color) == "table"')
-	end
+	assert(type(color) == "table", color)
 	f_color[1] = color[1] or f_color[1]
 	f_color[2] = color[2] or f_color[2]
 	f_color[3] = color[3] or f_color[3]

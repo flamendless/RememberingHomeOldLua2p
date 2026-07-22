@@ -1,6 +1,4 @@
 Concord.component("enemy", function(c, enemy_type)
-	if type(enemy_type) ~= "string" then
-		error('Assertion failed: type(enemy_type) == "string"')
-	end
+	assert(type(enemy_type) == "string", enemy_type)
 	c.enemy_type = enemy_type
 end)

@@ -7,15 +7,9 @@ function Flies:init(world)
 end
 
 function Flies:generate_flies(n, start_p, min_dist)
-	if type(n) ~= "number" and n > 0 then
-		error('Assertion failed: type(n) == "number" and n > 0')
-	end
-	if start_p:type() ~= "vec2" then
-		error('Assertion failed: start_p:type() == "vec2"')
-	end
-	if type(min_dist) ~= "number" and min_dist > 0 then
-		error('Assertion failed: type(min_dist) == "number" and min_dist > 0')
-	end
+	assert(type(n) == "number" and n > 0, n)
+	assert(start_p:type() == "vec2", start_p)
+	assert(type(min_dist) == "number" and min_dist > 0, min_dist)
 
 	local sx, sy = start_p:unpack()
 
@@ -111,9 +105,7 @@ function Flies:update(dt)
 end
 
 function Flies:set_flies_visibility(bool)
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
-	end
+	assert(type(bool) == "boolean", bool)
 
 	if #self.pool == 0 then
 		Log.warn("pool is 0")

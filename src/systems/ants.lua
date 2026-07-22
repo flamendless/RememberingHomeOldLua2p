@@ -51,23 +51,13 @@ function Ants:init(world)
 end
 
 function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
-	if type(n) ~= "number" and n > 0 then
-		error('Assertion failed: type(n) == "number" and n > 0')
-	end
-	if start_p:type() ~= "vec2" then
-		error('Assertion failed: start_p:type() == "vec2"')
-	end
-	if end_p:type() ~= "vec2" then
-		error('Assertion failed: end_p:type() == "vec2"')
-	end
-	if type(path_repeat) ~= "boolean" then
-		error('Assertion failed: type(path_repeat) == "boolean"')
-	end
-	if type(ms) ~= "number" then
-		error('Assertion failed: type(ms) == "number"')
-	end
-	if opts and type(opts) ~= "table" then
-		error('Assertion failed: type(opts) == "table"')
+	assert(type(n) == "number" and n > 0, n)
+	assert(start_p:type() == "vec2", start_p)
+	assert(end_p:type() == "vec2", end_p)
+	assert(type(path_repeat) == "boolean", path_repeat)
+	assert(type(ms) == "number", ms)
+	if opts then
+		assert(type(opts) == "table", opts)
 	end
 
 	local sx, sy = start_p:unpack()
@@ -111,9 +101,7 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
 end
 
 function Ants:set_ants_visibility(bool)
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
-	end
+	assert(type(bool) == "boolean", bool)
 
 	if #self.pool == 0 then
 		Log.warn("pool is 0")

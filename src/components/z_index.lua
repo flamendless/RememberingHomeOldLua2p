@@ -1,11 +1,7 @@
 Concord.component("z_index", function(c, z, sortable)
-	if type(z) ~= "number" then
-		error('Assertion failed: type(z) == "number"')
-	end
+	assert(type(z) == "number", z)
 	if sortable then
-		if type(sortable) ~= "boolean" then
-			error('Assertion failed: type(sortable) == "boolean"')
-		end
+		assert(type(sortable) == "boolean", sortable)
 	end
 	c.value = z
 	c.sortable = sortable ~= false

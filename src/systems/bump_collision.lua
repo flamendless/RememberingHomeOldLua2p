@@ -149,9 +149,7 @@ function BumpCollision:check_col(e)
 end
 
 function BumpCollision:on_item_use(item)
-	if not (item.__isEntity and item.item) then
-		error("Assertion failed: item.__isEntity and item.item")
-	end
+	assert((item.__isEntity and item.item), item)
 	local x, y, w, h = get_query_rect(self)
 	local items, len = self.pool:queryRect(x, y, w, h)
 	local e_other
@@ -172,9 +170,7 @@ function BumpCollision:on_item_use(item)
 end
 
 function BumpCollision:update_collider(e)
-	if not (e.__isEntity and e.collider and e.animation) then
-		error("Assertion failed: e.__isEntity and e.collider and e.animation")
-	end
+	assert((e.__isEntity and e.collider and e.animation), e)
 	if e.skip_collider_update then
 		return
 	end

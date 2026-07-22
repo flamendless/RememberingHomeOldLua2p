@@ -86,9 +86,7 @@ function GameStates.start(resources)
 end
 
 function GameStates.switch(next_id)
-	if type(next_id) ~= "string" then
-		error('Assertion failed: type(next_id) == "string"')
-	end
+	assert(type(next_id) == "string", next_id)
 
 	GameStates.is_ready = false
 	if GameStates.world then

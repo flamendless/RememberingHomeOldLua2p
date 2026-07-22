@@ -3,9 +3,7 @@ Concord.component("flashlight_light")
 
 Concord.component("battery", function(c, pct)
 	if pct then
-		if not (type(pct) == "number" and pct > 0 and pct <= 100) then
-			error('Assertion failed: type(pct) == "number" and pct > 0 and pct <= 100')
-		end
+		assert((type(pct) == "number" and pct > 0 and pct <= 100), pct)
 	end
 	c.pct = pct
 	c.orig_pct = pct
@@ -21,14 +19,10 @@ end
 
 Concord.component("fl_spawn_offset", function(c, x, y)
 	if x then
-		if type(x) ~= "number" then
-			error('Assertion failed: type(x) == "number"')
-		end
+		assert(type(x) == "number", x)
 	end
 	if y then
-		if type(y) ~= "number" then
-			error('Assertion failed: type(y) == "number"')
-		end
+		assert(type(y) == "number", y)
 	end
 
 	c.x = x or 0

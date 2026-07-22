@@ -8,12 +8,8 @@ local Animation = Concord.system({
 local EMPTY_FN = function() end
 
 function Animation:setup_animation_data(e, new_tag)
-	if not (e.__isEntity and e.animation) then
-		error("Assertion failed: e.__isEntity and e.animation")
-	end
-	if type(new_tag) ~= "string" then
-		error('Assertion failed: type(new_tag) == "string"')
-	end
+	assert((e.__isEntity and e.animation), e)
+	assert(type(new_tag) == "string", new_tag)
 	if not e.multi_animation_data then
 		return
 	end
@@ -30,9 +26,7 @@ function Animation:setup_animation_data(e, new_tag)
 end
 
 function Animation:setup_on_loop(e, animation)
-	if not animation.__isComponent then
-		error("Assertion failed: animation.__isComponent")
-	end
+	assert(animation.__isComponent, animation)
 	local on_loop = e.animation_on_loop
 	local on_finish = e.animation_on_finish
 
@@ -56,15 +50,9 @@ function Animation:setup_on_loop(e, animation)
 end
 
 function Animation:setup_animation(e, data, on_loop)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(data) ~= "table" then
-		error('Assertion failed: type(data) == "table"')
-	end
-	if type(on_loop) ~= "function" then
-		error('Assertion failed: type(on_loop) == "function"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(data) == "table", data)
+	assert(type(on_loop) == "function", on_loop)
 
 	local animation = e.animation
 	local current_tag = animation.current_tag
@@ -159,9 +147,7 @@ function Animation:init(world)
 				animation.anim8:pauseAtEnd()
 			end
 		elseif type(pause_at.at_frame) == "number" then
-			if pause_at.at_frame > data.n_frames then
-				error("Assertion failed: pause_at.at_frame <= data.n_frames")
-			end
+			assert(pause_at.at_frame <= data.n_frames, pause_at.at_frame)
 			animation.anim8:gotoFrame(pause_at.at_frame)
 			animation.anim8:pause()
 		end
@@ -181,21 +167,13 @@ function Animation:init(world)
 end
 
 function Animation:switch_animation_tag(e, new_tag, base_tag, override)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(new_tag) ~= "string" then
-		error('Assertion failed: type(new_tag) == "string"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(new_tag) == "string", new_tag)
 	if base_tag then
-		if type(base_tag) ~= "string" then
-			error('Assertion failed: type(base_tag) == "string"')
-		end
+		assert(type(base_tag) == "string", base_tag)
 	end
 	if override then
-		if type(override) ~= "boolean" then
-			error('Assertion failed: type(override) == "boolean"')
-		end
+		assert(type(override) == "boolean", override)
 	end
 	self:setup_animation_data(e, new_tag)
 	local animation = e.animation
@@ -207,9 +185,7 @@ function Animation:switch_animation_tag(e, new_tag, base_tag, override)
 			return
 		end
 		local data = multi.data[new_tag]
-		if not data then
-			error("Assertion failed: data")
-		end
+		assert(data, data)
 		animation.current_tag = new_tag
 		e:give("animation_data", data)
 		self:setup_animation(e, data, on_loop)
@@ -264,13 +240,9 @@ function Animation:update(dt)
 end
 
 function Animation:anim_pause_at_start(e, signal)
-	if not (e.__isEntity and e.animation) then
-		error("Assertion failed: e.__isEntity and e.animation")
-	end
+	assert((e.__isEntity and e.animation), e)
 	if signal then
-		if type(signal) ~= "string" then
-			error('Assertion failed: type(signal) == "string"')
-		end
+		assert(type(signal) == "string", signal)
 	end
 	local anim = e.animation
 	anim.anim8:pauseAtStart()
@@ -280,13 +252,9 @@ function Animation:anim_pause_at_start(e, signal)
 end
 
 function Animation:anim_pause_at_end(e, signal)
-	if not (e.__isEntity and e.animation) then
-		error("Assertion failed: e.__isEntity and e.animation")
-	end
+	assert((e.__isEntity and e.animation), e)
 	if signal then
-		if type(signal) ~= "string" then
-			error('Assertion failed: type(signal) == "string"')
-		end
+		assert(type(signal) == "string", signal)
 	end
 	local anim = e.animation
 	anim.anim8:pauseAtEnd()

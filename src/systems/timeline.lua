@@ -6,9 +6,7 @@ function Timeline:init(world)
 end
 
 function Timeline:start_timeline(fn)
-	if type(fn) ~= "function" then
-		error('Assertion failed: type(fn) == "function"')
-	end
+	assert(type(fn) == "function", fn)
 	self.state = Enums.timeline.playing
 	self.timeline = TLE.Do(fn)
 end

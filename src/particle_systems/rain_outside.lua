@@ -5,15 +5,9 @@ local RainOutsideParticles = class({
 })
 
 function RainOutsideParticles:new(image, buffer, w)
-	if image:type() ~= "Image" then
-		error('Assertion failed: image:type() == "Image"')
-	end
-	if type(buffer) ~= "number" then
-		error('Assertion failed: type(buffer) == "number"')
-	end
-	if type(w) ~= "number" then
-		error('Assertion failed: type(w) == "number"')
-	end
+	assert(image:type() == "Image", image)
+	assert(type(buffer) == "number", buffer)
+	assert(type(w) == "number", w)
 	local ps = lg.newParticleSystem(image, buffer)
 
 	ps:setColors(1, 1, 1, 0.60000002384186)

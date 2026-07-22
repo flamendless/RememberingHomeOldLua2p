@@ -1,28 +1,14 @@
 local Light = {}
 
 function Light.point(e, x, y, z, size, diffuse, dir)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(z) ~= "number" then
-		error('Assertion failed: type(z) == "number"')
-	end
-	if type(size) ~= "number" then
-		error('Assertion failed: type(size) == "number"')
-	end
-	if type(diffuse) ~= "table" then
-		error('Assertion failed: type(diffuse) == "table"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(z) == "number", z)
+	assert(type(size) == "number", size)
+	assert(type(diffuse) == "table", diffuse)
 	if dir then
-		if type(dir) ~= "number" then
-			error('Assertion failed: type(dir) == "number"')
-		end
+		assert(type(dir) == "number", dir)
 	end
 
 	e:give("id", "point_light")
@@ -36,27 +22,13 @@ function Light.point(e, x, y, z, size, diffuse, dir)
 end
 
 function Light.spot(e, x, y, z, dir, size, diffuse)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(z) ~= "number" then
-		error('Assertion failed: type(z) == "number"')
-	end
-	if type(dir) ~= "table" then
-		error('Assertion failed: type(dir) == "table"')
-	end
-	if type(size) ~= "number" then
-		error('Assertion failed: type(size) == "number"')
-	end
-	if type(diffuse) ~= "table" then
-		error('Assertion failed: type(diffuse) == "table"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(z) == "number", z)
+	assert(type(dir) == "table", dir)
+	assert(type(size) == "number", size)
+	assert(type(diffuse) == "table", diffuse)
 
 	e:give("id", "spot_light")
 		:give("pos", x, y, z)
@@ -66,15 +38,9 @@ function Light.spot(e, x, y, z, dir, size, diffuse)
 end
 
 function Light.fl_spot(e, e_player, sync_data)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if not e_player.__isEntity then
-		error("Assertion failed: e_player.__isEntity")
-	end
-	if type(sync_data) ~= "table" then
-		error('Assertion failed: type(sync_data) == "table"')
-	end
+	assert(e.__isEntity, e)
+	assert(e_player.__isEntity, e_player)
+	assert(type(sync_data) == "table", sync_data)
 
 	local p = 16
 	e:assemble(Light.spot, 0, 0, 1, { 1, 0, 0, 0.85 }, 164, {p, p, p})

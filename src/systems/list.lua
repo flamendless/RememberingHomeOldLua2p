@@ -11,9 +11,7 @@ function List:init(world)
 	self.pool.onAdded = function(pool, e)
 		local group_id = e.list_group.value
 		local group = self.groups[group_id]
-		if not group then
-			error(group_id .. " does not exist")
-		end
+		assert(group, group_id .. " does not exist")
 		table.insert(group.entities, e)
 		self.focused = group_id
 		if #group.entities == 1 then
@@ -54,27 +52,15 @@ function List:update(dt)
 end
 
 function List:create_list_group(id, vertical_only, per_page, use_max_threshold, limit)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(vertical_only) ~= "boolean" then
-		error('Assertion failed: type(vertical_only) == "boolean"')
-	end
-	if not (type(per_page) == "number" and per_page > 0) then
-		error('Assertion failed: type(per_page) == "number" and per_page > 0')
-	end
-	if self.groups[id] ~= nil then
-		error(id .. " was already added")
-	end
+	assert(type(id) == "string", id)
+	assert(type(vertical_only) == "boolean", vertical_only)
+	assert((type(per_page) == "number" and per_page > 0), per_page)
+	assert(self.groups[id] == nil, id .. " was already added")
 	if use_max_threshold then
-		if type(use_max_threshold) ~= "boolean" then
-			error('Assertion failed: type(use_max_threshold) == "boolean"')
-		end
+		assert(type(use_max_threshold) == "boolean", use_max_threshold)
 	end
 	if limit then
-		if not (use_max_threshold and type(limit) == "number" and limit > 0) then
-			error('Assertion failed: use_max_threshold and type(limit) == "number" and limit > 0')
-		end
+		assert((use_max_threshold and type(limit) == "number" and limit > 0), limit)
 	end
 	self.groups[id] = {
 		entities = {},
@@ -89,18 +75,10 @@ function List:create_list_group(id, vertical_only, per_page, use_max_threshold, 
 end
 
 function List:create_list_group_grid(id, rows, cols)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if self.groups[id] ~= nil then
-		error(id .. " was already added")
-	end
-	if type(rows) ~= "number" or rows <= 0 then
-		error('Assertion failed: type(rows) == "number" and rows > 0')
-	end
-	if type(cols) ~= "number" or cols <= 0 then
-		error('Assertion failed: type(cols) == "number" and cols > 0')
-	end
+	assert(type(id) == "string", id)
+	assert(self.groups[id] == nil, id .. " was already added")
+	assert(type(rows) == "number" and rows > 0, rows)
+	assert(type(cols) == "number" and cols > 0, cols)
 	self.groups[id] = {
 		entities = {},
 		cursor = 1,
@@ -121,9 +99,7 @@ function List:update_list(group)
 	if Inputs.pressed("interact") then
 		local index = group.per_page * group.offset + group.cursor
 		local e = group.entities[index]
-		if not e then
-			error("Assertion failed: e")
-		end
+		assert(e, e)
 		local signal = "on_list_item_interact_" .. self.focused
 		self.world:emit(signal, e)
 	elseif Inputs.pressed(up) then
@@ -177,9 +153,7 @@ function List:update_list_grid(group)
 	local dx, dy = 0, 0
 	if Inputs.pressed("interact") then
 		local index = group.per_page * group.offset + group.cursor
-		if not group.entities[index] then
-			error("Assertion failed: group.entities[index]")
-		end
+		assert(group.entities[index], index)
 		local signal = "on_list_item_interact_" .. self.focused
 		self.world:emit(signal, group.entities[index])
 	elseif Inputs.pressed("left") then
@@ -212,9 +186,7 @@ end
 
 function List:update_cursor(index)
 	if index then
-		if not (type(index) == "number" and index > 0) then
-			error('Assertion failed: type(index) == "number" and index > 0')
-		end
+		assert((type(index) == "number" and index > 0), index)
 	end
 	local group = self.groups[self.focused]
 	local cursor_new_index = index or (group.per_page * group.offset + group.cursor)
@@ -236,9 +208,7 @@ end
 function List:set_focus_list(group_id, override_cursor)
 	local group = self.groups[group_id]
 	if group_id then
-		if not (type(group_id) == "string" and group) then
-			error('Assertion failed: type(group_id) == "string" and group')
-		end
+		assert((type(group_id) == "string" and group), group_id)
 	end
 	if self.focused then
 		table.insert(self.focus_stack, self.focused)

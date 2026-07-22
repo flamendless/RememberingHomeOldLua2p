@@ -2,16 +2,10 @@
 Concord.component("pos_vec2")
 
 Concord.component("pos", function(c, x, y, z)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
 	if z then
-		if type(z) ~= "number" then
-			error('Assertion failed: type(z) == "number"')
-		end
+		assert(type(z) == "number", z)
 	end
 	c.x = x
 	c.y = y
@@ -22,12 +16,8 @@ Concord.component("pos", function(c, x, y, z)
 end)
 
 Concord.component("ref_pos_vec2", function(c, x, y)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
 	c.value = vec2(x, y)
 end)
 

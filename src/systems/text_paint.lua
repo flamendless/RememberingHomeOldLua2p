@@ -27,16 +27,10 @@ function TextPaint:init(world)
 end
 
 function TextPaint:show_text_paint(e, dur, widest)
-	if not (e.__isEntity and e.text_with_paint) then
-		error("Assertion failed: e.__isEntity and e.text_with_paint")
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert((e.__isEntity and e.text_with_paint), e)
+	assert(type(dur) == "number", dur)
 	if widest then
-		if type(widest) ~= "string" then
-			error('Assertion failed: type(widest) == "string"')
-		end
+		assert(type(widest) == "string", widest)
 	end
 	self:show_paint(e, dur, widest)
 	e:remove("hidden")
@@ -44,22 +38,12 @@ function TextPaint:show_text_paint(e, dur, widest)
 end
 
 function TextPaint:fade_text_paint(e, dur, on_complete)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if not e.text_with_paint then
-		error("Assertion failed: e.text_with_paint")
-	end
-	if not e.text_with_paint.e_paint.paint then
-		error("Assertion failed: e.text_with_paint.e_paint.paint")
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert(e.__isEntity, e)
+	assert(e.text_with_paint, e)
+	assert(e.text_with_paint.e_paint.paint, e)
+	assert(type(dur) == "number", dur)
 	if on_complete then
-		if type(on_complete) ~= "function" then
-			error('Assertion failed: type(on_complete) == "function"')
-		end
+		assert(type(on_complete) == "function", on_complete)
 	end
 	local delay = 0
 
@@ -83,26 +67,16 @@ function TextPaint:fade_text_paint(e, dur, on_complete)
 end
 
 function TextPaint:show_paint(e, dur_in, widest)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(dur_in) ~= "number" then
-		error('Assertion failed: type(dur_in) == "number"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(dur_in) == "number", dur_in)
 	if widest then
-		if type(widest) ~= "string" then
-			error('Assertion failed: type(widest) == "string"')
-		end
+		assert(type(widest) == "string", widest)
 	end
 	if e.static_text then
-		if e.static_text == nil then
-			error("Assertion failed: e.static_text ~= nil")
-		end
+		assert(e.static_text ~= nil, e.static_text)
 	end
 	if e.text then
-		if e.text == nil then
-			error("Assertion failed: e.text ~= nil")
-		end
+		assert(e.text ~= nil, e.text)
 	end
 	local str
 	local text = e.text
@@ -150,19 +124,11 @@ function TextPaint:show_paint(e, dur_in, widest)
 end
 
 function TextPaint:fade_paint(paint, dur, delay)
-	if not paint.__isEntity then
-		error("Assertion failed: paint.__isEntity")
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
-	if not paint.paint then
-		error("Assertion failed: paint.paint")
-	end
+	assert(paint.__isEntity, paint)
+	assert(type(dur) == "number", dur)
+	assert(paint.paint, paint)
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	Flux.to(paint.color.value, dur, { [4] = 0 }):delay(delay or def_delay_paint):oncomplete(function()
 		paint:destroy()

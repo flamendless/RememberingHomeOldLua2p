@@ -65,29 +65,17 @@ function Light:init(world)
 end
 
 function Light:set_ambient_light(color)
-	if type(color) ~= "table" then
-		error('Assertion failed: type(color) == "table"')
-	end
+	assert(type(color) == "table", color)
 	self.ambient = color
 end
 
 function Light:create_light_map(x, y, w, h, scale)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(w) ~= "number" then
-		error('Assertion failed: type(w) == "number"')
-	end
-	if type(h) ~= "number" then
-		error('Assertion failed: type(h) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(w) == "number", w)
+	assert(type(h) == "number", h)
 	if scale then
-		if type(scale) ~= "number" then
-			error('Assertion failed: type(scale) == "number"')
-		end
+		assert(type(scale) == "number", scale)
 	end
 	self.x = x
 	self.y = y

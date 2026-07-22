@@ -6,23 +6,15 @@ function Depth:init(world)
 	self.world = world
 
 	self.pool.onAdded = function(pool, e)
-		if not e.transform and not e.quad_transform then
-			error(e.id.value .. " must have a transform or quad_transform component")
-		end
+		assert(e.transform and not e.quad_transform, e.id.value .. " must have a transform or quad_transform component")
 	end
 end
 
 function Depth:tween_depth_zoom(dur, factor, ease)
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
-	if type(factor) ~= "number" then
-		error('Assertion failed: type(factor) == "number"')
-	end
+	assert(type(dur) == "number", dur)
+	assert(type(factor) == "number", factor)
 	if ease then
-		if type(ease) ~= "string" then
-			error('Assertion failed: type(ease) == "string"')
-		end
+		assert(type(ease) == "string", ease)
 	end
 	for _, e in ipairs(self.pool) do
 		local zf = e.depth_zoom.value

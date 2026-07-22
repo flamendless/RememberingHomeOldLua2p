@@ -42,12 +42,8 @@ function Sprite.remove(e)
 end
 
 function Sprite.set_bg(e)
-	if not (e.__isEntity and e.sprite and e.bg) then
-		error("Assertion failed: e.__isEntity and e.sprite and e.bg")
-	end
-	if Sprite.e_bg ~= nil then
-		error("only 1 bg entity is allowed")
-	end
+	assert((e.__isEntity and e.sprite and e.bg), e)
+	assert(Sprite.e_bg == nil, "only 1 bg entity is allowed")
 	Sprite.e_bg = e
 end
 

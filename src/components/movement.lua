@@ -1,18 +1,10 @@
 Concord.component("movement")
 
 Concord.component("random_walk", function(c, dir, distance, x, y)
-	if not (type(dir) == "number" and (dir == -1 or dir == 1)) then
-		error('Assertion failed: type(dir) == "number" and (dir == -1 or dir == 1)')
-	end
-	if not (type(distance) == "number" and distance > 0) then
-		error('Assertion failed: type(distance) == "number" and distance > 0')
-	end
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
+	assert((type(dir) == "number" and (dir == -1 or dir == 1)), dir)
+	assert((type(distance) == "number" and distance > 0), distance)
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
 	c.dir = dir
 	c.distance = distance
 	c.orig_pos = vec2(x, y)

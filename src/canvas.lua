@@ -3,9 +3,7 @@ local Canvas = class({
 })
 
 function Canvas.init_canvases(canvases)
-	if type(canvases) ~= "table" then
-		error('Assertion failed: type(canvases) == "table"')
-	end
+	assert(type(canvases) == "table", canvases)
 	local game_size = { x = 128, y = 32 }
 	local ww, wh = love.graphics.getDimensions()
 	local scale = math.min(ww / game_size.x, wh / game_size.y)
@@ -71,24 +69,12 @@ function Canvas.create_main(canvases)
 end
 
 function Canvas:new_default(x, y, width, height, rotation, scale)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(width) ~= "number" then
-		error('Assertion failed: type(width) == "number"')
-	end
-	if type(height) ~= "number" then
-		error('Assertion failed: type(height) == "number"')
-	end
-	if type(rotation) ~= "number" then
-		error('Assertion failed: type(rotation) == "number"')
-	end
-	if type(scale) ~= "number" then
-		error('Assertion failed: type(scale) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(width) == "number", width)
+	assert(type(height) == "number", height)
+	assert(type(rotation) == "number", rotation)
+	assert(type(scale) == "number", scale)
 	self.canvas = love.graphics.newCanvas(width, height)
 	self.canvas:setFilter("nearest", "nearest")
 	self.x, self.y = x, y
@@ -99,9 +85,7 @@ function Canvas:new_default(x, y, width, height, rotation, scale)
 end
 
 function Canvas:new_from_table(tbl)
-	if type(tbl) ~= "table" then
-		error('Assertion failed: type(tbl) == "table"')
-	end
+	assert(type(tbl) == "table", tbl)
 	self.x = tbl.x
 	self.y = tbl.y
 	self.width = tbl.width
@@ -114,9 +98,7 @@ function Canvas:new_from_table(tbl)
 end
 
 function Canvas:new_from_canvas(source)
-	if source:type() ~= "CustomCanvas" then
-		error('Assertion failed: source:type() == "CustomCanvas"')
-	end
+	assert(source:type() == "CustomCanvas", source)
 	self.canvas = love.graphics.newCanvas(source.width, source.height)
 	self.canvas:setFilter("nearest", "nearest")
 	self.x, self.y = source.x, source.y
@@ -127,33 +109,21 @@ function Canvas:new_from_canvas(source)
 end
 
 function Canvas:new(x, y, width, height, rotation, scale)
-	if not (type(x) == "number" or type(x) == "table") then
-		error('Assertion failed: type(x) == "number" or type(x) == "table"')
-	end
+	assert((type(x) == "number" or type(x) == "table"), x)
 	if y then
-	if type(y) ~= "number" then
-			error('Assertion failed: type(y) == "number"')
-		end
+		assert(type(y) == "number", y)
 	end
 	if width then
-	if type(width) ~= "number" then
-			error('Assertion failed: type(width) == "number"')
-		end
+		assert(type(width) == "number", width)
 	end
 	if height then
-	if type(height) ~= "number" then
-			error('Assertion failed: type(height) == "number"')
-		end
+		assert(type(height) == "number", height)
 	end
 	if rotation then
-		if type(rotation) ~= "number" then
-			error('Assertion failed: type(rotation) == "number"')
-		end
+		assert(type(rotation) == "number", rotation)
 	end
 	if scale then
-		if type(scale) ~= "number" then
-			error('Assertion failed: type(scale) == "number"')
-		end
+		assert(type(scale) == "number", scale)
 	end
 	if type(x) == "table" then
 		if x.type and x:type() == "Canvas" then
@@ -167,27 +137,15 @@ function Canvas:new(x, y, width, height, rotation, scale)
 end
 
 function Canvas:set(x, y, width, height, rotation, scale)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(width) ~= "number" then
-		error('Assertion failed: type(width) == "number"')
-	end
-	if type(height) ~= "number" then
-		error('Assertion failed: type(height) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(width) == "number", width)
+	assert(type(height) == "number", height)
 	if rotation then
-		if type(rotation) ~= "number" then
-			error('Assertion failed: type(rotation) == "number"')
-		end
+		assert(type(rotation) == "number", rotation)
 	end
 	if scale then
-		if type(scale) ~= "number" then
-			error('Assertion failed: type(scale) == "number"')
-		end
+		assert(type(scale) == "number", scale)
 	end
 	local _x, _y, _w, _h, _rotation, _scale
 

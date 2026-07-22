@@ -2,9 +2,7 @@
 Concord.component("no_shader")
 
 Concord.component("fog", function(c, speed)
-	if type(speed) ~= "number" then
-		error('Assertion failed: type(speed) == "number"')
-	end
+	assert(type(speed) == "number", speed)
 	c.shader = love.graphics.newShader(Shaders.paths.fog)
 	c.speed = speed
 end)

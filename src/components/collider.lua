@@ -4,23 +4,15 @@ Concord.component("ground")
 Concord.component("skip_collider_update")
 
 Concord.component("req_col_dir", function(c, dir)
-	if not (type(dir) == "number" and (dir == -1 or dir == 1)) then
-		error('Assertion failed: type(dir) == "number" and (dir == -1 or dir == 1)')
-	end
+	assert((type(dir) == "number" and (dir == -1 or dir == 1)), dir)
 	c.value = dir
 end)
 
 Concord.component("collider", function(c, w, h, filter)
-	if type(w) ~= "number" then
-		error('Assertion failed: type(w) == "number"')
-	end
-	if type(h) ~= "number" then
-		error('Assertion failed: type(h) == "number"')
-	end
+	assert(type(w) == "number", w)
+	assert(type(h) == "number", h)
 	if filter then
-		if type(filter) ~= "string" then
-			error('Assertion failed: type(filter) == "string"')
-		end
+		assert(type(filter) == "string", filter)
 	end
 	c.w = w
 	c.h = h
@@ -32,29 +24,19 @@ Concord.component("collider", function(c, w, h, filter)
 end)
 
 Concord.component("collider_offset", function(c, ox, oy)
-	if type(ox) ~= "number" then
-		error('Assertion failed: type(ox) == "number"')
-	end
-	if type(oy) ~= "number" then
-		error('Assertion failed: type(oy) == "number"')
-	end
+	assert(type(ox) == "number", ox)
+	assert(type(oy) == "number", oy)
 	c.ox = ox
 	c.oy = oy
 end)
 
 Concord.component("collider_circle", function(c, size, ox, oy)
-	if type(size) ~= "number" then
-		error('Assertion failed: type(size) == "number"')
-	end
+	assert(type(size) == "number", size)
 	if ox then
-		if type(ox) ~= "number" then
-			error('Assertion failed: type(ox) == "number"')
-		end
+		assert(type(ox) == "number", ox)
 	end
 	if oy then
-		if type(oy) ~= "number" then
-			error('Assertion failed: type(oy) == "number"')
-		end
+		assert(type(oy) == "number", oy)
 	end
 	c.size = size
 	c.ox = ox
@@ -63,9 +45,7 @@ Concord.component("collider_circle", function(c, size, ox, oy)
 end)
 
 Concord.component("collide_with", function(c, e)
-	if not (e.__isEntity and e.collider) then
-		error("Assertion failed: e.__isEntity and e.collider")
-	end
+	assert((e.__isEntity and e.collider), e)
 	e:ensure("key")
 	c.value = e.key.value
 end)

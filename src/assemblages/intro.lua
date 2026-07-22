@@ -50,20 +50,12 @@ local positions = {
 }
 
 function Intro.parallax(e, tag, scale)
-	if type(tag) ~= "string" then
-		error('Assertion failed: type(tag) == "string"')
-	end
+	assert(type(tag) == "string", tag)
 	if scale then
-		if type(scale) ~= "number" then
-			error('Assertion failed: type(scale) == "number"')
-		end
+		assert(type(scale) == "number", scale)
 	end
-	if not speed[tag] then
-		error("Assertion failed: speed[tag]")
-	end
-	if not z_index[tag] then
-		error("Assertion failed: z_index[tag]")
-	end
+	assert(speed[tag], tag)
+	assert(z_index[tag], tag)
 
 	local x, y = 0, 0
 	local pos = positions[tag]

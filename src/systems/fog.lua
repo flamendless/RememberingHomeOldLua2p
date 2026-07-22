@@ -24,9 +24,7 @@ function Fog:draw_fog(e)
 		return
 	end
 
-	if not e.__isEntity then
-		error(e.fog)
-	end
+	assert(e.__isEntity, e.fog)
 
 	local fog = e.fog
 	local color = e.color.value
@@ -37,12 +35,8 @@ function Fog:draw_fog(e)
 end
 
 function Fog:fade_in_fog(target_id, dur)
-	if type(target_id) ~= "string" then
-		error('Assertion failed: type(target_id) == "string"')
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert(type(target_id) == "string", target_id)
+	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
 		local id = e.id.value
 		if id == target_id then
@@ -53,12 +47,8 @@ function Fog:fade_in_fog(target_id, dur)
 end
 
 function Fog:fade_out_fog(target_id, dur)
-	if type(target_id) ~= "string" then
-		error('Assertion failed: type(target_id) == "string"')
-	end
-	if type(dur) ~= "number" then
-		error('Assertion failed: type(dur) == "number"')
-	end
+	assert(type(target_id) == "string", target_id)
+	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
 		local id = e.id.value
 		if id == target_id then

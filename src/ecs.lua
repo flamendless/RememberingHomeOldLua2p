@@ -304,21 +304,13 @@ local unpausable_list = {
 }
 
 function ECS.load_systems(id, world, prev_id)
-	if not (type(id) == "string" and state_systems[id]) then
-		error('Assertion failed: type(id) == "string" and state_systems[id]')
-	end
-	if not world.__isWorld then
-		error("Assertion failed: world.__isWorld")
-	end
+	assert((type(id) == "string" and state_systems[id]), id)
+	assert(world.__isWorld, world)
 	if prev_id then
-		if not (type(prev_id) == "string" and state_systems[prev_id]) then
-			error('Assertion failed: type(prev_id) == "string" and state_systems[prev_id]')
-		end
+		assert((type(prev_id) == "string" and state_systems[prev_id]), prev_id)
 	end
 	local l_id = string.lower(id)
-	if not states[l_id] then
-		error(l_id .. " state system does not exist")
-	end
+	assert(states[l_id], l_id .. " state system does not exist")
 
 	systems.id.debug_show = DevTools.flags.id
 	systems.id.debug_enabled = DevTools.flags.id
@@ -330,9 +322,7 @@ function ECS.load_systems(id, world, prev_id)
 	world:addSystem(systems.log)
 
 	for _, v in ipairs(state_systems[id]) do
-		if not systems[v] then
-			error(string.format("id = %s, i = %d", v, _))
-		end
+		assert(systems[v], string.format("id = %s, i = %d", v, _))
 		world:addSystem(systems[v])
 		local sys = systems[v]
 		for _, u in ipairs(unpausable_list) do
@@ -353,24 +343,16 @@ function ECS.load_systems(id, world, prev_id)
 end
 
 function ECS.get_system_class(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
+	assert(type(id) == "string", id)
 	local l_id = string.lower(id)
-	if not systems[l_id] then
-		error("system " .. id .. " not found")
-	end
+	assert(systems[l_id], "system " .. id .. " not found")
 	return systems[l_id]
 end
 
 function ECS.get_state_class(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
+	assert(type(id) == "string", id)
 	local l_id = string.lower(id)
-	if not states[l_id] then
-		error("state " .. id .. " not found")
-	end
+	assert(states[l_id], "state " .. id .. " not found")
 	return states[l_id]
 end
 

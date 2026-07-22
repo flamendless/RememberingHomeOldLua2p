@@ -1,15 +1,9 @@
 local Generator = {}
 
 function Generator.path_points_fireflies(x, y, n)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(n) ~= "number" then
-		error('Assertion failed: type(n) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(n) == "number", n)
 	local offset = 8
 	local points = { x = x, y = y }
 	local prev_x = x
@@ -28,21 +22,11 @@ function Generator.path_points_fireflies(x, y, n)
 end
 
 function Generator.path_points_ants(x, y, ex, ey, n)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(ex) ~= "number" then
-		error('Assertion failed: type(ex) == "number"')
-	end
-	if type(ey) ~= "number" then
-		error('Assertion failed: type(ey) == "number"')
-	end
-	if type(n) ~= "number" then
-		error('Assertion failed: type(n) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(ex) == "number", ex)
+	assert(type(ey) == "number", ey)
+	assert(type(n) == "number", n)
 	local points = {}
 	local dx = 1
 	local dy = (y <= ey) and -1 or 1

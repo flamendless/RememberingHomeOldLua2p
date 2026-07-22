@@ -11,15 +11,9 @@ function Systems:init(world)
 end
 
 function Systems:set_system_to(id, bool)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
-	end
-	if system_classes[id] == nil then
-		error("Assertion failed: system_classes[id] ~= nil")
-	end
+	assert(type(id) == "string", id)
+	assert(type(bool) == "boolean", bool)
+	assert(system_classes[id] ~= nil, id)
 	local sys = self.world:getSystem(system_classes[id])
 	sys:setEnabled(bool)
 end
@@ -32,9 +26,7 @@ end
 
 function Systems:inventory_to_notes(reversed)
 	if reversed then
-		if type(reversed) ~= "boolean" then
-			error('Assertion failed: type(reversed) == "boolean"')
-		end
+		assert(type(reversed) == "boolean", reversed)
 	end
 	if not reversed then
 		self:set_system_to("inventory", false)

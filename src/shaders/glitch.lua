@@ -20,14 +20,10 @@ local reset_tbl = {
 
 function Glitch:new(values, is_active)
 	if values then
-		if type(values) ~= "table" then
-			error('Assertion failed: type(values) == "table"')
-		end
+		assert(type(values) == "table", values)
 	end
 	if is_active then
-		if type(is_active) ~= "boolean" then
-			error('Assertion failed: type(is_active) == "boolean"')
-		end
+		assert(type(is_active) == "boolean", is_active)
 	end
 	self.is_active = not not is_active --default is false
 	self.values = values or tablex.copy(reset_tbl)
@@ -39,9 +35,7 @@ function Glitch:new(values, is_active)
 end
 
 function Glitch:send_values_to_shader(new_values)
-	if type(new_values) ~= "table" then
-		error('Assertion failed: type(new_values) == "table"')
-	end
+	assert(type(new_values) == "table", new_values)
 	for k, v in pairs(new_values) do
 		self.values[k] = v
 		self.shader:send(k, v)
@@ -52,9 +46,7 @@ end
 
 function Glitch:do_random_glitch(reset_after)
 	if reset_after then
-		if type(reset_after) ~= "number" then
-			error('Assertion failed: type(reset_after) == "number"')
-		end
+		assert(type(reset_after) == "number", reset_after)
 	end
 	self:send_values_to_shader({
 		u_dis_amount = love.math.random() * 0.1,

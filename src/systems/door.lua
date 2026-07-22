@@ -7,12 +7,8 @@ function Door:init(world)
 end
 
 function Door:on_interact_door(e_player, e_door)
-	if not (e_player.__isEntity and e_player.player) then
-		error("Assertion failed: e_player.__isEntity and e_player.player")
-	end
-	if not (e_door.__isEntity and e_door.is_door) then
-		error("Assertion failed: e_door.__isEntity and e_door.is_door")
-	end
+	assert((e_player.__isEntity and e_player.player), e_player)
+	assert((e_door.__isEntity and e_door.is_door), e_door)
 	self.world:emit("toggle_component", e_player, "can_move", false)
 	self.world:emit("toggle_component", e_player, "can_interact", false)
 	self.world:emit("anim_open_door", e_player)

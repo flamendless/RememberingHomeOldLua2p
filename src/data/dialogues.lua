@@ -173,12 +173,8 @@ Dialogues.office2 = {
 
 if DEV then
 	for k, v in pairs(Dialogues) do
-		if not v.start then
-			error("make sure it has start node for dialogue " .. k)
-		end
-		if not v.fin then
-			error("make sure it has fin node for dialogue " .. k)
-		end
+		assert(v.start, "make sure it has start node for dialogue " .. k)
+		assert(v.fin, "make sure it has fin node for dialogue " .. k)
 
 		for id, subt in pairs(v) do
 			for _, d in ipairs(subt) do

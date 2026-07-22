@@ -32,17 +32,11 @@ local default_setting = { linear = true, dpiscale = 1 }
 
 function NGrading:new(res_id, res_id2, is_active)
 	if is_active then
-		if type(is_active) ~= "boolean" then
-			error('Assertion failed: type(is_active) == "boolean"')
-		end
+		assert(type(is_active) == "boolean", is_active)
 	end
-	if type(res_id) ~= "string" then
-		error('Assertion failed: type(res_id) == "string"')
-	end
+	assert(type(res_id) == "string", res_id)
 	if res_id2 then
-		if type(res_id2) ~= "string" then
-			error('Assertion failed: type(res_id2) == "string"')
-		end
+		assert(type(res_id2) == "string", res_id2)
 	end
 	local lut_size = Settings.current.graphics_quality == "low" and 16 or 64
 	local lut_img = Resources.data.image_data[res_id .. "_" .. lut_size]
@@ -60,9 +54,7 @@ function NGrading:new(res_id, res_id2, is_active)
 end
 
 function NGrading:new_single(img, cs)
-	if img:type() ~= "ImageData" then
-		error('Assertion failed: img:type() == "ImageData"')
-	end
+	assert(img:type() == "ImageData", img)
 	local data = img
 	local tw = math.floor(data:getWidth() / cs)
 	local th = math.floor(data:getHeight() / cs)
@@ -105,15 +97,9 @@ function NGrading:new_single(img, cs)
 end
 
 function NGrading:new_multi(img, img2, cs)
-	if img:type() ~= "ImageData" then
-		error('Assertion failed: img:type() == "ImageData"')
-	end
-	if img2:type() ~= "ImageData" then
-		error('Assertion failed: img2:type() == "ImageData"')
-	end
-	if type(cs) ~= "number" then
-		error('Assertion failed: type(cs) == "number"')
-	end
+	assert(img:type() == "ImageData", img)
+	assert(img2:type() == "ImageData", img2)
+	assert(type(cs) == "number", cs)
 	local data = img
 	local data2 = img2
 	local tw = math.floor(data:getWidth() / cs)

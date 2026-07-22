@@ -5,12 +5,8 @@ local Move = Concord.system({
 })
 
 local function internal_move_by(e, is_repeat)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(is_repeat) ~= "boolean" then
-		error('Assertion failed: type(is_repeat) == "boolean"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(is_repeat) == "boolean", is_repeat)
 	local pos = e.pos
 	local move_by = e.move_by
 

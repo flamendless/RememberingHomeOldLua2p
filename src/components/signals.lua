@@ -1,11 +1,7 @@
 local function ctor_single(c, signal, delay, ...)
-	if type(signal) ~= "string" then
-		error('Assertion failed: type(signal) == "string"')
-	end
+	assert(type(signal) == "string", signal)
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	c.signal = signal
 	c.delay = delay or 0
@@ -16,13 +12,9 @@ local function ctor_multi(c, ...)
 	c.values = { ... }
 
 	for _, v in ipairs(c.values) do
-		if type(v.signal) ~= "string" then
-			error('Assertion failed: type(v.signal) == "string"')
-		end
+		assert(type(v.signal) == "string", v.signal)
 		if v.delay then
-			if type(v.delay) ~= "number" then
-				error('Assertion failed: type(v.delay) == "number"')
-			end
+			assert(type(v.delay) == "number", v.delay)
 		end
 	end
 end

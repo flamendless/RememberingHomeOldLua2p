@@ -1,9 +1,7 @@
 local Common = {}
 
 function Common.bg(e, bg_id, w)
-	if type(bg_id) ~= "string" then
-		error('Assertion failed: type(bg_id) == "string"')
-	end
+	assert(type(bg_id) == "string", bg_id)
 	if w then
 		assert(type(w) == "number")
 	end

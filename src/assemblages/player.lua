@@ -69,12 +69,8 @@ function Player.base(e, x, y, speed_data, can)
 end
 
 function Player.outside_house(e, x, y)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
 	e:assemble(Player.base, x, y, player_speed_data, {
 		move = false,
 		run = false,
@@ -85,12 +81,8 @@ function Player.outside_house(e, x, y)
 end
 
 function Player.room(e, x, y)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
 	e:assemble(Player.base, x, y, player_speed_data, {
 		move = false,
 		run = false,

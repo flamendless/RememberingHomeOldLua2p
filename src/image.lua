@@ -1,9 +1,7 @@
 local Image = {}
 
 function Image.resize_image(image, width, height)
-	if not (image:type() == "Image" or image:type() == "ImageData") then
-		error('Assertion failed: image:type() == "Image" or image:type() == "ImageData"')
-	end
+	assert((image:type() == "Image" or image:type() == "ImageData"), image)
 	local ww = love.graphics.getWidth()
 	local wh = love.graphics.getHeight()
 	local scale_x = ww / (width or image:getWidth())
@@ -24,12 +22,8 @@ function Image.resize_image(image, width, height)
 end
 
 function Image.generate_noise(w, h)
-	if type(w) ~= "number" then
-		error('Assertion failed: type(w) == "number"')
-	end
-	if type(h) ~= "number" then
-		error('Assertion failed: type(h) == "number"')
-	end
+	assert(type(w) == "number", w)
+	assert(type(h) == "number", h)
 	local data = love.image.newImageData(w, h)
 	data:mapPixel(function(x, y, r, g, b, a)
 		local n = love.math.noise(x, y)

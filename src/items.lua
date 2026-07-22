@@ -3,12 +3,8 @@ local Items = {}
 local acquired = {}
 
 local function get_item(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Items[id] then
-		error("no " .. id .. " in data.items")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Items[id], "no " .. id .. " in data.items")
 	for _, item in ipairs(acquired) do
 		if item.id == id then
 			return item
@@ -29,12 +25,8 @@ function Items.add(id)
 end
 
 function Items.get_info(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Items[id] then
-		error("Assertion failed: Data.items[id]")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Items[id], id)
 	return Data.Items[id]
 end
 
@@ -43,34 +35,22 @@ function Items.get_acquired()
 end
 
 function Items.has(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Items[id] then
-		error("no " .. id .. " in data.items")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Items[id], "no " .. id .. " in data.items")
 	local has = get_item(id)
 	return has ~= nil
 end
 
 function Items.toggle_equip(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Items[id] then
-		error("no " .. id .. " in data.items")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Items[id], "no " .. id .. " in data.items")
 	local item = get_item(id)
 	item.equipped = not item.equipped
 end
 
 function Items.is_equipped(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Items[id] then
-		error("no " .. id .. " in data.items")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Items[id], "no " .. id .. " in data.items")
 	local item = get_item(id)
 	assert(item, "failed to get item with id " .. id)
 	return item.equipped

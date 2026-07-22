@@ -23,9 +23,7 @@ end
 
 function NotesSystem:close_notes(not_close)
 	if not_close then
-		if type(not_close) ~= "boolean" then
-			error('Assertion failed: type(not_close) == "boolean"')
-		end
+		assert(type(not_close) == "boolean", not_close)
 	end
 	self.world:emit("set_system_to", "dialogues", true)
 	if not not_close then
@@ -103,9 +101,7 @@ function NotesSystem:create_notes()
 end
 
 NotesSystem["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
-	if not (self.pool_item:has(e_hovered)) then
-		error("Assertion failed: self.pool_item:has(e_hovered)")
-	end
+	assert((self.pool_item:has(e_hovered)), self)
 	local font = e_hovered.font.value
 	local c_pos = self.e_cursor.pos
 	local pos = e_hovered.pos
@@ -119,9 +115,7 @@ NotesSystem["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
 end
 
 NotesSystem["on_list_cursor_remove_" .. "notes"] = function(self, e_hovered)
-	if not (self.pool_item:has(e_hovered)) then
-		error("Assertion failed: self.pool_item:has(e_hovered)")
-	end
+	assert((self.pool_item:has(e_hovered)), self)
 	self.world:emit("lerp_color", self.e_cursor, { 1, 1, 1, 0 }, 0.25, "circin")
 	self.world:emit("lerp_color", e_hovered, e_hovered.color.original, 0.25, "circin")
 end

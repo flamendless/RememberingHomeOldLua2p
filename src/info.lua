@@ -6,12 +6,8 @@ local Info = {
 local filename = "info.txt"
 
 local function insert_str(src, dest)
-	if type(src) ~= "table" then
-		error('Assertion failed: type(src) == "table". Got ' .. type(src))
-	end
-	if type(dest) ~= "table" then
-		error('Assertion failed: type(dest) == "table". Got ' .. type(dest))
-	end
+	assert(type(src) == "table", src)
+	assert(type(dest) == "table", dest)
 	for k, v in pairs(src) do
 		local str = string.format("\t%s: %s\n", k, v)
 		table.insert(dest, str)

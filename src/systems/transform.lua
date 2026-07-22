@@ -44,9 +44,7 @@ function Transform:init(world)
 			end
 			h = font:getHeight(" ")
 		elseif s_text then
-			if not s_text then
-				error("renderer first before transform system")
-			end
+			assert(s_text, "renderer first before transform system")
 			w, h = s_text.obj:getDimensions()
 		end
 
@@ -91,9 +89,7 @@ function Transform:init(world)
 	self.pool_attach.onAdded = function(pool, e)
 		local attach = e.attach_to
 		local target = self.world:getEntityByKey(attach.key)
-		if not target.pos then
-			error("Target entity must have a pos component")
-		end
+		assert(target.pos, "Target entity must have a pos component")
 	end
 
 	self.pool_auto_scale.onAdded = function(pool, e)
@@ -128,9 +124,7 @@ end
 function Transform:update_anchor(e)
 	local anchor = e.anchor
 	local e_target = self.world:getEntityByKey(anchor.key)
-	if not e_target then
-		error("Assertion failed: e_target")
-	end
+	assert(e_target, e_target)
 	local target_pos = e_target.pos
 	local target_sprite = e_target.sprite
 	assert(target_sprite.image:type() == "Image")

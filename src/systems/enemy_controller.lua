@@ -22,15 +22,9 @@ function EnemyController:init(world)
 end
 
 function EnemyController:spawn_enemy(enemy_type, x, y)
-	if type(enemy_type) ~= "string" then
-		error('Assertion failed: type(enemy_type) == "string"')
-	end
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
+	assert(type(enemy_type) == "string", enemy_type)
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
 	Concord.entity(self.world):assemble(Assemblages.Enemy.base, enemy_type, x, y)
 end
 

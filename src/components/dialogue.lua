@@ -4,31 +4,19 @@ Concord.component("text_skipped")
 Concord.component("has_choices", function(c, ...)
 	c.value = { ... }
 
-	if #c.value == 0 then
-		error("Assertion failed: #c.value ~= 0")
-	end
+	assert(#c.value > 0, c.value)
 	for _, str in ipairs(c.value) do
-		if type(str) ~= "string" then
-			error('Assertion failed: type(str) == "string"')
-		end
+		assert(type(str) == "string", str)
 	end
 
-	if #c.value == 0 then
-		error("Assertion failed: #c.value ~= 0")
-	end
+	assert(#c.value > 0, c.value)
 end)
 
 Concord.component("dialogue_item")
 Concord.component("dialogue_meta", function(c, main, sub)
-	if type(main) ~= "string" then
-		error('Assertion failed: type(main) == "string"')
-	end
-	if type(sub) ~= "string" then
-		error('Assertion failed: type(sub) == "string"')
-	end
-	if not (Dialogues.get(main, sub)) then
-		error("Assertion failed: Dialogues.get(main, sub)")
-	end
+	assert(type(main) == "string", main)
+	assert(type(sub) == "string", sub)
+	assert(Dialogues.get(main, sub), main)
 	c.main = main
 	c.sub = sub
 end)

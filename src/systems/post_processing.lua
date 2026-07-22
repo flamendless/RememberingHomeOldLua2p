@@ -8,9 +8,7 @@ function PostProcessing:init(world)
 end
 
 function PostProcessing:setup_post_process(t)
-	if not (type(t) == "table" and #t > 0) then
-		error('Assertion failed: type(t) == "table" and #t > 0')
-	end
+	assert((type(t) == "table" and #t > 0), t)
 	local t_names = functional.map(t, function(v)
 		return v:type()
 	end)
@@ -24,12 +22,8 @@ function PostProcessing:setup_post_process(t)
 end
 
 function PostProcessing:set_post_process_effect(id, bool)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(bool) ~= "boolean" then
-		error('Assertion failed: type(bool) == "boolean"')
-	end
+	assert(type(id) == "string", id)
+	assert(type(bool) == "boolean", bool)
 	for _, effect in ipairs(self.effects) do
 		local t = effect.get_type and effect:get_type() or effect:type()
 		if t == id then
@@ -37,18 +31,12 @@ function PostProcessing:set_post_process_effect(id, bool)
 			return
 		end
 	end
-	if not false then
-		error(id .. " not found in registered pp effects")
-	end
+	assert(false, id .. " not found in registered pp effects")
 end
 
 function PostProcessing:ev_pp_invoke(id, str_fn, ...)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if type(str_fn) ~= "string" then
-		error('Assertion failed: type(str_fn) == "string"')
-	end
+	assert(type(id) == "string", id)
+	assert(type(str_fn) == "string", str_fn)
 	for _, effect in ipairs(self.effects) do
 		local t = effect.get_type and effect:get_type() or effect:type()
 		if t == id then
@@ -56,9 +44,7 @@ function PostProcessing:ev_pp_invoke(id, str_fn, ...)
 			return
 		end
 	end
-	if not false then
-		error(id .. " was not registered")
-	end
+	assert(false, id .. " was not registered")
 end
 
 function PostProcessing:update(dt)

@@ -1,6 +1,4 @@
 Concord.component("gravity", function(c, gravity)
-	if type(gravity) ~= "number" then
-		error('Assertion failed: type(gravity) == "number"')
-	end
+	assert(type(gravity) == "number", gravity)
 	c.value = gravity
 end)

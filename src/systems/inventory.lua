@@ -58,9 +58,7 @@ end
 
 function Inventory:close_inventory(not_close)
 	if not_close then
-		if type(not_close) ~= "boolean" then
-			error('Assertion failed: type(not_close) == "boolean"')
-		end
+		assert(type(not_close) == "boolean", not_close)
 	end
 	self.world:emit("destroy_items")
 	self.world:emit("destroy_key", "inventory")

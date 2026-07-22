@@ -50,9 +50,7 @@ function RandomizeUV:reset_uv()
 	Log.info("Resetting UV for room items")
 	for _, e in ipairs(self.pool_room_item) do
 		local id = e.id.value
-		if not self.orig_data[id] then
-			error(id .. " is missing orig quad data")
-		end
+		assert(self.orig_data[id], id .. " is missing orig quad data")
 		self.world:emit("update_atlas", e, self.orig_data[id])
 	end
 	tablex.clear(self.orig_data)
@@ -60,12 +58,8 @@ function RandomizeUV:reset_uv()
 end
 
 function RandomizeUV:multi_randomize_uv(dur, chance)
-	if not (type(dur) == "number" and dur > 0) then
-		error('Assertion failed: type(dur) == "number" and dur > 0')
-	end
-	if not (type(chance) == "number" and chance > 0) then
-		error('Assertion failed: type(chance) == "number" and chance > 0')
-	end
+	assert((type(dur) == "number" and dur > 0), dur)
+	assert((type(chance) == "number" and chance > 0), chance)
 	Timer.during(dur, function()
 		local r = love.math.random()
 		if r <= chance then

@@ -5,16 +5,12 @@ Concord.component("list_item", function(c)
 end)
 
 Concord.component("list_cursor", function(c, cursor_index)
-	if type(cursor_index) ~= "number" then
-		error('Assertion failed: type(cursor_index) == "number"')
-	end
+	assert(type(cursor_index) == "number", cursor_index)
 	c.value = cursor_index
 end)
 
 Concord.component("list_group", function(c, group_id)
-	if type(group_id) ~= "string" then
-		error('Assertion failed: type(group_id) == "string"')
-	end
+	assert(type(group_id) == "string", group_id)
 	c.value = group_id
 	c.is_focused = false
 end)

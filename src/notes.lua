@@ -3,12 +3,8 @@ local Notes = {}
 local acquired = {}
 
 local function get_note(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Notes[id] then
-		error("no " .. id .. " in data.notes")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Notes[id], "no " .. id .. " in data.notes")
 	for _, note in ipairs(acquired) do
 		if note.id == id then
 			return note
@@ -18,36 +14,22 @@ local function get_note(id)
 end
 
 function Notes.add(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Notes[id] then
-		error("no " .. id .. " in data.notes")
-	end
-	if Notes.has(id) then
-		error(id .. " was already added")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Notes[id], "no " .. id .. " in data.notes")
+	assert(not Notes.has(id), id .. " was already added")
 	table.insert(acquired, tablex.copy(Data.Notes[id]))
 	Log.info("note:", id, "was added")
 end
 
 function Notes.get_info(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Notes[id] then
-		error("Assertion failed: Data.notes[id]")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Notes[id], id)
 	return Data.Notes[id]
 end
 
 function Notes.has(id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
-	if not Data.Notes[id] then
-		error("no " .. id .. " in data.notes")
-	end
+	assert(type(id) == "string", id)
+	assert(Data.Notes[id], "no " .. id .. " in data.notes")
 	local has = get_note(id)
 	return has ~= nil
 end

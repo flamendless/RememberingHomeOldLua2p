@@ -8,9 +8,7 @@ local Utils = {
 }
 
 function Utils.file.read(filename)
-	if type(filename) ~= "string" then
-		error('Assertion failed: type(filename) == "string"')
-	end
+	assert(type(filename) == "string", filename)
 	local file = love.filesystem.getInfo(filename)
 	Log.info(filename, "exists:", file ~= nil)
 	if file then
@@ -22,26 +20,20 @@ function Utils.file.read(filename)
 end
 
 function Utils.file.write(filename, data)
-	if type(filename) ~= "string" then
-		error('Assertion failed: type(filename) == "string"')
-	end
+	assert(type(filename) == "string", filename)
 	love.filesystem.write(filename, data)
 	Log.info(filename, "written")
 end
 
 function Utils.serial.write(filename, data)
-	if type(filename) ~= "string" then
-		error('Assertion failed: type(filename) == "string"')
-	end
+	assert(type(filename) == "string", filename)
 	local to_write = Bitser.dumps(data)
 	Utils.file.write(filename, to_write)
 	return to_write
 end
 
 function Utils.serial.read(filename)
-	if type(filename) ~= "string" then
-		error('Assertion failed: type(filename) == "string"')
-	end
+	assert(type(filename) == "string", filename)
 	local content, exists = Utils.file.read(filename)
 	if exists then
 		local data = Bitser.loads(content)
@@ -55,35 +47,23 @@ function Utils.serial.de(content)
 end
 
 function Utils.hash.compare(a, b)
-	if type(a) ~= "string" then
-		error('Assertion failed: type(a) == "string"')
-	end
-	if type(b) ~= "string" then
-		error('Assertion failed: type(b) == "string"')
-	end
+	assert(type(a) == "string", a)
+	assert(type(b) == "string", b)
 	local hashed_a = love.data.hash("md5", a)
 	local hashed_b = love.data.hash("md5", b)
 	return hashed_a == hashed_b
 end
 
 function Utils.string.get_substr(str, sep)
-	if type(str) ~= "string" then
-		error('Assertion failed: type(str) == "string"')
-	end
-	if type(sep) ~= "string" then
-		error('Assertion failed: type(sep) == "string"')
-	end
+	assert(type(str) == "string", str)
+	assert(type(sep) == "string", sep)
 	local n = string.find(str, sep)
 	return string.sub(str, 1, n - 1)
 end
 
 function Utils.string.get_widest(t)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
-	if #t == 0 then
-		error("Assertion failed: #t == 0")
-	end
+	assert(type(t) == "table", t)
+	assert(#t > 0, t)
 	local widest = 0
 	for _, str in ipairs(t) do
 		widest = math.max(widest, #str)
@@ -92,12 +72,8 @@ function Utils.string.get_widest(t)
 end
 
 function Utils.table.rotate(t, amount)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
-	if type(amount) ~= "number" then
-		error('Assertion failed: type(amount) == "number"')
-	end
+	assert(type(t) == "table", t)
+	assert(type(amount) == "number", amount)
 	if amount == 0 then
 		return t
 	end
@@ -111,9 +87,7 @@ function Utils.table.rotate(t, amount)
 end
 
 function Utils.table.count_kv(t)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
+	assert(type(t) == "table", t)
 	if #t ~= 0 then
 		return #t
 	end
@@ -140,19 +114,13 @@ function Utils.math.n_digits(x)
 end
 
 function Utils.math.lerp_range(range, t)
-	if not (type(range) == "table" and range.min and range.max) then
-		error('Assertion failed: type(range) == "table" and range.min and range.max')
-	end
-	if type(t) ~= "number" then
-		error('Assertion failed: type(t) == "number"')
-	end
+	assert((type(range) == "table" and range.min and range.max), range)
+	assert(type(t) == "number", t)
 	return mathx.lerp(range.min, range.max, t)
 end
 
 function Utils.math.calc_e_controller_origin(e)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
+	assert(e.__isEntity, e)
 	local anim_data = e.animation_data
 	local transform = e.transform
 	local pos = e.pos

@@ -46,12 +46,8 @@ function ItemsSystem:initialize_entities()
 end
 
 function ItemsSystem:create_item_preview(bg_e, item_e)
-	if not (bg_e.__isEntity and bg_e.cell_bg) then
-		error("Assertion failed: bg_e.__isEntity and bg_e.cell_bg")
-	end
-	if not (item_e.__isEntity and item_e.item) then
-		error("Assertion failed: item_e.__isEntity and item_e.item")
-	end
+	assert((bg_e.__isEntity and bg_e.cell_bg), bg_e)
+	assert((item_e.__isEntity and item_e.item), item_e)
 	local scale = 4
 	local pad = 32
 	local pad_p = pad * 2
@@ -74,28 +70,18 @@ function ItemsSystem:create_item_preview(bg_e, item_e)
 end
 
 function ItemsSystem:item_response(dialogue_t, main, sub)
-	if type(dialogue_t) ~= "table" then
-		error('Assertion failed: type(dialogue_t) == "table"')
-	end
-	if type(main) ~= "string" then
-		error('Assertion failed: type(main) == "string"')
-	end
-	if type(sub) ~= "string" then
-		error('Assertion failed: type(sub) == "string"')
-	end
+	assert(type(dialogue_t) == "table", dialogue_t)
+	assert(type(main) == "string", main)
+	assert(type(sub) == "string", sub)
 	self.world:emit("close_inventory", true)
 	self.world:emit("on_interact_or_inventory")
 	self.world:emit("spawn_dialogue", dialogue_t, main, sub)
 end
 
 function ItemsSystem:on_item_use_with(item, other)
-	if not (item.__isEntity and item.item) then
-		error("Assertion failed: item.__isEntity and item.item")
-	end
+	assert((item.__isEntity and item.item), item)
 	if other then
-		if not (other.__isEntity and other.interactive) then
-			error("Assertion failed: other.__isEntity and other.interactive")
-		end
+		assert((other.__isEntity and other.interactive), other)
 	end
 	self.world:emit("set_system_to", "dialogues", true)
 	self.world:emit("set_system_to", "inventory", false)
@@ -106,12 +92,8 @@ function ItemsSystem:on_item_use_with(item, other)
 	else
 		local other_id = other.id.value
 		local t = list[item_id] and list[item_id][other_id]
-		if not not (other.usable_with_item == nil and t ~= nil) then
-			error("add usable_with_item component?")
-		end
-		if not not (other.usable_with_item ~= nil and t == nil) then
-			error("add to list?")
-		end
+		assert(not (other.usable_with_item == nil and t ~= nil), "add usable_with_item component?")
+		assert(not (other.usable_with_item ~= nil and t == nil), "add to list?")
 		if other.usable_with_item and t ~= nil then
 			self:item_response(t, "_none", "_none")
 		else
@@ -122,9 +104,7 @@ function ItemsSystem:on_item_use_with(item, other)
 end
 
 function ItemsSystem:on_item_equip(item_e)
-	if not (item_e.__isEntity and item_e.item) then
-		error("Assertion failed: item_e.__isEntity and item_e.item")
-	end
+	assert((item_e.__isEntity and item_e.item), item_e)
 	local item = item_e.item
 	if item.id == "flashlight" then
 		self.world:emit("set_system_to", "dialogues", true)

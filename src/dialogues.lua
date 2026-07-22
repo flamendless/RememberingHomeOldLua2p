@@ -1,25 +1,15 @@
 local Dialogues = {}
 
 function Dialogues.get(main, sub)
-	if not (#main ~= 0 and type(main) == "string") then
-		error('Assertion failed: #main ~= 0 and type(main) == "string"')
-	end
-	if not (#sub ~= 0 and type(sub) == "string") then
-		error('Assertion failed: #sub ~= 0 and type(sub) == "string"')
-	end
-	if not Data.Dialogues[main] then
-		error("there is no " .. main .. " in dialogue table")
-	end
-	if not Data.Dialogues[main][sub] then
-		error("there is no " .. sub .. " in dialogue table")
-	end
+	assert((#main ~= 0 and type(main) == "string"), main)
+	assert((#sub ~= 0 and type(sub) == "string"), sub)
+	assert(Data.Dialogues[main], "there is no " .. main .. " in dialogue table")
+	assert(Data.Dialogues[main][sub], "there is no " .. sub .. " in dialogue table")
 	return tablex.copy(Data.Dialogues[main][sub])
 end
 
 function Dialogues.check_signal(str)
-	if type(str) ~= "string" then
-		error('Assertion failed: type(str) == "string"')
-	end
+	assert(type(str) == "string", str)
 	local bool = stringx.starts_with(str, "_")
 	if not bool then
 		return false, "", true
@@ -36,9 +26,7 @@ function Dialogues.check_signal(str)
 end
 
 function Dialogues.validate(dialogue_t)
-	if type(dialogue_t) ~= "table" then
-		error('Assertion failed: type(dialogue_t) == "table"')
-	end
+	assert(type(dialogue_t) == "table", dialogue_t)
 	if #dialogue_t == 0 then
 		return true
 	end

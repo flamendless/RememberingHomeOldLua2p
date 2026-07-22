@@ -14,9 +14,7 @@ local ctor = function(def)
 end
 
 function BumpStorage:add(e)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
+	assert(e.__isEntity, e)
 	local pos = e.pos
 	local collider = e.collider
 	local x, y = pos.x, pos.y
@@ -30,9 +28,7 @@ function BumpStorage:add(e)
 end
 
 function BumpStorage:has(e)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
+	assert(e.__isEntity, e)
 	return self:hasItem(e)
 end
 

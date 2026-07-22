@@ -7,12 +7,8 @@ local function smootherstep(v)
 end
 
 function Dissolve:new(texture, duration)
-	if texture:type() ~= "Image" then
-		error('Assertion failed: texture:type() == "Image"')
-	end
-	if type(duration) ~= "number" then
-		error('Assertion failed: type(duration) == "number"')
-	end
+	assert(texture:type() == "Image", texture)
+	assert(type(duration) == "number", duration)
 	self.shader_code = love.graphics.newShader(Shaders.paths.dissolve)
 	self.shader_code:send("u_tex_noise", texture)
 	self.flag_process = false
@@ -23,9 +19,7 @@ function Dissolve:new(texture, duration)
 end
 
 function Dissolve:set_kind(kind)
-	if type(kind) ~= "number" then
-		error('Assertion failed: type(kind) == "number"')
-	end
+	assert(type(kind) == "number", kind)
 	self.kind = kind
 end
 
@@ -49,9 +43,7 @@ function Dissolve:update(dt)
 end
 
 function Dissolve:draw(fn)
-	if type(fn) ~= "function" then
-		error('Assertion failed: type(fn) == "function"')
-	end
+	assert(type(fn) == "function", fn)
 	if self.flag_process then
 		love.graphics.setShader(self.shader_code)
 		fn()
@@ -62,12 +54,8 @@ function Dissolve:draw(fn)
 end
 
 function Dissolve:draw_emit(world, ev_name)
-	if not world.__isWorld then
-		error("Assertion failed: world.__isWorld")
-	end
-	if not (type(ev_name) == "string" and ev_name ~= "") then
-		error('Assertion failed: type(ev_name) == "string" and ev_name ~= ""')
-	end
+	assert(world.__isWorld, world)
+	assert((type(ev_name) == "string" and ev_name ~= ""), ev_name)
 	if self.flag_process then
 		love.graphics.setShader(self.shader_code)
 		world:emit(ev_name)

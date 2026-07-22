@@ -25,9 +25,7 @@ Concord.component("body", function(c)
 end)
 
 Concord.component("prev_can", function(c, e_player)
-	if not e_player.__isEntity then
-		error("Assertion failed: e_player.__isEntity")
-	end
+	assert(e_player.__isEntity, e_player)
 	c.value = {
 		move = e_player.can_move,
 		run = e_player.can_run,

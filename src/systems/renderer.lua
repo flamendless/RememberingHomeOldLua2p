@@ -25,18 +25,14 @@ local renderer_per_pool = {
 }
 
 for k in pairs(renderer_per_pool) do
-	if not Renderer.__definition[k] then
-		error(k .. " must exists")
-	end
+	assert(Renderer.__definition[k], k .. " must exists")
 end
 
 Renderer.draw_bg = Renderers.Sprite.render_bg
 
 local function get_list(self, e_or_bool)
 	if e_or_bool then
-		if not (type(e_or_bool) == "boolean" or e_or_bool.__isEntity) then
-			error('Assertion failed: type(e_or_bool) == "boolean" or e_or_bool.__isEntity')
-		end
+		assert((type(e_or_bool) == "boolean" or e_or_bool.__isEntity), e_or_bool)
 	end
 	local is_ui = e_or_bool and (type(e_or_bool) == "boolean" or e_or_bool.ui_element)
 	return is_ui and self.list_ui or self.list
@@ -108,16 +104,10 @@ function Renderer:pool_on_added(pool, e)
 	elseif pool == self.pool_bg then
 		Renderers.Sprite.set_bg(e)
 	elseif pool == self.pool_text and e.sdf then
-		if not e.font_sdf then
-			error("sdf must have font_sdf")
-		end
-		if not not e.font then
-			error("sdf must NOT have font")
-		end
+		assert(e.font_sdf, "sdf must have font_sdf")
+		assert(not e.font, "sdf must NOT have font")
 	elseif pool == self.pool_static_text then
-		if not not e.sdf then
-			error("static_font can NOT use sdf font")
-		end
+		assert(not e.sdf, "static_font can NOT use sdf font")
 		e.static_text.obj = love.graphics.newText(e.font.value, e.static_text.value)
 	end
 

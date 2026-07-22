@@ -7,24 +7,16 @@ local enemy_speed_data = {
 }
 
 function Enemy.get_multi_anim_data(enemy_type)
-	if type(enemy_type) ~= "string" then
-		error('Assertion failed: type(enemy_type) == "string"')
-	end
+	assert(type(enemy_type) == "string", enemy_type)
 	local tbl_anim = { "idle", "walk", "lean_back", "lean_return_back" }
 	local data, mods = Animation.get_multi_by_id("enemy_" .. enemy_type, tbl_anim)
 	return data, mods
 end
 
 function Enemy.base(e, enemy_type, x, y)
-	if not e.__isEntity then
-		error("Assertion failed: e.__isEntity")
-	end
-	if type(enemy_type) ~= "string" then
-		error('Assertion failed: type(enemy_type) == "string"')
-	end
-	if type(x) ~= "number" and type(y) ~= "number" then
-		error('Assertion failed: type(x) == "number" and type(y) == "number"')
-	end
+	assert(e.__isEntity, e)
+	assert(type(enemy_type) == "string", enemy_type)
+	assert(type(x) == "number" and type(y) == "number", x)
 	local data, mods = Enemy.get_multi_anim_data(enemy_type)
 	local collider = Data.Colliders.enemy[enemy_type].idle
 

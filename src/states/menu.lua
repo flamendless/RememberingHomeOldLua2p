@@ -414,9 +414,7 @@ end
 
 function Menu:hide_main_menu(duration)
 	if duration then
-		if type(duration) ~= "number" then
-			error('Assertion failed: type(duration) == "number"')
-		end
+		assert(type(duration) == "number", duration)
 	end
 	for _, e in ipairs(self.pool_main_menu) do
 		e:give("target_color", Palette.get("white", 0), duration or duration_hide)
@@ -442,9 +440,7 @@ end
 
 function Menu:hide_sub_menu(duration)
 	if duration then
-		if type(duration) ~= "number" then
-			error('Assertion failed: type(duration) == "number"')
-		end
+		assert(type(duration) == "number", duration)
 	end
 	for _, e in ipairs(self.pool_sub_menu) do
 		e:give("target_color", Palette.get("white", 0), duration or duration_hide)
@@ -582,9 +578,7 @@ function Menu:state_mousepressed(mx, my, mb)
 end
 
 function Menu:open_url(str)
-	if type(str) ~= "string" then
-		error('Assertion failed: type(str) == "string"')
-	end
+	assert(type(str) == "string", str)
 	love.system.openURL(str)
 end
 

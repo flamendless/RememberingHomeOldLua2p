@@ -42,9 +42,7 @@ Palette.colors = {
 }
 
 for k, v in pairs(Palette.colors) do
-	if v[4] ~= nil then
-		error(k .. " must have no alpha set")
-	end
+	assert(v[4] == nil, k .. " must have no alpha set")
 end
 
 Palette.diffuse = {
@@ -92,16 +90,10 @@ Palette.diffuse = {
 }
 
 function Palette.get(color, alpha)
-	if type(color) ~= "string" then
-		error('Assertion failed: type(color) == "string"')
-	end
-	if not Palette.colors[color] then
-		error("Assertion failed: Palette.colors[color]")
-	end
+	assert(type(color) == "string", color)
+	assert(Palette.colors[color], color)
 	if alpha then
-		if type(alpha) ~= "number" then
-			error('Assertion failed: type(alpha) == "number"')
-		end
+		assert(type(alpha) == "number", alpha)
 	end
 	local c = Palette.colors[color]
 	local a = alpha or c[4] or 1
@@ -109,12 +101,8 @@ function Palette.get(color, alpha)
 end
 
 function Palette.get_diffuse(color)
-	if type(color) ~= "string" then
-		error('Assertion failed: type(color) == "string"')
-	end
-	if not Palette.diffuse[color] then
-		error("Assertion failed: Palette.diffuse[color]")
-	end
+	assert(type(color) == "string", color)
+	assert(Palette.diffuse[color], color)
 	return { unpack(Palette.diffuse[color]) }
 end
 

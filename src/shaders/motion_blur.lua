@@ -3,13 +3,9 @@ local MotionBlur = class({
 })
 
 function MotionBlur:new(canvas, config)
-	if canvas:type() ~= "CustomCanvas" then
-		error('Assertion failed: canvas:type() == "CustomCanvas"')
-	end
+	assert(canvas:type() == "CustomCanvas", canvas)
 	if config then
-		if type(config) ~= "table" then
-			error('Assertion failed: type(config) == "table"')
-		end
+		assert(type(config) == "table", config)
 	end
 	self.shader_code = love.graphics.newShader(Shaders.paths.motion_blur)
 	self.shader_code:send("u_strength", 0.1)
@@ -24,16 +20,12 @@ function MotionBlur:store_previous(x, y, angle)
 end
 
 function MotionBlur:set_angle(angle)
-	if type(angle) ~= "number" then
-		error('Assertion failed: type(angle) == "number"')
-	end
+	assert(type(angle) == "number", angle)
 	self.shader_code:send("u_angle", angle)
 end
 
 function MotionBlur:set_strength(strength)
-	if type(strength) ~= "number" then
-		error('Assertion failed: type(strength) == "number"')
-	end
+	assert(type(strength) == "number", strength)
 	self.shader_code:send("u_strength", strength)
 end
 

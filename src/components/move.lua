@@ -1,17 +1,9 @@
 Concord.component("move_by", function(c, x, y, duration, delay)
-	if type(x) ~= "number" then
-		error('Assertion failed: type(x) == "number"')
-	end
-	if type(y) ~= "number" then
-		error('Assertion failed: type(y) == "number"')
-	end
-	if type(duration) ~= "number" then
-		error('Assertion failed: type(duration) == "number"')
-	end
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(duration) == "number", duration)
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	c.x = x
 	c.y = y
@@ -22,16 +14,10 @@ end)
 Concord.component("move_repeat")
 
 Concord.component("move_to_x", function(c, x_pos, duration, delay)
-	if type(x_pos) ~= "number" then
-		error('Assertion failed: type(x_pos) == "number"')
-	end
-	if type(duration) ~= "number" then
-		error('Assertion failed: type(duration) == "number"')
-	end
+	assert(type(x_pos) == "number", x_pos)
+	assert(type(duration) == "number", duration)
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	c.target_x = x_pos
 	c.duration = duration
@@ -39,13 +25,9 @@ Concord.component("move_to_x", function(c, x_pos, duration, delay)
 end)
 
 Concord.component("move_to_original", function(c, duration, delay)
-	if type(duration) ~= "number" then
-		error('Assertion failed: type(duration) == "number"')
-	end
+	assert(type(duration) == "number", duration)
 	if delay then
-		if type(delay) ~= "number" then
-			error('Assertion failed: type(delay) == "number"')
-		end
+		assert(type(delay) == "number", delay)
 	end
 	c.duration = duration
 	c.delay = delay or 0

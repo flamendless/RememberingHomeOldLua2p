@@ -16,9 +16,7 @@ function BoundingBox:update(dt)
 end
 
 function BoundingBox:on_camera_move(camera)
-	if not (Gamera.isCamera(camera)) then
-		error("Assertion failed: Gamera.isCamera(camera)")
-	end
+	assert(Gamera.isCamera(camera), camera)
 	for _, e in ipairs(self.pool) do
 		local ui = e.ui_element
 		local box = e.bounding_box

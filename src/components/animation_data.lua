@@ -1,36 +1,17 @@
 local c_anim_data = Concord.component("animation_data", function(c, data)
-	if type(data) ~= "table" then
-		error('Assertion failed: type(data) == "table"')
-	end
-	if not (data.resource_id and type(data.resource_id) == "string") then
-		error('Assertion failed: data.resource_id and type(data.resource_id) == "string"')
-	end
-	if type(data.frames) ~= "table" then
-		error('Assertion failed: type(data.frames) == "table"')
-	end
-	if type(data.rows_count) ~= "number" then
-		error('Assertion failed: type(data.rows_count) == "number"')
-	end
-	if type(data.columns_count) ~= "number" then
-		error('Assertion failed: type(data.columns_count) == "number"')
-	end
+	assert(type(data) == "table", data)
+	assert((data.resource_id and type(data.resource_id) == "string"), data.resource_id)
+	assert(type(data.frames) == "table", data.frames)
+	assert(type(data.rows_count) == "number", data.rows_count)
+	assert(type(data.columns_count) == "number", data.columns_count)
 	if data.n_frames then
-		if type(data.n_frames) ~= "number" then
-			error('Assertion failed: type(data.n_frames) == "number"')
-		end
+		assert(type(data.n_frames) == "number", data.n_frames)
 	end
 	if data.start_frame then
-		if not (data.start_frame >= 1 and data.start_frame <= data.n_frames) then
-			error("Assertion failed: data.start_frame >= 1 and data.start_frame <= data.n_frames")
-		end
+		assert((data.start_frame >= 1 and data.start_frame <= data.n_frames), data)
 	end
 	if data.delay then
-		if not (
-			type(data.delay) == "table" or
-			type(data.delay) == "number"
-		) then
-			error('Assertion failed: type(data.delay) == "table" or "number"')
-		end
+		assert(type(data.delay) == "table" or type(data.delay) == "number", data.delay)
 	end
 
 	c.resource_id = data.resource_id

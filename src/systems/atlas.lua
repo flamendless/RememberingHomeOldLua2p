@@ -15,12 +15,8 @@ function Atlas:init()
 end
 
 function Atlas:update_atlas(e, new_data)
-	if not (self.pool:has(e)) then
-		error("Assertion failed: self.pool:has(e)")
-	end
-	if type(new_data) ~= "table" then
-		error('Assertion failed: type(new_data) == "table"')
-	end
+	assert((self.pool:has(e)), self)
+	assert(type(new_data) == "table", new_data)
 	local quad = e.quad
 	quad.quad:setViewport(new_data.x, new_data.y, new_data.w, new_data.h)
 	quad.info = tablex.copy(new_data)

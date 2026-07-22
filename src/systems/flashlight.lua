@@ -14,9 +14,7 @@ function Flashlight:init(world)
 	self.player = nil
 
 	self.pool.onAdded = function(pool, e)
-		if self.flashlight ~= nil then
-			error("Flashlight was already added")
-		end
+		assert(self.flashlight == nil, "Flashlight was already added")
 
 		self.flashlight = e
 		e:give("d_light_flicker", 0.5, 0.75, 0.25)
@@ -26,9 +24,7 @@ function Flashlight:init(world)
 	end
 
 	self.pool_player.onAdded = function(pool, e)
-		if self.player ~= nil then
-			error("Player was already added")
-		end
+		assert(self.player == nil, "Player was already added")
 		self.player = e
 		self:create_flashlight()
 	end

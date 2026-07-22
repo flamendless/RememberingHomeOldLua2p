@@ -6,9 +6,7 @@ function ParticleSystem:init(world)
 end
 
 function ParticleSystem:setup_particle_system(t)
-	if type(t) ~= "table" then
-		error('Assertion failed: type(t) == "table"')
-	end
+	assert(type(t) == "table", t)
 	local t_names = functional.map(t, function(v)
 		return v:type()
 	end)
@@ -19,20 +17,12 @@ end
 function ParticleSystem:set_particle_system(id_or_ids, mode, ...)
 	local is_str = type(id_or_ids) == "string"
 	local is_tbl = type(id_or_ids) == "table"
-	if not (is_str or is_tbl) then
-		error("Assertion failed: is_str or is_tbl")
-	end
-	if
-		not (
-			type(mode) == "string"
-			and (mode == "stop" or mode == "pause" or mode == "start" or mode == "reset" or mode == "setEmissionRate")
-		)
-	then
-		error('Assertion failed: type(mode) == "string" and (\
-\9\9mode == "stop" or mode == "pause" or mode == "start" or mode == "reset"\
-\9\9or mode == "setEmissionRate"\
-\9)')
-	end
+	assert(is_str or is_tbl, id_or_ids)
+	assert(
+		type(mode) == "string"
+			and (mode == "stop" or mode == "pause" or mode == "start" or mode == "reset" or mode == "setEmissionRate"),
+		mode
+	)
 
 	for _, ps in ipairs(self.ps) do
 		local ps_id = ps:type()

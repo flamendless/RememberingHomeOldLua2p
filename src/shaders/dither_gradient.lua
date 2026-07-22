@@ -11,24 +11,16 @@ local ranges = {
 
 function DitherGradient:new(is_active, t_dither, t_pal, values)
 	if is_active then
-		if type(is_active) ~= "boolean" then
-			error('Assertion failed: type(is_active) == "boolean"')
-		end
+		assert(type(is_active) == "boolean", is_active)
 	end
 	if t_dither then
-		if t_dither:type() ~= "Image" then
-			error('Assertion failed: t_dither:type() == "Image"')
-		end
+		assert(t_dither:type() == "Image", t_dither)
 	end
 	if t_pal then
-		if t_pal:type() ~= "Image" then
-			error('Assertion failed: t_pal:type() == "Image"')
-		end
+		assert(t_pal:type() == "Image", t_pal)
 	end
 	if values then
-		if type(values) ~= "table" then
-			error('Assertion failed: type(values) == "table"')
-		end
+		assert(type(values) == "table", values)
 	end
 	self.is_active = not not is_active --default is false
 	self.shader = love.graphics.newShader(Shaders.paths.dither_gradient)
@@ -38,20 +30,13 @@ function DitherGradient:new(is_active, t_dither, t_pal, values)
 	self.contrast = values and values.contrast or 1
 	self.offset = values and values.offset or 0
 
-	if not (self.depth >= ranges.depth.min and self.depth <= ranges.depth.max) then
-		error("Assertion failed: self.depth >= ranges.depth.min and self.depth <= ranges.depth.max")
-	end
-	if not (self.dither_size >= ranges.dither_size.min and self.dither_size <= ranges.dither_size.max) then
-		error(
-			"Assertion failed: self.dither_size >= ranges.dither_size.min and self.dither_size <= ranges.dither_size.max"
-		)
-	end
-	if not (self.contrast >= ranges.contrast.min and self.contrast <= ranges.contrast.max) then
-		error("Assertion failed: self.contrast >= ranges.contrast.min and self.contrast <= ranges.contrast.max")
-	end
-	if not (self.offset >= ranges.offset.min and self.offset <= ranges.offset.max) then
-		error("Assertion failed: self.offset >= ranges.offset.min and self.offset <= ranges.offset.max")
-	end
+	assert((self.depth >= ranges.depth.min and self.depth <= ranges.depth.max), self)
+	assert(
+		self.dither_size >= ranges.dither_size.min and self.dither_size <= ranges.dither_size.max,
+		self.dither_size
+	)
+	assert((self.contrast >= ranges.contrast.min and self.contrast <= ranges.contrast.max), self)
+	assert((self.offset >= ranges.offset.min and self.offset <= ranges.offset.max), self)
 
 	local tex_dither = t_dither or Resources.data.images.bayer16
 	tex_dither:setWrap("repeat", "repeat")
@@ -88,9 +73,7 @@ if DEV then
 		Slab.Text(id)
 		Slab.SameLine()
 		if Slab.InputNumberSlider(id, val, min, max, opt) then
-			if not self[id] then
-				error("Assertion failed: self[id]")
-			end
+			assert(self[id], id)
 			self[id] = Slab.GetInputNumber()
 			self.shader:send("u_" .. id, self[id])
 		end

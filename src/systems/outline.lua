@@ -16,9 +16,7 @@ function Outline:init(world)
 end
 
 function Outline:create_outline(e)
-	if not (e.__isEntity and e.id and e.pos) then
-		error("Assertion failed: e.__isEntity and e.id and e.pos")
-	end
+	assert((e.__isEntity and e.id and e.pos), e)
 	local sprite = e.sprite
 	if not sprite then
 		return

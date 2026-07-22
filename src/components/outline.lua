@@ -1,8 +1,6 @@
 Concord.component("outline")
 
 Concord.component("outline_val", function(c, size)
-	if type(size) ~= "number" then
-		error('Assertion failed: type(size) == "number"')
-	end
+	assert(type(size) == "number", size)
 	c.value = size
 end)

@@ -1,6 +1,4 @@
 Concord.component("notification", function(c, id)
-	if type(id) ~= "string" then
-		error('Assertion failed: type(id) == "string"')
-	end
+	assert(type(id) == "string", id)
 	c.value = id
 end)

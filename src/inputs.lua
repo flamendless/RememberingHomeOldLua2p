@@ -64,14 +64,10 @@ end
 
 function Inputs.init(key_map)
 	if key_map then
-		if type(key_map) ~= "number" then
-			error('Assertion failed: type(key_map) == "number"')
-		end
+		assert(type(key_map) == "number", key_map)
 	end
 	local n = key_map or Settings.current.key_map
-	if not maps[n] then
-		error("Assertion failed: maps[n]")
-	end
+	assert(maps[n], n)
 	Inputs.map = maps[n]
 
 	if DEV then
@@ -96,42 +92,26 @@ function Inputs.init(key_map)
 end
 
 function Inputs.pressed(key)
-	if type(key) ~= "string" then
-		error('Assertion failed: type(key) == "string"')
-	end
-	if Inputs.current[key] == nil then
-		error("Assertion failed: Inputs.current[key] ~= nil")
-	end
+	assert(type(key) == "string", key)
+	assert(Inputs.current[key] ~= nil, key)
 	return Inputs.current[key] and not Inputs.previous[key]
 end
 
 function Inputs.released(key)
-	if type(key) ~= "string" then
-		error('Assertion failed: type(key) == "string"')
-	end
-	if Inputs.current[key] == nil then
-		error(key)
-	end
+	assert(type(key) == "string", key)
+	assert(Inputs.current[key] ~= nil, key)
 	return not Inputs.current[key] and Inputs.previous[key]
 end
 
 function Inputs.down(key)
-	if type(key) ~= "string" then
-		error('Assertion failed: type(key) == "string"')
-	end
-	if Inputs.current[key] == nil then
-		error("Assertion failed: Inputs.current[key] ~= nil")
-	end
+	assert(type(key) == "string", key)
+	assert(Inputs.current[key] ~= nil, key)
 	return Inputs.current[key]
 end
 
 function Inputs.held(key, threshold)
-	if type(key) ~= "string" then
-		error('Assertion failed: type(key) == "string"')
-	end
-	if Inputs.current[key] == nil then
-		error("Assertion failed: Inputs.current[key] ~= nil")
-	end
+	assert(type(key) == "string", key)
+	assert(Inputs.current[key] ~= nil, key)
 	if not threshold then
 		threshold = Inputs.default_hold_threshold
 	end
@@ -139,9 +119,7 @@ function Inputs.held(key, threshold)
 end
 
 function Inputs.keypressed(_, scancode)
-	if type(scancode) ~= "string" then
-		error('Assertion failed: type(scancode) == "string"')
-	end
+	assert(type(scancode) == "string", scancode)
 	if not Inputs.map[scancode] then
 		return
 	end
@@ -154,9 +132,7 @@ function Inputs.keypressed(_, scancode)
 end
 
 function Inputs.keyreleased(_, scancode)
-	if type(scancode) ~= "string" then
-		error('Assertion failed: type(scancode) == "string"')
-	end
+	assert(type(scancode) == "string", scancode)
 	if not Inputs.map[scancode] then
 		return
 	end
