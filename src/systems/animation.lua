@@ -295,82 +295,84 @@ function Animation:anim_pause_at_end(e, signal)
 	end
 end
 
-local selected
-local selected_e
-local selected_anim
-local opt_slider = {
-	ReturnOnText = false,
-	NumbersOnly = true,
-	Precision = 0,
-}
+if DEV then
+	local selected
+	local selected_e
+	local selected_anim
+	local opt_slider = {
+		ReturnOnText = false,
+		NumbersOnly = true,
+		Precision = 0,
+	}
 
-function Animation:debug_update(dt)
-	if not self.debug_show then
-		return
-	end
-	self.debug_show = Slab.BeginWindow("animation", {
-		Title = "MultiAnimation",
-		IsOpen = self.debug_show,
-	})
-
-	if Slab.BeginComboBox("cb_e", { Selected = selected }) then
-		for _, e in ipairs(self.pool) do
-			local id = e.id.value
-			if Slab.TextSelectable(id) then
-				selected = id
-				selected_e = e
-				break
-			end
+	function Animation:debug_update(dt)
+		if not self.debug_show then
+			return
 		end
-		Slab.EndComboBox()
-	end
+		self.debug_show = Slab.BeginWindow("animation", {
+			Title = "MultiAnimation",
+			IsOpen = self.debug_show,
+		})
 
-	if selected_e and selected_e.multi_animation_data then
-		local multi_anim_data = selected_e.multi_animation_data.data
-		if Slab.BeginComboBox("cb_anim", { Selected = selected_anim }) then
-			for tag in pairs(multi_anim_data) do
-				if Slab.TextSelectable(tag) then
-					selected_anim = tag
-					local cache = self.cache_multi_animation[selected_e.id.value]
-					if cache then
-						cache[tag] = nil
-					end
-					self:switch_animation_tag(selected_e, tag, nil, true)
+		if Slab.BeginComboBox("cb_e", { Selected = selected }) then
+			for _, e in ipairs(self.pool) do
+				local id = e.id.value
+				if Slab.TextSelectable(id) then
+					selected = id
+					selected_e = e
 					break
 				end
 			end
 			Slab.EndComboBox()
 		end
 
-		local animation = selected_e.animation
-		if selected_anim then
-			Slab.Text("Frame")
-			Slab.SameLine()
-			local cur_frame = selected_e.current_frame
-			local max = multi_anim_data[selected_anim].n_frames
-			local anim_pause_at = selected_e.animation_pause_at
-			local anim_stop = selected_e.animation_stop
-
-			if Slab.InputNumberSlider("frame", cur_frame.value, 1, max, opt_slider) then
-				local v = Slab.GetInputNumber()
-				animation.anim8:gotoFrame(v)
-				if not anim_pause_at and not anim_stop then
-					cur_frame.value = v
+		if selected_e and selected_e.multi_animation_data then
+			local multi_anim_data = selected_e.multi_animation_data.data
+			if Slab.BeginComboBox("cb_anim", { Selected = selected_anim }) then
+				for tag in pairs(multi_anim_data) do
+					if Slab.TextSelectable(tag) then
+						selected_anim = tag
+						local cache = self.cache_multi_animation[selected_e.id.value]
+						if cache then
+							cache[tag] = nil
+						end
+						self:switch_animation_tag(selected_e, tag, nil, true)
+						break
+					end
 				end
+				Slab.EndComboBox()
 			end
 
-			local anim_loop = selected_e.animation_on_loop
-			local cat = selected_e.change_animation_tag
-			Slab.CheckBox(anim_pause_at, "PauseAt")
-			Slab.CheckBox(anim_stop, "Stop")
-			Slab.CheckBox(anim_loop, "OnLoop")
-			Slab.CheckBox(cat, "ChangeAnimTag")
+			local animation = selected_e.animation
+			if selected_anim then
+				Slab.Text("Frame")
+				Slab.SameLine()
+				local cur_frame = selected_e.current_frame
+				local max = multi_anim_data[selected_anim].n_frames
+				local anim_pause_at = selected_e.animation_pause_at
+				local anim_stop = selected_e.animation_stop
+
+				if Slab.InputNumberSlider("frame", cur_frame.value, 1, max, opt_slider) then
+					local v = Slab.GetInputNumber()
+					animation.anim8:gotoFrame(v)
+					if not anim_pause_at and not anim_stop then
+						cur_frame.value = v
+					end
+				end
+
+				local anim_loop = selected_e.animation_on_loop
+				local cat = selected_e.change_animation_tag
+				Slab.CheckBox(anim_pause_at, "PauseAt")
+				Slab.CheckBox(anim_stop, "Stop")
+				Slab.CheckBox(anim_loop, "OnLoop")
+				Slab.CheckBox(cat, "ChangeAnimTag")
+			end
+
+			Slab.Text("Status: " .. animation.anim8.status)
 		end
 
-		Slab.Text("Status: " .. animation.anim8.status)
+		Slab.EndWindow()
 	end
-
-	Slab.EndWindow()
 end
 
 return Animation

@@ -14,6 +14,7 @@ local player = {
 	{ "sheet_player_walk_f",      "res/images/player/sheet_player_walk_flashlight.png" },
 	{ "sheet_player_run_f",       "res/images/player/sheet_player_run_flashlight.png" },
 	{ "sheet_player_open_door_f", "res/images/player/sheet_player_open_door_flashlight.png" },
+	{ "sheet_player_lighter",     "res/images/player/sheet_player_lighter.png" },
 	{ "lighter1",                 "res/images/items/lighter1.png" },
 	{ "lighter2",                 "res/images/items/lighter2.png" },
 }

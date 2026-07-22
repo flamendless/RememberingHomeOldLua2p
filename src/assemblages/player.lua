@@ -8,7 +8,7 @@ local player_speed_data = {
 }
 
 function Player.get_multi_anim_data(for_flashlight, can_open_door)
-	local tbl_anim = { "idle", "walk", "run" }
+	local tbl_anim = { "idle", "walk", "run", "open_lighter" }
 	if can_open_door then
 		table.insert(tbl_anim, "open_door")
 		table.insert(tbl_anim, "open_locked_door")
@@ -23,26 +23,10 @@ function Player.get_multi_anim_data(for_flashlight, can_open_door)
 end
 
 function Player.base(e, x, y, speed_data, can)
-	if can then
-		if type(can) ~= "table" then
-			error('Assertion failed: type(can) == "table"')
-		end
-	end
-	if can.move then
-		if type(can.move) ~= "boolean" then
-			error('Assertion failed: type(can.move) == "boolean"')
-		end
-	end
-	if can.run then
-		if type(can.run) ~= "boolean" then
-			error('Assertion failed: type(can.run) == "boolean"')
-		end
-	end
-	if can.open_door then
-		if type(can.open_door) ~= "boolean" then
-			error('Assertion failed: type(can.open_door) == "boolean"')
-		end
-	end
+	if can then assert(type(can) == "table", can) end
+	if can.move then assert(type(can.move) == "boolean", can.move) end
+	if can.run then assert(type(can.run) == "boolean", can.run) end
+	if can.open_door then assert(type(can.open_door) == "boolean", can.open_door) end
 	local data, mods = Player.get_multi_anim_data(false, can.open_door)
 	local collider = Data.Colliders.player
 

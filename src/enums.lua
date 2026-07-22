@@ -52,8 +52,18 @@ Enums.battery_state = Enum("full", "low", "critical", "empty")
 
 Enums.face_dir = Enum("left", "right")
 
-Enums.anim_state =
-	Enum("idle", "idle_left", "walk", "run", "open_door", "open_door_left", "open_locked_door", "open_locked_door_left")
+Enums.anim_state = Enum(
+	"idle",
+	"idle_left",
+	"walk",
+	"run",
+	"open_door",
+	"open_door_left",
+	"open_locked_door",
+	"open_locked_door_left",
+	"open_lighter",
+	"open_lighter_left"
+)
 
 Enums.enemy_type = Enum("suit")
 Enums.enemy_suit_anim = Enum("idle", "walk")
@@ -124,7 +134,7 @@ Enums.show_keys = Enum(
 )
 
 Enums.decals = Enum(
-	-- TODO: foot decal for walking/running?
+-- TODO: foot decal for walking/running?
 	"hand"
 )
 

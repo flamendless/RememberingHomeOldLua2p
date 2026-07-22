@@ -59,4 +59,13 @@ AnimationDataPlayer.open_locked_door = {
 	n_frames = 7,
 }
 
+AnimationDataPlayer.open_lighter = {
+	resource_id = "sheet_player_lighter",
+	frames = { "1-6", 1, "1-5", 2 },
+	delay = 0.1,
+	rows_count = 2,
+	columns_count = 7,
+	n_frames = 10,
+}
+
 return AnimationDataPlayer

@@ -1,48 +1,24 @@
 local c = Concord.component("multi_animation_data", function(c, first, data, modifier)
-	if type(first) ~= "string" then
-		error('Assertion failed: type(first) == "string"')
-	end
-	if type(data) ~= "table" then
-		error('Assertion failed: type(data) == "table"')
-	end
-	if not data[first] then
-		error("no " .. first .. " found in data")
-	end
+	assert(type(first) == "string", first)
+	assert(type(data) == "table", data)
+	assert(data[first], "no " .. first .. " found in data")
 
 	for _, v in pairs(data) do
-		if type(v.resource_id) ~= "string" then
-			error('Assertion failed: type(v.resource_id) == "string"')
-		end
-		if not (type(v.delay) == "number" or type(v.delay) == "table") then
-			error('Assertion failed: type(v.delay) == "number" or type(v.delay) == "table"')
-		end
-		if type(v.rows_count) ~= "number" then
-			error('Assertion failed: type(v.rows_count) == "number"')
-		end
-		if type(v.columns_count) ~= "number" then
-			error('Assertion failed: type(v.columns_count) == "number"')
-		end
-		if type(v.n_frames) ~= "number" then
-			error('Assertion failed: type(v.n_frames) == "number"')
-		end
+		assert(type(v.resource_id) == "string", v.resource_id)
+		-- assert(not type(v.delay) == "string" and not type(v.delay) == "table", v.delay)
+		assert(type(v.rows_count) == "number", v.rows_count)
+		assert(type(v.columns_count) == "number", v.columns_count)
+		assert(type(v.n_frames) == "number", v.n_frames)
 	end
 
 	if modifier then
-		if type(modifier) ~= "table" then
-			error('Assertion failed: type(modifier) == "table"')
-		end
+		assert(type(modifier) == "table", modifier)
 	end
 	if modifier then
 		for id, v in pairs(modifier) do
-			if not data[id] then
-				error("Assertion failed: data[id]")
-			end
-			if type(v[1]) ~= "string" then
-				error('Assertion failed: type(v[1]) == "string"')
-			end
-			if type(v[2]) ~= "string" then
-				error('Assertion failed: type(v[2]) == "string"')
-			end
+			assert(data[id], id)
+			assert(type(v[1] == "string"), v[1])
+			assert(type(v[2] == "string"), v[2])
 		end
 	end
 

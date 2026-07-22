@@ -7,14 +7,8 @@ function AnimationState:init(world)
 end
 
 function AnimationState:anim_idle(e, should_stop)
-	if not (e.__isEntity and e.animation and e.body and e.animation_ev_update) then
-		error("Assertion failed: e.__isEntity and e.animation and e.body and e.animation_ev_update")
-	end
-	if should_stop then
-		if type(should_stop) ~= "boolean" then
-			error('Assertion failed: type(should_stop) == "boolean"')
-		end
-	end
+	assert(e.__isEntity and e.animation and e.body and e.animation_ev_update)
+	if should_stop then assert(type(should_stop) == "boolean", should_stop) end
 	if e.override_animation then
 		return
 	end
@@ -32,9 +26,7 @@ function AnimationState:anim_idle(e, should_stop)
 end
 
 function AnimationState:anim_face_left(e)
-	if not (e.__isEntity and e.animation and e.body and e.animation_ev_update) then
-		error("Assertion failed: e.__isEntity and e.animation and e.body and e.animation_ev_update")
-	end
+	assert(e.__isEntity and e.animation and e.body and e.animation_ev_update)
 	if e.override_animation then
 		return
 	end
@@ -43,9 +35,7 @@ function AnimationState:anim_face_left(e)
 end
 
 function AnimationState:anim_face_right(e)
-	if not (e.__isEntity and e.animation and e.body and e.animation_ev_update) then
-		error("Assertion failed: e.__isEntity and e.animation and e.body and e.animation_ev_update")
-	end
+	assert(e.__isEntity and e.animation and e.body and e.animation_ev_update)
 	if e.override_animation then
 		return
 	end
@@ -54,18 +44,20 @@ function AnimationState:anim_face_right(e)
 end
 
 function AnimationState:anim_open_door(e)
-	if not (e.__isEntity and e.animation and e.body) then
-		error("Assertion failed: e.__isEntity and e.animation and e.body")
-	end
+	assert(e.__isEntity and e.animation and e.body)
 	local tag = (e.body.dir == -1) and ANIM_STATE.open_door_left or ANIM_STATE.open_door
 	e:give("change_animation_tag", tag):give("override_animation"):give("animation_on_loop", "anim_pause_at_end", 0, e)
 end
 
 function AnimationState:anim_open_locked_door(e)
-	if not (e.__isEntity and e.animation and e.body) then
-		error("Assertion failed: e.__isEntity and e.animation and e.body")
-	end
+	assert(e.__isEntity and e.animation and e.body)
 	local tag = (e.body.dir == -1) and ANIM_STATE.open_locked_door_left or ANIM_STATE.open_locked_door
+	e:give("change_animation_tag", tag):give("override_animation"):give("animation_on_loop", "anim_pause_at_end", 0, e)
+end
+
+function AnimationState:anim_open_lighter(e)
+	assert(e.__isEntity and e.animation and e.body)
+	local tag = (e.body.dir == -1) and ANIM_STATE.open_lighter_left or ANIM_STATE.open_lighter
 	e:give("change_animation_tag", tag):give("override_animation"):give("animation_on_loop", "anim_pause_at_end", 0, e)
 end
 
