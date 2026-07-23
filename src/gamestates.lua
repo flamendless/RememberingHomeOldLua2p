@@ -62,6 +62,7 @@ function GameStates.start(resources)
 			flicker_sync = true,
 			set_camera_transform = true,
 			lighter_update_pos = true,
+			anim_loop_over_to = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event, ...)

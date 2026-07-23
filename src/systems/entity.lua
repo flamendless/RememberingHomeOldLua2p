@@ -29,10 +29,6 @@ function Entity:toggle_component(e, prop, bool)
 	end
 end
 
-function Entity:toggle_visibility(e_id)
-	assert(type(e_id) == "string", e_id)
-end
-
 function Entity:flip_e_component(e, component)
 	assert(e.__isEntity, e)
 	assert(type(component) == "string")

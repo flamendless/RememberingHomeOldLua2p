@@ -58,7 +58,17 @@ end
 function AnimationState:anim_open_lighter(e)
 	assert(e.__isEntity and e.animation and e.body)
 	local tag = (e.body.dir == -1) and ANIM_STATE.open_lighter_left or ANIM_STATE.open_lighter
-	e:give("change_animation_tag", tag):give("override_animation"):give("animation_on_loop", "anim_pause_at_end", 0, e)
+	e:give("change_animation_tag", tag):give("override_animation"):give(
+		"animation_on_loop",
+		"anim_loop_over_to",
+		0,
+		e,
+		9 -- frame
+	)
+end
+
+for k, v in pairs(AnimationState) do
+	AnimationState[k .. "_left"] = v
 end
 
 return AnimationState

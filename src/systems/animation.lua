@@ -10,9 +10,7 @@ local EMPTY_FN = function() end
 function Animation:setup_animation_data(e, new_tag)
 	assert((e.__isEntity and e.animation), e)
 	assert(type(new_tag) == "string", new_tag)
-	if not e.multi_animation_data then
-		return
-	end
+	if not e.multi_animation_data then return end
 	local data = e.multi_animation_data.data[new_tag]
 	if data.pause_at then
 		local v
@@ -106,7 +104,7 @@ function Animation:setup_animation(e, data, on_loop)
 		obj_animation:gotoFrame(data.start_frame)
 	end
 
-	Log.info("setup animation done", "id", e.id.value)
+	Log.info("setup animation done", "id", e.id.value, current_tag)
 end
 
 function Animation:init(world)
@@ -263,6 +261,13 @@ function Animation:anim_pause_at_end(e, signal)
 	end
 end
 
+function Animation:anim_loop_over_to(e, frame)
+	assert(e.__isEntity, e)
+	assert(type(frame) == "number" and frame > 0, frame)
+	local anim = e.animation
+	anim.anim8:gotoFrame(frame)
+end
+
 if DEV then
 	local selected
 	local selected_e
@@ -275,6 +280,7 @@ if DEV then
 
 	function Animation:debug_update(dt)
 		if not self.debug_show then
+			DevTools.debug_anim.tag = nil
 			return
 		end
 		self.debug_show = Slab.BeginWindow("animation", {
@@ -296,6 +302,9 @@ if DEV then
 
 		if selected_e and selected_e.multi_animation_data then
 			local multi_anim_data = selected_e.multi_animation_data.data
+
+			Slab.Text("By tag")
+			Slab.SameLine()
 			if Slab.BeginComboBox("cb_anim", { Selected = selected_anim }) then
 				for tag in pairs(multi_anim_data) do
 					if Slab.TextSelectable(tag) then
@@ -305,6 +314,26 @@ if DEV then
 							cache[tag] = nil
 						end
 						self:switch_animation_tag(selected_e, tag, nil, true)
+						DevTools.debug_anim.tag = tag
+						break
+					end
+				end
+				Slab.EndComboBox()
+			end
+
+			Slab.Text("By signal")
+			Slab.SameLine()
+			if Slab.BeginComboBox("cb_ev", { Selected = selected_anim }) then
+				for tag in pairs(multi_anim_data) do
+					local ev = "anim_" .. tag
+					if Slab.TextSelectable(ev) then
+						selected_anim = tag
+						local cache = self.cache_multi_animation[selected_e.id.value]
+						if cache then
+							cache[tag] = nil
+						end
+						self.world:emit(ev, selected_e)
+						DevTools.debug_anim.tag = tag
 						break
 					end
 				end
@@ -328,11 +357,14 @@ if DEV then
 					end
 				end
 
-				local anim_loop = selected_e.animation_on_loop
+				local anim_loop = selected_e.animation.stop_on_last
 				local cat = selected_e.change_animation_tag
+
 				Slab.CheckBox(anim_pause_at, "PauseAt")
 				Slab.CheckBox(anim_stop, "Stop")
-				Slab.CheckBox(anim_loop, "OnLoop")
+				if Slab.CheckBox(anim_loop, "OnLoop") then
+					selected_e.animation.stop_on_last = not selected_e.animation.stop_on_last
+				end
 				Slab.CheckBox(cat, "ChangeAnimTag")
 			end
 

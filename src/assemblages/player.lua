@@ -5,6 +5,8 @@ local player_speed_data = {
 	idle = { x = 0, y = 0 },
 	walk = { x = 96, y = 0 },
 	run = { x = 148, y = 0 },
+	open_lighter = { x = 0, y = 0 },
+	open_lighter_left = { x = 0, y = 0 },
 }
 
 function Player.get_multi_anim_data(for_flashlight, can_open_door)

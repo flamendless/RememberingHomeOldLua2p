@@ -35,6 +35,9 @@ local DevTools = {
 		show = false,
 		font = nil,
 		buffer = "",
+	},
+	debug_anim = {
+		tag = nil,
 	}
 }
 

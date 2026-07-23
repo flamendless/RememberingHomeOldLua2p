@@ -56,8 +56,9 @@ function PlayerController:on_toggle_equip_lighter()
 		Items.toggle_equip("lighter1")
 	end
 	-- local has_l = Items.is_equipped("lighter1")
-	self.world:emit("lighter_update_pos", self.player)
-	self.world:emit("flip_e_id_component", "lighter1", "hidden")
+	-- self.world:emit("lighter_update_pos", self.player)
+	-- self.world:emit("flip_e_id_component", "lighter1", "hidden")
+	self.world:emit("anim_open_lighter", self.player)
 end
 
 function PlayerController:spawn_player(fn)
@@ -109,6 +110,12 @@ function PlayerController:update(dt)
 	-- 	body.dir = 1
 	-- 	body.dx = 1
 	-- end
+
+	local lighter_pressed = Inputs.pressed("lighter")
+	if lighter_pressed then
+		self:on_toggle_equip_lighter()
+		return
+	end
 
 	local turn_cd = self.turn_cooldown
 	local turn_delay = self.turn_delay
@@ -171,7 +178,7 @@ function PlayerController:update(dt)
 
 	local anim_name = self:player_update_animation()
 	self.world:emit("update_speed_data", self.player, anim_name)
-	self.world:emit("lighter_update_pos", self.player)
+	-- self.world:emit("lighter_update_pos", self.player)
 end
 
 function PlayerController:player_force_face_dir(dir)
@@ -202,6 +209,11 @@ function PlayerController:player_update_animation(override_name, override_varian
 		anim_variant = "_left"
 	end
 
+	if DEV then
+		if DevTools.debug_anim.tag then
+			return DevTools.debug_anim.tag
+		end
+	end
 	self.world:emit("switch_animation_tag", self.player, anim_name .. anim_variant, anim_name)
 
 	return anim_name

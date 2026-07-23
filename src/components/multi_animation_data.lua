@@ -5,7 +5,10 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 
 	for _, v in pairs(data) do
 		assert(type(v.resource_id) == "string", v.resource_id)
-		assert(type(v.delay) ~= "string" and type(v.delay) ~= "table", v.delay)
+		assert(
+			type(v.delay) == "string" or type(v.delay) == "table" or type(v.delay) == "number",
+			v.delay
+		)
 		assert(type(v.rows_count) == "number", v.rows_count)
 		assert(type(v.columns_count) == "number", v.columns_count)
 		assert(type(v.n_frames) == "number", v.n_frames)
@@ -24,11 +27,14 @@ local c = Concord.component("multi_animation_data", function(c, first, data, mod
 
 	c.orig_data = data
 
+	local TW, TH = 64, 64
 	for _, v in pairs(data) do
 		v.spritesheet = Resources.data.images[v.resource_id]
 		v.sheet_width, v.sheet_height = v.spritesheet:getDimensions()
 		v.frame_width = math.floor(v.sheet_width / v.columns_count)
 		v.frame_height = math.floor(v.sheet_height / v.rows_count)
+		assert(v.frame_width == TW, v.frame_width)
+		assert(v.frame_height == TH, v.frame_height)
 	end
 
 	if modifier then
