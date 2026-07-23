@@ -157,14 +157,14 @@ function Color:init(world)
 			:delay(target.delay)
 			:oncomplete(function()
 				if on_finish then
-					Timer.after(on_finish.delay, function()
+					GameStates.after(on_finish.delay, function()
 						self.world:emit(on_finish.signal, unpack(on_finish.args))
 					end)
 					e:remove("lerp_on_finish")
 					Log.info("lerp on finish done")
 				elseif on_finish_multi then
 					for _, t in ipairs(on_finish_multi.values) do
-						Timer.after(t.delay or 0, function()
+						GameStates.after(t.delay or 0, function()
 							self.world:emit(t.signal, t.args and unpack(t.args))
 						end)
 					end

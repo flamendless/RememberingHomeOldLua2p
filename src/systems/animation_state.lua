@@ -68,7 +68,9 @@ function AnimationState:anim_open_lighter(e)
 end
 
 for k, v in pairs(AnimationState) do
-	AnimationState[k .. "_left"] = v
+	if k ~= "init" and not stringx.ends_with(k, "_left") then
+		AnimationState[k .. "_left"] = v
+	end
 end
 
 return AnimationState

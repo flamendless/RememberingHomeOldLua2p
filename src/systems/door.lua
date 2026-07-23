@@ -14,8 +14,7 @@ function Door:on_interact_door(e_player, e_door)
 	self.world:emit("anim_open_door", e_player)
 
 	local door_id = e_door.id.value
-	local current_id = self.world.current_id
-	local next_room = Data.Doors.get_next(current_id, door_id)
+	local next_room = Data.Doors.get_next(GameStates.current_id, door_id)
 	self.world:emit("switch_state", next_room, 1.5, 0.5)
 end
 

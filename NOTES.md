@@ -15,7 +15,7 @@ In section lists the steps and files that are needed to create a new room.
 4. Create assemblage in `src/assemblages/{new_room}.lua`
 5. Create items in `src/atlases/{new_room}_items.lua`
 6. Create state in `src/states/{new_room}.lua`
-7. Add entry to the following:
+7. Add entry to the following (or run `./build.sh new_room PascalCaseName snake_case` to scaffold steps 4–7 and data stubs):
 - `src/data/resources_list.lua`
 - `src/global.lua`
 - `src/ecs.lua`

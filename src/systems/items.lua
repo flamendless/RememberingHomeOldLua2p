@@ -92,8 +92,8 @@ function ItemsSystem:on_item_use_with(item, other)
 	else
 		local other_id = other.id.value
 		local t = list[item_id] and list[item_id][other_id]
-		assert(not (other.usable_with_item == nil and t ~= nil), "add usable_with_item component?")
-		assert(not (other.usable_with_item ~= nil and t == nil), "add to list?")
+		assert(other.usable_with_item ~= nil and t ~= nil, "add usable_with_item component?")
+		assert(other.usable_with_item ~= nil and t ~= nil, "add to list?")
 		if other.usable_with_item and t ~= nil then
 			self:item_response(t, "_none", "_none")
 		else

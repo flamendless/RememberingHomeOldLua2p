@@ -193,7 +193,7 @@ function Tutorial:tutorial_step_set(step)
 		self.e_last_hand:destroy()
 		self.e_glow:destroy()
 
-		Timer.after(1, function ()
+		GameStates.after(1, function ()
 			self:show_hands_trail(
 				5,
 				tx, ty,
@@ -254,7 +254,7 @@ function Tutorial:tutorial_step_set(step)
 		self.e_last_hand:destroy()
 		self.e_glow:destroy()
 
-		Timer.after(1, function ()
+		GameStates.after(1, function ()
 			self:show_hands_trail(
 				5,
 				tx, ty,
@@ -277,7 +277,7 @@ function Tutorial:tutorial_step_set(step)
 		self.world:emit("player_force_face_dir", -1)
 		-- TODO: open the trunk animation?
 		-- TODO: play trunk open sound
-		Timer.after(1, function()
+		GameStates.after(1, function()
 			self.world:emit(
 				"start_dialogue",
 				self.e_player,
@@ -305,7 +305,7 @@ function Tutorial:tutorial_step_set(step)
 	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
 		self.world:emit("on_toggle_equip_lighter")
 		-- TODO: show lighter / play animation
-		Timer.after(1, function()
+		GameStates.after(1, function()
 			self.world:emit(
 				"start_dialogue",
 				self.e_player,

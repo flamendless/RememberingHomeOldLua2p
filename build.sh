@@ -71,21 +71,17 @@ function process_file()
 function check()
 {
 	# https://luacheck.readthedocs.io/en/stable/cli.html
-	local file="$dir_output"
+	local file="src"
 	if [ $# -eq 2 ]; then
-		if [[ $2 == src* ]]; then
-			file="${file}/${2:4}"
-		else
-			file="${file}/$2"
-		fi
+		file="$2"
 	fi
-	luacheck $file -q \
-		--exclude-files "output_dev/modules/**/*.lua" \
-		--std luajit \
-		--globals love stringx mathx tablex pretty intersect timer \
-		--no-max-line-length \
-		--ignore 611 \
-		--jobs 2
+	luacheck "$file" -q --config .luacheckrc
+}
+
+function new_room()
+{
+	chmod +x ./scripts/new_room.sh
+	./scripts/new_room.sh "$@"
 }
 
 function gen_atlas()
@@ -241,7 +237,7 @@ function lovebuild() {
 }
 
 if [ $# -eq 0 ]; then
-	echo "Must pass command: init, rebuild, clean, run, gen_atlas, copy_res, copy_modules"
+	echo "Must pass command: init, rebuild, clean, run, gen_atlas, copy_res, copy_modules, new_room, check"
 else
 	"$@"
 fi

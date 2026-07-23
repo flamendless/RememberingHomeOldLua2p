@@ -24,7 +24,7 @@ if PROF then mode = mode .. " PROF" end
 
 function love.load()
 	Log.info("Starting... Game Version:", Config.this_version)
-	Log.info('Commit: "v2026-01-02.020dc1c"')
+	Log.info("Commit:", GIT_COMMIT ~= "" and GIT_COMMIT or "unknown")
 	love.math.setRandomSeed(love.timer.getTime())
 	love.graphics.setDefaultFilter("nearest", "nearest")
 

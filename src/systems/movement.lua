@@ -20,13 +20,14 @@ function Movement:update(dt)
 		local diff = random_walk.orig_pos:distance(e.pos_vec2.value)
 		local body = e.body
 
+		local dir = random_walk.dir
 		if diff <= random_walk.distance then
-			body.dx = random_walk.dir
+			body.dx = dir
+			body.dir = dir
 		else
+			body.dir = dir
 			e:remove("random_walk")
 		end
-
-		body.dir = random_walk.dir
 	end
 
 	for _, e in ipairs(self.pool) do

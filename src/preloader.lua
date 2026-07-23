@@ -34,7 +34,7 @@ function Preloader.start(resources, container, on_complete)
 				local font_size = t[j][3]
 				local font_sub = t[j][4]
 				if not font_sub then
-					id = id .. "_" .. (font_sub or font_size)
+					id = id .. "_" .. font_size
 				end
 				data[i] = { keys[kind], path, font_size }
 			end

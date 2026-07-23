@@ -65,7 +65,6 @@ function PlayerController:spawn_player(fn)
 	if fn then assert(type(fn) == "function") end
 	assert(self.player == nil, "Player already exists")
 
-	-- local x, y, face = get_spawn_points(self.world.current_id, self.world.prev_id)
 	local x, y, face = get_spawn_points(GameStates.current_id, GameStates.prev_id)
 	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
 	self.world:__flush()
@@ -254,7 +253,10 @@ function PlayerController:on_leave_interact_or_inventory()
 		self.player:give("can_run")
 	end
 	if prev_can.interact then
-		Timer.after(0.5, function()
+		GameStates.after(0.5, function()
+			if not self.player or not self.player.__isEntity then
+				return
+			end
 			self.player:give("can_interact")
 			self.player.is_interacting.value = false
 		end)

@@ -5,6 +5,9 @@ return {
 		"love.arg.parseGameArguments",
 		"love.graphics.isCreated",
 		"love.handlers",
+		"love.data.hash",
+		"love.math.random",
+		"love.math.setRandomSeed",
 
 		"DEV",
 		"PROF",

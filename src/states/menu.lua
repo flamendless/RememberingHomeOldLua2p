@@ -431,7 +431,7 @@ function Menu:show_sub_menu()
 			:give("move_to_original", duration_pos)
 	end
 
-	Timer.after(duration_show, function()
+	GameStates.after(duration_show, function()
 		self.current_state = Enums.menu_state.sub_menu
 		local override_cursor = Save.valid_checkpoints and 1 or 2
 		self.world:emit("set_focus_list", "sub_menu", override_cursor)
@@ -465,10 +465,10 @@ function Menu:on_newgame()
 
 	local e_desk_fast = Concord.entity(self.world):assemble(Assemblages.Menu.desk_fast, ww, wh)
 
-	Timer.after(timer, function()
+	GameStates.after(timer, function()
 		-- TODO: (Brandon) add sudden static sound
 		e_desk_fast:give("hidden")
-		Timer.after(timer, function()
+		GameStates.after(timer, function()
 			self.world:emit("switch_state", "Intro")
 		end)
 	end)

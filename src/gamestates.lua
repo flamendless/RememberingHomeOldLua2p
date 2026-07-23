@@ -5,7 +5,20 @@ local GameStates = {
 	world = nil,
 	prev_id = nil,
 	prev_world = nil,
+	scene_token = 0,
 }
+
+function GameStates.after(delay, fn)
+	assert(type(delay) == "number", delay)
+	assert(type(fn) == "function", fn)
+	local token = GameStates.scene_token
+	return Timer.after(delay, function()
+		if token ~= GameStates.scene_token then
+			return
+		end
+		fn()
+	end)
+end
 
 function GameStates.preload()
 	local resources = {
@@ -91,6 +104,8 @@ function GameStates.switch(next_id)
 
 	GameStates.is_ready = false
 	if GameStates.world then
+		GameStates.scene_token = GameStates.scene_token + 1
+		Timer:clear()
 		GameStates.prev_world = GameStates.world
 		GameStates.prev_id = GameStates.current_id
 		GameStates.exit()
@@ -167,10 +182,11 @@ end
 
 function GameStates.exit()
 	GameStates.world:emit("cleanup")
-	GameStates.world:clear()
 	for _, e in ipairs(GameStates.world:getEntities()) do
 		e:destroy()
 	end
+	GameStates.world:clear()
+	GameStates.prev_world = nil
 	if DEV then
 		Fade.dev_reset()
 	end

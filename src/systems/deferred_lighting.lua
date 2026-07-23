@@ -130,7 +130,7 @@ function DeferredLighting:start_flicker(e)
 			end
 			if on_repeat.count > 0 or on_repeat.inf then
 				if on_repeat.delay ~= 0 then
-					Timer.after(on_repeat.delay, function()
+					GameStates.after(on_repeat.delay, function()
 						self:start_flicker(e)
 					end)
 				else

@@ -12,6 +12,7 @@ function Animation:setup_animation_data(e, new_tag)
 	assert(type(new_tag) == "string", new_tag)
 	if not e.multi_animation_data then return end
 	local data = e.multi_animation_data.data[new_tag]
+	if not data then return end
 	if data.pause_at then
 		local v
 		if data.pause_at == Enums.pause_at.first then
@@ -32,7 +33,7 @@ function Animation:setup_on_loop(e, animation)
 		return function()
 			self.world:emit(on_loop.signal, unpack(on_loop.args))
 			if on_finish then
-				Timer.after(on_finish.delay, function()
+				GameStates.after(on_finish.delay, function()
 					self.world:emit(on_finish.signal, unpack(on_finish.args))
 				end)
 				e:remove("animation_on_finish")
@@ -67,6 +68,7 @@ function Animation:setup_animation(e, data, on_loop)
 			local cached = cache[current_tag]
 			obj_grid = cached.grid
 			obj_animation = cached.animation
+			obj_animation.onLoop = on_loop
 		else
 			obj_grid = Anim8.newGrid(data.frame_width, data.frame_height, data.sheet_width, data.sheet_height)
 			obj_animation = Anim8.newAnimation(obj_grid(unpack(data.frames)), data.delay, on_loop)
@@ -200,9 +202,10 @@ function Animation:update(dt)
 	for _, e in ipairs(self.pool) do
 		local animation = e.animation
 		local anim8 = animation and animation.anim8
+		local entity_dt = dt
 		local dt_multiplier = e.dt_multiplier
 		if dt_multiplier then
-			dt = dt * dt_multiplier.mul
+			entity_dt = dt * dt_multiplier.mul
 		end
 
 		animation.is_playing = anim8.status == Enums.anim8_status.playing
@@ -213,14 +216,14 @@ function Animation:update(dt)
 
 				local on_finish = e.animation_on_finish
 				if on_finish then
-					Timer.after(on_finish.delay, function()
+					GameStates.after(on_finish.delay, function()
 						self.world:emit(on_finish.signal, unpack(on_finish.args))
 					end)
 					Log.info("animation on finish done")
 				end
 			end
 
-			anim8:update(dt)
+			anim8:update(entity_dt)
 
 			local current_frame = e.current_frame
 			if current_frame then
@@ -229,7 +232,7 @@ function Animation:update(dt)
 
 			local on_update = e.animation_on_update
 			if on_update then
-				self.world:emit(on_update.signal, dt, e, unpack(on_update.args))
+				self.world:emit(on_update.signal, entity_dt, e, unpack(on_update.args))
 			end
 		end
 

@@ -111,7 +111,7 @@ end
 function Splash:splash_wits_done()
 	self.world:emit("start_fade")
 	self:create_effects()
-	Timer.after(2, function()
+	GameStates.after(2, function()
 		self.world:emit("start_colors_lerp")
 		self.world:emit("start_typewriter")
 		self.timeline:Unpause()
@@ -124,7 +124,7 @@ function Splash:do_glitch(time, delay)
 	if delay then
 		assert(type(delay) == "number", delay)
 	end
-	Timer.after(delay or 0, function()
+	GameStates.after(delay or 0, function()
 		Timer.during(time, function()
 			local res = Lume.weightedchoice(c)
 			if res == "glitch" then

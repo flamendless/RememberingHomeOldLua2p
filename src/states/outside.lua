@@ -345,7 +345,7 @@ function Outside:get_flashlight(e, dialogues_t)
 	if not has_flashlight then
 		Items.add("flashlight")
 		self.world:emit("wait_dialogue", true)
-		Timer.after(2, function()
+		GameStates.after(2, function()
 			self.world:emit("wait_dialogue", false)
 			local t = tablex.copy(dialogues_t.get_flashlight)
 			self.world:emit("spawn_dialogue_ex", t)
