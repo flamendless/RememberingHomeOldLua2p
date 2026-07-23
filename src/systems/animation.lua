@@ -365,9 +365,7 @@ if DEV then
 
 				Slab.CheckBox(anim_pause_at, "PauseAt")
 				Slab.CheckBox(anim_stop, "Stop")
-				if Slab.CheckBox(anim_loop, "OnLoop") then
-					selected_e.animation.stop_on_last = not selected_e.animation.stop_on_last
-				end
+				Slab.CheckBox(anim_loop, "OnLoop")
 				Slab.CheckBox(cat, "ChangeAnimTag")
 			end
 

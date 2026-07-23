@@ -62,7 +62,9 @@ Enums.anim_state = Enum(
 	"open_locked_door",
 	"open_locked_door_left",
 	"open_lighter",
-	"open_lighter_left"
+	"open_lighter_left",
+	"close_lighter",
+	"close_lighter_left"
 )
 
 Enums.enemy_type = Enum("suit")

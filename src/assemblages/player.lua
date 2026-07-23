@@ -7,10 +7,12 @@ local player_speed_data = {
 	run = { x = 148, y = 0 },
 	open_lighter = { x = 0, y = 0 },
 	open_lighter_left = { x = 0, y = 0 },
+	close_lighter = { x = 0, y = 0 },
+	close_lighter_left = { x = 0, y = 0 },
 }
 
 function Player.get_multi_anim_data(for_flashlight, can_open_door)
-	local tbl_anim = { "idle", "walk", "run", "open_lighter" }
+	local tbl_anim = { "idle", "walk", "run", "open_lighter", "close_lighter" }
 	if can_open_door then
 		table.insert(tbl_anim, "open_door")
 		table.insert(tbl_anim, "open_locked_door")

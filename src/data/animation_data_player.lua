@@ -71,4 +71,13 @@ AnimationDataPlayer.open_lighter = {
 	n_frames = 11,
 }
 
+AnimationDataPlayer.close_lighter = {
+	resource_id = "sheet_player_lighter",
+	frames = { "5-1", 2, "6-1", 1 },
+	delay = 0.05,
+	rows_count = 2,
+	columns_count = 6,
+	n_frames = 11,
+}
+
 return AnimationDataPlayer

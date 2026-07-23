@@ -19,6 +19,7 @@ end
 function PlayerController:init(world)
 	self.world = world
 	self.turn_cooldown = 0
+	self.on_lighter = false
 
 	if DEV then
 		self.turn_delay = 0.01
@@ -58,7 +59,18 @@ function PlayerController:on_toggle_equip_lighter()
 	-- local has_l = Items.is_equipped("lighter1")
 	-- self.world:emit("lighter_update_pos", self.player)
 	-- self.world:emit("flip_e_id_component", "lighter1", "hidden")
-	self.world:emit("anim_open_lighter", self.player)
+	if not self.on_lighter and self.player:has("can_lighter") then
+		self.world:emit("anim_open_lighter", self.player)
+		self.on_lighter = true
+		self.player:remove("can_lighter")
+	else
+		self.world:emit("anim_close_lighter", self.player)
+		self.on_lighter = false
+	end
+end
+
+function PlayerController:on_anim_close_lighter_done()
+	self.player:give("can_lighter"):remove("override_animation")
 end
 
 function PlayerController:spawn_player(fn)
@@ -90,6 +102,13 @@ end
 
 function PlayerController:update(dt)
 	if not self.player then return end
+
+	local lighter_pressed = Inputs.pressed("lighter")
+	if lighter_pressed then
+		self:on_toggle_equip_lighter()
+		return
+	end
+
 	if self.player.override_animation then return end
 	if not self.player.can_move then return end
 
@@ -109,12 +128,6 @@ function PlayerController:update(dt)
 	-- 	body.dir = 1
 	-- 	body.dx = 1
 	-- end
-
-	local lighter_pressed = Inputs.pressed("lighter")
-	if lighter_pressed then
-		self:on_toggle_equip_lighter()
-		return
-	end
 
 	local turn_cd = self.turn_cooldown
 	local turn_delay = self.turn_delay

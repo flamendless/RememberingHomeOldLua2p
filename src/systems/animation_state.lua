@@ -67,6 +67,15 @@ function AnimationState:anim_open_lighter(e)
 	)
 end
 
+function AnimationState:anim_close_lighter(e)
+	assert(e.__isEntity and e.animation and e.body)
+	local tag = (e.body.dir == -1) and ANIM_STATE.close_lighter_left or ANIM_STATE.close_lighter
+	e:give("change_animation_tag", tag)
+		:give("override_animation")
+		:give("animation_on_loop", "anim_pause_at_end", 0, e)
+		:give("animation_on_finish", "on_anim_close_lighter_done")
+end
+
 for k, v in pairs(AnimationState) do
 	if k ~= "init" and not stringx.ends_with(k, "_left") then
 		AnimationState[k .. "_left"] = v
