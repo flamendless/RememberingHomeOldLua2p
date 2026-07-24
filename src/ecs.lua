@@ -12,6 +12,7 @@ Concord.utils.loadNamespace("states", states)
 local state_systems = {}
 state_systems.Splash = {
 	"animation",
+	"anim",
 	"color",
 	"show_keys",
 	"renderer",
@@ -80,6 +81,7 @@ state_systems.Outside = {
 	"outline",
 	"pause",
 	"player_controller",
+	"anim",
 	"renderer",
 	"room",
 	"systems",
@@ -121,6 +123,7 @@ state_systems.StorageRoom = {
 	"outline",
 	"pause",
 	"player_controller",
+	"anim",
 	"renderer",
 	"room",
 	"systems",
@@ -159,6 +162,7 @@ state_systems.UtilityRoom = {
 	"outline",
 	"pause",
 	"player_controller",
+	"anim",
 	"renderer",
 	"room",
 	"systems",
@@ -194,6 +198,7 @@ state_systems.Kitchen = {
 	"outline",
 	"pause",
 	"player_controller",
+	"anim",
 	"renderer",
 	"room",
 	"systems",
@@ -229,6 +234,7 @@ state_systems.LivingRoom = {
 	"outline",
 	"pause",
 	"player_controller",
+	"anim",
 	"renderer",
 	"room",
 	"systems",
@@ -269,6 +275,7 @@ state_systems.Office1 = {
 	"outline",
 	"pause",
 	"player_controller",
+	"anim",
 	"renderer",
 	"room",
 	"systems",
@@ -354,6 +361,13 @@ function ECS.get_state_class(id)
 	local l_id = string.lower(id)
 	assert(states[l_id], "state " .. id .. " not found")
 	return states[l_id]
+end
+
+function ECS.system_in_state(system, state)
+	assert(type(system) == "string", system)
+	assert(type(state) == "string", state)
+	assert(state_systems[state], state .. " not in state_systems")
+	return state_systems[state][system]
 end
 
 return ECS

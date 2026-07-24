@@ -5,6 +5,9 @@ local Decals = {
 }
 
 function Decals.init(main_renderer, world)
+	if not ECS.system_in_state("renderer", GameStates.current_id) then
+		return
+	end
 	assert(main_renderer.__isSystem)
 	assert(world.__isWorld)
 	Decals.world = world

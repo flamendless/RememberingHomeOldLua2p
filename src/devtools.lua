@@ -4,6 +4,7 @@ local DevTools = {
 	pause = false,
 	flags = {
 		animation = false,
+		anim = false,
 		deferred_lighting = false,
 		billboard_glow = false,
 		bounding_box = false,
@@ -627,7 +628,7 @@ function DevTools.slab_transform(e)
 		quad_transform.sy = UIWrapper.edit_number("sy", quad_transform.sy, false)
 		quad_transform.ox = UIWrapper.edit_number("ox", quad_transform.ox, false)
 		quad_transform.oy = UIWrapper.edit_number("oy", quad_transform.oy, false)
-		Slab.EndTree()
+	Slab.EndTree()
 	end
 end
 
@@ -643,6 +644,10 @@ slab_components = {
 	transform = DevTools.slab_transform,
 	z_index = DevTools.slab_z_index,
 }
+
+function DevTools.register_slab_component(name, fn)
+	slab_components[name] = fn
+end
 
 function DevTools.draw_fade()
 	if not fade.show then return end

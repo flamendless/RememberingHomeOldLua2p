@@ -45,7 +45,7 @@ function love.load()
 
 	TLE.Attach()
 
-	-- GameStates.switch("Splash")
+	GameStates.switch("Splash")
 	-- GameStates.switch("Menu")
 	-- GameStates.switch("Intro")
 	-- GameStates.switch("Outside")
@@ -53,7 +53,7 @@ function love.load()
 	-- GameStates.switch("UtilityRoom")
 	-- GameStates.switch("Kitchen")
 	-- GameStates.switch("LivingRoom")
-	GameStates.switch("TotallyDarkRoom")
+	-- GameStates.switch("TotallyDarkRoom")
 	-- GameStates.switch("Office1")
 	-- GameStates.switch("Office2")
 

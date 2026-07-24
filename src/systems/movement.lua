@@ -45,7 +45,7 @@ function Movement:update(dt)
 end
 
 function Movement:update_speed_data(e, anim_name)
-	assert((e.__isEntity and e.animation and e.speed and e.speed_data and e.body), e)
+	assert((e.__isEntity and e.speed and e.speed_data and e.body), e)
 	assert(type(anim_name) == "string", anim_name)
 	local new_speed = e.speed_data.speed_data[anim_name]
 	if not new_speed then

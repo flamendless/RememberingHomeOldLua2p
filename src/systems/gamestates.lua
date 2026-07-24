@@ -44,6 +44,7 @@ end
 
 if DEV then
 	local states = {
+		"Splash",
 		"Menu",
 		"Intro",
 		"Outside",

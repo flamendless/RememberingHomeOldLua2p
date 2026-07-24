@@ -16,39 +16,42 @@ function Helper.get_real_size(e)
 	return bw, bh
 end
 
+function Helper.get_frame_size(e)
+	local anim_data = e.animation_data
+	if anim_data then
+		return anim_data.frame_width, anim_data.frame_height
+	end
+	local anim = e.anim
+	if anim then
+		local clip = anim.obj:current_clip()
+		if clip then
+			return clip.frame_width, clip.frame_height
+		end
+	end
+	local sprite = e.sprite
+	if sprite then
+		return sprite.iw, sprite.ih
+	end
+end
+
 function Helper.get_offset(e)
 	assert(e.__isEntity, e)
 	local transform = e.transform
-	local anim_data = e.animation_data
-	local sprite = e.sprite
+	local fw, fh = Helper.get_frame_size(e)
 	local ox = transform.ox
 	local oy = transform.oy
 
-	if anim_data then
+	if fw and fh then
 		if transform.ox == 0.5 then
-			ox = anim_data.frame_width/2
+			ox = fw / 2
 		elseif transform.ox == 1 then
-			ox = anim_data.frame_width
+			ox = fw
 		end
 
 		if transform.oy == 0.5 then
-			oy = anim_data.frame_height/2
+			oy = fh / 2
 		elseif transform.oy == 1 then
-			oy = anim_data.frame_height
-		end
-	elseif sprite then
-		local iw, ih = sprite.iw, sprite.ih
-
-		if transform.ox == 0.5 then
-			ox = iw/2
-		elseif transform.ox == 1 then
-			ox = iw
-		end
-
-		if transform.oy == 0.5 then
-			oy = ih/2
-		elseif transform.oy == 1 then
-			oy = ih
+			oy = fh
 		end
 	end
 

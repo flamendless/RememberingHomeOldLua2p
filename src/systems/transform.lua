@@ -95,16 +95,12 @@ function Transform:init(world)
 	self.pool_auto_scale.onAdded = function(pool, e)
 		local auto_scale = e.auto_scale
 		local transform = e.transform
-		local anim_data = e.animation_data
-		local sprite = e.sprite
+		local fw, fh = Helper.get_frame_size(e)
 		local dsx, dsy = 1, 1
 
-		if anim_data then
-			dsx = auto_scale.tw / anim_data.frame_width
-			dsy = auto_scale.th / anim_data.frame_height
-		elseif sprite then
-			dsx = auto_scale.tw / sprite.iw
-			dsy = auto_scale.th / sprite.ih
+		if fw and fh then
+			dsx = auto_scale.tw / fw
+			dsy = auto_scale.th / fh
 		end
 		if auto_scale.is_proportion then
 			local scale = math.min(dsx, dsy)
@@ -147,9 +143,9 @@ function Transform:update_anchor(e)
 	end
 
 	local iw, ih = target_sprite.iw, target_sprite.ih
-	if e_target:has("animation_data") then
-		iw = e_target.animation_data.frame_width
-		ih = e_target.animation_data.frame_height
+	local fw, fh = Helper.get_frame_size(e_target)
+	if fw and fh then
+		iw, ih = fw, fh
 	end
 
 	local w, h = iw * sx, ih * sy

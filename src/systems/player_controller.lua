@@ -42,13 +42,81 @@ function PlayerController:on_toggle_equip_flashlight()
 		Items.toggle_equip("flashlight")
 	end
 	local has_f = Items.is_equipped("flashlight")
-	self.player:remove("multi_animation_data"):give(
-		"multi_animation_data",
-		Enums.anim_state.idle,
-		Assemblages.Player.get_multi_anim_data(has_f, self.player.can_open_door)
-	)
+	local data, mods = Assemblages.Player.get_multi_anim_data(has_f, self.player.can_open_door)
+	self.player.anim.obj:set_data(data, mods, Enums.anim_state.idle)
 	local tag = (self.player.body.dir == -1) and Enums.anim_state.idle_left or Enums.anim_state.idle
-	self.player:give("change_animation_tag", tag, true)
+	self.player.anim.obj:play(tag, Enums.anim_state.idle, true)
+end
+
+-- Player-side animation state actions. These replace the legacy AnimationState
+-- system for the player: they drive the Anim instance directly and register
+-- callbacks on it instead of giving trigger/signal components.
+function PlayerController:anim_idle(e, should_stop)
+	if not (e and e.anim) then return end
+	if should_stop then assert(type(should_stop) == "boolean", should_stop) end
+	if e.override_animation then return end
+	local body = e.body
+	if body.dir == -1 then
+		e.anim.obj:play(Enums.anim_state.idle_left, Enums.anim_state.idle)
+	else
+		e.anim.obj:play(Enums.anim_state.idle)
+	end
+	if should_stop then
+		body.dx = 0
+		body.vel_x = 0
+		body.vel_y = 0
+	end
+end
+
+function PlayerController:anim_face_left(e)
+	if not (e and e.anim) then return end
+	if e.override_animation then return end
+	e.body.dir = -1
+	e.anim.obj:play(Enums.anim_state.idle_left, Enums.anim_state.idle)
+end
+
+function PlayerController:anim_face_right(e)
+	if not (e and e.anim) then return end
+	if e.override_animation then return end
+	e.body.dir = 1
+	e.anim.obj:play(Enums.anim_state.idle)
+end
+
+function PlayerController:anim_open_door(e)
+	if not (e and e.anim) then return end
+	local obj = e.anim.obj
+	local tag = (e.body.dir == -1) and Enums.anim_state.open_door_left or Enums.anim_state.open_door
+	obj:play(tag)
+	obj:on("loop", function()
+		obj:pause_at_end()
+	end)
+	e:give("override_animation")
+end
+
+function PlayerController:anim_open_lighter(e)
+	if not (e and e.anim) then return end
+	local obj = e.anim.obj
+	local tag = (e.body.dir == -1) and Enums.anim_state.open_lighter_left or Enums.anim_state.open_lighter
+	obj:play(tag)
+	obj:on("loop", function()
+		obj:goto_frame(9)
+	end)
+	e:give("override_animation")
+end
+
+function PlayerController:anim_close_lighter(e)
+	if not (e and e.anim) then return end
+	local obj = e.anim.obj
+	local world = self.world
+	local tag = (e.body.dir == -1) and Enums.anim_state.close_lighter_left or Enums.anim_state.close_lighter
+	obj:play(tag)
+	obj:on("loop", function()
+		obj:pause_at_end()
+	end)
+	obj:once("finish", function()
+		world:emit("on_anim_close_lighter_done")
+	end)
+	e:give("override_animation")
 end
 
 function PlayerController:on_toggle_equip_lighter()
@@ -226,7 +294,7 @@ function PlayerController:player_update_animation(override_name, override_varian
 			return DevTools.debug_anim.tag
 		end
 	end
-	self.world:emit("switch_animation_tag", self.player, anim_name .. anim_variant, anim_name)
+	self.player.anim.obj:play(anim_name .. anim_variant, anim_name)
 
 	return anim_name
 end
@@ -332,12 +400,12 @@ if DEV then
 			Slab.Unindent()
 		end
 
-		local current_frame = self.player.current_frame
+		local obj = self.player.anim.obj
 		Slab.Text("animation")
 		Slab.Indent()
-		Slab.Input("anim_tag", { Text = self.player.animation.current_tag, ReadOnly = true })
+		Slab.Input("anim_tag", { Text = obj.current_tag, ReadOnly = true })
 		Slab.SameLine()
-		view_number("frame", current_frame.value)
+		view_number("frame", obj.frame)
 		Slab.Unindent()
 
 		local quad = self.player.quad
@@ -375,6 +443,12 @@ if DEV then
 		Slab.CheckBox(self.player.can_open_door, "open_door")
 
 		Slab.EndWindow()
+	end
+end
+
+for k, v in pairs(PlayerController) do
+	if k:match("^anim_") and not stringx.ends_with(k, "_left") then
+		PlayerController[k .. "_left"] = v
 	end
 end
 

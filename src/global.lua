@@ -122,6 +122,7 @@ Behaviors = {
 	Enemy = require("behaviors.enemy")
 }
 
+Anim = require("anim")
 Animation = require("animation")
 Audio = require("audio")
 Cache = require("cache")
