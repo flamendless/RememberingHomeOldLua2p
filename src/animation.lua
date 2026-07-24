@@ -263,7 +263,7 @@ function Animation:current_clip()
 end
 
 function Animation:get_quad()
-	return (self.anim8:getFrameInfo())
+	return self.anim8:getFrameInfo()
 end
 
 function Animation:get_frame_info()

@@ -34,7 +34,9 @@ function Movement:update(dt)
 		local vel_x, vel_y = 0, e.gravity.value * dt
 		local body = e.body
 
-		if body.dx ~= 0 then
+		if e.override_animation then
+			body.dx = 0
+		elseif body.dx ~= 0 then
 			vel_x = e.speed.vx * body.dx * dt
 		end
 

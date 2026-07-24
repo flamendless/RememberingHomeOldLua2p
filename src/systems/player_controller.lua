@@ -16,6 +16,16 @@ local function get_spawn_points(current_id, prev_id)
 	return unpack(d)
 end
 
+local function stop_body_motion(e)
+	local body = e.body
+	body.dx = 0
+	body.vel_x = 0
+	body.vel_y = 0
+	if e.is_running then
+		e.is_running.value = false
+	end
+end
+
 function PlayerController:init(world)
 	self.world = world
 	self.turn_cooldown = 0
@@ -62,9 +72,7 @@ function PlayerController:anim_idle(e, should_stop)
 		e.animation.obj:play(Enums.anim_state.idle)
 	end
 	if should_stop then
-		body.dx = 0
-		body.vel_x = 0
-		body.vel_y = 0
+		stop_body_motion(e)
 	end
 end
 
@@ -95,6 +103,7 @@ end
 
 function PlayerController:anim_open_lighter(e)
 	if not (e and e.animation) then return end
+	stop_body_motion(e)
 	local obj = e.animation.obj
 	local tag = (e.body.dir == -1) and Enums.anim_state.open_lighter_left or Enums.anim_state.open_lighter
 	obj:play(tag)
@@ -106,6 +115,7 @@ end
 
 function PlayerController:anim_close_lighter(e)
 	if not (e and e.animation) then return end
+	stop_body_motion(e)
 	local obj = e.animation.obj
 	local world = self.world
 	local tag = (e.body.dir == -1) and Enums.anim_state.close_lighter_left or Enums.anim_state.close_lighter
@@ -127,6 +137,7 @@ function PlayerController:on_toggle_equip_lighter()
 	-- local has_l = Items.is_equipped("lighter1")
 	-- self.world:emit("lighter_update_pos", self.player)
 	-- self.world:emit("flip_e_id_component", "lighter1", "hidden")
+	self.last_desired_dir = 0
 	if not self.on_lighter and self.player:has("can_lighter") then
 		self.world:emit("anim_open_lighter", self.player)
 		self.on_lighter = true
@@ -164,6 +175,7 @@ end
 function PlayerController:player_stop()
 	-- INFO: must remove can_move component first, then flush, before emitting this
 	self.last_desired_dir = 0
+	stop_body_motion(self.player)
 	local anim_name = self:player_update_animation()
 	self.world:emit("update_speed_data", self.player, anim_name)
 end
@@ -177,7 +189,10 @@ function PlayerController:update(dt)
 		return
 	end
 
-	if self.player.override_animation then return end
+	if self.player.override_animation then
+		stop_body_motion(self.player)
+		return
+	end
 	if not self.player.can_move then return end
 
 	local within_int = self.player.within_interactive
