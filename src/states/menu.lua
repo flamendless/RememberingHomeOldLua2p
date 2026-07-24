@@ -469,7 +469,7 @@ function Menu:on_newgame()
 		-- TODO: (Brandon) add sudden static sound
 		e_desk_fast:give("hidden")
 		GameStates.after(timer, function()
-			self.world:emit("switch_state", "Intro")
+			self.world:emit("switch_state", Enums.game_state.Intro)
 		end)
 	end)
 end

@@ -104,7 +104,7 @@ function Outside:state_init()
 	-- 	Fade.set_alpha(0)
 	-- end
 
-	if self.prev_id == "StorageRoom" then
+	if self.prev_id == Enums.game_state.StorageRoom then
 		self.world:emit("spawn_player", function(e_player)
 			self.world:emit("toggle_component", e_player, "can_move", true)
 			self.world:emit("toggle_component", e_player, "can_interact", true)
@@ -415,7 +415,7 @@ function Outside:check_backdoor(e, dialogues_t)
 		self.world:emit("toggle_component", e, "can_move", true)
 		self.world:emit("toggle_component", e, "can_interact", true)
 		self.world:emit("anim_open_door", e)
-		self.world:emit("switch_state", "StorageRoom", 3, 2)
+		self.world:emit("switch_state", Enums.game_state.StorageRoom, 3, 2)
 	end
 end
 

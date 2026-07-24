@@ -1,4 +1,5 @@
 local ResourcesList = {}
+local G = Enums.game_state
 
 local fnt_common = {
 	{ "ui",       "res/fonts/Jamboree.ttf",     32, "default" },
@@ -34,7 +35,7 @@ local textures = {
 	{ "tex_hand",         "res/textures/hand.png" },
 }
 
-ResourcesList.Splash = {
+ResourcesList[G.Splash] = {
 	images = {
 		{ "flamendless_logo", "res/images/splash/flamendless_logo.png" },
 		{ "sheet_wits",       "res/images/splash/sheet_wits.png" },
@@ -49,7 +50,7 @@ ResourcesList.Splash = {
 	},
 }
 
-ResourcesList.Menu = {
+ResourcesList[G.Menu] = {
 	images = {
 		{ "bg_door",     "res/images/menu/bg_door.png" },
 		{ "bg_hallway",  "res/images/menu/bg_hallway.png" },
@@ -70,7 +71,7 @@ ResourcesList.Menu = {
 	},
 }
 
-ResourcesList.Intro = {
+ResourcesList[G.Intro] = {
 	images = {
 		{ "intro",             "res/images/intro/bg.png" },
 		{ "atlas_intro",       "res/images/atlases/intro.png" },
@@ -95,7 +96,7 @@ ResourcesList.Intro = {
 	},
 }
 
-ResourcesList.Outside = {
+ResourcesList[G.Outside] = {
 	images = {
 		{ "rain_drop",        "res/images/rain/rain_drop.png" },
 		{ "rain_drop2",       "res/images/rain/rain_drop2.png" },
@@ -134,7 +135,7 @@ ResourcesList.Outside = {
 	},
 }
 
-ResourcesList.StorageRoom = {
+ResourcesList[G.StorageRoom] = {
 	images = {
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
 		{ "bg_desc",          "res/images/inventory_notes/bg_desc.png" },
@@ -164,7 +165,7 @@ ResourcesList.StorageRoom = {
 	},
 }
 
-ResourcesList.UtilityRoom = {
+ResourcesList[G.UtilityRoom] = {
 	images = {
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
 		{ "bg_desc",          "res/images/inventory_notes/bg_desc.png" },
@@ -195,7 +196,7 @@ ResourcesList.UtilityRoom = {
 	},
 }
 
-ResourcesList.Kitchen = {
+ResourcesList[G.Kitchen] = {
 	images = {
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
 		{ "bg_desc",          "res/images/inventory_notes/bg_desc.png" },
@@ -225,7 +226,7 @@ ResourcesList.Kitchen = {
 	},
 }
 
-ResourcesList.LivingRoom = {
+ResourcesList[G.LivingRoom] = {
 	images = {
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
 		{ "bg_desc",          "res/images/inventory_notes/bg_desc.png" },
@@ -253,10 +254,10 @@ ResourcesList.LivingRoom = {
 		unpack(fnt_common),
 	},
 }
-ResourcesList.LivingRoom.array_images = tablex.append(ResourcesList.LivingRoom.array_images, player)
-ResourcesList.LivingRoom.array_images = tablex.append(ResourcesList.LivingRoom.array_images, enemy)
+ResourcesList[G.LivingRoom].array_images = tablex.append(ResourcesList[G.LivingRoom].array_images, player)
+ResourcesList[G.LivingRoom].array_images = tablex.append(ResourcesList[G.LivingRoom].array_images, enemy)
 
-ResourcesList.Office1 = {
+ResourcesList[G.Office1] = {
 	images = {
 		{ "atlas_keys",       "res/ui/atlas_keys.png" },
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
@@ -283,7 +284,7 @@ ResourcesList.Office1 = {
 	},
 }
 
-ResourcesList.Office2 = {
+ResourcesList[G.Office2] = {
 	images = {
 		{ "atlas_keys",       "res/ui/atlas_keys.png" },
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
@@ -311,6 +312,6 @@ ResourcesList.Office2 = {
 	},
 }
 
-ResourcesList.TotallyDarkRoom = ResourcesList.LivingRoom
+ResourcesList[G.TotallyDarkRoom] = ResourcesList[G.LivingRoom]
 
 return ResourcesList

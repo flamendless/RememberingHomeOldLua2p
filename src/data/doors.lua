@@ -1,33 +1,34 @@
 local Doors = {}
+local G = Enums.game_state
 
-Doors.Outside = {
-	backdoor = "StorageRoom",
+Doors[G.Outside] = {
+	backdoor = G.StorageRoom,
 }
 
-Doors.StorageRoom = {
-	left_door = "Kitchen",
-	right_door = "Outside",
+Doors[G.StorageRoom] = {
+	left_door = G.Kitchen,
+	right_door = G.Outside,
 }
 
-Doors.UtilityRoom = {
-	left_door = "Kitchen",
+Doors[G.UtilityRoom] = {
+	left_door = G.Kitchen,
 }
 
-Doors.Kitchen = {
-	utility_door = "UtilityRoom",
-	right_door = "StorageRoom",
+Doors[G.Kitchen] = {
+	utility_door = G.UtilityRoom,
+	right_door = G.StorageRoom,
 }
 
-Doors.LivingRoom = {
+Doors[G.LivingRoom] = {
 	door = "DiningArea",
 }
 
-Doors.Office1 = {
-	door_right = "Office2",
+Doors[G.Office1] = {
+	door_right = G.Office2,
 }
 
-Doors.Office2 = {
-	door_left = "Office1",
+Doors[G.Office2] = {
+	door_left = G.Office1,
 }
 
 function Doors.get_next(current_id, door_id)

@@ -114,7 +114,7 @@ Pause["on_list_item_interact_" .. "pause_choices"] = function(self, e_hovered)
 			{ "Return to Main Menu", "Exit Game", "Cancel", escapebutton = 3 }
 		)
 		if btn == 1 then
-			self.world:emit("switch_state", "Menu")
+			self.world:emit("switch_state", Enums.game_state.Menu)
 		elseif btn == 2 then
 			love.event.quit()
 		end

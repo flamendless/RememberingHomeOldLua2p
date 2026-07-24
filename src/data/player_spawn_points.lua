@@ -1,42 +1,43 @@
 local PlayerSpawnPoints = {}
+local G = Enums.game_state
 
-PlayerSpawnPoints.Outside = {
+PlayerSpawnPoints[G.Outside] = {
 	default = { 800, 258 },
-	Menu = { 800, 258 },
-	StorageRoom = { 446, 258 },
+	[G.Menu] = { 800, 258 },
+	[G.StorageRoom] = { 446, 258 },
 }
 
-PlayerSpawnPoints.StorageRoom = {
+PlayerSpawnPoints[G.StorageRoom] = {
 	default = { 312, 48 },
-	Outside = { 312, 48 },
-	Kitchen = { 16, 48, Enums.face_dir.right },
+	[G.Outside] = { 312, 48 },
+	[G.Kitchen] = { 16, 48, Enums.face_dir.right },
 }
 
-PlayerSpawnPoints.UtilityRoom = {
+PlayerSpawnPoints[G.UtilityRoom] = {
 	default = { 318, 48 },
-	Kitchen = { 16, 48, Enums.face_dir.right },
+	[G.Kitchen] = { 16, 48, Enums.face_dir.right },
 }
 
-PlayerSpawnPoints.Kitchen = {
+PlayerSpawnPoints[G.Kitchen] = {
 	default = { 443, 64 },
-	StorageRoom = { 443, 64 },
-	UtilityRoom = { 398, 64 },
+	[G.StorageRoom] = { 443, 64 },
+	[G.UtilityRoom] = { 398, 64 },
 }
 
-PlayerSpawnPoints.LivingRoom = {
+PlayerSpawnPoints[G.LivingRoom] = {
 	default = { 360, 64 },
 }
 
-PlayerSpawnPoints.TotallyDarkRoom = PlayerSpawnPoints.LivingRoom
+PlayerSpawnPoints[G.TotallyDarkRoom] = PlayerSpawnPoints[G.LivingRoom]
 
-PlayerSpawnPoints.Office1 = {
+PlayerSpawnPoints[G.Office1] = {
 	default = { 127, 64 },
-	Office2 = { 680, 64, Enums.face_dir.left },
+	[G.Office2] = { 680, 64, Enums.face_dir.left },
 }
 
-PlayerSpawnPoints.Office2 = {
+PlayerSpawnPoints[G.Office2] = {
 	default = { 127, 64 },
-	Office1 = { 86, 64, Enums.face_dir.right },
+	[G.Office1] = { 86, 64, Enums.face_dir.right },
 }
 
 return PlayerSpawnPoints

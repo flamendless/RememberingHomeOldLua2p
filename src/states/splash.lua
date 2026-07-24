@@ -111,7 +111,7 @@ function Splash:create_effects()
 		:give("font", "uncle_type_32")
 		:give("typewriter", 0.2)
 		:give("typewriter_timer")
-		:give("typewriter_on_finish", "switch_state", 1.25, "Menu")
+		:give("typewriter_on_finish", "switch_state", 1.25, Enums.game_state.Menu)
 end
 
 function Splash:splash_wits_done()
@@ -168,7 +168,7 @@ function Splash:state_update(dt)
 			end
 
 			if self.current_state == Enums.splash_state.flam and self.skippable then
-				self.world:emit("switch_state", "Menu")
+				self.world:emit("switch_state", Enums.game_state.Menu)
 				self.skippable = false
 			end
 		end

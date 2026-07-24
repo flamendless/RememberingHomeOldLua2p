@@ -219,7 +219,7 @@ function Intro:state_init()
 				self.is_raining = false
 				self.is_switching = true
 				self.world:emit("set_particle_system", "PSRainIntro", "stop")
-				self.world:emit("switch_state", "Outside")
+				self.world:emit("switch_state", Enums.game_state.Outside)
 			end, 2)
 		end
 	end)
@@ -239,7 +239,7 @@ function Intro:state_update(dt)
 			self.is_raining = false
 			self.is_switching = true
 			self.world:emit("set_particle_system", "PSRainIntro", "stop")
-			self.world:emit("switch_state", "Outside")
+			self.world:emit("switch_state", Enums.game_state.Outside)
 		end, 2)
 	end
 

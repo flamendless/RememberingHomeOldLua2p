@@ -144,7 +144,32 @@ Enums.dialogue_tags = Enum(
 	"important"
 )
 
+Enums.game_state = Enum(
+	"Splash",
+	"Menu",
+	"Intro",
+	"Outside",
+	"StorageRoom",
+	"UtilityRoom",
+	"Kitchen",
+	"LivingRoom",
+	"TotallyDarkRoom",
+	"Office1",
+	"Office2"
+)
+
 if DEV then
+	Enums.ordered.game_state = {
+		Enums.game_state.Splash,
+		Enums.game_state.Menu,
+		Enums.game_state.Intro,
+		Enums.game_state.Outside,
+		Enums.game_state.StorageRoom,
+		Enums.game_state.UtilityRoom,
+		Enums.game_state.Kitchen,
+		Enums.game_state.LivingRoom,
+		Enums.game_state.TotallyDarkRoom,
+	}
 	Enums.ordered.survival_state = {
 		Enums.survival_state.normal,
 		Enums.survival_state.engaged,

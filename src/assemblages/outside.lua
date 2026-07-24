@@ -110,7 +110,7 @@ end
 
 Outside.glows.car = function(world)
 	local z = 9
-	local p = Data.PlayerSpawnPoints.Outside.default
+	local p = Data.PlayerSpawnPoints[Enums.game_state.Outside].default
 	local grid_center_x = p[1]
 	local grid_center_y = p[2] + 24
 

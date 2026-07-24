@@ -5,7 +5,7 @@ local Decals = {
 }
 
 local blacklist = {
-	"Menu",
+	Enums.game_state.Menu,
 }
 
 function Decals.init(main_renderer, world)

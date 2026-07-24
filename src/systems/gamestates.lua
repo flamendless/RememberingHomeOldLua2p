@@ -23,7 +23,7 @@ function GameStatesSystem:switch_state(next_state, dur, delay)
 	Log.info("switching state to", next_state)
 	self.is_switching = true
 	Fade.fade_out(function()
-		if GameStates.current_id == "Splash" then
+		if GameStates.current_id == Enums.game_state.Splash then
 			Save.set_flag("splash_done", true, true)
 		end
 		GameStates.switch(next_state)
@@ -43,17 +43,7 @@ function GameStatesSystem:load_game()
 end
 
 if DEV then
-	local states = {
-		"Splash",
-		"Menu",
-		"Intro",
-		"Outside",
-		"StorageRoom",
-		"UtilityRoom",
-		"Kitchen",
-		"LivingRoom",
-		"TotallyDarkRoom",
-	}
+	local states = Enums.ordered.game_state
 
 	function GameStatesSystem:debug_update(dt)
 		if not self.debug_show then

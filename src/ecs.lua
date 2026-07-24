@@ -1,5 +1,7 @@
 local ECS = {}
 
+local G = Enums.game_state
+
 local components = {}
 Concord.utils.loadNamespace("components", components)
 
@@ -10,7 +12,7 @@ local states = {}
 Concord.utils.loadNamespace("states", states)
 
 local state_systems = {}
-state_systems.Splash = {
+state_systems[G.Splash] = {
 	"animation",
 	"color",
 	"show_keys",
@@ -23,7 +25,7 @@ state_systems.Splash = {
 	"atlas",
 }
 
-state_systems.Menu = {
+state_systems[G.Menu] = {
 	"animation",
 	"bounding_box",
 	"click",
@@ -40,7 +42,7 @@ state_systems.Menu = {
 	"list",
 }
 
-state_systems.Intro = {
+state_systems[G.Intro] = {
 	"animation",
 	"atlas",
 	"camera",
@@ -62,7 +64,7 @@ state_systems.Intro = {
 	"timeline",
 }
 
-state_systems.Outside = {
+state_systems[G.Outside] = {
 	"animation",
 	"atlas",
 	"bump_collision",
@@ -102,7 +104,7 @@ state_systems.Outside = {
 	"lighter",
 }
 
-state_systems.StorageRoom = {
+state_systems[G.StorageRoom] = {
 	"animation",
 	"atlas",
 	"bump_collision",
@@ -139,7 +141,7 @@ state_systems.StorageRoom = {
 	"flies",
 }
 
-state_systems.UtilityRoom = {
+state_systems[G.UtilityRoom] = {
 	"animation",
 	"atlas",
 	"bump_collision",
@@ -173,7 +175,7 @@ state_systems.UtilityRoom = {
 	"enemy_controller",
 }
 
-state_systems.Kitchen = {
+state_systems[G.Kitchen] = {
 	"animation",
 	"atlas",
 	"bump_collision",
@@ -207,7 +209,7 @@ state_systems.Kitchen = {
 	"enemy_controller",
 }
 
-state_systems.LivingRoom = {
+state_systems[G.LivingRoom] = {
 	"animation",
 	"atlas",
 	"bump_collision",
@@ -241,9 +243,9 @@ state_systems.LivingRoom = {
 	"enemy_controller",
 	"lighter",
 }
-state_systems.TotallyDarkRoom = state_systems.LivingRoom
+state_systems[G.TotallyDarkRoom] = state_systems[G.LivingRoom]
 
-state_systems.Office1 = {
+state_systems[G.Office1] = {
 	"tween",
 	"animation",
 	"animation_sync",
@@ -284,7 +286,7 @@ state_systems.Office1 = {
 	"survival",
 }
 
-state_systems.Office2 = tablex.copy(state_systems.Office1)
+state_systems[G.Office2] = tablex.copy(state_systems[G.Office1])
 
 
 local unpausable_list = {
