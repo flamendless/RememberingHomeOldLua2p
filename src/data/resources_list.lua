@@ -82,6 +82,7 @@ ResourcesList.Intro = {
 		{ "dummy",             "res/textures/dummy.png" },
 		{ "atlas_keys",        "res/ui/atlas_keys.png" },
 		{ "sheet_title",       "res/images/intro/sheet_title.png" },
+		{ "tex_hand",          "res/textures/hand.png" },
 	},
 	image_data = {
 		{ "lut_afternoon_16", "res/lut/lut_afternoon_16.png" },

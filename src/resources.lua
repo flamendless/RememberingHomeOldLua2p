@@ -12,7 +12,7 @@ mt.__index = function(t, i)
 			break
 		end
 	end
-	error(i .. " is invalid key for Resources:" .. id)
+	error(i .. " is invalid key for Resources:" .. id .. " for state " .. (GameStates.current_id or ""))
 end
 
 Resources.meta = Data.ResourcesList

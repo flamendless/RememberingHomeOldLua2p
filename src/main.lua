@@ -19,8 +19,9 @@ love.errhand = function(msg)
 	if TEST.mode then
 		print("[test] ERROR: " .. tostring(msg))
 		print(debug.traceback("", 2))
-		love.event.quit(1)
-		return function() end
+		return function()
+			return 1
+		end
 	end
 	return base_errhand(msg)
 end
