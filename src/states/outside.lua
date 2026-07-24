@@ -241,7 +241,7 @@ end
 function Outside:state_update(dt)
 	self.world:emit("preupdate", dt)
 
-	if Inputs.pressed("play") then
+	if DEV and Inputs.pressed("play") then
 		self.timeline:Unpause()
 	elseif Inputs.pressed("inventory") then
 		if not Items.has("flashlight") then

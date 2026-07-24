@@ -14,7 +14,16 @@ require("global")
 
 Log.lovesave = true
 Shaders.load_shaders()
-love.errhand = ErrorHandler.callback
+local base_errhand = ErrorHandler.callback
+love.errhand = function(msg)
+	if TEST.mode then
+		print("[test] ERROR: " .. tostring(msg))
+		print(debug.traceback("", 2))
+		love.event.quit(1)
+		return function() end
+	end
+	return base_errhand(msg)
+end
 local font = love.graphics.newFont("res/fonts/Jamboree.ttf", 32)
 font:setFilter("nearest", "nearest")
 
@@ -25,7 +34,7 @@ if PROF then mode = mode .. " PROF" end
 function love.load()
 	Log.info("Starting... Game Version:", Config.this_version)
 	Log.info("Commit:", GIT_COMMIT ~= "" and GIT_COMMIT or "unknown")
-	love.math.setRandomSeed(love.timer.getTime())
+	love.math.setRandomSeed(TEST.mode and TEST.seed or love.timer.getTime())
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	local modules = {
@@ -44,6 +53,10 @@ function love.load()
 	end
 
 	TLE.Attach()
+
+	if TEST.mode then
+		TestRunner.init(TEST.scenario)
+	end
 
 	GameStates.switch("Splash")
 	-- GameStates.switch("Menu")
@@ -65,6 +78,11 @@ function love.update(dt)
 
 	if DevTools.pause then
 		return
+	end
+
+	if TEST.mode then
+		Inputs.apply_pending_releases()
+		TestRunner.update(dt)
 	end
 
 	Timer.update(dt)
@@ -107,6 +125,14 @@ function love.draw()
 		JPROF.pop("dev draw")
 	end
 
+	if TEST.mode then
+		love.graphics.setColor(1, 0, 0, 1)
+		love.graphics.setFont(font)
+		love.graphics.print("TEST")
+	end
+
+	love.graphics.setColor(1, 1, 1, 1)
+
 	JPROF.pop("frame")
 end
 
@@ -114,6 +140,13 @@ function love.quit()
 	Log.info("Quitting...")
 	Lily.quit()
 	JPROF.write("prof.mpack")
+end
+
+local function get_update_speed()
+	if TEST.mode and not GameStates.is_ready then
+		return 1
+	end
+	return GAME_SPEED_MULT
 end
 
 function love.run()
@@ -159,7 +192,7 @@ function love.run()
 		end
 
 		if love.update then
-			love.update(dt * GAME_SPEED_MULT)
+			love.update(dt * get_update_speed())
 		end
 
 		if love.graphics and love.graphics.isActive() then

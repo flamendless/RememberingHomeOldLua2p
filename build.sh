@@ -202,6 +202,19 @@ function profile()
 	love "$dir_source" --dev --prof --git="$(git rev-parse --verify HEAD)" && prof_viewer
 }
 
+function test()
+{
+	echo "Running autoplay test: boot_to_outside"
+	love "$dir_source" --test=boot_to_outside --speed=20 --seed=1
+	local code=$?
+	if [ $code -eq 0 ]; then
+		echo "TEST PASSED"
+	else
+		echo "TEST FAILED (exit $code)"
+	fi
+	return $code
+}
+
 function prof_viewer()
 {
 	if [ $(uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/ip') ]; then
@@ -237,7 +250,9 @@ function lovebuild() {
 }
 
 if [ $# -eq 0 ]; then
-	echo "Must pass command: init, rebuild, clean, run, gen_atlas, copy_res, copy_modules, new_room, check"
+	echo "Must pass command:"
+	echo "  init, rebuild, clean, run, test"
+	echo "  gen_atlas, copy_res, copy_modules, new_room, check"
 else
 	"$@"
 fi

@@ -228,7 +228,7 @@ end
 function Intro:state_update(dt)
 	self.world:emit("preupdate", dt)
 
-	if Inputs.pressed("play") then
+	if DEV and Inputs.pressed("play") then
 		self.world:emit("resume_timeline")
 	end
 

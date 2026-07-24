@@ -1,4 +1,4 @@
-GAME_SPEED_MULT = 1
+GAME_SPEED_MULT = GAME_SPEED_MULT or 1
 MAX_Z = 99
 CAM_BAR_RATIO = 0.2
 
@@ -30,7 +30,17 @@ Enum = require("modules.enum.enum")
 Flux = require("modules.flux.flux")
 Gamera = require("modules.gamera.gamera")
 Lily = require("modules.lily.lily")
-Log = require("modules.log.log")
+if TEST.mode then
+	local function noop() end
+	Log = setmetatable({
+		lovesave = false,
+		quit = noop,
+	}, { __index = function()
+		return noop
+	end })
+else
+	Log = require("modules.log.log")
+end
 LoveInk = {
 	Dialogue = require("modules.loveink.dialogue"),
 	DialogueUI = require("modules.loveink.dialogue_ui"),
@@ -177,6 +187,11 @@ Assemblages = {
 
 ECS = require("ecs")
 GameStates = require("gamestates")
+
+if TEST.mode then
+	TestHooks = require("test.hooks")
+	TestRunner = require("test.runner")
+end
 
 require("modules.batteries"):export()
 require("modules.sdf").mount()

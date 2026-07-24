@@ -175,4 +175,36 @@ function Inputs.get_current_map_name()
 	return map_names[Settings.current.key_map]
 end
 
+if TEST.mode then
+	local pending_releases = {}
+
+	function Inputs.apply_pending_releases()
+		for action in pairs(pending_releases) do
+			Inputs.current[action] = false
+			pending_releases[action] = nil
+		end
+	end
+
+	function Inputs.tap(action)
+		assert(type(action) == "string", action)
+		assert(Inputs.current[action] ~= nil, action)
+		Inputs.current[action] = true
+	end
+
+	function Inputs.release(action)
+		assert(type(action) == "string", action)
+		assert(Inputs.current[action] ~= nil, action)
+		pending_releases[action] = true
+	end
+
+	function Inputs.tap_scancode(scancode)
+		assert(type(scancode) == "string", scancode)
+		Inputs.keypressed(nil, scancode)
+		local action = Inputs.map[scancode]
+		if action then
+			Inputs.release(action)
+		end
+	end
+end
+
 return Inputs

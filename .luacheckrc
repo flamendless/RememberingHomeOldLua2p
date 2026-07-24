@@ -10,6 +10,9 @@ return {
 		"love.math.setRandomSeed",
 
 		"DEV",
+		"TEST",
+		"TestHooks",
+		"TestRunner",
 		"PROF",
 		"PROF_CAPTURE",
 		"GIT_COMMIT",
