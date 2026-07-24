@@ -56,19 +56,20 @@ function love.load()
 
 	if TEST.mode then
 		TestRunner.init(TEST.scenario)
+		GameStates.switch("Splash")
+	else
+		-- GameStates.switch("Splash")
+		-- GameStates.switch("Menu")
+		-- GameStates.switch("Intro")
+		-- GameStates.switch("Outside")
+		-- GameStates.switch("StorageRoom")
+		-- GameStates.switch("UtilityRoom")
+		-- GameStates.switch("Kitchen")
+		-- GameStates.switch("LivingRoom")
+		GameStates.switch("TotallyDarkRoom")
+		-- GameStates.switch("Office1")
+		-- GameStates.switch("Office2")
 	end
-
-	GameStates.switch("Splash")
-	-- GameStates.switch("Menu")
-	-- GameStates.switch("Intro")
-	-- GameStates.switch("Outside")
-	-- GameStates.switch("StorageRoom")
-	-- GameStates.switch("UtilityRoom")
-	-- GameStates.switch("Kitchen")
-	-- GameStates.switch("LivingRoom")
-	-- GameStates.switch("TotallyDarkRoom")
-	-- GameStates.switch("Office1")
-	-- GameStates.switch("Office2")
 
 	DevTools.init()
 end

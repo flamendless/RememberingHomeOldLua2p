@@ -303,7 +303,6 @@ function Tutorial:tutorial_step_set(step)
 		self.triggered_lighter = false
 
 	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
-		self.world:emit("on_toggle_equip_lighter")
 		-- TODO: show lighter / play animation
 		GameStates.after(1, function()
 			self.world:emit(

@@ -4,10 +4,15 @@ local Decals = {
 	debug_list = {},
 }
 
+local blacklist = {
+	"Menu",
+}
+
 function Decals.init(main_renderer, world)
-	if not ECS.system_in_state("renderer", GameStates.current_id) then
-		return
+	for _, v in ipairs(blacklist) do
+		if v == GameStates.current_id then return end
 	end
+
 	assert(main_renderer.__isSystem)
 	assert(world.__isWorld)
 	Decals.world = world

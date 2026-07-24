@@ -351,11 +351,4 @@ function ECS.get_state_class(id)
 	return states[l_id]
 end
 
-function ECS.system_in_state(system, state)
-	assert(type(system) == "string", system)
-	assert(type(state) == "string", state)
-	assert(state_systems[state], state .. " not in state_systems")
-	return state_systems[state][system]
-end
-
 return ECS

@@ -40,6 +40,7 @@ ResourcesList.Splash = {
 		{ "sheet_wits",       "res/images/splash/sheet_wits.png" },
 		{ "tex_displacement", "res/textures/displacement.png" },
 		{ "atlas_keys",       "res/ui/atlas_keys.png" },
+		{ "tex_hand",         "res/textures/hand.png" },
 	},
 	fonts = {
 		{ "ui",         "res/fonts/Jamboree.ttf",   32,  "default" },
