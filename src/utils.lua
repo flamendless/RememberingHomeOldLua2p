@@ -121,10 +121,10 @@ end
 
 function Utils.math.calc_e_controller_origin(e)
 	assert(e.__isEntity, e)
-	local anim_data = e.animation_data
+	local fw = Helper.get_frame_size(e)
 	local transform = e.transform
 	local pos = e.pos
-	local x = pos.x + anim_data.frame_width/2 - transform.ox
+	local x = pos.x + fw/2 - transform.ox
 	local y = pos.y
 	return x, y
 end

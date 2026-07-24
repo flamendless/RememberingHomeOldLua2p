@@ -10,7 +10,7 @@ local Transform = Concord.system({
 	pool_attach = { "pos", "attach_to" },
 	pool_auto_scale = { "transform", "auto_scale" },
 	pool_spawn = { "pos", "attach_to_spawn_point" },
-	pool_controller = { "pos", "controller_origin", "animation_data" },
+	pool_controller = { "pos", "controller_origin", "animation" },
 })
 
 function Transform:init(world)

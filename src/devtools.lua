@@ -4,7 +4,6 @@ local DevTools = {
 	pause = false,
 	flags = {
 		animation = false,
-		anim = false,
 		deferred_lighting = false,
 		billboard_glow = false,
 		bounding_box = false,

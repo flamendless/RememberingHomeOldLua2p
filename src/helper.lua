@@ -17,12 +17,8 @@ function Helper.get_real_size(e)
 end
 
 function Helper.get_frame_size(e)
-	local anim_data = e.animation_data
-	if anim_data then
-		return anim_data.frame_width, anim_data.frame_height
-	end
-	local anim = e.anim
-	if anim then
+	local anim = e.animation
+	if anim and anim.obj then
 		local clip = anim.obj:current_clip()
 		if clip then
 			return clip.frame_width, clip.frame_height
@@ -88,14 +84,14 @@ function Helper.get_ltwh(e)
 	local sprite = e.sprite
 	local w, h = sprite.iw, sprite.ih
 	local collider = e.collider
-	local anim_data = e.animation_data
+	local fw, fh = Helper.get_frame_size(e)
 
 	if collider then
 		w = collider.w
 		h = collider.h
-	elseif anim_data then
-		w = anim_data.frame_width
-		h = anim_data.frame_height
+	elseif fw and fh then
+		w = fw
+		h = fh
 	end
 
 	--get the scale

@@ -64,7 +64,9 @@ function Intro:state_setup()
 		:give("intro_light")
 	self.e_car_reflect = Concord.entity(self.world)
 		:assemble(Assemblages.Intro.car_reflect, self.e_car)
-		:give("animation_on_loop", "car_reflection_flicker")
+	self.e_car_reflect.animation.obj:on("loop", function()
+		self:car_reflection_flicker()
+	end)
 
 	local fw, fh = 512, 128
 	local fsx = ww2 * 4 / fw
@@ -85,22 +87,22 @@ function Intro:state_setup()
 	Concord.entity(self.world)
 		:assemble(Assemblages.UI.ui_text, "flamendless studio presents", "ui", 32, 32)
 		:give("intro_text")
-		:give("animation_data", Animation.get("splat"))
+		:give("animation", Animation.new_single(Animation.get("splat"), true))
 
 	Concord.entity(self.world)
 		:assemble(Assemblages.UI.ui_text, "a game by Brandon", "ui", 32, 32)
 		:give("intro_text")
-		:give("animation_data", Animation.get("splat"))
+		:give("animation", Animation.new_single(Animation.get("splat"), true))
 
 	Concord.entity(self.world)
 		:assemble(Assemblages.UI.ui_text, "arts by Conrad", "ui", 32, 32)
 		:give("intro_text")
-		:give("animation_data", Animation.get("splat"))
+		:give("animation", Animation.new_single(Animation.get("splat"), true))
 
 	Concord.entity(self.world)
 		:assemble(Assemblages.UI.ui_text, "music by ???", "ui", 32, 32)
 		:give("intro_text")
-		:give("animation_data", Animation.get("splat"))
+		:give("animation", Animation.new_single(Animation.get("splat"), true))
 
 	self.e_title_sheet = Concord.entity(self.world):assemble(Assemblages.Intro.sheet_title, ww, wh)
 

@@ -28,6 +28,10 @@ function EnemyController:spawn_enemy(enemy_type, x, y)
 	Concord.entity(self.world):assemble(Assemblages.Enemy.base, enemy_type, x, y)
 end
 
+local function base_tag_for(anim_name)
+	return anim_name:gsub("_left$", "")
+end
+
 function EnemyController:update(dt)
 	for _, e in ipairs(self.pool) do
 		local body = e.body
@@ -56,7 +60,7 @@ function EnemyController:update(dt)
 			anim_name = anim_name .. "_left"
 		end
 
-		self.world:emit("switch_animation_tag", e, anim_name)
+		e.animation.obj:play(anim_name, base_tag_for(anim_name))
 		self.world:emit("update_speed_data", e, current_node or anim_name)
 	end
 end

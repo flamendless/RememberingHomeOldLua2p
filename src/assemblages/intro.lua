@@ -115,9 +115,8 @@ end
 
 function Intro.car(e)
 	e:give("id", "car")
-		:give("animation_data", Animation.get("car"))
+		:give("animation", Animation.new_single(Animation.get("car"), false))
 		:give("pos", 16, 325)
-		:give("animation", false)
 		:give("z_index", z_index.car[1])
 		:give("depth_zoom", z_index.car[2])
 		:give("transform")
@@ -125,9 +124,8 @@ end
 
 function Intro.car_reflect(e, car)
 	e:give("id", "car_reflect")
-		:give("animation_data", Animation.get("car_reflect"))
+		:give("animation", Animation.new_single(Animation.get("car_reflect"), false))
 		:give("pos", car.pos.x, car.pos.y)
-		:give("animation", false)
 		:give("attach_to", car)
 		:give("z_index", z_index.car[1] + 8)
 		:give("depth_zoom", z_index.car_reflect[2])
@@ -175,19 +173,18 @@ end
 -- end
 
 function Intro.sheet_title(e, ww, wh)
+	local obj = Animation.new_single({
+		resource_id = "sheet_title",
+		frames = { "1-3", 1, "1-3", 1, "1-1", 1 },
+		delay = { 1, 0.1, 1, 0.1, 0.1, 0.1, 1 },
+		rows_count = 1,
+		columns_count = 3,
+		n_frames = 3,
+	}, false)
+	obj:pause_at_start()
 	e:give("id", "title")
-		:give("animation_data", {
-			resource_id = "sheet_title",
-			frames = { "1-3", 1, "1-3", 1, "1-1", 1 },
-			delay = { 1, 0.1, 1, 0.1, 0.1, 0.1, 1 },
-
-			rows_count = 1,
-			columns_count = 3,
-			n_frames = 3,
-		})
+		:give("animation", obj)
 		:give("pos", ww/2, wh/2)
-		:give("animation", false)
-		:give("animation_pause_at", Enums.pause_at.first)
 		:give("transform", 0, 1, 1, 0.5, 0.5)
 		:give("auto_scale", ww/2, wh/2, true)
 		:give("color", Palette.get("white", 0))

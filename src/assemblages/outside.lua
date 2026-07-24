@@ -36,8 +36,7 @@ function Outside.splashes(e)
 		:give("pos", 0, 4)
 		:give("z_index", z_index.splashes)
 		:give("color", { 1, 1, 1, 1 })
-		:give("animation")
-		:give("animation_data", Animation.get("outside_" .. resource_id))
+		:give("animation", Animation.new_single(Animation.get("outside_" .. resource_id), false))
 
 	if not is_compatible then
 		e:give("transform", 0, 4, 4)

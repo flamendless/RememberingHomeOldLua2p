@@ -1,4 +1,4 @@
-local c = Concord.component("multi_animation_data", function(c, first, data, modifier)
+local c = Concord.component("multi_animation_data_old", function(c, first, data, modifier)
 	assert(type(first) == "string", first)
 	assert(type(data) == "table", data)
 	assert(data[first], "no " .. first .. " found in data")

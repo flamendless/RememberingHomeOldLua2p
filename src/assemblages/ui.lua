@@ -34,15 +34,19 @@ function UI.speech_bubble(e, player, x, y)
 		sx = -sx
 	end
 
+	local obj = Animation.new_single(Animation.get("speech_bubble"))
+	obj:on("update", function()
+		if obj.frame == obj.frame_max then
+			obj:goto_frame(4)
+		end
+	end)
+
 	e:give("id", "speech_bubble")
 		:give("pos", x, y)
 		:give("color", { 1, 1, 1, 1 })
-		:give("animation_data", Animation.get("speech_bubble"))
-		:give("animation")
+		:give("animation", obj)
 		:give("z_index", 99)
 		:give("transform", 0, sx, 0.5, 0, 1)
-		:give("current_frame")
-		:give("animation_on_update", "speech_bubble_update")
 		:give("notification", "speech_bubble")
 		:give("attach_to", player)
 		:give("attach_to_offset", 16, 18)

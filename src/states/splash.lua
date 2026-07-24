@@ -64,7 +64,7 @@ end
 function Splash:create_splash_wits()
 	self.world:emit("set_post_process_effect", Enums.shaders.glitch, false)
 	local ww, wh = love.graphics.getDimensions()
-	local anim = Anim.new_single(Animation.get("wits"))
+	local anim = Animation.new_single(Animation.get("wits"))
 	anim:on("loop", function()
 		anim:pause_at_end()
 	end)
@@ -72,7 +72,7 @@ function Splash:create_splash_wits()
 		self:splash_wits_done()
 	end)
 	self.splash_wits = Concord.entity(self.world)
-		:give("anim", anim)
+		:give("animation", anim)
 		:give("id", "splash_wits")
 		:give("pos", ww/2, wh/2)
 		:give("color", { 1, 1, 1, 1 })
@@ -163,7 +163,7 @@ function Splash:state_update(dt)
 			end
 
 			if self.current_state == Enums.splash_state.wits and self.skippable then
-				self.splash_wits.anim.obj:stop("pauseAtEnd")
+				self.splash_wits.animation.obj:stop("pauseAtEnd")
 				self.skippable = false
 			end
 

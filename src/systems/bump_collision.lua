@@ -183,7 +183,7 @@ function BumpCollision:update_collider(e)
 	if sub_id then
 		new_collider = new_collider[sub_id]
 	end
-	new_collider = new_collider[e.animation.current_tag]
+	new_collider = new_collider[e.animation.obj.current_tag]
 	if not new_collider then
 		return
 	end

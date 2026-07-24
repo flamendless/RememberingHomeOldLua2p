@@ -1,4 +1,4 @@
-local c_anim_data = Concord.component("animation_data", function(c, data)
+local c_anim_data = Concord.component("animation_data_old", function(c, data)
 	assert(type(data) == "table", data)
 	assert((data.resource_id and type(data.resource_id) == "string"), data.resource_id)
 	assert(type(data.frames) == "table", data.frames)

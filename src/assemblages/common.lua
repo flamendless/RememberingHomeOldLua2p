@@ -22,11 +22,11 @@ function Common.static_text(e, pos, str, font, color)
 	e:give("id", "static_text"):give("static_text", str):give("font", font):give("pos", pos):give("color", color)
 end
 
-function Common.animated_sprite(e, animation_data, x, y, stop_on_last)
+function Common.animated_sprite(e, clip, x, y, stop_on_last)
+	local obj = Animation.new_single(clip, stop_on_last)
 	e:give("id", "animated_sprite")
-		:give("animation_data", animation_data)
+		:give("animation", obj)
 		:give("pos", x, y)
-		:give("animation", stop_on_last)
 end
 
 function Common.camera(e, cam, scale, w, h, clip_col)

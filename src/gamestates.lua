@@ -64,7 +64,6 @@ function GameStates.start(resources)
 			preupdate = true,
 			remove_outlines = true,
 			set_ambiance = true,
-			switch_animation_tag = true,
 			update = true,
 			update_collider = true,
 			update_particle_system = true,

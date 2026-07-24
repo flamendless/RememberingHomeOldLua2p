@@ -36,7 +36,7 @@ end
 local function is_current_anim(e, tag)
 	assert((e.__isEntity and e.behavior_tree and e.animation), e)
 	assert(type(tag) == "string", tag)
-	return (e.animation.base_tag == tag) and "success" or "failure"
+	return (e.animation.obj.base_tag == tag) and "success" or "failure"
 end
 
 local function is_current_anim_bt(e, tag)
@@ -50,12 +50,12 @@ end
 local function is_current_anim_done(e, tag)
 	assert((e.__isEntity and e.behavior_tree and e.animation), e)
 	assert(type(tag) == "string", tag)
-	local base_tag = e.animation.base_tag
+	local base_tag = e.animation.obj.base_tag
 	if base_tag ~= tag then
 		return "running"
 	end
-	local current_frame = e.current_frame
-	return (current_frame.value == current_frame.max) and "success" or "running"
+	local obj = e.animation.obj
+	return (obj.frame == obj.frame_max) and "success" or "running"
 end
 
 local function is_current_anim_done_bt(e, tag)

@@ -15,17 +15,11 @@ function AnimationSync:init(world)
 			assert(target_c[prop], "target component must have property: " .. prop)
 		end
 
-		local md = e_target.multi_animation_data
-		if md then
-			md = md.data
+		local obj = e_target.animation and e_target.animation.obj
+		if obj and obj.clips then
 			local data = e.anim_sync_data.data
-			for k, v in pairs(data) do
-				assert(md[k], "multi_animation_data must have key: " .. k)
-				for _, t in ipairs(v) do
-					for _, prop in ipairs(c_props) do
-						assert(t[prop], "subdata must have property: " .. prop)
-					end
-				end
+			for k in pairs(data) do
+				assert(obj.clips[k], "animation clips must have key: " .. k)
 			end
 		end
 	end
@@ -34,12 +28,12 @@ end
 function AnimationSync:update(dt)
 	for _, e in ipairs(self.pool) do
 		local e_target = self.world:getEntityByKey(e.anim_sync_with.key)
-		local animation = e_target.animation
+		local obj = e_target.animation.obj
 		local anim_sync_data = e.anim_sync_data
-		local data = anim_sync_data.data[animation.base_tag]
+		local data = anim_sync_data.data[obj.base_tag]
 		if data then
 			local c_props = anim_sync_data.c_props
-			local frame = e_target.current_frame.value
+			local frame = obj.frame
 			for _, prop in ipairs(c_props) do
 				local target_data = data[frame]
 				if target_data then
@@ -48,7 +42,7 @@ function AnimationSync:update(dt)
 				end
 			end
 		else
-			Log.warn("there is no animation tag in sync data:", animation.base_tag)
+			Log.warn("there is no animation tag in sync data:", obj.base_tag)
 		end
 	end
 end

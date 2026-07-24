@@ -6,7 +6,7 @@ function Depth:init(world)
 	self.world = world
 
 	self.pool.onAdded = function(pool, e)
-		assert(e.transform and not e.quad_transform, e.id.value .. " must have a transform or quad_transform component")
+		assert(e.transform or e.quad_transform, e.id.value .. " must have a transform or quad_transform component")
 	end
 end
 

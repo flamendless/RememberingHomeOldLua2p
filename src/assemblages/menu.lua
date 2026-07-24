@@ -2,16 +2,15 @@ local Menu = {}
 
 function Menu.desk_fast(e, ww, wh)
 	e:give("id", "desk_fast")
-		:give("animation_data", {
+		:give("animation", Animation.new_single({
 			resource_id = "sheet_desk",
 			frames = { "1-3", 1, "1-3", 2, "1-1", 3 },
 			delay = 0.001,
 			rows_count = 3,
 			columns_count = 3,
 			n_frames = 7,
-		})
+		}, false))
 		:give("pos", ww/2, wh/2)
-		:give("animation", false)
 		:give("transform", 0, 1, 1, 0.5, 0.5)
 		:give("auto_scale", ww, wh, true)
 		:give("color", Palette.get("white"))
@@ -19,16 +18,15 @@ end
 
 function Menu.desk(e, ww, wh)
 	e:give("id", "desk")
-		:give("animation_data", {
+		:give("animation", Animation.new_single({
 			resource_id = "sheet_desk",
 			frames = { "1-3", 1, "1-3", 2, "1-1", 3 },
 			delay = { 1, 0.1, 1, 0.1, 0.1, 0.1, 1 },
 			rows_count = 3,
 			columns_count = 3,
 			n_frames = 7,
-		})
+		}, false))
 		:give("pos", ww/2, wh/2)
-		:give("animation", false)
 		:give("transform", 0, 1, 1, 0.5, 0.5)
 		:give("auto_scale", ww, wh, true)
 		:give("color", Palette.get("white"))
@@ -42,29 +40,17 @@ function Menu.bg_hallway(e, x, y, scale, ox, oy)
 	e:give("id", "bg_hallway"):give("sprite", "bg_hallway"):give("pos", x, y):give("transform", 0, scale, scale, ox, oy)
 end
 
---INFO: Single frame title
--- function Menu.title(e, x, y, scale, ox, oy)
--- 	e:give("id", "title")
--- 		:give("sprite", "title")
--- 		:give("pos", x, y)
--- 		:give("transform", 0, scale, scale, ox, oy)
--- 		:give("color", Palette.get("white", 0.75))
--- 		:give("menu_text")
--- end
-
 function Menu.sheet_title(e, ww, wh)
 	e:give("id", "title")
-		:give("animation_data", {
+		:give("animation", Animation.new_single({
 			resource_id = "sheet_title",
 			frames = { "1-3", 1, "1-3", 1, "1-1", 1 },
 			delay = { 1, 0.1, 1, 0.1, 0.1, 0.1, 1 },
-
 			rows_count = 1,
 			columns_count = 3,
 			n_frames = 3,
-		})
+		}, false))
 		:give("pos", 24, wh/2)
-		:give("animation", false)
 		:give("transform", 0, 1, 1, 0, 0.5)
 		:give("auto_scale", ww/3, wh, true)
 		:give("color", Palette.get("white", 0))
@@ -72,16 +58,6 @@ function Menu.sheet_title(e, ww, wh)
 		:give("fade_in_target_alpha", 0.5)
 		:give("menu_text")
 end
-
--- function Menu.subtitle(e, x, y, target, scale, ox, oy)
--- 	e:give("id", "subtitle")
--- 		:give("sprite", "subtitle")
--- 		:give("pos", x, y)
--- 		:give("anchor", target, Enums.anchor.center, Enums.anchor.bottom)
--- 		:give("transform", 0, scale, scale, ox, oy)
--- 		:give("color", Palette.get("white", 0.5))
--- 		:give("menu_text")
--- end
 
 function Menu.option_item(e, id, str, fnt, png, x, y, scale, i, sub_i, list_id)
 	e:give("id", id)
