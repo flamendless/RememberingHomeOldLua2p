@@ -78,12 +78,11 @@ Data = {
 	AnimationSyncData = require("data.animation_sync_data"),
 	Colliders = require("data.colliders"),
 	Dialogues = require("data.dialogues"),
-	Doors = require("data.doors"),
 	Items = require("data.items"),
 	Lights = require("data.lights"),
 	Notes = require("data.notes"),
-	PlayerSpawnPoints = require("data.player_spawn_points"),
 	ResourcesList = require("data.resources_list"),
+	Rooms = require("data.rooms"),
 	Vignette = require("data.vignette"),
 }
 

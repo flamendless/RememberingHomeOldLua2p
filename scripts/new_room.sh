@@ -195,12 +195,8 @@ ResourcesList.${pascal} = {
 EOF
 fi
 
-if ! grep -q "Doors.${pascal}" "$root/src/data/doors.lua"; then
-	perl -i -pe "s/(Doors\.Kitchen = \{)/Doors.${pascal} = {\n}\n\n\${1}/" "$root/src/data/doors.lua"
-fi
-
-if ! grep -q "PlayerSpawnPoints.${pascal}" "$root/src/data/player_spawn_points.lua"; then
-	perl -i -pe "s/(PlayerSpawnPoints\.Kitchen = \{)/PlayerSpawnPoints.${pascal} = {\n\tdefault = { 360, 64 },\n}\n\n\${1}/" "$root/src/data/player_spawn_points.lua"
+if ! grep -q "Rooms.nodes\[G.${pascal}\]" "$root/src/data/rooms.lua"; then
+	perl -i -pe "s/(Rooms\.nodes\[G\.Kitchen\] = \{)/Rooms.nodes[G.${pascal}] = {\n\tdefault = { 360, 64 },\n\tdoors = {},\n}\n\n\${1}/" "$root/src/data/rooms.lua"
 fi
 
 if ! grep -q "Lights.${snake}" "$root/src/data/lights.lua"; then
@@ -218,14 +214,13 @@ echo "Updated:"
 echo "  src/global.lua"
 echo "  src/ecs.lua"
 echo "  src/data/resources_list.lua"
-echo "  src/data/doors.lua"
-echo "  src/data/player_spawn_points.lua"
+echo "  src/data/rooms.lua"
 echo "  src/data/lights.lua"
 echo ""
 echo "Manual steps remaining:"
 echo "  1. Add art to res/images/${snake}/ and export layers to res/exported/${snake}/"
 echo "  2. Run: ./build.sh gen_atlas ${snake} && ./build.sh copy_res"
 echo "  3. Fill in src/atlases/${snake}_items.lua item placements"
-echo "  4. Wire doors in src/data/doors.lua and spawn points in src/data/player_spawn_points.lua"
+echo "  4. Wire door edges and spawn points in src/data/rooms.lua"
 echo "  5. Add Palette entries for ambiance_${snake} and ${snake}_side if needed"
 echo "  6. Test with: GameStates.switch(\"${pascal}\")"

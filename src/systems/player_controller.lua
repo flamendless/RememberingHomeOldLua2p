@@ -2,20 +2,6 @@ local PlayerController = Concord.system({
 	pool = { "player_controller", "body", "collider" },
 })
 
-local function get_spawn_points(current_id, prev_id)
-	local d1 = Data.PlayerSpawnPoints[current_id]
-	if not d1[prev_id] then
-		prev_id = "default"
-	end
-	local d = Data.PlayerSpawnPoints[current_id][prev_id]
-	assert(d, "No data given current_id " .. current_id .. " and prev_id " .. prev_id)
-	if not d[3] then
-		d[3] = Enums.face_dir.left
-	end
-	assert(type(d[3]) == "string" and (d[3] == Enums.face_dir.left or d[3] == Enums.face_dir.right), d[3])
-	return unpack(d)
-end
-
 local function stop_body_motion(e)
 	local body = e.body
 	body.dx = 0
@@ -156,7 +142,7 @@ function PlayerController:spawn_player(fn)
 	if fn then assert(type(fn) == "function") end
 	assert(self.player == nil, "Player already exists")
 
-	local x, y, face = get_spawn_points(GameStates.current_id, GameStates.prev_id)
+	local x, y, face = Data.Rooms.get_spawn(GameStates.current_id, GameStates.prev_id)
 	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
 	self.world:__flush()
 	if face == Enums.face_dir.left then

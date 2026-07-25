@@ -19,6 +19,5 @@ In section lists the steps and files that are needed to create a new room.
 - `src/data/resources_list.lua`
 - `src/global.lua`
 - `src/ecs.lua`
-- `src/data/player_spawn_points.lua`
+- `src/data/rooms.lua`
 - `src/data/lights.lua`
-- `src/data/doors.lua`
