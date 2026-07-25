@@ -78,6 +78,7 @@ end
 
 function PlayerController:anim_open_door(e)
 	if not (e and e.animation) then return end
+	stop_body_motion(e)
 	local obj = e.animation.obj
 	local tag = (e.body.dir == -1) and Enums.anim_state.open_door_left or Enums.anim_state.open_door
 	obj:play(tag)
@@ -257,8 +258,12 @@ function PlayerController:update(dt)
 		end
 	end
 
-	local anim_name = self:player_update_animation()
-	self.world:emit("update_speed_data", self.player, anim_name)
+	if self.player.override_animation then
+		stop_body_motion(self.player)
+	else
+		local anim_name = self:player_update_animation()
+		self.world:emit("update_speed_data", self.player, anim_name)
+	end
 	-- self.world:emit("lighter_update_pos", self.player)
 end
 
