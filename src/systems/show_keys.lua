@@ -39,10 +39,98 @@ function ShowKeys:create_key_with_text(id, txt, key)
 	return self.keys[id], self.texts[id]
 end
 
+local SPLASH_HAND_SCALE = Assemblages.HandDecal.SPLASH_HAND_SCALE
+local SPLASH_HAND_UV_SCALE = Assemblages.HandDecal.SPLASH_HAND_UV_SCALE
+local SPLASH_HAND_MARGIN = Assemblages.HandDecal.SPLASH_HAND_MARGIN
+local SPLASH_HAND_EFFECTS = Assemblages.HandDecal.SPLASH_HAND_EFFECTS
+local SKIP_HAND_TEX = Assemblages.HandDecal.HAND_TEX
+
+local function fade_ui_color(e, duration, on_complete)
+	Flux.to(e.color.value, duration, { [4] = 0 }):oncomplete(function()
+		e:destroy()
+		if on_complete then
+			on_complete()
+		end
+	end)
+end
+
+function ShowKeys:sync_skip_labels()
+	if not self.skip_hand then
+		return
+	end
+	Assemblages.HandDecal.sync_key_label(self.skip_hand, self.skip_key_label)
+end
+
+function ShowKeys:destroy_skip_hand()
+	for _, key in ipairs({ "skip_hand", "skip_key_label" }) do
+		local e = self.world:getEntityByKey(key)
+		if e then
+			e:destroy()
+		end
+	end
+	self.skip_hand = nil
+	self.skip_key_label = nil
+	self.world:__flush()
+end
+
 function ShowKeys:show_skip()
-	local k, t = self:create_key_with_text("skip", "Skip", Inputs.rev_map.interact)
-	k:give("color_fade_in_out", 1):give("skip")
-	t:give("color_fade_in_out", 1):give("skip")
+	self:destroy_skip_hand()
+
+	local ww, wh = love.graphics.getDimensions()
+	local hand_size = SKIP_HAND_TEX * SPLASH_HAND_SCALE
+	local half = hand_size / 2
+	local hx = ww - SPLASH_HAND_MARGIN - half
+	local hy = wh - SPLASH_HAND_MARGIN - half
+
+	self.skip_hand = Concord.entity(self.world):assemble(
+		Assemblages.HandDecal.create,
+		{
+			id = "skip_hand",
+			key = "skip_hand",
+			x = hx,
+			y = hy,
+			scale = SPLASH_HAND_SCALE,
+			uv_scale = SPLASH_HAND_UV_SCALE,
+			rotation = 0,
+			blood_amount = SPLASH_HAND_EFFECTS.blood_amount,
+			damage_amount = SPLASH_HAND_EFFECTS.damage_amount,
+			distort_amount = SPLASH_HAND_EFFECTS.distort_amount,
+			ui_element = true,
+			skip = true,
+		}
+	)
+	Assemblages.HandDecal.fade_in(self.skip_hand, 1, 0.5)
+	Assemblages.HandDecal.pulse_opacity(self.skip_hand, 1, 0, 0, 1)
+
+	self.skip_key_label = Assemblages.HandDecal.create_key_label(
+		self.world,
+		string.upper(Inputs.rev_map.interact),
+		{
+			id = "skip_key_label",
+			key = "skip_key_label",
+			x = hx,
+			y = hy,
+			hand_scale = SPLASH_HAND_SCALE,
+			ui_element = true,
+			skip = true,
+		}
+	)
+end
+
+function ShowKeys:fade_skip_hand(duration)
+	duration = duration or 0.5
+
+	local hand = self.skip_hand or self.world:getEntityByKey("skip_hand")
+	local label = self.skip_key_label or self.world:getEntityByKey("skip_key_label")
+	self.skip_hand = nil
+	self.skip_key_label = nil
+
+	if hand then
+		Assemblages.HandDecal.fade_out(hand, duration)
+	end
+	if label then
+		fade_ui_color(label, duration)
+	end
 end
 
 function ShowKeys:create_inventory_key()
@@ -150,6 +238,10 @@ function ShowKeys:show_key_at(id, bool, pos)
 end
 
 function ShowKeys:destroy_key(id)
+	if id == "skip" then
+		self:fade_skip_hand(0)
+		return
+	end
 	self.keys[id]:destroy()
 	local t = self.texts[id]
 	if t then
@@ -159,6 +251,8 @@ function ShowKeys:destroy_key(id)
 end
 
 function ShowKeys:update(dt)
+	self:sync_skip_labels()
+
 	if not Settings.current.show_keys then return end
 	for _, e in pairs(self.keys) do
 		local fp = e.fake_pulse

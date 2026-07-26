@@ -16,6 +16,7 @@ function PlayerController:init(world)
 	self.world = world
 	self.turn_cooldown = 0
 	self.on_lighter = false
+	self.lighter_opened_this_frame = false
 
 	if DEV then
 		self.turn_delay = 0.01
@@ -116,6 +117,30 @@ function PlayerController:anim_close_lighter(e)
 	e:give("override_animation")
 end
 
+function PlayerController:on_close_lighter()
+	if not self.player or not self.on_lighter then
+		return
+	end
+	self.last_desired_dir = 0
+	self.world:emit("anim_close_lighter", self.player)
+	self.on_lighter = false
+end
+
+function PlayerController:on_open_lighter()
+	if not self.player or self.on_lighter then
+		return
+	end
+	if DEV then
+		Items.add("lighter1")
+		Items.toggle_equip("lighter1")
+	end
+	self.last_desired_dir = 0
+	self.world:emit("anim_open_lighter", self.player)
+	self.on_lighter = true
+	self.player:remove("can_lighter")
+	self.lighter_opened_this_frame = true
+end
+
 function PlayerController:on_toggle_equip_lighter()
 	if DEV then
 		Items.add("lighter1")
@@ -129,7 +154,7 @@ function PlayerController:on_toggle_equip_lighter()
 		self.world:emit("anim_open_lighter", self.player)
 		self.on_lighter = true
 		self.player:remove("can_lighter")
-	else
+	elseif self.on_lighter and not self.player:has("block_lighter_close") then
 		self.world:emit("anim_close_lighter", self.player)
 		self.on_lighter = false
 	end
@@ -170,10 +195,18 @@ end
 function PlayerController:update(dt)
 	if not self.player then return end
 
+	local skip_lighter_input = self.lighter_opened_this_frame
+	self.lighter_opened_this_frame = false
+
 	local lighter_pressed = Inputs.pressed("lighter")
-	if lighter_pressed then
-		self:on_toggle_equip_lighter()
-		return
+	if lighter_pressed and not skip_lighter_input then
+		if self.on_lighter and not self.player:has("block_lighter_close") then
+			self:on_toggle_equip_lighter()
+			return
+		elseif self.player:has("can_lighter") then
+			self:on_toggle_equip_lighter()
+			return
+		end
 	end
 
 	if self.player.override_animation then

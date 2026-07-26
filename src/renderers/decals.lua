@@ -53,25 +53,38 @@ function Decals.remove(e)
 	end
 end
 
+function Decals.send_uniforms(e)
+	local c_decals_shaders = e.decals_shaders
+	if not c_decals_shaders then
+		return
+	end
+
+	local c_decals = e.decals
+	if c_decals.kind ~= Enums.decals.hand then
+		return
+	end
+
+	local data = c_decals_shaders.data
+	c_decals_shaders.shader:send("time", data.time)
+	c_decals_shaders.shader:send("opacity", data.opacity)
+	c_decals_shaders.shader:send("blood_amount", data.blood_amount)
+	c_decals_shaders.shader:send("damage_amount", data.damage_amount)
+	c_decals_shaders.shader:send("distort_amount", data.distort_amount)
+	local uv_scale = data.uv_scale or data.scale[1]
+	c_decals_shaders.shader:send("scale", { uv_scale, uv_scale })
+	c_decals_shaders.shader:send("rotation", math.rad(data.rotation))
+end
+
 function Decals.update(dt, e)
 	assert(e.__isEntity)
 
 	local c_decals_shaders = e.decals_shaders
 	if c_decals_shaders then
-		-- INFO: let's unwrap instead of for-loop since we know the shaders data
 		local c_decals = e.decals
 		if c_decals.kind == Enums.decals.hand then
-			local data = c_decals_shaders.data
-			data.time = data.time + dt
-
-			c_decals_shaders.shader:send("time", data.time)
-			c_decals_shaders.shader:send("opacity", data.opacity)
-			c_decals_shaders.shader:send("blood_amount", data.blood_amount)
-			c_decals_shaders.shader:send("damage_amount", data.damage_amount)
-			c_decals_shaders.shader:send("distort_amount", data.distort_amount)
-			c_decals_shaders.shader:send("scale", data.scale)
-			c_decals_shaders.shader:send("rotation", math.rad(data.rotation))
+			c_decals_shaders.data.time = c_decals_shaders.data.time + dt
 		end
+		Decals.send_uniforms(e)
 	end
 end
 
@@ -101,6 +114,7 @@ function Decals.render(e)
 	local c_decals_shaders = e.decals_shaders
 	if c_decals_shaders then
 		temp_shader = love.graphics.getShader()
+		Decals.send_uniforms(e)
 		love.graphics.setShader(c_decals_shaders.shader)
 	end
 
@@ -112,7 +126,7 @@ function Decals.render(e)
 		Decals.render_hand(e)
 	end
 
-	if temp_shader then
+	if c_decals_shaders then
 		love.graphics.setShader(temp_shader)
 	end
 end

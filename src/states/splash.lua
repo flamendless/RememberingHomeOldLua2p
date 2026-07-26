@@ -16,10 +16,6 @@ function Splash:state_setup()
 end
 
 function Splash:state_init()
-	if Save.data.splash_done then
-		self.world:emit("show_skip")
-	end
-
 	self.timeline = TLE.Do(function()
 		self.world:emit("set_post_process_effect", Enums.shaders.glitch, true)
 		self.current_state = Enums.splash_state.love
@@ -47,6 +43,11 @@ end
 
 function Splash:set_skippable_timer()
 	if Save.data.splash_done then
+		self.skippable = false
+		if self.timer_skip then
+			self.timer_skip:clear()
+		end
+		self.world:emit("show_skip")
 		self.timer_skip = Timer()
 		self.timer_skip:after(DELAY_SKIP, function()
 			self.skippable = true
@@ -151,23 +152,25 @@ function Splash:state_update(dt)
 
 	if self.current_state == Enums.splash_state.love then
 		self.splash_love:update(dt)
-	else
-		self.world:emit("update", dt)
 	end
+	self.world:emit("update", dt)
 
 	if Save.data.splash_done then
 		if Inputs.released("interact") then
 			if self.current_state == Enums.splash_state.love and self.skippable then
+				self.world:emit("fade_skip_hand", 0.4)
 				self.splash_love:skip()
 				self.skippable = false
 			end
 
 			if self.current_state == Enums.splash_state.wits and self.skippable then
+				self.world:emit("fade_skip_hand", 0.4)
 				self.splash_wits.animation.obj:stop("pauseAtEnd")
 				self.skippable = false
 			end
 
 			if self.current_state == Enums.splash_state.flam and self.skippable then
+				self.world:emit("fade_skip_hand", 0.4)
 				self.world:emit("switch_state", Enums.game_state.Menu)
 				self.skippable = false
 			end

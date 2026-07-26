@@ -5,6 +5,7 @@ Concord.component("can_run")
 Concord.component("can_open_door")
 Concord.component("can_interact")
 Concord.component("can_lighter")
+Concord.component("block_lighter_close")
 
 Concord.component("can_move_left_only")
 Concord.component("can_move_right_only")

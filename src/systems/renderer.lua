@@ -136,10 +136,11 @@ function Renderer:pool_on_removed(pool, e)
 end
 
 function Renderer:update(dt)
-	local list = get_list(self, false)
-	for _, e in ipairs(list) do
-		if e.renderer.update then
-			e.renderer.update(dt, e)
+	for _, list in ipairs({ self.list, self.list_ui }) do
+		for _, e in ipairs(list) do
+			if e.renderer and e.renderer.update then
+				e.renderer.update(dt, e)
+			end
 		end
 	end
 end

@@ -182,6 +182,7 @@ Assemblages = {
 	UI = require("assemblages.ui"),
 	UtilityRoom = require("assemblages.utility_room"),
 	BillboardGlow = require("assemblages.billboard_glow"),
+	HandDecal = require("assemblages.hand_decal"),
 }
 
 ECS = require("ecs")
