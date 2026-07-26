@@ -5,7 +5,7 @@ TEST = {
 	mode = false,
 	scenario = nil,
 	seed = nil,
-	timeout = 120,
+	timeout = 180,
 }
 GAME_SPEED_MULT = 1
 
@@ -22,7 +22,7 @@ for _, v in pairs(args) do
 			GIT_COMMIT = arg[2]
 		elseif arg[1] == "--test" then
 			TEST.mode = true
-			TEST.scenario = arg[2] or "boot_to_outside"
+			TEST.scenario = arg[2] or "boot_to_tutorial_end"
 		elseif arg[1] == "--speed" then
 			GAME_SPEED_MULT = tonumber(arg[2]) or GAME_SPEED_MULT
 		elseif arg[1] == "--seed" then

@@ -177,6 +177,8 @@ end
 
 if TEST.mode then
 	local pending_releases = {}
+	local held_actions = {}
+	local dialogue_pump_phase = 0
 
 	function Inputs.apply_pending_releases()
 		for action in pairs(pending_releases) do
@@ -195,6 +197,55 @@ if TEST.mode then
 		assert(type(action) == "string", action)
 		assert(Inputs.current[action] ~= nil, action)
 		pending_releases[action] = true
+	end
+
+	function Inputs.hold(action)
+		assert(type(action) == "string", action)
+		assert(Inputs.current[action] ~= nil, action)
+		Inputs.current[action] = true
+		held_actions[action] = true
+		pending_releases[action] = nil
+	end
+
+	function Inputs.unhold(action)
+		assert(type(action) == "string", action)
+		assert(Inputs.current[action] ~= nil, action)
+		held_actions[action] = nil
+		pending_releases[action] = true
+	end
+
+	function Inputs.unhold_all()
+		for action in pairs(held_actions) do
+			pending_releases[action] = true
+			held_actions[action] = nil
+		end
+	end
+
+	function Inputs.pump_dialogue()
+		if not TestHooks.dialogue_active() then
+			dialogue_pump_phase = 0
+			return
+		end
+
+		-- Dialogue advances on Inputs.released(), which needs previous=true and
+		-- current=false when DialoguesSystem:state_update runs. TestRunner runs
+		-- before GameStates.update, so tap+release in one frame never produces
+		-- a visible release edge — synthesize it instead.
+		if TestHooks.dialogue_is_choice() then
+			if dialogue_pump_phase == 0 then
+				Inputs.previous["left"] = true
+				Inputs.current["left"] = false
+				dialogue_pump_phase = 1
+			else
+				Inputs.previous["interact"] = true
+				Inputs.current["interact"] = false
+				dialogue_pump_phase = 0
+			end
+		else
+			dialogue_pump_phase = 0
+			Inputs.previous["interact"] = true
+			Inputs.current["interact"] = false
+		end
 	end
 
 	function Inputs.tap_scancode(scancode)

@@ -11,6 +11,13 @@ local STEP_ACTION = {
 	[Enums.tutorial_step.wait_lighter_trigger] = "lighter",
 }
 
+local function tutorial_reached_x(pos_x, target_x, dir)
+	if dir < 0 then
+		return pos_x <= target_x
+	end
+	return pos_x >= target_x
+end
+
 local function action_label(action)
 	if action == "interact" then
 		return string.upper(Inputs.rev_map.interact)
@@ -377,6 +384,64 @@ function Tutorial:tutorial_step_set(step)
 	end
 end
 
+function Tutorial:sync_player_bump(e)
+	local bump_sys = self.world:getSystem(ECS.get_system_class("bump_collision"))
+	local col = e.collider
+	bump_sys.pool:update(e, e.pos.x, e.pos.y, col.w, col.h)
+end
+
+function Tutorial:complete_move_left()
+	local e = self.e_player
+	e.pos.x = self.left_target_x
+	self:sync_player_bump(e)
+	e:remove("can_move"):remove("can_move_left_only")
+	self.world:__flush()
+	self.world:emit("player_stop")
+	self.world:emit("player_force_face_dir", 1)
+	self:tutorial_step_set(Enums.tutorial_step.show_left_interact)
+end
+
+function Tutorial:complete_move_right()
+	local e = self.e_player
+	e.pos.x = self.right_target_x
+	self:sync_player_bump(e)
+	e:remove("can_move"):remove("can_move_right_only")
+	self.world:__flush()
+	self.world:emit("player_stop")
+	self.world:emit("player_force_face_dir", -1)
+	self:tutorial_step_set(Enums.tutorial_step.show_right_interact)
+end
+
+function Tutorial:update_movement(dt)
+	if self.step == Enums.tutorial_step.waiting_left then
+		local current = self.e_player.pos.x
+		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
+		progress = mathx.clamp(progress, 0, 1)
+		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
+
+		if tutorial_reached_x(current, self.left_target_x, -1) then
+			self:complete_move_left()
+		end
+
+	elseif self.step == Enums.tutorial_step.waiting_right then
+		local current = self.e_player.pos.x
+		local progress = (self.right_start_x - current) / (self.right_start_x - self.right_target_x)
+		progress = mathx.clamp(progress, 0, 1)
+		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
+
+		if tutorial_reached_x(current, self.right_target_x, 1) then
+			self:complete_move_right()
+		end
+	end
+end
+
+function Tutorial:update(dt)
+	if not self.state then
+		return
+	end
+	self:update_movement(dt)
+end
+
 function Tutorial:state_update(dt)
 	if not self.state then return end
 
@@ -431,21 +496,6 @@ function Tutorial:state_update(dt)
 			self:tutorial_step_set(Enums.tutorial_step.done_waiting_interact)
 		end
 
-	elseif self.step == Enums.tutorial_step.waiting_left then
-		local current = self.e_player.pos.x
-		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
-		progress = mathx.clamp(progress, 0, 1)
-
-		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
-
-		if progress >= 1 then
-			self.e_player:remove("can_move"):remove("can_move_left_only")
-			self.world:__flush()
-			self.world:emit("player_stop")
-			self.world:emit("player_force_face_dir", 1)
-			self:tutorial_step_set(Enums.tutorial_step.show_left_interact)
-		end
-
 	elseif self.step == Enums.tutorial_step.waiting_left_interact and not self.is_fluxing then
 		if Inputs.pressed("interact") then
 			self.is_fluxing = true
@@ -457,21 +507,6 @@ function Tutorial:state_update(dt)
 					self:tutorial_step_set(Enums.tutorial_step.done_left_interact)
 				end)
 			end)
-		end
-
-	elseif self.step == Enums.tutorial_step.waiting_right then
-		local current = self.e_player.pos.x
-		local progress = (self.right_start_x - current) / (self.right_start_x - self.right_target_x)
-		progress = mathx.clamp(progress, 0, 1)
-
-		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
-
-		if progress >= 1 then
-			self.e_player:remove("can_move"):remove("can_move_right_only")
-			self.world:__flush()
-			self.world:emit("player_stop")
-			self.world:emit("player_force_face_dir", -1)
-			self:tutorial_step_set(Enums.tutorial_step.show_right_interact)
 		end
 
 	elseif self.step == Enums.tutorial_step.waiting_right_interact and not self.is_fluxing then

@@ -204,8 +204,8 @@ function profile()
 
 function test()
 {
-	echo "Running autoplay test: boot_to_outside"
-	love "$dir_source" --test=boot_to_outside --speed=20 --seed=1
+	echo "Running autoplay test: boot_to_tutorial_end"
+	love "$dir_source" --test=boot_to_tutorial_end --speed=20 --seed=1
 	local code=$?
 	if [ $code -eq 0 ]; then
 		echo "TEST PASSED"
