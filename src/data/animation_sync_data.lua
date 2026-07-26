@@ -24,4 +24,41 @@ AnimationDataSync.flashlight = {
 	},
 }
 
+local function wick_lit(x, y)
+	return { x = x, y = y, power = 1 }
+end
+
+local function wick_unlit(x, y)
+	return { x = x, y = y, power = 0 }
+end
+
+AnimationDataSync.lighter = {
+	open_lighter = {
+		[1] = wick_unlit(8, -8),
+		[2] = wick_unlit(12, -12),
+		[3] = wick_unlit(16, -14),
+		[4] = wick_unlit(18, -16),
+		[5] = wick_unlit(20, -18),
+		[6] = wick_unlit(22, -19),
+		[7] = wick_unlit(24, -20),
+		[8] = wick_lit(26, -20),
+		[9] = wick_lit(26, -20),
+		[10] = wick_lit(26, -20),
+		[11] = wick_lit(26, -20),
+	},
+	close_lighter = {
+		[1] = wick_lit(26, -20),
+		[2] = wick_lit(26, -20),
+		[3] = wick_lit(24, -20),
+		[4] = wick_lit(22, -19),
+		[5] = wick_unlit(20, -18),
+		[6] = wick_unlit(18, -16),
+		[7] = wick_unlit(16, -14),
+		[8] = wick_unlit(12, -12),
+		[9] = wick_unlit(8, -8),
+		[10] = wick_unlit(6, -6),
+		[11] = wick_unlit(4, -4),
+	},
+}
+
 return AnimationDataSync

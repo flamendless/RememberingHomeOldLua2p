@@ -66,6 +66,7 @@ state_systems[G.Intro] = {
 
 state_systems[G.Outside] = {
 	"animation",
+	"animation_sync",
 	"atlas",
 	"bump_collision",
 	"camera",
@@ -106,6 +107,7 @@ state_systems[G.Outside] = {
 
 state_systems[G.StorageRoom] = {
 	"animation",
+	"animation_sync",
 	"atlas",
 	"bump_collision",
 	"camera",
@@ -139,10 +141,12 @@ state_systems[G.StorageRoom] = {
 	"ants",
 	"path",
 	"flies",
+	"lighter",
 }
 
 state_systems[G.UtilityRoom] = {
 	"animation",
+	"animation_sync",
 	"atlas",
 	"bump_collision",
 	"camera",
@@ -173,10 +177,12 @@ state_systems[G.UtilityRoom] = {
 	"timeline",
 	"behavior_tree",
 	"enemy_controller",
+	"lighter",
 }
 
 state_systems[G.Kitchen] = {
 	"animation",
+	"animation_sync",
 	"atlas",
 	"bump_collision",
 	"camera",
@@ -187,7 +193,7 @@ state_systems[G.Kitchen] = {
 	"entity",
 	"gamestates",
 	"interactive",
-	"inventory",
+	-- "inventory",
 	"items",
 	"movement",
 	"outline",
@@ -207,10 +213,12 @@ state_systems[G.Kitchen] = {
 	"timeline",
 	"behavior_tree",
 	"enemy_controller",
+	"lighter",
 }
 
 state_systems[G.LivingRoom] = {
 	"animation",
+	"animation_sync",
 	"atlas",
 	"bump_collision",
 	"camera",

@@ -94,7 +94,7 @@ function PlayerController:anim_open_lighter(e)
 	stop_body_motion(e)
 	local obj = e.animation.obj
 	local tag = (e.body.dir == -1) and Enums.anim_state.open_lighter_left or Enums.anim_state.open_lighter
-	obj:play(tag)
+	obj:play(tag, Enums.anim_state.open_lighter)
 	obj:on("loop", function()
 		obj:goto_frame(9)
 	end)
@@ -107,7 +107,7 @@ function PlayerController:anim_close_lighter(e)
 	local obj = e.animation.obj
 	local world = self.world
 	local tag = (e.body.dir == -1) and Enums.anim_state.close_lighter_left or Enums.anim_state.close_lighter
-	obj:play(tag)
+	obj:play(tag, Enums.anim_state.close_lighter)
 	obj:on("loop", function()
 		obj:pause_at_end()
 	end)

@@ -41,8 +41,6 @@ function AnimationSync:update(dt)
 					target_c[prop] = target_data[prop]
 				end
 			end
-		else
-			Log.warn("there is no animation tag in sync data:", obj.base_tag)
 		end
 	end
 end
