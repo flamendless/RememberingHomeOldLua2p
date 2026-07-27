@@ -11,6 +11,7 @@ local list = {
 		},
 	},
 }
+Log.debug("TODO: (Brandon)")
 
 function ItemsSystem:init(world)
 	self.world = world

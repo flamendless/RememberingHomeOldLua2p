@@ -102,7 +102,10 @@ state_systems[G.Outside] = {
 	"text_paint",
 	"tutorial",
 	"billboard_glow",
+	"candle",
 	"lighter",
+	"wind",
+	"flame",
 }
 
 state_systems[G.StorageRoom] = {
@@ -141,7 +144,10 @@ state_systems[G.StorageRoom] = {
 	"ants",
 	"path",
 	"flies",
+	"candle",
 	"lighter",
+	"wind",
+	"flame",
 }
 
 state_systems[G.UtilityRoom] = {
@@ -177,7 +183,10 @@ state_systems[G.UtilityRoom] = {
 	"timeline",
 	"behavior_tree",
 	"enemy_controller",
+	"candle",
 	"lighter",
+	"wind",
+	"flame",
 }
 
 state_systems[G.Kitchen] = {
@@ -213,7 +222,10 @@ state_systems[G.Kitchen] = {
 	"timeline",
 	"behavior_tree",
 	"enemy_controller",
+	"candle",
 	"lighter",
+	"wind",
+	"flame",
 }
 
 state_systems[G.LivingRoom] = {
@@ -249,7 +261,10 @@ state_systems[G.LivingRoom] = {
 	"timeline",
 	"behavior_tree",
 	"enemy_controller",
+	"candle",
 	"lighter",
+	"wind",
+	"flame",
 }
 state_systems[G.TotallyDarkRoom] = state_systems[G.LivingRoom]
 

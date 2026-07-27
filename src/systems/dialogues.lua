@@ -102,6 +102,7 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 		self.ui:showContent(self.current_content)
 
 		--TODO: Implement pause (b)
+		Log.debug("TODO: Implement pause (b)")
 		if e_other.dialogue_force_pause then
 			for _, key in ipairs(e_other.dialogue_force_pause.values) do
 				local e_to_pause = self.world:getEntityByKey(key)
@@ -153,6 +154,7 @@ function DialoguesSystem:state_update(dt)
 	-- end
 
 	--TODO: use enums for keys instead of strings
+	Log.debug("TODO: use enums for keys instead of strings")
 	if Inputs.released("interact") then
 		self:ev_advance()
 	end
@@ -362,6 +364,7 @@ if DEV then
 		end
 
 		--TODO: Maybe store knots in a map so that map[knot_name]count
+		Log.debug("TODO: Maybe store knots in a map so that map[knot_name]count")
 		Slab.Text("Dialogue:")
 		Slab.Indent()
 		if self.e_dialogue then

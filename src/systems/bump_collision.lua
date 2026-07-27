@@ -4,11 +4,35 @@ local BumpCollision = Concord.system({
 
 local function get_query_rect(self)
 	local camera = self.world:getResource("camera")
+	local x, y, w, h
 	if camera then
-		return camera:getVisible()
+		x, y, w, h = camera:getVisible()
 	else
+		x, y, w, h = 0, 0, love.graphics.getDimensions()
+	end
+
+	local function sane(n)
+		return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
+	end
+
+	if not sane(x) or not sane(y) or not sane(w) or not sane(h) or w <= 0 or h <= 0 then
+		Log.warn("BumpCollision: invalid query rect, using window fallback")
 		return 0, 0, love.graphics.getDimensions()
 	end
+
+	-- Absurd visible size usually means a bad camera scale; avoid scanning millions of cells.
+	local MAX_QUERY = 4096
+	if w > MAX_QUERY or h > MAX_QUERY then
+		Log.warn(
+			"BumpCollision: clamping oversized query rect (%.1f x %.1f)",
+			w,
+			h
+		)
+		w = math.min(w, MAX_QUERY)
+		h = math.min(h, MAX_QUERY)
+	end
+
+	return x, y, w, h
 end
 
 local function get_query_point(self)
@@ -22,6 +46,11 @@ end
 
 local function filter(item, other)
 	return other.collider.filter or Enums.bump_filter.slide
+end
+
+local function overlaps_query_rect(pool, e, x, y, w, h)
+	local rx, ry, rw, rh = pool:getRect(e)
+	return rx < x + w and rx + rw > x and ry < y + h and ry + rh > y
 end
 
 function BumpCollision:init(world)
@@ -41,14 +70,13 @@ end
 
 function BumpCollision:update(dt)
 	local x, y, w, h = get_query_rect(self)
-	local items, len = self.pool:queryRect(x, y, w, h)
-	for i = 1, len do
-		local e = items[i]
-		if e.body then
-			if e.bump.debug_clicked then
-				return
-			end
+	local pool = self.pool
+	local all, all_len = pool:getItems()
 
+	for i = 1, all_len do
+		local e = all[i]
+		-- Skip dragged debug bodies; do not abort the whole update.
+		if e.body and not e.bump.debug_clicked and overlaps_query_rect(pool, e, x, y, w, h) then
 			self:update_body(e)
 			self:check_col(e)
 		end
@@ -58,8 +86,12 @@ end
 function BumpCollision:update_body(e)
 	local body = e.body
 	local pos = e.pos
-	local cols, len
 
+	if body.vel_x == 0 and body.vel_y == 0 then
+		return
+	end
+
+	local cols, len
 	pos.x, pos.y, cols, len = self.pool:move(
 		e,
 		pos.x + body.vel_x,
@@ -83,8 +115,7 @@ function BumpCollision:update_body(e)
 end
 
 function BumpCollision:check_col(e)
-	local pos = e.pos
-	local _, _, cols, len = self.pool:check(e, pos.x, pos.y, filter)
+	local cols, len = self:overlap_at(e)
 	local has_collide_with = false
 	local has_collide_interactive = false
 
@@ -148,6 +179,12 @@ function BumpCollision:check_col(e)
 	self.pool.freeCollisions(cols)
 end
 
+function BumpCollision:overlap_at(e)
+	-- pool:check() calls projectMove() and can spin when overlapping at rest.
+	local rx, ry, rw, rh = self.pool:getRect(e)
+	return self.pool:project(e, rx, ry, rw, rh, rx, ry, filter)
+end
+
 function BumpCollision:on_item_use(item)
 	assert((item.__isEntity and item.item), item)
 	local x, y, w, h = get_query_rect(self)
@@ -155,8 +192,7 @@ function BumpCollision:on_item_use(item)
 	local e_other
 	for i = 1, len do
 		local e = items[i]
-		local pos = e.pos
-		local _, _, cols, c_len = self.pool:check(e, pos.x, pos.y, filter)
+		local cols, c_len = self:overlap_at(e)
 		for c = 1, c_len do
 			local col = cols[c]
 			local other = col.other
@@ -165,6 +201,7 @@ function BumpCollision:on_item_use(item)
 				break
 			end
 		end
+		self.pool.freeCollisions(cols)
 	end
 	self.world:emit("on_item_use_with", item, e_other)
 end

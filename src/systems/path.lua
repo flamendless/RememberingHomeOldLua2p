@@ -73,6 +73,7 @@ function Path:move_curve(dt, e, points)
 	end
 
 	--TODO: Errors 'Invalid Bezier curve: Not enough control points.'
+	Log.debug("TODO: Errors 'Invalid Bezier curve: Not enough control points.'")
 	local x, y = points:evaluate(bz.t)
 	pos.x, pos.y = x, y
 

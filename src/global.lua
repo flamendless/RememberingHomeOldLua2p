@@ -169,6 +169,7 @@ Assemblages = {
 	Kitchen = require("assemblages.kitchen"),
 	Light = require("assemblages.light"),
 	Lighter = require("assemblages.lighter"),
+	Candle = require("assemblages.candle"),
 	LivingRoom = require("assemblages.living_room"),
 	Menu = require("assemblages.menu"),
 	Notes = require("assemblages.notes"),

@@ -8,6 +8,7 @@ local Palette = {
 }
 
 -- TODO: (Brandon) finalize colors
+Log.debug("TODO: (Brandon) finalize colors")
 
 Palette.colors = {
 	black = { 0, 0, 0 },
@@ -89,7 +90,9 @@ Palette.diffuse = {
 	ambiance_totally_dark_room = { 0.7, 0.7, 0.7, 0.0 },
 
 	lighter_flame = { 3, 2, 0.5 },
+	candle_flame = { 2.5, 1.6, 0.4 },
 }
+Log.debug("TODO: finalize")
 
 function Palette.get(color, alpha)
 	assert(type(color) == "string", color)

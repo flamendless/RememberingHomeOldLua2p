@@ -139,6 +139,7 @@ Enums.decals = Enum(
 -- TODO: foot decal for walking/running?
 	"hand"
 )
+Log.debug("TODO: foot decal for walking/running?")
 
 Enums.dialogue_tags = Enum(
 	"important"

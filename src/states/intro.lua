@@ -213,6 +213,7 @@ function Intro:state_init()
 		Flux.to(car_pos, 5, { x = ww * 1.5 })
 
 		-- TODO: (Brandon) implement lightning to quickly black out scene
+		Log.debug("TODO: (Brandon) implement lightning to quickly black out scene")
 		if not self.is_switching then
 			Fade.fade_out(function()
 				Save.toggle_flag("intro_done", true)

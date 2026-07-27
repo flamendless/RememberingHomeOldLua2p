@@ -1,4 +1,5 @@
 --TODO: (Brandon) this is unused, maybe remove completely?
+Log.debug("TODO: (Brandon) this is unused, maybe remove completely?")
 local Notification = Concord.system({
 	pool = { "notification" },
 })

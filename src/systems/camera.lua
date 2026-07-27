@@ -221,10 +221,11 @@ function Camera:screen_shake(dur, intensity)
 	Timer.during(
 		dur,
 		function()
-			local x = self.init_screen_shake.x + love.math.random(intensity) * mathx.random_sign()
-			local y = self.init_screen_shake.y + love.math.random(intensity) * mathx.random_sign()
-			local scale = self.init_screen_shake.scale + love.math.random(intensity) * mathx.random_sign()
-			local rotation = self.init_screen_shake.rotation + math.rad(love.math.random(intensity)) * mathx.random_sign()
+			local r = love.math.random() * intensity
+			local x = self.init_screen_shake.x + r * mathx.random_sign()
+			local y = self.init_screen_shake.y + r * mathx.random_sign()
+			local scale = self.init_screen_shake.scale + r * mathx.random_sign()
+			local rotation = self.init_screen_shake.rotation + math.rad(r) * mathx.random_sign()
 			self.main_camera:setPosition(x, y)
 			self.main_camera:setScale(scale)
 			self.main_camera:setAngle(rotation)

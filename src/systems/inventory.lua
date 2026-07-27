@@ -82,6 +82,7 @@ local added = false
 
 function Inventory:update(dt)
 	--TODO: do we need inventory screen?
+	Log.debug("TODO: do we need inventory screen?")
 	if DEV then return end
 
 	if not self.is_open and Inputs.pressed("inventory") then
@@ -194,6 +195,7 @@ end
 Inventory["on_list_item_interact_" .. "inventory_cells"] = function(self, e_hovered)
 	if not self:get_selected_item() then
 		--TODO: (Brandon) play invalid sound
+		Log.debug("TODO: (Brandon) play invalid sound")
 		return
 	end
 	for _, e in ipairs(self.pool_choice) do

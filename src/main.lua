@@ -162,8 +162,6 @@ function love.run()
 
 	-- Main loop time.
 	return function()
-		-- Process events.
-
 		if love.event then
 			love.event.pump()
 			for name, a, b, c, d, e, f in love.event.poll() do

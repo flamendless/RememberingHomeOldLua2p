@@ -42,6 +42,8 @@ function TotallyDarkRoom:state_init()
 		self.world:emit("toggle_component", e_player, "can_lighter", true)
 	end)
 
+	self.world:emit("spawn_candle", 400, 280)
+
 	self.timeline = TLE.Do(function()
 		Fade.fade_in(nil, 1)
 		self.camera:setScale(4)

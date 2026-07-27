@@ -7,10 +7,12 @@ function VignetteEx:new(...)
 
 	--TODO: from vorn - Each texture should have a different,
 	--                  uh, oscillation, possibly still in phase but different move and loiter timing
+	Log.debug("TODO: from vorn")
 	self.effects = tablex.copy(Data.Vignette.values.zero)
 	self.effects.time = 0
 
 	--TODO: find a better texture?
+	Log.debug("TODO: find a better texture?")
 	self.tex_splat = Resources.data.images.vignette_part
 	self.tex_splat:setFilter("nearest", "nearest")
 	self.tex_splat:setWrap("clampzero", "clampzero")

@@ -1,5 +1,5 @@
 local Lighter = Concord.system({
-	pool_flame = { "id", "lighter_flame", "point_light", "pos", "diffuse" },
+	pool_flame = { "id", "lighter_flame", "point_light", "pos", "diffuse", "flame" },
 })
 
 local FLAME_POWER = 12
@@ -20,10 +20,8 @@ function Lighter:spawn_lighter(e_player)
 	self.e_lighter = Concord.entity(self.world)
 		:assemble(Assemblages.Lighter.lighter, e_player)
 
-	self.e_flame = Concord.entity(self.world):assemble(
-		Assemblages.Light.lighter_flame,
-		FLAME_POWER
-	)
+	self.e_flame = Concord.entity(self.world)
+		:assemble(Assemblages.Light.lighter_flame, FLAME_POWER)
 
 	self.world:setResource("e_lighter", self.e_lighter)
 end
@@ -35,7 +33,7 @@ function Lighter:lighter_update_pos(e_player)
 	self.e_lighter.transform.sx = -dir
 end
 
-function Lighter:is_flame_lit()
+function Lighter:is_flame_frame_lit()
 	local e = self.e_player
 	if not e or not e.animation then
 		return false
@@ -72,29 +70,53 @@ function Lighter:wick_world_pos(e_player)
 	return pos.x + (WICK_X - ox) * sx, pos.y + (WICK_Y - oy) * sy
 end
 
-function Lighter:update_flame_pos()
+function Lighter:request_close()
+	local pc = self.world:getSystem(ECS.get_system_class("player_controller"))
+	if not pc or not pc.on_lighter or pc:is_lighter_closing() then
+		return
+	end
+	self.world:emit("on_close_lighter")
+end
+
+function Lighter:on_anim_open_lighter(e_player)
+	if not self.e_flame or not self.e_flame.flame_windable then
+		return
+	end
+	self.e_flame.flame_windable.extinguished = false
+	if self.e_flame.flame_health and self.e_flame.flame_health.health <= 0 then
+		-- TODO: play lighter opening sound with no fuel/gas left
+		Log.debug("TODO: play lighter opening sound with no fuel/gas left")
+	end
+end
+
+function Lighter:on_flame_blown_out(e)
+	if self.e_flame and e == self.e_flame then
+		self:request_close()
+	end
+end
+
+function Lighter:on_flame_health_empty(e)
+	if self.e_flame and e == self.e_flame then
+		self:request_close()
+	end
+end
+
+function Lighter:update(dt)
 	if not self.e_player or not self.e_flame then
 		return
 	end
 
-	local f_pos = self.e_flame.pos
-	local pl = self.e_flame.point_light
-	local lit = self:is_flame_lit()
+	local anchor = self.e_flame.flame_anchor
+	local bx, by = self:wick_world_pos(self.e_player)
+	anchor.base_x = bx
+	anchor.base_y = by
+	anchor.dir = self.e_player.body.dir
 
-	f_pos.x, f_pos.y = self:wick_world_pos(self.e_player)
-	pl.value = self.e_flame.lighter_flame.power
-
-	if lit then
-		self.e_flame:remove("light_disabled")
+	if self:is_flame_frame_lit() then
+		self.e_flame:remove("flame_suppressed")
 	else
-		self.e_flame:give("light_disabled")
+		self.e_flame:give("flame_suppressed")
 	end
-
-	self.world:emit("update_light_pos", self.e_flame)
-end
-
-function Lighter:update(dt)
-	self:update_flame_pos()
 end
 
 return Lighter

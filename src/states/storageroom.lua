@@ -43,6 +43,7 @@ function StorageRoom:state_init()
 
 	if DEV then
 		-- TODO: (Brandon) set ants start and end pos based on room?
+		Log.debug("TODO: (Brandon) set ants start and end pos based on room?")
 		local opts = {
 			scatter_away_from = {
 				self.e_player,

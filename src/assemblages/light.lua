@@ -64,14 +64,44 @@ function Light.fl_end(e) --away from the player
 		:give("flashlight_light")
 end
 
+function Light.flame_stack(e, x, y, z, power, diffuse_key, max_health, consumption_rate, id)
+	assert(e.__isEntity, e)
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	assert(type(z) == "number", z)
+	assert(type(power) == "number", power)
+	assert(type(diffuse_key) == "string", diffuse_key)
+	assert(type(max_health) == "number", max_health)
+	assert(type(consumption_rate) == "number", consumption_rate)
+	assert(type(id) == "string", id)
+
+	e:assemble(Light.point, x, y, z, power, Palette.get_diffuse(diffuse_key))
+		:give("id", id)
+		:give("flame")
+		:give("flame_health", max_health, consumption_rate)
+		:give("flame_flicker")
+		:give("flame_windable")
+		:give("flame_anchor", x, y, 1)
+		:give("light_disabled")
+
+	return e
+end
+
 function Light.lighter_flame(e, power)
 	assert(e.__isEntity, e)
 	assert(type(power) == "number", power)
 
-	e:assemble(Light.point, 0, 0, 9, power, Palette.get_diffuse("lighter_flame"))
-		:give("id", "lighter_flame_pl")
+	Light.flame_stack(e, 0, 0, 9, power, "lighter_flame", 100, 0.15, "lighter_flame_pl")
 		:give("lighter_flame", power)
-		:give("light_disabled")
+end
+
+function Light.candle_flame(e, x, y, power)
+	assert(e.__isEntity, e)
+	assert(type(x) == "number", x)
+	assert(type(y) == "number", y)
+	power = power or 14
+
+	Light.flame_stack(e, x, y, 9, power, "candle_flame", 100, 0.08, "candle_flame_pl")
 end
 
 return Light

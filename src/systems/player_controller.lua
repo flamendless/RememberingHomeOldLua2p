@@ -22,6 +22,7 @@ function PlayerController:init(world)
 		self.turn_delay = 0.01
 	else
 		self.turn_delay = 0.03 -- TODO: finalize value someday
+		Log.debug("TODO: finalize value someday")
 	end
 	self.last_desired_dir = 0
 
@@ -310,6 +311,8 @@ function PlayerController:update(dt)
 				self:on_player_interact(self.player, other)
 			elseif other.is_door then
 				self.world:emit("on_interact_door", self.player, other)
+			elseif other.candle then
+				self.world:emit("on_interact_candle", self.player, other)
 			end
 		end
 	end

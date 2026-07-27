@@ -238,6 +238,7 @@ function Tutorial:tutorial_step_set(step)
 	elseif self.step == Enums.tutorial_step.done_waiting_interact then
 		self.world:emit("force_end_dialogue")
 		--TODO: play car door open sound
+		Log.debug("TODO: play car door open sound")
 		self:fade_hand_and_glow(0.3)
 		self.hold_interact_timer = nil
 		self.e_player:remove("hidden")
@@ -327,7 +328,9 @@ function Tutorial:tutorial_step_set(step)
 	elseif self.step == Enums.tutorial_step.done_right_interact then
 		self.world:emit("player_force_face_dir", -1)
 		-- TODO: open the trunk animation?
+		Log.debug("TODO: open the trunk animation?")
 		-- TODO: play trunk open sound
+		Log.debug("TODO: play trunk open sound")
 		GameStates.after(1, function()
 			self.world:emit(
 				"start_dialogue",
@@ -353,6 +356,7 @@ function Tutorial:tutorial_step_set(step)
 
 	elseif self.step == Enums.tutorial_step.done_lighter_trigger then
 		-- TODO: show lighter / play animation
+		Log.debug("TODO: show lighter / play animation")
 		GameStates.after(1, function()
 			self.world:emit(
 				"start_dialogue",
@@ -458,6 +462,7 @@ function Tutorial:state_update(dt)
 		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
 
 		-- TODO: every quarter of progress, play sound of like hitting car door to open
+		Log.debug("TODO: every quarter of progress, play sound of like hitting car door to open")
 		if self.hit_n == 0 and progress >= 0.1 and progress <= 0.25 then
 			self.world:emit("prepare_screen_shake")
 			self.hit_n = 1
@@ -528,6 +533,7 @@ function Tutorial:state_update(dt)
 			self.e_player:give("block_lighter_close")
 			self.world:emit("on_open_lighter")
 			--TODO: instead of fading out, the decal should like explode/burn quickly because of the light?
+			Log.debug("TODO: instead of fading out, the decal should like explode/burn quickly because of the light?")
 			local progress = {value = 0}
 			Flux.to(progress, 1, { value = 1 }):onupdate(function()
 				Assemblages.HandDecal.set_progress(self.e_last_hand, progress.value, 0.9, self.e_hand_key_label)

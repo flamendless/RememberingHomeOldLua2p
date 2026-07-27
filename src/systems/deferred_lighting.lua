@@ -33,6 +33,7 @@ local RA = { 0.9951847266722, 0.098017140329561 }
 local MAX_LIGHTS = 64 -- TODO: we can lower this to 16, but for Outside must be 64
 
 function DeferredLighting:init(world)
+	Log.debug("TODO: we can lower this to 16, but for Outside must be 64")
 	self.world = world
 	self.timer = Timer.new()
 
@@ -167,6 +168,7 @@ end
 
 function DeferredLighting:shutdown_lights()
 	--TODO: add sound effect of shutting down lights
+	Log.debug("TODO: add sound effect of shutting down lights")
 	for _, v in pairs(self.groups) do
 		for _, other in ipairs(v) do
 			other:give("light_disabled")

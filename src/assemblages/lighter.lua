@@ -5,6 +5,7 @@ function AsmLighter.lighter(e, e_player)
 	assert(e_player.__isEntity and e_player.player)
 
 	--TODO: parametrize lighter variation 1 or 2
+	Log.debug("TODO: parametrize lighter variation 1 or 2")
 	local dir = e_player.body.dir
 	local info = Items.get_info("lighter1")
 	e:give("id", info.id)

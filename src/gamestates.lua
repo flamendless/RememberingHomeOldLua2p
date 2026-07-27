@@ -75,6 +75,10 @@ function GameStates.start(resources)
 			set_camera_transform = true,
 			lighter_update_pos = true,
 			anim_loop_over_to = true,
+			blow_wind = true,
+			on_flame_blown_out = true,
+			on_flame_health_empty = true,
+			spawn_candle = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event, ...)

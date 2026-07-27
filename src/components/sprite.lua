@@ -26,6 +26,7 @@ function c_sprite:deserialize(data)
 end
 
 --TODO: (Brandon) remove with fog?
+Log.debug("TODO: (Brandon) remove with fog?")
 local c_noise_tex = Concord.component("noise_texture", function(c, w, h)
 	assert(type(w) == "number", w)
 	assert(type(h) == "number", h)

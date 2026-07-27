@@ -9,6 +9,7 @@ end
 
 local function draw()
 	--TODO: (Brandon) improve this
+	Log.debug("TODO: (Brandon) improve this")
 	love.graphics.clear()
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.printf(p, pos_x, pos_y, love.graphics.getWidth(), "center")

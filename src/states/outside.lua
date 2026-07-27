@@ -311,6 +311,7 @@ function Outside:start_rain_fade()
 			tle_log("splashes stopped")
 
 			-- TODO: fix this
+			Log.debug("TODO: fix this")
 			-- tle_log("fireflies start")
 			-- self.world:emit("show_fireflies", 5)
 			-- self.world:emit("move_fireflies")
@@ -358,6 +359,7 @@ end
 
 function Outside:toggle_car_power(ent)
 	--TODO: (Brandon) play sound
+	Log.debug("TODO: (Brandon) play sound")
 	self.world:emit("wait_dialogue", true)
 	self.world:emit("remove_choices")
 	local mcl = self.main_car_light.light_disabled

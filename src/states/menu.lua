@@ -106,6 +106,7 @@ local about_template = {
 	{ "@COLOR" },
 	{ "TOOLS USED:" },
 }
+Log.debug("TODO: add musician here")
 
 local function generate_about()
 	local t = about_template
@@ -454,11 +455,13 @@ function Menu:on_newgame()
 	local dur = 2
 	local timer = 1.25
 	-- TODO turn off BGM
+	Log.debug("TODO: turn off BGM")
 
 	self:hide_sub_menu()
 	self.e_desk:give("hidden")
 
 	--TODO change target_color
+	Log.debug("TODO: change target_color")
 	for _, e in ipairs(self.pool_text) do
 		e:give("target_color", Palette.get("white", 0), dur)
 	end
@@ -467,6 +470,7 @@ function Menu:on_newgame()
 
 	GameStates.after(timer, function()
 		-- TODO: (Brandon) add sudden static sound
+		Log.debug("TODO: (Brandon) add sudden static sound")
 		e_desk_fast:give("hidden")
 		GameStates.after(timer, function()
 			self.world:emit("switch_state", Enums.game_state.Intro)
@@ -476,6 +480,7 @@ end
 
 function Menu:on_continue()
 	-- TODO load saved game here
+	Log.debug("TODO: load saved game here")
 end
 
 function Menu:on_settings()
@@ -522,6 +527,7 @@ end
 
 function Menu:MB_move(tx, ty, angle)
 	-- TODO add motion blur sound
+	Log.debug("TODO: add motion blur sound")
 	local cx, cy = self.camera:getPosition()
 	local cpos = { x = cx, y = cy }
 	local duration = 1
@@ -548,6 +554,7 @@ end
 
 function Menu:MB_return()
 	-- TODO add motion blur sound
+	Log.debug("TODO: add motion blur sound")
 	local cx, cy = self.camera:getPosition()
 	local cpos = vec2(cx, cy)
 	local duration = 1

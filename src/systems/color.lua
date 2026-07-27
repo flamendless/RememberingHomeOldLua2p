@@ -10,6 +10,7 @@ local Color = Concord.system({
 })
 
 --TODO: (Brandon) implement checking for alpha_range
+Log.debug("TODO: (Brandon) implement checking for alpha_range")
 
 local function lerp_colors(lc, color)
 	local duration = lc.duration

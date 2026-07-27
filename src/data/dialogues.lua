@@ -1,6 +1,7 @@
 local Dialogues = {}
 
 --TODO: Move this
+Log.debug("TODO: Move this")
 -- local Speakers = {
 -- 	narrator = "narrator",
 -- 	player = "player",
