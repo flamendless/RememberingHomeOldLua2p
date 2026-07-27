@@ -469,8 +469,8 @@ function Menu:on_newgame()
 	local e_desk_fast = Concord.entity(self.world):assemble(Assemblages.Menu.desk_fast, ww, wh)
 
 	GameStates.after(timer, function()
-		-- TODO: (Brandon) add sudden static sound
-		Log.debug("TODO: (Brandon) add sudden static sound")
+		local cx, cy = self.camera:getPosition()
+		self.world:emit("play_positional_sound", Enums.sfx.static, cx, cy, { relative = true })
 		e_desk_fast:give("hidden")
 		GameStates.after(timer, function()
 			self.world:emit("switch_state", Enums.game_state.Intro)
@@ -526,9 +526,8 @@ function Menu:menu_back()
 end
 
 function Menu:MB_move(tx, ty, angle)
-	-- TODO add motion blur sound
-	Log.debug("TODO: add motion blur sound")
 	local cx, cy = self.camera:getPosition()
+	self.world:emit("play_positional_sound", Enums.sfx.motion_blur, cx, cy, { relative = true })
 	local cpos = { x = cx, y = cy }
 	local duration = 1
 	local distance = { 1.0 }
@@ -553,9 +552,8 @@ function Menu:MB_move(tx, ty, angle)
 end
 
 function Menu:MB_return()
-	-- TODO add motion blur sound
-	Log.debug("TODO: add motion blur sound")
 	local cx, cy = self.camera:getPosition()
+	self.world:emit("play_positional_sound", Enums.sfx.motion_blur, cx, cy, { relative = true })
 	local cpos = vec2(cx, cy)
 	local duration = 1
 	local distance = { 1.0 }

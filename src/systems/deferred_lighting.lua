@@ -167,8 +167,7 @@ function DeferredLighting:apply_ambiance()
 end
 
 function DeferredLighting:shutdown_lights()
-	--TODO: add sound effect of shutting down lights
-	Log.debug("TODO: add sound effect of shutting down lights")
+	self.world:emit("play_sound_on_player", Enums.sfx.lights_shutdown)
 	for _, v in pairs(self.groups) do
 		for _, other in ipairs(v) do
 			other:give("light_disabled")

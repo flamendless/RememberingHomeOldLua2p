@@ -154,7 +154,6 @@ function DialoguesSystem:state_update(dt)
 	-- end
 
 	--TODO: use enums for keys instead of strings
-	Log.debug("TODO: use enums for keys instead of strings")
 	if Inputs.released("interact") then
 		self:ev_advance()
 	end

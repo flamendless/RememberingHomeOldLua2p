@@ -358,8 +358,7 @@ function Outside:get_flashlight(e, dialogues_t)
 end
 
 function Outside:toggle_car_power(ent)
-	--TODO: (Brandon) play sound
-	Log.debug("TODO: (Brandon) play sound")
+	self.world:emit("play_sound_on_entity", ent, Enums.sfx.car_power)
 	self.world:emit("wait_dialogue", true)
 	self.world:emit("remove_choices")
 	local mcl = self.main_car_light.light_disabled

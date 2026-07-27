@@ -237,8 +237,7 @@ function Tutorial:tutorial_step_set(step)
 
 	elseif self.step == Enums.tutorial_step.done_waiting_interact then
 		self.world:emit("force_end_dialogue")
-		--TODO: play car door open sound
-		Log.debug("TODO: play car door open sound")
+		self.world:emit("play_sound_on_player", Enums.sfx.car_door_open)
 		self:fade_hand_and_glow(0.3)
 		self.hold_interact_timer = nil
 		self.e_player:remove("hidden")
@@ -329,8 +328,7 @@ function Tutorial:tutorial_step_set(step)
 		self.world:emit("player_force_face_dir", -1)
 		-- TODO: open the trunk animation?
 		Log.debug("TODO: open the trunk animation?")
-		-- TODO: play trunk open sound
-		Log.debug("TODO: play trunk open sound")
+		self.world:emit("play_sound_on_player", Enums.sfx.trunk_open)
 		GameStates.after(1, function()
 			self.world:emit(
 				"start_dialogue",
@@ -461,9 +459,8 @@ function Tutorial:state_update(dt)
 		local progress = mathx.clamp(self.hold_interact_timer, 0, 1)
 		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
 
-		-- TODO: every quarter of progress, play sound of like hitting car door to open
-		Log.debug("TODO: every quarter of progress, play sound of like hitting car door to open")
 		if self.hit_n == 0 and progress >= 0.1 and progress <= 0.25 then
+			self.world:emit("play_sound_on_player", Enums.sfx.car_door_hit)
 			self.world:emit("prepare_screen_shake")
 			self.hit_n = 1
 			self.world:emit("screen_shake", 0.1, 0.005)
@@ -475,9 +472,11 @@ function Tutorial:state_update(dt)
 			)
 		elseif self.hit_n == 1 and progress > 0.25 and progress <= 0.5 then
 			self.hit_n = 2
+			self.world:emit("play_sound_on_player", Enums.sfx.car_door_hit)
 			self.world:emit("screen_shake", 0.15, 0.01)
 		elseif self.hit_n == 2 and progress > 0.5 and progress <= 0.75 then
 			self.hit_n = 3
+			self.world:emit("play_sound_on_player", Enums.sfx.car_door_hit)
 			self.world:emit("screen_shake", 0.2, 0.015)
 			self.world:emit(
 				"start_dialogue",
@@ -487,6 +486,7 @@ function Tutorial:state_update(dt)
 			)
 		elseif self.hit_n == 3 and progress > 0.75 and progress <= 0.99 then
 			self.hit_n = 4
+			self.world:emit("play_sound_on_player", Enums.sfx.car_door_hit)
 			self.world:emit("screen_shake", 0.3, 0.03)
 			self.world:emit(
 				"start_dialogue",

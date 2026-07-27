@@ -84,8 +84,7 @@ function Lighter:on_anim_open_lighter(e_player)
 	end
 	self.e_flame.flame_windable.extinguished = false
 	if self.e_flame.flame_health and self.e_flame.flame_health.health <= 0 then
-		-- TODO: play lighter opening sound with no fuel/gas left
-		Log.debug("TODO: play lighter opening sound with no fuel/gas left")
+		self.world:emit("play_sound_on_player", Enums.sfx.lighter_empty)
 	end
 end
 

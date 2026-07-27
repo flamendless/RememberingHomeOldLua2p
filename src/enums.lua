@@ -159,6 +159,20 @@ Enums.game_state = Enum(
 	"Office2"
 )
 
+Enums.sfx = Enum(
+	"car_door_open",
+	"car_door_hit",
+	"trunk_open",
+	"light_switch",
+	"lights_shutdown",
+	"inventory_invalid",
+	"flashlight_on",
+	"car_power",
+	"lighter_empty",
+	"static",
+	"motion_blur"
+)
+
 if DEV then
 	Enums.ordered.game_state = {
 		Enums.game_state.Splash,

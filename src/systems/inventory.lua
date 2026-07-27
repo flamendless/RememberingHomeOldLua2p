@@ -194,8 +194,7 @@ end
 
 Inventory["on_list_item_interact_" .. "inventory_cells"] = function(self, e_hovered)
 	if not self:get_selected_item() then
-		--TODO: (Brandon) play invalid sound
-		Log.debug("TODO: (Brandon) play invalid sound")
+		self.world:emit("play_sound_on_player", Enums.sfx.inventory_invalid)
 		return
 	end
 	for _, e in ipairs(self.pool_choice) do

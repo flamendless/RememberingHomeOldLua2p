@@ -72,8 +72,7 @@ function Survival:survival_on()
 
 	self.timer_open_flashlight = Timer.new()
 	self.timer_open_flashlight_t = self.timer_open_flashlight:after(1, function()
-		--TODO: add sound effect of flashlight on
-		Log.debug("TODO: add sound effect of flashlight on")
+		self.world:emit("play_sound_on_player", Enums.sfx.flashlight_on)
 		self.world:emit("toggle_light_group", "player_flashlight", true)
 	end)
 end

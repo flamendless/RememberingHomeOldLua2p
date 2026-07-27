@@ -15,8 +15,7 @@ function LightSwitch:toggle_light_switch(_, _, choice)
 		end
 
 		if valid then
-			--TODO: (Brandon) play sound
-			Log.debug("TODO: (Brandon) play sound")
+			self.world:emit("play_sound_on_entity", e, Enums.sfx.light_switch)
 			if e.light_disabled then
 				e:remove("light_disabled")
 			else
