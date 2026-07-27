@@ -2,6 +2,11 @@ local Lighter = Concord.system({
 	pool_flame = { "id", "lighter_flame", "point_light", "pos", "diffuse" },
 })
 
+local FLAME_POWER = 12
+local FLAME_FRAME = 7
+local WICK_X = 52
+local WICK_Y = 15
+
 function Lighter:init(world)
 	self.world = world
 	self.e_lighter = nil
@@ -17,8 +22,7 @@ function Lighter:spawn_lighter(e_player)
 
 	self.e_flame = Concord.entity(self.world):assemble(
 		Assemblages.Light.lighter_flame,
-		e_player,
-		Animation.get_sync_data("lighter")
+		FLAME_POWER
 	)
 
 	self.world:setResource("e_lighter", self.e_lighter)
@@ -31,38 +35,41 @@ function Lighter:lighter_update_pos(e_player)
 	self.e_lighter.transform.sx = -dir
 end
 
-function Lighter:on_open_lighter()
-	self:enable_flame()
-end
-
-function Lighter:anim_open_lighter(e)
-	self:enable_flame()
-end
-
-function Lighter:on_close_lighter()
-	self:disable_flame()
-end
-
-function Lighter:on_anim_close_lighter_done()
-	self:disable_flame()
-end
-
-function Lighter:enable_flame()
-	if not self.e_flame then
-		return
+function Lighter:is_flame_lit()
+	local e = self.e_player
+	if not e or not e.animation then
+		return false
 	end
-	self.e_flame:remove("light_disabled")
+
+	local obj = e.animation.obj
+	local tag = obj.base_tag
+	local frame = math.floor(obj.anim8.position)
+
+	if tag == Enums.anim_state.open_lighter then
+		return frame >= FLAME_FRAME
+	elseif tag == Enums.anim_state.close_lighter then
+		return frame < FLAME_FRAME
+	end
+
+	return false
 end
 
-function Lighter:disable_flame()
-	if not self.e_flame or not self.e_player then
-		return
+function Lighter:wick_world_pos(e_player)
+	local pos = e_player.pos
+	local ox, oy = Helper.get_offset(e_player)
+	local sx, sy = 1, 1
+	local qt = e_player.quad_transform
+	if qt then
+		sx = qt.sx
+		sy = qt.sy
+		ox = qt.ox
+		oy = qt.oy
+	elseif e_player.transform then
+		sx = e_player.transform.sx
+		sy = e_player.transform.sy
 	end
-	self.e_flame:give("light_disabled")
-	local off = self.e_player.lighter_wick_offset
-	off.x = off.orig_x
-	off.y = off.orig_y
-	off.power = off.orig_power
+
+	return pos.x + (WICK_X - ox) * sx, pos.y + (WICK_Y - oy) * sy
 end
 
 function Lighter:update_flame_pos()
@@ -70,18 +77,18 @@ function Lighter:update_flame_pos()
 		return
 	end
 
-	local body = self.e_player.body
-	local p_pos = self.e_player.pos
-	local col = self.e_player.collider
-	local off = self.e_player.lighter_wick_offset
 	local f_pos = self.e_flame.pos
 	local pl = self.e_flame.point_light
+	local lit = self:is_flame_lit()
 
-	local bx = p_pos.x + col.w_h
-	local by = p_pos.y + col.h_h
-	f_pos.x = bx + off.x * body.dir
-	f_pos.y = by + off.y
-	pl.value = pl.orig_value * off.power
+	f_pos.x, f_pos.y = self:wick_world_pos(self.e_player)
+	pl.value = self.e_flame.lighter_flame.power
+
+	if lit then
+		self.e_flame:remove("light_disabled")
+	else
+		self.e_flame:give("light_disabled")
+	end
 
 	self.world:emit("update_light_pos", self.e_flame)
 end

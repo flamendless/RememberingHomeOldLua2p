@@ -94,7 +94,7 @@ function PlayerController:anim_open_lighter(e)
 	stop_body_motion(e)
 	local obj = e.animation.obj
 	local tag = (e.body.dir == -1) and Enums.anim_state.open_lighter_left or Enums.anim_state.open_lighter
-	obj:play(tag, Enums.anim_state.open_lighter)
+	obj:play(tag, Enums.anim_state.open_lighter, true)
 	obj:on("loop", function()
 		obj:goto_frame(9)
 	end)
@@ -107,7 +107,7 @@ function PlayerController:anim_close_lighter(e)
 	local obj = e.animation.obj
 	local world = self.world
 	local tag = (e.body.dir == -1) and Enums.anim_state.close_lighter_left or Enums.anim_state.close_lighter
-	obj:play(tag, Enums.anim_state.close_lighter)
+	obj:play(tag, Enums.anim_state.close_lighter, true)
 	obj:on("loop", function()
 		obj:pause_at_end()
 	end)
@@ -164,6 +164,26 @@ function PlayerController:on_anim_close_lighter_done()
 	self.player:give("can_lighter"):remove("override_animation")
 end
 
+function PlayerController:is_lighter_opening()
+	local e = self.player
+	if not e or not e.override_animation or not e.animation then
+		return false
+	end
+	local obj = e.animation.obj
+	if obj.base_tag ~= Enums.anim_state.open_lighter then
+		return false
+	end
+	return math.floor(obj.anim8.position) < 9
+end
+
+function PlayerController:is_lighter_closing()
+	local e = self.player
+	if not e or not e.override_animation or not e.animation then
+		return false
+	end
+	return e.animation.obj.base_tag == Enums.anim_state.close_lighter
+end
+
 function PlayerController:spawn_player(fn)
 	if fn then assert(type(fn) == "function") end
 	assert(self.player == nil, "Player already exists")
@@ -200,6 +220,9 @@ function PlayerController:update(dt)
 
 	local lighter_pressed = Inputs.pressed("lighter")
 	if lighter_pressed and not skip_lighter_input then
+		if self:is_lighter_opening() or self:is_lighter_closing() then
+			return
+		end
 		if self.on_lighter and not self.player:has("block_lighter_close") then
 			self:on_toggle_equip_lighter()
 			return

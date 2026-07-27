@@ -64,17 +64,14 @@ function Light.fl_end(e) --away from the player
 		:give("flashlight_light")
 end
 
-function Light.lighter_flame(e, e_player, sync_data)
+function Light.lighter_flame(e, power)
 	assert(e.__isEntity, e)
-	assert(e_player.__isEntity, e_player)
-	assert(type(sync_data) == "table", sync_data)
+	assert(type(power) == "number", power)
 
-	e:assemble(Light.point, 0, 0, 7, 48, Palette.get_diffuse("lighter_flame"))
+	e:assemble(Light.point, 0, 0, 9, power, Palette.get_diffuse("lighter_flame"))
 		:give("id", "lighter_flame_pl")
-		:give("lighter_flame")
+		:give("lighter_flame", power)
 		:give("light_disabled")
-		:give("anim_sync_with", e_player)
-		:give("anim_sync_data", "lighter_wick_offset", { "x", "y", "power" }, sync_data)
 end
 
 return Light

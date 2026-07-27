@@ -203,6 +203,7 @@ function Animation:play(tag, base_tag, override)
 	self.callbacks = {}
 	self:_build(tag, base_tag)
 	self.anim8:gotoFrame(1)
+	self.frame = self.anim8.position
 	self.anim8:resume()
 	self.is_playing = true
 	return self

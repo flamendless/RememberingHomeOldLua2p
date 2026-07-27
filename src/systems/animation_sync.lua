@@ -12,7 +12,7 @@ function AnimationSync:init(world)
 		assert(target_c, "sync target must have component: " .. c_name)
 		local c_props = e.anim_sync_data.c_props
 		for _, prop in ipairs(c_props) do
-			assert(target_c[prop], "target component must have property: " .. prop)
+			assert(target_c[prop] ~= nil, "target component must have property: " .. prop)
 		end
 
 		local obj = e_target.animation and e_target.animation.obj
@@ -33,7 +33,7 @@ function AnimationSync:update(dt)
 		local data = anim_sync_data.data[obj.base_tag]
 		if data then
 			local c_props = anim_sync_data.c_props
-			local frame = obj.frame
+			local frame = math.floor(obj.frame)
 			for _, prop in ipairs(c_props) do
 				local target_data = data[frame]
 				if target_data then
