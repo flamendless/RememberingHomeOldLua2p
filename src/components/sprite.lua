@@ -4,10 +4,8 @@ Concord.component("bg")
 Concord.component("array_image")
 
 local c_sprite = Concord.component("sprite", function(c, resource_id, container)
-	assert(type(resource_id) == "string", resource_id)
-	if container then
-		assert(type(container) == "string", container)
-	end
+	assert:type(resource_id, "string")
+	assert:type_or_nil(container, "string")
 	c.resource_id = resource_id
 	c.container = container or "images"
 	c.image = Resources.data[c.container][resource_id]
@@ -28,8 +26,8 @@ end
 --TODO: (Brandon) remove with fog?
 Log.debug("TODO: (Brandon) remove with fog?")
 local c_noise_tex = Concord.component("noise_texture", function(c, w, h)
-	assert(type(w) == "number", w)
-	assert(type(h) == "number", h)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	c.w = w
 	c.h = h
 	c.texture = love.graphics.newImage(Image.generate_noise(w, h))

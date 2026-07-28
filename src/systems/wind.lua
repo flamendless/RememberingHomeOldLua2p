@@ -51,9 +51,9 @@ function Wind:apply_gust(e, strength)
 end
 
 function Wind:on_blow_wind(strength, x, y, radius)
-	assert(type(strength) == "number", strength)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(strength, "number")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	radius = radius or DEFAULT_BLOW_RADIUS
 	local r2 = radius * radius
 

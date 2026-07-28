@@ -2,11 +2,11 @@ local Animation = {}
 Animation.__index = Animation
 
 local function prepare_clip(clip)
-	assert(type(clip) == "table", clip)
-	assert(type(clip.resource_id) == "string", clip.resource_id)
-	assert(type(clip.frames) == "table", clip.frames)
-	assert(type(clip.rows_count) == "number", clip.rows_count)
-	assert(type(clip.columns_count) == "number", clip.columns_count)
+	assert:type(clip, "table")
+	assert:type(clip.resource_id, "string")
+	assert:type(clip.frames, "table")
+	assert:type(clip.rows_count, "number")
+	assert:type(clip.columns_count, "number")
 
 	clip.spritesheet = Resources.data.images[clip.resource_id]
 	assert(clip.spritesheet, clip.resource_id)
@@ -17,7 +17,7 @@ local function prepare_clip(clip)
 end
 
 local function prepare_clips(data, mods)
-	assert(type(data) == "table", data)
+	assert:type(data, "table")
 	for _, clip in pairs(data) do
 		prepare_clip(clip)
 	end
@@ -55,12 +55,12 @@ local function new(clips, first, is_multi, stop_on_last)
 end
 
 function Animation.get_multi_by_id(id, tbl)
-	assert(type(id) == "string", id)
-	assert(type(tbl) == "table", tbl)
+	assert:type(id, "string")
+	assert:type(tbl, "table")
 	assert(Data.AnimationData[id], id)
 	local data, mods = {}, {}
 	for _, v in ipairs(tbl) do
-		assert(type(v) == "string", v)
+		assert:type(v, "string")
 		data[v] = tablex.copy(Data.AnimationData[id][v])
 		mods[v] = { v .. "_left", "flipH" }
 	end
@@ -68,13 +68,13 @@ function Animation.get_multi_by_id(id, tbl)
 end
 
 function Animation.get(id)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	assert(Data.AnimationData[id], id)
 	return tablex.copy(Data.AnimationData[id])
 end
 
 function Animation.get_sync_data(id)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	assert(Data.AnimationSyncData[id], id)
 	return tablex.copy(Data.AnimationSyncData[id])
 end
@@ -85,7 +85,7 @@ function Animation.new_single(clip, stop_on_last)
 end
 
 function Animation.new_multi(data, mods, first)
-	assert(type(first) == "string", first)
+	assert:type(first, "string")
 	prepare_clips(data, mods)
 	assert(data[first], first)
 	return new(data, first, true, false)
@@ -147,8 +147,8 @@ function Animation:_on_loop(loops)
 end
 
 function Animation:on(event, fn)
-	assert(type(event) == "string", event)
-	assert(type(fn) == "function", fn)
+	assert:type(event, "string")
+	assert:type(fn, "function")
 	local cbs = self.callbacks[event]
 	if not cbs then
 		cbs = {}
@@ -159,8 +159,8 @@ function Animation:on(event, fn)
 end
 
 function Animation:once(event, fn)
-	assert(type(event) == "string", event)
-	assert(type(fn) == "function", fn)
+	assert:type(event, "string")
+	assert:type(fn, "function")
 	local cbs = self.callbacks[event]
 	if not cbs then
 		cbs = {}
@@ -193,10 +193,8 @@ function Animation:emit(event, ...)
 end
 
 function Animation:play(tag, base_tag, override)
-	assert(type(tag) == "string", tag)
-	if base_tag then
-		assert(type(base_tag) == "string", base_tag)
-	end
+	assert:type(tag, "string")
+	assert:type_or_nil(base_tag, "string")
 	if not override and tag == self.current_tag then
 		return self
 	end
@@ -243,7 +241,7 @@ function Animation:goto_frame(n)
 end
 
 function Animation:stop(event)
-	assert(type(event) == "string", event)
+	assert:type(event, "string")
 	self.anim8[event](self.anim8)
 	self.is_playing = false
 	self:emit("finish")

@@ -18,8 +18,8 @@ Concord.component("within_interactive", function(c, entity)
 end)
 
 Concord.component("interactive_req_player_dir", function(c, x, y)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	c.x = x
 	c.y = y
 end)

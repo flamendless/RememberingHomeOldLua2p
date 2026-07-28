@@ -128,10 +128,8 @@ end
 
 local c = { none = 0.7, reset = 0.25, glitch = 0.05 }
 function Splash:do_glitch(time, delay)
-	assert(type(time) == "number", time)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(time, "number")
+	assert:type_or_nil(delay, "number")
 	GameStates.after(delay or 0, function()
 		Timer.during(time, function()
 			local res = Lume.weightedchoice(c)

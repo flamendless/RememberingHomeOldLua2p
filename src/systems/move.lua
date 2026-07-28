@@ -6,7 +6,7 @@ local Move = Concord.system({
 
 local function internal_move_by(e, is_repeat)
 	assert(e.__isEntity, e)
-	assert(type(is_repeat) == "boolean", is_repeat)
+	assert:type(is_repeat, "boolean")
 	local pos = e:get("pos")
 	local move_by = e:get("move_by")
 

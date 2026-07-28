@@ -22,8 +22,8 @@ function Image.resize_image(image, width, height)
 end
 
 function Image.generate_noise(w, h)
-	assert(type(w) == "number", w)
-	assert(type(h) == "number", h)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	local data = love.image.newImageData(w, h)
 	data:mapPixel(function(x, y, r, g, b, a)
 		local n = love.math.noise(x, y)

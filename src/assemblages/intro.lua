@@ -50,10 +50,8 @@ local positions = {
 }
 
 function Intro.parallax(e, tag, scale)
-	assert(type(tag) == "string", tag)
-	if scale then
-		assert(type(scale) == "number", scale)
-	end
+	assert:type(tag, "string")
+	assert:type_or_nil(scale, "number")
 	assert(speed[tag], tag)
 	assert(z_index[tag], tag)
 

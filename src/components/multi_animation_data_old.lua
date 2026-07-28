@@ -1,27 +1,22 @@
 local c = Concord.component("multi_animation_data_old", function(c, first, data, modifier)
-	assert(type(first) == "string", first)
-	assert(type(data) == "table", data)
+	assert:type(first, "string")
+	assert:type(data, "table")
 	assert(data[first], "no " .. first .. " found in data")
 
 	for _, v in pairs(data) do
-		assert(type(v.resource_id) == "string", v.resource_id)
-		assert(
-			type(v.delay) == "string" or type(v.delay) == "table" or type(v.delay) == "number",
-			v.delay
-		)
-		assert(type(v.rows_count) == "number", v.rows_count)
-		assert(type(v.columns_count) == "number", v.columns_count)
-		assert(type(v.n_frames) == "number", v.n_frames)
+		assert:type(v.resource_id, "string")
+		assert:one_of(type(v.delay), { "string", "table", "number" }, v.delay)
+		assert:type(v.rows_count, "number")
+		assert:type(v.columns_count, "number")
+		assert:type(v.n_frames, "number")
 	end
 
-	if modifier then
-		assert(type(modifier) == "table", modifier)
-	end
+	assert:type_or_nil(modifier, "table")
 	if modifier then
 		for id, v in pairs(modifier) do
 			assert(data[id], id)
-			assert(type(v[1]) == "string", v[1])
-			assert(type(v[2]) == "string", v[2])
+			assert:type(v[1], "string")
+			assert:type(v[2], "string")
 		end
 	end
 

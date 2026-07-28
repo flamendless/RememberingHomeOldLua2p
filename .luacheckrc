@@ -48,6 +48,7 @@ return {
 		"Timer",
 
 		-- Batteries
+		"assert",
 		"class",
 		"functional",
 		"intersect",

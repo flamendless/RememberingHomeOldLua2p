@@ -9,8 +9,8 @@ function Candle:init(world)
 end
 
 function Candle:spawn_candle(x, y)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 
 	local flame_y = y + FLAME_OFFSET_Y
 	local e_flame = Concord.entity(self.world):assemble(Assemblages.Light.candle_flame, x, flame_y)

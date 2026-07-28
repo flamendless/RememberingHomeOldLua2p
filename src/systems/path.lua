@@ -125,10 +125,8 @@ if DEV then
 	local alpha = 0.01
 
 	function Path:debug_toggle_path(bool, filter)
-		assert(type(bool) == "boolean", bool)
-		if filter then
-			assert(type(filter) == "string", filter)
-		end
+		assert:type(bool, "boolean")
+		assert:type_or_nil(filter, "string")
 		self.debug_show = bool
 		flags.path = bool
 		component_filter = filter

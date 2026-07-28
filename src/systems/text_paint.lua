@@ -28,10 +28,8 @@ end
 
 function TextPaint:show_text_paint(e, dur, widest)
 	assert((e.__isEntity and e:has("text_with_paint")), e)
-	assert(type(dur) == "number", dur)
-	if widest then
-		assert(type(widest) == "string", widest)
-	end
+	assert:type(dur, "number")
+	assert:type_or_nil(widest, "string")
 	self:show_paint(e, dur, widest)
 	e:remove("hidden")
 	Flux.to(e:get("color").value, dur, { [4] = 1 })
@@ -41,10 +39,8 @@ function TextPaint:fade_text_paint(e, dur, on_complete)
 	assert(e.__isEntity, e)
 	assert(e:has("text_with_paint"), e)
 	assert(e:get("text_with_paint").e_paint:has("paint"), e)
-	assert(type(dur) == "number", dur)
-	if on_complete then
-		assert(type(on_complete) == "function", on_complete)
-	end
+	assert:type(dur, "number")
+	assert:type_or_nil(on_complete, "function")
 	local delay = 0
 
 	if e:has("task") then
@@ -70,10 +66,8 @@ end
 
 function TextPaint:show_paint(e, dur_in, widest)
 	assert(e.__isEntity, e)
-	assert(type(dur_in) == "number", dur_in)
-	if widest then
-		assert(type(widest) == "string", widest)
-	end
+	assert:type(dur_in, "number")
+	assert:type_or_nil(widest, "string")
 	if e:has("static_text") then
 		local static_text = e:get("static_text")
 		assert(static_text ~= nil, static_text)
@@ -128,11 +122,9 @@ end
 
 function TextPaint:fade_paint(paint, dur, delay)
 	assert(paint.__isEntity, paint)
-	assert(type(dur) == "number", dur)
+	assert:type(dur, "number")
 	assert(paint:has("paint"), paint)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type_or_nil(delay, "number")
 	Flux.to(paint:get("color").value, dur, { [4] = 0 }):delay(delay or def_delay_paint):oncomplete(function()
 		paint:destroy()
 	end)

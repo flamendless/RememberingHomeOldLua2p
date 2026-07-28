@@ -1,9 +1,9 @@
 local Generator = {}
 
 function Generator.path_points_fireflies(x, y, n)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	assert(type(n) == "number", n)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(n, "number")
 	local offset = 8
 	local points = { x = x, y = y }
 	local prev_x = x
@@ -22,11 +22,11 @@ function Generator.path_points_fireflies(x, y, n)
 end
 
 function Generator.path_points_ants(x, y, ex, ey, n)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	assert(type(ex) == "number", ex)
-	assert(type(ey) == "number", ey)
-	assert(type(n) == "number", n)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(ex, "number")
+	assert:type(ey, "number")
+	assert:type(n, "number")
 	local points = {}
 	local dx = 1
 	local dy = (y <= ey) and -1 or 1

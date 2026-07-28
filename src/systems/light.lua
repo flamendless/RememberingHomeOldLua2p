@@ -66,18 +66,16 @@ function Light:init(world)
 end
 
 function Light:set_ambient_light(color)
-	assert(type(color) == "table", color)
+	assert:type(color, "table")
 	self.ambient = color
 end
 
 function Light:create_light_map(x, y, w, h, scale)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	assert(type(w) == "number", w)
-	assert(type(h) == "number", h)
-	if scale then
-		assert(type(scale) == "number", scale)
-	end
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
+	assert:type_or_nil(scale, "number")
 	self.x = x
 	self.y = y
 	self.w = w

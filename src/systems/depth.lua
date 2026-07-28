@@ -14,11 +14,9 @@ function Depth:init(world)
 end
 
 function Depth:tween_depth_zoom(dur, factor, ease)
-	assert(type(dur) == "number", dur)
-	assert(type(factor) == "number", factor)
-	if ease then
-		assert(type(ease) == "string", ease)
-	end
+	assert:type(dur, "number")
+	assert:type(factor, "number")
+	assert:type_or_nil(ease, "string")
 	for _, e in ipairs(self.pool) do
 		local zf = e:get("depth_zoom").value
 		local t = e:get("transform")

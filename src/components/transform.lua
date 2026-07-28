@@ -1,27 +1,13 @@
 
 
 Concord.component("transform", function(c, rotation, sx, sy, ox, oy, kx, ky)
-	if rotation then
-		assert(type(rotation) == "number", rotation)
-	end
-	if sx then
-		assert(type(sx) == "number", sx)
-	end
-	if sy then
-		assert(type(sy) == "number", sy)
-	end
-	if ox then
-		assert(type(ox) == "number", ox)
-	end
-	if oy then
-		assert(type(oy) == "number", oy)
-	end
-	if kx then
-		assert(type(kx) == "number", kx)
-	end
-	if ky then
-		assert(type(ky) == "number", ky)
-	end
+	assert:type_or_nil(rotation, "number")
+	assert:type_or_nil(sx, "number")
+	assert:type_or_nil(sy, "number")
+	assert:type_or_nil(ox, "number")
+	assert:type_or_nil(oy, "number")
+	assert:type_or_nil(kx, "number")
+	assert:type_or_nil(ky, "number")
 
 	c.rotation = rotation or 0
 	c.sx = sx or 1
@@ -35,27 +21,13 @@ Concord.component("transform", function(c, rotation, sx, sy, ox, oy, kx, ky)
 end)
 
 Concord.component("quad_transform", function(c, rotation, sx, sy, ox, oy, kx, ky)
-	if rotation then
-		assert(type(rotation) == "number", rotation)
-	end
-	if sx then
-		assert(type(sx) == "number", sx)
-	end
-	if sy then
-		assert(type(sy) == "number", sy)
-	end
-	if ox then
-		assert(type(ox) == "number", ox)
-	end
-	if oy then
-		assert(type(oy) == "number", oy)
-	end
-	if kx then
-		assert(type(kx) == "number", kx)
-	end
-	if ky then
-		assert(type(ky) == "number", ky)
-	end
+	assert:type_or_nil(rotation, "number")
+	assert:type_or_nil(sx, "number")
+	assert:type_or_nil(sy, "number")
+	assert:type_or_nil(ox, "number")
+	assert:type_or_nil(oy, "number")
+	assert:type_or_nil(kx, "number")
+	assert:type_or_nil(ky, "number")
 
 	c.rotation = rotation or 0
 	c.sx = sx or 1
@@ -70,9 +42,9 @@ end)
 
 -- INFO: fake pulsing/animation via scale manipulation
 Concord.component("fake_pulse", function(c, sx, sy, speed)
-	assert(type(sx) == "number")
-	assert(type(sy) == "number")
-	assert(type(speed) == "number")
+	assert:type(sx, "number")
+	assert:type(sy, "number")
+	assert:type(speed, "number")
 	c.sx = sx
 	c.sy = sy
 	c.speed = speed
@@ -81,6 +53,6 @@ Concord.component("fake_pulse", function(c, sx, sy, speed)
 end)
 
 Concord.component("depth_zoom", function(c, zoom_factor)
-	assert(type(zoom_factor) == "number", zoom_factor)
+	assert:type(zoom_factor, "number")
 	c.value = zoom_factor
 end)

@@ -148,12 +148,12 @@ function DeferredLighting:start_flicker(e)
 end
 
 function DeferredLighting:set_draw(id)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	self.ev_draw_main_id = id
 end
 
 function DeferredLighting:set_ambiance(t)
-	assert(type(t) == "table", t)
+	assert:type(t, "table")
 	if not self.orig_ambiance then
 		self.orig_ambiance = { unpack(t) }
 	end
@@ -180,7 +180,7 @@ end
 
 function DeferredLighting:toggle_light_group(group_id, state)
 	assert(Enums.light_group[group_id], group_id)
-	assert(type(state) == "boolean")
+	assert:type(state, "boolean")
 	for _, other in ipairs(self.groups[group_id]) do
 		if state then
 			other:remove("light_disabled")
@@ -192,7 +192,7 @@ end
 
 function DeferredLighting:light_group_set_disable(group_id, is_d, e)
 	assert(Enums.light_group[group_id], group_id)
-	assert(type(is_d) == "boolean")
+	assert:type(is_d, "boolean")
 	assert(e.__isEntity)
 
 	for _, other in ipairs(self.groups[group_id]) do
@@ -416,7 +416,7 @@ end
 
 function DeferredLighting:flicker_sync(main, others)
 	assert(main.__isEntity, main)
-	assert(type(others) == "table", others)
+	assert:type(others, "table")
 	local main_diff = main:get("diffuse").value
 	local is_off = main_diff[1] == 0
 	for _, e in ipairs(others) do

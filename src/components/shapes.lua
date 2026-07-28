@@ -1,7 +1,7 @@
 Concord.component("textured_line")
 
 Concord.component("draw_mode", function(c, draw_mode)
-	assert(type(draw_mode) == "string")
+	assert:type(draw_mode, "string")
 	assert(Enums.mode[draw_mode])
 	c.value = draw_mode
 end)
@@ -12,16 +12,10 @@ Concord.component("point", function(c, size)
 end)
 
 Concord.component("circle", function(c, radius, segments, start_angle, end_angle)
-	assert(type(radius) == "number", radius)
-	if segments then
-		assert(type(segments) == "number", segments)
-	end
-	if start_angle then
-		assert(type(start_angle) == "number", start_angle)
-	end
-	if end_angle then
-		assert(type(end_angle) == "number", end_angle)
-	end
+	assert:type(radius, "number")
+	assert:type_or_nil(segments, "number")
+	assert:type_or_nil(start_angle, "number")
+	assert:type_or_nil(end_angle, "number")
 	c.radius = radius
 	c.segments = segments or radius
 
@@ -33,8 +27,8 @@ Concord.component("circle", function(c, radius, segments, start_angle, end_angle
 end)
 
 Concord.component("rect", function(c, w, h)
-	assert(type(w) == "number", w)
-	assert(type(h) == "number", h)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	c.w = w
 	c.h = h
 	c.half_w = w/2
@@ -42,14 +36,14 @@ Concord.component("rect", function(c, w, h)
 end)
 
 Concord.component("rect_border", function(c, rx, ry)
-	assert(type(rx) == "number", rx)
-	assert(type(ry) == "number", ry)
+	assert:type(rx, "number")
+	assert:type(ry, "number")
 	c.rx = rx
 	c.ry = ry
 end)
 
 Concord.component("line_width", function(c, line_width)
-	assert(type(line_width) == "number", line_width)
+	assert:type(line_width, "number")
 	c.value = line_width
 end)
 

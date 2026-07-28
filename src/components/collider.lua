@@ -9,11 +9,9 @@ Concord.component("req_col_dir", function(c, dir)
 end)
 
 Concord.component("collider", function(c, w, h, filter)
-	assert(type(w) == "number", w)
-	assert(type(h) == "number", h)
-	if filter then
-		assert(type(filter) == "string", filter)
-	end
+	assert:type(w, "number")
+	assert:type(h, "number")
+	assert:type_or_nil(filter, "string")
 	c.w = w
 	c.h = h
 	c.w_h = w/2
@@ -24,20 +22,16 @@ Concord.component("collider", function(c, w, h, filter)
 end)
 
 Concord.component("collider_offset", function(c, ox, oy)
-	assert(type(ox) == "number", ox)
-	assert(type(oy) == "number", oy)
+	assert:type(ox, "number")
+	assert:type(oy, "number")
 	c.ox = ox
 	c.oy = oy
 end)
 
 Concord.component("collider_circle", function(c, size, ox, oy)
-	assert(type(size) == "number", size)
-	if ox then
-		assert(type(ox) == "number", ox)
-	end
-	if oy then
-		assert(type(oy) == "number", oy)
-	end
+	assert:type(size, "number")
+	assert:type_or_nil(ox, "number")
+	assert:type_or_nil(oy, "number")
 	c.size = size
 	c.ox = ox
 	c.oy = oy

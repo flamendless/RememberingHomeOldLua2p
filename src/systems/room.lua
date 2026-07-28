@@ -8,7 +8,7 @@ function Room:init(world)
 end
 
 function Room:parse_room_items(res)
-	assert(type(res) == "string", res)
+	assert:type(res, "string")
 	self.current_res = res
 
 	local data = require("atlases.atlas_" .. res)
@@ -42,12 +42,10 @@ function Room:parse_room_items(res)
 end
 
 function Room:create_room_item(frames, spr_res, t, g_id)
-	assert(type(frames) == "table", frames)
-	assert(type(spr_res) == "string", spr_res)
-	assert(type(t) == "table", t)
-	if g_id then
-		assert(type(g_id) == "string", g_id)
-	end
+	assert:type(frames, "table")
+	assert:type(spr_res, "string")
+	assert:type(t, "table")
+	assert:type_or_nil(g_id, "string")
 
 	local id = g_id or t.id
 	local item = frames[id]
@@ -83,11 +81,11 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 			e:give("interactive")
 		end
 		if t.dialogue_key then
-			assert(type(t.dialogue_key) == "string")
+			assert:type(t.dialogue_key, "string")
 			e:give("dialogue_key", t.dialogue_key)
 			-- e:give("dialogue_meta", unpack(t.dialogue))
 			if t.dialogue_force_pause then
-				assert(type(t.dialogue_force_pause) == "table")
+				assert:type(t.dialogue_force_pause, "table")
 				e:give("dialogue_force_pause", t.dialogue_force_pause)
 			end
 		end
@@ -110,10 +108,10 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 end
 
 function Room:create_grouped_items(group, group_t, frames, list)
-	assert(type(group) == "table", group)
-	assert(type(group_t) == "table", group_t)
-	assert(type(frames) == "table", frames)
-	assert(type(list) == "table", list)
+	assert:type(group, "table")
+	assert:type(group_t, "table")
+	assert:type(frames, "table")
+	assert:type(list, "table")
 
 	for id, t in pairs(group) do
 		local x, y = math.huge, math.huge
@@ -148,7 +146,7 @@ function Room:create_grouped_items(group, group_t, frames, list)
 end
 
 function Room:create_room_bounds(w, h, opt)
-	if opt then assert(type(opt) == "table") end
+	assert:type_or_nil(opt, "table")
 
 	for _, v in pairs(Assemblages.Room) do
 		Concord.entity(self.world):assemble(v, w, h, opt)

@@ -6,8 +6,8 @@ local RainIntroParticles = class({
 
 function RainIntroParticles:new(image, buffer, w)
 	assert(image:type() == "Image", image)
-	assert(type(buffer) == "number", buffer)
-	assert(type(w) == "number", w)
+	assert:type(buffer, "number")
+	assert:type(w, "number")
 	local ps = lg.newParticleSystem(image, buffer)
 
 	ps:setColors(1, 1, 1, 0.6)

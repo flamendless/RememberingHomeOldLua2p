@@ -6,7 +6,7 @@ function ParticleSystem:init(world)
 end
 
 function ParticleSystem:setup_particle_system(t)
-	assert(type(t) == "table", t)
+	assert:type(t, "table")
 	local t_names = functional.map(t, function(v)
 		return v:type()
 	end)

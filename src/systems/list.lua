@@ -54,12 +54,10 @@ end
 
 function List:create_list_group(id, vertical_only, per_page, use_max_threshold, limit)
 	assert(Enums.list_group[id], id)
-	assert(type(vertical_only) == "boolean", vertical_only)
+	assert:type(vertical_only, "boolean")
 	assert((type(per_page) == "number" and per_page > 0), per_page)
-	assert(self.groups[id] == nil, id .. " was already added")
-	if use_max_threshold then
-		assert(type(use_max_threshold) == "boolean", use_max_threshold)
-	end
+	assert:equal(self.groups[id], nil, id .. " was already added")
+	assert:type_or_nil(use_max_threshold, "boolean")
 	if limit then
 		assert((use_max_threshold and type(limit) == "number" and limit > 0), limit)
 	end
@@ -77,7 +75,7 @@ end
 
 function List:create_list_group_grid(id, rows, cols)
 	assert(Enums.list_group[id], id)
-	assert(self.groups[id] == nil, id .. " was already added")
+	assert:equal(self.groups[id], nil, id .. " was already added")
 	assert(type(rows) == "number" and rows > 0, rows)
 	assert(type(cols) == "number" and cols > 0, cols)
 	self.groups[id] = {

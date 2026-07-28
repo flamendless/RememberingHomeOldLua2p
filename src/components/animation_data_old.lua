@@ -1,17 +1,15 @@
 local c_anim_data = Concord.component("animation_data_old", function(c, data)
-	assert(type(data) == "table", data)
+	assert:type(data, "table")
 	assert((data.resource_id and type(data.resource_id) == "string"), data.resource_id)
-	assert(type(data.frames) == "table", data.frames)
-	assert(type(data.rows_count) == "number", data.rows_count)
-	assert(type(data.columns_count) == "number", data.columns_count)
-	if data.n_frames then
-		assert(type(data.n_frames) == "number", data.n_frames)
-	end
+	assert:type(data.frames, "table")
+	assert:type(data.rows_count, "number")
+	assert:type(data.columns_count, "number")
+	assert:type_or_nil(data.n_frames, "number")
 	if data.start_frame then
 		assert((data.start_frame >= 1 and data.start_frame <= data.n_frames), data)
 	end
 	if data.delay then
-		assert(type(data.delay) == "table" or type(data.delay) == "number", data.delay)
+		assert:one_of(type(data.delay), { "table", "number" }, data.delay)
 	end
 
 	c.resource_id = data.resource_id

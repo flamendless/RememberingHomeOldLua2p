@@ -71,9 +71,9 @@ function ItemsSystem:create_item_preview(bg_e, item_e)
 end
 
 function ItemsSystem:item_response(dialogue_t, main, sub)
-	assert(type(dialogue_t) == "table", dialogue_t)
-	assert(type(main) == "string", main)
-	assert(type(sub) == "string", sub)
+	assert:type(dialogue_t, "table")
+	assert:type(main, "string")
+	assert:type(sub, "string")
 	self.world:emit("close_inventory", true)
 	self.world:emit("on_interact_or_inventory")
 	self.world:emit("spawn_dialogue", dialogue_t, main, sub)

@@ -50,16 +50,10 @@ end
 
 function Camera:set_camera_transform(camera, t)
 	assert(Gamera.isCamera(camera), camera)
-	assert(type(t) == "table", t)
-	if t.x then
-		assert(type(t.x) == "number", t.x)
-	end
-	if t.y then
-		assert(type(t.y) == "number", t.y)
-	end
-	if t.scale then
-		assert(type(t.scale) == "number", t.scale)
-	end
+	assert:type(t, "table")
+	assert:type_or_nil(t.x, "number")
+	assert:type_or_nil(t.y, "number")
+	assert:type_or_nil(t.scale, "number")
 	--INFO: ALWAYS SET SCALE FIRST BEFORE POSITION
 	local scale = camera:getScale()
 	camera:setScale(t.scale or scale)
@@ -85,7 +79,7 @@ end
 
 function Camera:camera_follow(target, dur)
 	assert(target.__isEntity, target)
-	assert(type(dur) == "number", dur)
+	assert:type(dur, "number")
 	self.follow = true
 	local cx, cy = self.main_camera:getPosition()
 	local tx, ty = self:get_follow_coords(target)
@@ -205,7 +199,7 @@ function Camera:prepare_screen_shake()
 end
 
 function Camera:finalize_screen_shake(very_final)
-	if very_final then assert(type(very_final) == "boolean", very_final) end
+	assert:type_or_nil(very_final, "boolean")
 	assert(self.init_screen_shake ~= nil, "make sure to emit 'prepare_screen_shake' first")
 	self.main_camera:setPosition(self.init_screen_shake.x, self.init_screen_shake.y)
 	self.main_camera:setScale(self.init_screen_shake.scale)
@@ -248,7 +242,7 @@ if DEV then
 	}
 
 	function Camera:toggle_debug_show(id)
-		assert(type(id) == "string")
+		assert:type(id, "string")
 		if id == "camera" then
 			self.debug_show = not self.debug_show
 		end
@@ -431,7 +425,7 @@ if DEV then
 	end
 
 	function Camera:debug_on_drag(bool)
-		assert(type(bool) == "boolean", bool)
+		assert:type(bool, "boolean")
 		self.follow = not bool
 	end
 

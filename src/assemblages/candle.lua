@@ -4,8 +4,8 @@ local FLAME_OFFSET_Y = -12
 
 function AsmCandle.candle(e, x, y, e_flame)
 	assert(e.__isEntity, e)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	assert(e_flame.__isEntity, e_flame)
 
 	local info = Items.get_info(Enums.item_id.lighter1)

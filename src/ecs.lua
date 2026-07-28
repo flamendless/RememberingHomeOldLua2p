@@ -370,14 +370,14 @@ function ECS.load_systems(id, world, prev_id)
 end
 
 function ECS.get_system_class(id)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	local l_id = string.lower(id)
 	assert(systems[l_id], "system " .. id .. " not found")
 	return systems[l_id]
 end
 
 function ECS.get_state_class(id)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	local l_id = string.lower(id)
 	assert(states[l_id], "state " .. id .. " not found")
 	return states[l_id]

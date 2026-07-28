@@ -8,13 +8,13 @@ function Audio.init()
 end
 
 function Audio.set_volume(volume)
-	assert(type(volume) == "number", volume)
+	assert:type(volume, "number")
 	Audio.volume = volume
 	love.audio.setVolume(Audio.volume / 100)
 end
 
 function Audio.set_mute(mute)
-	assert(type(mute) == "boolean", mute)
+	assert:type(mute, "boolean")
 	if mute then
 		love.audio.setVolume(0)
 	else

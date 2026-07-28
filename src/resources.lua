@@ -18,7 +18,7 @@ end
 Resources.meta = Data.ResourcesList
 
 function Resources.get_meta(key)
-	assert(type(key) == "string", key)
+	assert:type(key, "string")
 	assert(Resources.meta[key], key .. " is invalid")
 	local t = tablex.copy(Resources.meta[key])
 
@@ -32,7 +32,7 @@ function Resources.get_meta(key)
 end
 
 function Resources.set_resources(t)
-	assert(type(t) == "table", t)
+	assert:type(t, "table")
 	tablex.clear(Resources.data)
 	assert(#Resources.data == 0, Resources.data)
 	for k, _ in pairs(t) do
@@ -43,7 +43,7 @@ function Resources.set_resources(t)
 end
 
 function Resources.copy_array_images(resources)
-	assert(type(resources) == "table", resources)
+	assert:type(resources, "table")
 	for k, v in pairs(resources.array_images) do
 		resources.images[k] = v
 	end

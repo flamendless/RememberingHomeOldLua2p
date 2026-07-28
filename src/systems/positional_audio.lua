@@ -111,8 +111,8 @@ function PositionalAudio:get_player()
 end
 
 function PositionalAudio:play_positional_sound(source, x, y, opts)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	opts = opts or {}
 
 	local template = Audio.resolve_source(source)

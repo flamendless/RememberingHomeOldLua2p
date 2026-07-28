@@ -14,8 +14,8 @@ end
 
 function ShowKeys:create_key_with_text(id, txt, key)
 	assert(Enums.show_keys[id], id)
-	assert(type(txt) == "string")
-	assert(type(key) == "string")
+	assert:type(txt, "string")
+	assert:type(key, "string")
 
 	local ww, wh = love.graphics.getDimensions()
 	self.keys[id] = Concord.entity(self.world)
@@ -204,7 +204,7 @@ end
 function ShowKeys:show_key(id, bool)
 	if not Settings.current.show_keys then return end
 	assert(Enums.show_keys[id], id)
-	assert(type(bool) == "boolean")
+	assert:type(bool, "boolean")
 
 	local e = self.keys[id]
 	assert(e ~= nil, id)
@@ -228,7 +228,7 @@ end
 function ShowKeys:show_key_at(id, bool, pos)
 	if not Settings.current.show_keys then return end
 	assert(Enums.show_keys[id], id)
-	assert(type(bool) == "boolean")
+	assert:type(bool, "boolean")
 	assert(pos:type() == "vec2")
 
 	local e = self.keys[id]

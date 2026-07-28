@@ -27,10 +27,10 @@ function Player.get_multi_anim_data(for_flashlight, can_open_door)
 end
 
 function Player.base(e, x, y, speed_data, can)
-	if can then assert(type(can) == "table", can) end
-	if can.move then assert(type(can.move) == "boolean", can.move) end
-	if can.run then assert(type(can.run) == "boolean", can.run) end
-	if can.open_door then assert(type(can.open_door) == "boolean", can.open_door) end
+	assert:type_or_nil(can, "table")
+	assert:type_or_nil(can.move, "boolean")
+	assert:type_or_nil(can.run, "boolean")
+	assert:type_or_nil(can.open_door, "boolean")
 	local data, mods = Player.get_multi_anim_data(false, can.open_door)
 	local collider = Data.Colliders.player
 
@@ -71,8 +71,8 @@ function Player.base(e, x, y, speed_data, can)
 end
 
 function Player.outside_house(e, x, y)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:assemble(Player.base, x, y, player_speed_data, {
 		move = false,
 		run = false,
@@ -83,8 +83,8 @@ function Player.outside_house(e, x, y)
 end
 
 function Player.room(e, x, y)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:assemble(Player.base, x, y, player_speed_data, {
 		move = false,
 		run = false,

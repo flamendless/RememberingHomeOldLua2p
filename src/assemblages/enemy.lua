@@ -7,7 +7,7 @@ local enemy_speed_data = {
 }
 
 function Enemy.get_multi_anim_data(enemy_type)
-	assert(type(enemy_type) == "string", enemy_type)
+	assert:type(enemy_type, "string")
 	local tbl_anim = { "idle", "walk", "lean_back", "lean_return_back" }
 	local data, mods = Animation.get_multi_by_id("enemy_" .. enemy_type, tbl_anim)
 	return data, mods
@@ -15,8 +15,9 @@ end
 
 function Enemy.base(e, enemy_type, x, y)
 	assert(e.__isEntity, e)
-	assert(type(enemy_type) == "string", enemy_type)
-	assert(type(x) == "number" and type(y) == "number", x)
+	assert:type(enemy_type, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	local data, mods = Enemy.get_multi_anim_data(enemy_type)
 	local collider = Data.Colliders.enemy[enemy_type].idle
 

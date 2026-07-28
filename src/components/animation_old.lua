@@ -1,9 +1,7 @@
 Concord.component("override_animation")
 
 local c_anim = Concord.component("animation_old", function(c, stop_on_last)
-	if stop_on_last then
-		assert(type(stop_on_last) == "boolean", stop_on_last)
-	end
+	assert:type_or_nil(stop_on_last, "boolean")
 	c.grid = nil
 	c.anim8 = nil
 	c.base_tag = "default"
@@ -26,10 +24,8 @@ function c_anim:deserialize(data)
 end
 
 Concord.component("change_animation_tag_old", function(c, new_tag, override)
-	assert(type(new_tag) == "string", new_tag)
-	if override then
-		assert(type(override) == "boolean", override)
-	end
+	assert:type(new_tag, "string")
+	assert:type_or_nil(override, "boolean")
 	c.new_tag = new_tag
 	c.override = override
 end)
@@ -42,7 +38,7 @@ Concord.component("animation_pause_at_old", function(c, at_frame)
 end)
 
 Concord.component("animation_stop_old", function(c, event)
-	assert(type(event) == "string", event)
+	assert:type(event, "string")
 	c.event = event
 end)
 
@@ -55,6 +51,6 @@ Concord.component("current_frame", function(c, max)
 end)
 
 Concord.component("animation_ev_update_old", function(c, ev_update)
-	assert(type(ev_update) == "string", ev_update)
+	assert:type(ev_update, "string")
 	c.value = ev_update
 end)

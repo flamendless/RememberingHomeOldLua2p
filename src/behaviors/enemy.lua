@@ -5,13 +5,13 @@ local bt_enemy = Enums.bt.enemy
 
 local function set_node(e, tag)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
-	assert(type(tag) == "string", tag)
+	assert:type(tag, "string")
 	e:get("behavior_tree").current_node = bt_enemy[tag]
 end
 
 local function set_node_bt(e, tag)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
-	assert(type(tag) == "string", tag)
+	assert:type(tag, "string")
 	return function()
 		set_node(e, tag)
 		return "success"
@@ -36,14 +36,14 @@ end
 
 local function is_current_anim(e, tag)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("animation"), e)
-	assert(type(tag) == "string", tag)
+	assert:type(tag, "string")
 	local animation = e:get("animation")
 	return (animation.obj.base_tag == tag) and "success" or "failure"
 end
 
 local function is_current_anim_bt(e, tag)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("animation"), e)
-	assert(type(tag) == "string", tag)
+	assert:type(tag, "string")
 	return function()
 		return is_current_anim(e, tag)
 	end
@@ -51,7 +51,7 @@ end
 
 local function is_current_anim_done(e, tag)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("animation"), e)
-	assert(type(tag) == "string", tag)
+	assert:type(tag, "string")
 	local animation = e:get("animation")
 	local base_tag = animation.obj.base_tag
 	if base_tag ~= tag then
@@ -63,7 +63,7 @@ end
 
 local function is_current_anim_done_bt(e, tag)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("animation"), e)
-	assert(type(tag) == "string", tag)
+	assert:type(tag, "string")
 	return function()
 		return is_current_anim_done(e, tag)
 	end
@@ -71,7 +71,7 @@ end
 
 local function has_component_bt(e, component)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
-	assert(type(component) == "string", component)
+	assert:type(component, "string")
 	return function()
 		if e:has(component) then
 			return "success"
@@ -113,7 +113,7 @@ local function random(tbl)
 	assert((type(tbl) == "table" and #tbl > 0), tbl)
 
 	for _, bt in ipairs(tbl) do
-		assert(type(bt) == "function", bt)
+		assert:type(bt, "function")
 	end
 
 	local r = lm_random(1, #tbl)
@@ -124,7 +124,7 @@ local function random_bt(tbl)
 	assert((type(tbl) == "table" and #tbl > 0), tbl)
 
 	for _, bt in ipairs(tbl) do
-		assert(type(bt) == "function", bt)
+		assert:type(bt, "function")
 	end
 
 	return function()
@@ -134,8 +134,8 @@ end
 
 local function wait_random_bt(e, min, max)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
-	assert(type(min) == "number", min)
-	assert(type(max) == "number", max)
+	assert:type(min, "number")
+	assert:type(max, "number")
 	assert((min > 0 and min < max), min)
 	local elapsed = 0
 	local r = lm_random(min, max)

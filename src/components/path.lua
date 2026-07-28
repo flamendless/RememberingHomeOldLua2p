@@ -1,15 +1,13 @@
 Concord.component("path", function(c, points, max, current_point)
-	assert(type(points) == "table", points)
+	assert:type(points, "table")
 	if max then
 		assert((type(max) == "number" and max > 0), max)
 	end
-	if current_point then
-		assert(type(current_point) == "number", current_point)
-	end
+	assert:type_or_nil(current_point, "number")
 
 	for _, v in ipairs(points) do
-		assert(type(v.x) == "number", v.x)
-		assert(type(v.y) == "number", v.y)
+		assert:type(v.x, "number")
+		assert:type(v.y, "number")
 	end
 
 	c.points = points
@@ -20,7 +18,7 @@ Concord.component("path", function(c, points, max, current_point)
 end)
 
 Concord.component("path_speed", function(c, speed)
-	assert(type(speed) == "number", speed)
+	assert:type(speed, "number")
 	c.value = speed
 end)
 

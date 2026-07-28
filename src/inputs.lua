@@ -112,9 +112,7 @@ if DEV then
 end
 
 function Inputs.init(key_map)
-	if key_map then
-		assert(type(key_map) == "number", key_map)
-	end
+	assert:type_or_nil(key_map, "number")
 	local n = key_map or Settings.current.key_map
 	assert(maps[n], n)
 	Inputs.map = maps[n]
@@ -172,7 +170,7 @@ local function get_input_map()
 end
 
 function Inputs.keypressed(_, scancode)
-	assert(type(scancode) == "string", scancode)
+	assert:type(scancode, "string")
 	local map = get_input_map()
 	if not map[scancode] then
 		return
@@ -186,7 +184,7 @@ function Inputs.keypressed(_, scancode)
 end
 
 function Inputs.keyreleased(_, scancode)
-	assert(type(scancode) == "string", scancode)
+	assert:type(scancode, "string")
 	local map = get_input_map()
 	if not map[scancode] then
 		return
@@ -243,19 +241,19 @@ if TEST.mode then
 	end
 
 	function Inputs.tap(action)
-		assert(type(action) == "string", action)
+		assert:type(action, "string")
 		assert(Inputs.current[action] ~= nil, action)
 		Inputs.current[action] = true
 	end
 
 	function Inputs.release(action)
-		assert(type(action) == "string", action)
+		assert:type(action, "string")
 		assert(Inputs.current[action] ~= nil, action)
 		pending_releases[action] = true
 	end
 
 	function Inputs.hold(action)
-		assert(type(action) == "string", action)
+		assert:type(action, "string")
 		assert(Inputs.current[action] ~= nil, action)
 		Inputs.current[action] = true
 		held_actions[action] = true
@@ -263,7 +261,7 @@ if TEST.mode then
 	end
 
 	function Inputs.unhold(action)
-		assert(type(action) == "string", action)
+		assert:type(action, "string")
 		assert(Inputs.current[action] ~= nil, action)
 		held_actions[action] = nil
 		pending_releases[action] = true
@@ -304,7 +302,7 @@ if TEST.mode then
 	end
 
 	function Inputs.tap_scancode(scancode)
-		assert(type(scancode) == "string", scancode)
+		assert:type(scancode, "string")
 		Inputs.keypressed(nil, scancode)
 		local action = Inputs.map[scancode]
 		if action then

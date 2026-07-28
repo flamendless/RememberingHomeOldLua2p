@@ -6,8 +6,8 @@ end
 
 function TextPaintIntro:fade_text(e, dur, on_finish)
 	assert(e.__isEntity, e)
-	assert(type(dur) == "number", dur)
-	assert(type(on_finish) == "function", on_finish)
+	assert:type(dur, "number")
+	assert:type(on_finish, "function")
 	self:generate_paint(e, dur)
 	e:remove("hidden")
 
@@ -19,10 +19,8 @@ end
 
 function TextPaintIntro:generate_paint(e, dur_in, dur_out)
 	assert(e.__isEntity, e)
-	assert(type(dur_in) == "number", dur_in)
-	if dur_out then
-		assert(type(dur_out) == "number", dur_out)
-	end
+	assert:type(dur_in, "number")
+	assert:type_or_nil(dur_out, "number")
 	local transform
 	if e:has("transform") then
 		transform = e:get("transform")

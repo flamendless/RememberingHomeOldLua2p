@@ -14,11 +14,11 @@ Concord.component("decals_shaders", function(c, shader, data)
 end)
 
 Concord.component("decals_text", function(c, text)
-	assert(type(text) == "string")
+	assert:type(text, "string")
 	c.value = text
 end)
 
 Concord.component("decals_embed", function(c, key)
-	assert(type(key) == "string")
+	assert:type(key, "string")
 	c.value = key
 end)

@@ -46,7 +46,7 @@ end
 
 function Sprite.set_bg(e)
 	assert((e.__isEntity and e:has("sprite") and e:has("bg")), e)
-	assert(Sprite.e_bg == nil, "only 1 bg entity is allowed")
+	assert:equal(Sprite.e_bg, nil, "only 1 bg entity is allowed")
 	Sprite.e_bg = e
 end
 

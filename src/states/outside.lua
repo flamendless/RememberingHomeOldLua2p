@@ -338,7 +338,7 @@ end
 
 function Outside:get_flashlight(e, dialogues_t)
 	assert((e.__isEntity and e:has("dialogue_meta")), e)
-	assert(type(dialogues_t) == "table", dialogues_t)
+	assert:type(dialogues_t, "table")
 	local has_flashlight = Items.has(Enums.item_id.flashlight)
 	if not has_flashlight then
 		Items.add(Enums.item_id.flashlight)
@@ -383,7 +383,7 @@ end
 
 function Outside:check_frontdoor(e, dialogues_t)
 	assert((e.__isEntity and e:has("dialogue_meta")), e)
-	assert(type(dialogues_t) == "table", dialogues_t)
+	assert:type(dialogues_t, "table")
 	self.world:emit("remove_choices")
 	if not Items.has(Enums.item_id.frontdoor_key) then
 		local t = tablex.copy(dialogues_t.door_locked)
@@ -403,7 +403,7 @@ end
 function Outside:check_backdoor(e, dialogues_t)
 	assert((e.__isEntity and e:has("dialogue_meta")), e)
 	assert((e.__isEntity and self.e_player), e)
-	assert(type(dialogues_t) == "table", dialogues_t)
+	assert:type(dialogues_t, "table")
 	local has_flashlight = Items.has(Enums.item_id.flashlight)
 	if not has_flashlight then
 		local t = tablex.copy(dialogues_t.no_flashlight_yet)

@@ -71,6 +71,19 @@ timer = require("modules.batteries.timer")
 vec2 = require("modules.batteries.vec2")
 vec3 = require("modules.batteries.vec3")
 
+require("modules.batteries"):export()
+
+function assert:type_or_nil(a, t, msg, stack_level)
+	if a ~= nil then
+		assert:type(a, t, msg, (stack_level or 0) + 1)
+	end
+	return a
+end
+
+if not DEV and not TEST.mode then
+	assert:nop()
+end
+
 Enums = require("enums")
 
 Data = {
@@ -194,8 +207,6 @@ if TEST.mode then
 	TestHooks = require("test.hooks")
 	TestRunner = require("test.runner")
 end
-
-require("modules.batteries"):export()
 
 if DEV then
 	local old_give = Concord.entity.give

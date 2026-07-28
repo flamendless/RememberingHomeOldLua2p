@@ -5,7 +5,7 @@ local right_wall_w = 16
 local ground_h = 16
 
 function Room.ground(e, w, h, opt)
-	if opt then assert(type(opt) == "table") end
+	assert:type_or_nil(opt, "table")
 
 	e:give("id", "col_ground")
 		:give("pos", left_wall_w, h - ground_h)
@@ -15,7 +15,7 @@ function Room.ground(e, w, h, opt)
 end
 
 function Room.left_bound(e, w, h, opt)
-	if opt then assert(type(opt) == "table") end
+	assert:type_or_nil(opt, "table")
 	local s = left_wall_w * (opt and opt.sx or 1)
 
 	e:give("id", "col_left_bound")
@@ -26,7 +26,7 @@ function Room.left_bound(e, w, h, opt)
 end
 
 function Room.right_bound(e, w, h, opt)
-	if opt then assert(type(opt) == "table") end
+	assert:type_or_nil(opt, "table")
 	local s = right_wall_w * (opt and opt.sx or 1)
 
 	e:give("id", "col_right_bound")

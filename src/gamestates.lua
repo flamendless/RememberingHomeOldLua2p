@@ -9,8 +9,8 @@ local GameStates = {
 }
 
 function GameStates.after(delay, fn)
-	assert(type(delay) == "number", delay)
-	assert(type(fn) == "function", fn)
+	assert:type(delay, "number")
+	assert:type(fn, "function")
 	local token = GameStates.scene_token
 	return Timer.after(delay, function()
 		if token ~= GameStates.scene_token then
@@ -103,7 +103,7 @@ function GameStates.start(resources)
 end
 
 function GameStates.switch(next_id)
-	assert(type(next_id) == "string", next_id)
+	assert:type(next_id, "string")
 
 	GameStates.is_ready = false
 	if GameStates.world then

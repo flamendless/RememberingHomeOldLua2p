@@ -23,15 +23,9 @@ function Fade.fade_out(on_complete, duration, delay)
 		Fade.dev_set(Enums.fade.fade_out, duration, delay)
 	end
 
-	if on_complete then
-		assert(type(on_complete) == "function", on_complete)
-	end
-	if duration then
-		assert(type(duration) == "number", duration)
-	end
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type_or_nil(on_complete, "function")
+	assert:type_or_nil(duration, "number")
+	assert:type_or_nil(delay, "number")
 	local f = Flux.to(f_color, duration or f_duration, { [4] = 1 }):delay(delay or f_delay)
 
 	if on_complete then
@@ -44,15 +38,9 @@ function Fade.fade_in(on_complete, duration, delay)
 		Fade.dev_set(Enums.fade.fade_in, duration, delay)
 	end
 
-	if on_complete then
-		assert(type(on_complete) == "function", on_complete)
-	end
-	if duration then
-		assert(type(duration) == "number", duration)
-	end
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type_or_nil(on_complete, "function")
+	assert:type_or_nil(duration, "number")
+	assert:type_or_nil(delay, "number")
 	local f = Flux.to(
 		f_color,
 		duration or f_duration,
@@ -65,7 +53,7 @@ function Fade.fade_in(on_complete, duration, delay)
 end
 
 function Fade.set_alpha(a)
-	assert(type(a) == "number", a)
+	assert:type(a, "number")
 	f_color[4] = a
 end
 
@@ -76,7 +64,7 @@ function Fade.draw()
 end
 
 function Fade.set_color(color)
-	assert(type(color) == "table", color)
+	assert:type(color, "table")
 	f_color[1] = color[1] or f_color[1]
 	f_color[2] = color[2] or f_color[2]
 	f_color[3] = color[3] or f_color[3]

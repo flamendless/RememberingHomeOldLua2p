@@ -21,7 +21,7 @@ end
 function Entity:toggle_component(e, prop, bool)
 	assert(e.__isEntity)
 	assert(Enums.player_cap[prop], prop)
-	assert(type(bool) == "boolean", bool)
+	assert:type(bool, "boolean")
 	if bool then
 		e:give(prop)
 	else
@@ -31,7 +31,7 @@ end
 
 function Entity:flip_e_component(e, component)
 	assert(e.__isEntity, e)
-	assert(type(component) == "string")
+	assert:type(component, "string")
 	if e:has(component) then
 		e:remove(component)
 	else
@@ -40,8 +40,8 @@ function Entity:flip_e_component(e, component)
 end
 
 function Entity:flip_e_id_component(e_id, component)
-	assert(type(e_id) == "string")
-	assert(type(component) == "string")
+	assert:type(e_id, "string")
+	assert:type(component, "string")
 	for _, e in ipairs(self.pool) do
 		if e:get("id").value == e_id then
 			self:flip_e_component(e, component)

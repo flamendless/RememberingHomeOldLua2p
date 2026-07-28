@@ -1,8 +1,8 @@
 Concord.component("flame")
 
 Concord.component("flame_health", function(c, max_health, consumption_rate)
-	assert(type(max_health) == "number", max_health)
-	assert(type(consumption_rate) == "number", consumption_rate)
+	assert:type(max_health, "number")
+	assert:type(consumption_rate, "number")
 	c.health = max_health
 	c.max_health = max_health
 	c.consumption_rate = consumption_rate
@@ -35,7 +35,7 @@ Concord.component("flame_suppressed")
 
 Concord.component("flame_frame_flicker", function(c, e_anim_source, frame_mults)
 	assert(e_anim_source.__isEntity and e_anim_source:has("animation"), e_anim_source)
-	assert(type(frame_mults) == "table", frame_mults)
+	assert:type(frame_mults, "table")
 	e_anim_source:ensure("key")
 	c.anim_key = e_anim_source:get("key").value
 	c.frame_mults = frame_mults
@@ -49,7 +49,7 @@ Concord.component("candle", function(c, e_flame)
 end)
 
 Concord.component("flame_fuel_tiers", function(c, tiers)
-	assert(type(tiers) == "table", tiers)
+	assert:type(tiers, "table")
 	c.tiers = tiers
 	c.tier_index = #tiers
 end)

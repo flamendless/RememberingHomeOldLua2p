@@ -16,7 +16,7 @@ end
 
 function Atlas:update_atlas(e, new_data)
 	assert((self.pool:has(e)), self)
-	assert(type(new_data) == "table", new_data)
+	assert:type(new_data, "table")
 	local quad = e:get("quad")
 	quad.quad:setViewport(new_data.x, new_data.y, new_data.w, new_data.h)
 	quad.info = tablex.copy(new_data)

@@ -33,7 +33,7 @@ function Fireflies:generate_fireflies()
 end
 
 function Fireflies:show_fireflies(dur)
-	assert(type(dur) == "number", dur)
+	assert:type(dur, "number")
 	for _, e in ipairs(self.pool) do
 		e:remove("light_disabled")
 		Flux.to(e:get("diffuse").value, dur, {
@@ -55,7 +55,7 @@ function Fireflies:show_fireflies(dur)
 end
 
 function Fireflies:hide_fireflies(dur)
-	assert(type(dur) == "number", dur)
+	assert:type(dur, "number")
 	for _, e in ipairs(self.pool) do
 		e:remove("light_fading")
 		Flux.to(e:get("diffuse").value, dur, {

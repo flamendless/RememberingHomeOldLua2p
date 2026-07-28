@@ -22,9 +22,9 @@ function EnemyController:init(world)
 end
 
 function EnemyController:spawn_enemy(enemy_type, x, y)
-	assert(type(enemy_type) == "string", enemy_type)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(enemy_type, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	Concord.entity(self.world):assemble(Assemblages.Enemy.base, enemy_type, x, y)
 end
 

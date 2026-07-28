@@ -25,8 +25,8 @@ local DEFAULTS = {
 
 function HandDecal.create(e, opts)
 	opts = opts or {}
-	assert(type(opts.x) == "number", opts.x)
-	assert(type(opts.y) == "number", opts.y)
+	assert:type(opts.x, "number")
+	assert:type(opts.y, "number")
 
 	local scale = opts.scale or DEFAULTS.scale
 	local uv_scale = opts.uv_scale or scale
@@ -139,7 +139,7 @@ end
 
 function HandDecal.create_key_label(world, text, opts)
 	opts = opts or {}
-	assert(type(text) == "string")
+	assert:type(text, "string")
 
 	-- Screen-space labels always match the splash skip hint size.
 	local hand_scale = opts.hand_scale or HandDecal.SKIP_HAND_SCALE

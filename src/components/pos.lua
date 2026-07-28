@@ -2,11 +2,9 @@
 Concord.component("pos_vec2")
 
 Concord.component("pos", function(c, x, y, z)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	if z then
-		assert(type(z) == "number", z)
-	end
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type_or_nil(z, "number")
 	c.x = x
 	c.y = y
 	c.z = z
@@ -16,14 +14,14 @@ Concord.component("pos", function(c, x, y, z)
 end)
 
 Concord.component("ref_pos_vec2", function(c, x, y)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	c.value = vec2(x, y)
 end)
 
 Concord.component("size", function(c, w, h)
-	assert(type(w) == "number")
-	assert(type(h) == "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	c.w = w
 	c.h = h
 end)

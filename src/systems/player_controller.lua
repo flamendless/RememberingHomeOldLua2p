@@ -62,7 +62,7 @@ function PlayerController:anim_idle(e, should_stop)
 	if not e then return end
 	local animation = e:get("animation")
 	if not animation then return end
-	if should_stop then assert(type(should_stop) == "boolean", should_stop) end
+	assert:type_or_nil(should_stop, "boolean")
 	if e:has("override_animation") then return end
 	local body = e:get("body")
 	if body.dir == -1 then
@@ -235,8 +235,8 @@ function PlayerController:is_lighter_closing()
 end
 
 function PlayerController:spawn_player(fn)
-	if fn then assert(type(fn) == "function") end
-	assert(self.player == nil, "Player already exists")
+	assert:type_or_nil(fn, "function")
+	assert:equal(self.player, nil, "Player already exists")
 
 	local x, y, face = Data.Rooms.get_spawn(GameStates.current_id, GameStates.prev_id)
 	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
@@ -377,7 +377,7 @@ function PlayerController:update(dt)
 end
 
 function PlayerController:player_force_face_dir(dir)
-	assert(type(dir) == "number", dir)
+	assert:type(dir, "number")
 	local body = self.player:get("body")
 	body.dir = dir
 	local anim_name = self:player_update_animation()

@@ -1,8 +1,6 @@
 Concord.component("id", function(c, id, sub_id)
-	assert(type(id) == "string", id)
-	if sub_id then
-		assert(type(sub_id) == "string", sub_id)
-	end
+	assert:type(id, "string")
+	assert:type_or_nil(sub_id, "string")
 	c.value = id
 	c.sub_id = sub_id
 end)

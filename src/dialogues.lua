@@ -9,7 +9,7 @@ function Dialogues.get(main, sub)
 end
 
 function Dialogues.check_signal(str)
-	assert(type(str) == "string", str)
+	assert:type(str, "string")
 	local bool = stringx.starts_with(str, "_")
 	if not bool then
 		return false, "", true
@@ -26,7 +26,7 @@ function Dialogues.check_signal(str)
 end
 
 function Dialogues.validate(dialogue_t)
-	assert(type(dialogue_t) == "table", dialogue_t)
+	assert:type(dialogue_t, "table")
 	if #dialogue_t == 0 then
 		return true
 	end

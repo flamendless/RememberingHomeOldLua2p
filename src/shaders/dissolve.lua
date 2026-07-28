@@ -8,7 +8,7 @@ end
 
 function Dissolve:new(texture, duration)
 	assert(texture:type() == "Image", texture)
-	assert(type(duration) == "number", duration)
+	assert:type(duration, "number")
 	self.shader_code = love.graphics.newShader(Shaders.paths.dissolve)
 	self.shader_code:send("u_tex_noise", texture)
 	self.flag_process = false
@@ -19,7 +19,7 @@ function Dissolve:new(texture, duration)
 end
 
 function Dissolve:set_kind(kind)
-	assert(type(kind) == "number", kind)
+	assert:type(kind, "number")
 	self.kind = kind
 end
 
@@ -43,7 +43,7 @@ function Dissolve:update(dt)
 end
 
 function Dissolve:draw(fn)
-	assert(type(fn) == "function", fn)
+	assert:type(fn, "function")
 	if self.flag_process then
 		love.graphics.setShader(self.shader_code)
 		fn()

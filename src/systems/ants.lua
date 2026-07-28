@@ -55,11 +55,9 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
 	assert(type(n) == "number" and n > 0, n)
 	assert(start_p:type() == "vec2", start_p)
 	assert(end_p:type() == "vec2", end_p)
-	assert(type(path_repeat) == "boolean", path_repeat)
-	assert(type(ms) == "number", ms)
-	if opts then
-		assert(type(opts) == "table", opts)
-	end
+	assert:type(path_repeat, "boolean")
+	assert:type(ms, "number")
+	assert:type_or_nil(opts, "table")
 
 	local sx, sy = start_p:unpack()
 	local ex, ey = end_p:unpack()
@@ -102,7 +100,7 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
 end
 
 function Ants:set_ants_visibility(bool)
-	assert(type(bool) == "boolean", bool)
+	assert:type(bool, "boolean")
 
 	if #self.pool == 0 then
 		Log.warn("pool is 0")

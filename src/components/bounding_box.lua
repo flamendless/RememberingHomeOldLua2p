@@ -1,8 +1,8 @@
 Concord.component("bounding_box", function(c, x, y, w, h)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	assert(type(w) == "number", w)
-	assert(type(h) == "number", h)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	c.x = x
 	c.y = y
 	c.w = w

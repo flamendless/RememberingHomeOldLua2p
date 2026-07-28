@@ -16,7 +16,7 @@ end
 
 function Systems:set_system_to(id, bool)
 	assert(Enums.ui_system[id], id)
-	assert(type(bool) == "boolean", bool)
+	assert:type(bool, "boolean")
 	assert(system_classes[id] ~= nil, id)
 	local sys = self.world:getSystem(system_classes[id])
 	sys:setEnabled(bool)
@@ -29,9 +29,7 @@ function Systems:dialogue_to_inventory()
 end
 
 function Systems:inventory_to_notes(reversed)
-	if reversed then
-		assert(type(reversed) == "boolean", reversed)
-	end
+	assert:type_or_nil(reversed, "boolean")
 	if not reversed then
 		self:set_system_to(Enums.ui_system.inventory, false)
 		self:set_system_to(Enums.ui_system.notes, true)

@@ -5,7 +5,7 @@ Concord.component("list_item", function(c)
 end)
 
 Concord.component("list_cursor", function(c, cursor_index)
-	assert(type(cursor_index) == "number", cursor_index)
+	assert:type(cursor_index, "number")
 	c.value = cursor_index
 end)
 

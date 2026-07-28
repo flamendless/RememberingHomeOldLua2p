@@ -8,7 +8,7 @@ local Utils = {
 }
 
 function Utils.file.read(filename)
-	assert(type(filename) == "string", filename)
+	assert:type(filename, "string")
 	local file = love.filesystem.getInfo(filename)
 	Log.info(filename, "exists:", file ~= nil)
 	if file then
@@ -20,20 +20,20 @@ function Utils.file.read(filename)
 end
 
 function Utils.file.write(filename, data)
-	assert(type(filename) == "string", filename)
+	assert:type(filename, "string")
 	love.filesystem.write(filename, data)
 	Log.info(filename, "written")
 end
 
 function Utils.serial.write(filename, data)
-	assert(type(filename) == "string", filename)
+	assert:type(filename, "string")
 	local to_write = Bitser.dumps(data)
 	Utils.file.write(filename, to_write)
 	return to_write
 end
 
 function Utils.serial.read(filename)
-	assert(type(filename) == "string", filename)
+	assert:type(filename, "string")
 	local content, exists = Utils.file.read(filename)
 	if exists then
 		local data = Bitser.loads(content)
@@ -47,22 +47,22 @@ function Utils.serial.de(content)
 end
 
 function Utils.hash.compare(a, b)
-	assert(type(a) == "string", a)
-	assert(type(b) == "string", b)
+	assert:type(a, "string")
+	assert:type(b, "string")
 	local hashed_a = love.data.hash("md5", a)
 	local hashed_b = love.data.hash("md5", b)
 	return hashed_a == hashed_b
 end
 
 function Utils.string.get_substr(str, sep)
-	assert(type(str) == "string", str)
-	assert(type(sep) == "string", sep)
+	assert:type(str, "string")
+	assert:type(sep, "string")
 	local n = string.find(str, sep)
 	return string.sub(str, 1, n - 1)
 end
 
 function Utils.string.get_widest(t)
-	assert(type(t) == "table", t)
+	assert:type(t, "table")
 	assert(#t > 0, t)
 	local widest = 0
 	for _, str in ipairs(t) do
@@ -72,8 +72,8 @@ function Utils.string.get_widest(t)
 end
 
 function Utils.table.rotate(t, amount)
-	assert(type(t) == "table", t)
-	assert(type(amount) == "number", amount)
+	assert:type(t, "table")
+	assert:type(amount, "number")
 	if amount == 0 then
 		return t
 	end
@@ -87,7 +87,7 @@ function Utils.table.rotate(t, amount)
 end
 
 function Utils.table.count_kv(t)
-	assert(type(t) == "table", t)
+	assert:type(t, "table")
 	if #t ~= 0 then
 		return #t
 	end
@@ -115,7 +115,7 @@ end
 
 function Utils.math.lerp_range(range, t)
 	assert((type(range) == "table" and range.min and range.max), range)
-	assert(type(t) == "number", t)
+	assert:type(t, "number")
 	return mathx.lerp(range.min, range.max, t)
 end
 

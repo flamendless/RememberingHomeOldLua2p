@@ -16,7 +16,7 @@ function Cache.has_entity(e)
 end
 
 function Cache.get_entity(id)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	return Cache.entities[id]
 end
 
@@ -30,15 +30,15 @@ function Cache.remove_entity(e)
 end
 
 function Cache.get(t_id, id)
-	assert(type(t_id) == "string", t_id)
-	assert(type(id) == "string", id)
+	assert:type(t_id, "string")
+	assert:type(id, "string")
 	assert(Cache[t_id], t_id .. " is not valid")
 	return Cache[t_id][id]
 end
 
 function Cache.store(t_id, id, v)
-	assert(type(t_id) == "string", t_id)
-	assert(type(id) == "string", id)
+	assert:type(t_id, "string")
+	assert:type(id, "string")
 	assert(v ~= nil, v)
 	Cache[t_id][id] = v
 end
@@ -53,9 +53,9 @@ function Cache.clean_resources()
 end
 
 function Cache.manage_resources(resources, list, prev_res)
-	assert(type(resources) == "table", resources)
-	assert(type(list) == "table", list)
-	assert(type(prev_res) == "table", prev_res)
+	assert:type(resources, "table")
+	assert:type(list, "table")
+	assert:type(prev_res, "table")
 	for kind, t in pairs(list) do
 		local res = prev_res[kind]
 		if res then

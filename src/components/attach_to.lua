@@ -13,15 +13,15 @@ function c_attach_to:deserialize(data)
 end
 
 Concord.component("attach_to_offset", function(c, ox, oy)
-	assert(type(ox) == "number", ox)
-	assert(type(oy) == "number", oy)
+	assert:type(ox, "number")
+	assert:type(oy, "number")
 	c.ox = ox
 	c.oy = oy
 end)
 
 Concord.component("attach_to_spawn_point", function(c, x, y)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	c.x = x
 	c.y = y
 end)

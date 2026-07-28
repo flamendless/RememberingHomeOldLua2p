@@ -37,7 +37,7 @@ function DialoguesSystem:state_setup()
 end
 
 function DialoguesSystem:ev_main_camera_setup(cam)
-	assert(type(cam) == "table")
+	assert:type(cam, "table")
 
 	local font = Resources.data.fonts.dialogue
 	local ww, wh = love.graphics.getDimensions()
@@ -89,9 +89,9 @@ end
 function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert(e.__isEntity)
 	assert(e_other.__isEntity)
-	if override_dialogue_key then assert(type(override_dialogue_key) == "string", override_dialogue_key) end
+	assert:type_or_nil(override_dialogue_key, "string")
 	local dialogue_key = override_dialogue_key or e_other:get("dialogue_key").value
-	assert(type(dialogue_key) == "string")
+	assert:type(dialogue_key, "string")
 
 	if self.dialogue:getCurrentKnot() ~= dialogue_key then
 		self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)

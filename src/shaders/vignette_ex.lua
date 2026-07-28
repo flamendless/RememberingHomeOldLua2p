@@ -24,7 +24,7 @@ function VignetteEx:new(...)
 end
 
 function VignetteEx:update_effects(values)
-	assert(type(values) == "table")
+	assert:type(values, "table")
 	for k, v in pairs(values) do
 		assert(self.effects[k] ~= nil, "attempt to set non-existing field " .. k)
 		self.effects[k] = v

@@ -1,10 +1,8 @@
 local Common = {}
 
 function Common.bg(e, bg_id, w)
-	assert(type(bg_id) == "string", bg_id)
-	if w then
-		assert(type(w) == "number")
-	end
+	assert:type(bg_id, "string")
+	assert:type_or_nil(w, "number")
 	e:give("id", "bg"):give("pos", 0, 0):give("sprite", bg_id):give("bg")
 
 	if w then

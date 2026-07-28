@@ -1,18 +1,16 @@
 Concord.component("grouped", function(c, id)
-	assert(type(id) == "string")
+	assert:type(id, "string")
 	c.value = id
 end)
 
 Concord.component("atlas", function(c, frame)
-	assert(type(frame) == "table")
+	assert:type(frame, "table")
 	c.value = frame
 end)
 
 local c_quad = Concord.component("quad", function(c, quad, info)
 	assert(quad:type() == "Quad")
-	if info then
-		assert(type(info) == "table")
-	end
+	assert:type_or_nil(info, "table")
 	c.quad = quad
 
 	if info then

@@ -157,7 +157,7 @@ function Renderer:draw_ui()
 end
 
 function Renderer:draw(is_ui)
-	if is_ui then assert(type(is_ui) == "boolean", is_ui) end
+	assert:type_or_nil(is_ui, "boolean")
 
 	if DEV then
 		if not is_ui then

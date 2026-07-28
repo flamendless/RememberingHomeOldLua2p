@@ -240,11 +240,9 @@ end
 
 function Color:lerp_color(e, color, dur, ease)
 	assert((e.__isEntity and e:has("color")), e)
-	assert(type(color) == "table", color)
-	assert(type(dur) == "number", dur)
-	if ease then
-		assert(type(ease) == "string", ease)
-	end
+	assert:type(color, "table")
+	assert:type(dur, "number")
+	assert:type_or_nil(ease, "string")
 	local e_color = e:get("color")
 	Flux.to(e_color.value, dur, {
 		[1] = color[1],

@@ -8,7 +8,7 @@ end
 
 function AnimationState:anim_idle(e, should_stop)
 	if not (e.__isEntity and e:has("animation") and e:has("body") and e:has("animation_ev_update")) then return end
-	if should_stop then assert(type(should_stop) == "boolean", should_stop) end
+	assert:type_or_nil(should_stop, "boolean")
 	if e:has("override_animation") then
 		return
 	end

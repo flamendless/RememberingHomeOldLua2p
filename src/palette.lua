@@ -48,7 +48,7 @@ Palette.colors = {
 }
 
 for k, v in pairs(Palette.colors) do
-	assert(v[4] == nil, k .. " must have no alpha set")
+	assert:equal(v[4], nil, k .. " must have no alpha set")
 end
 
 Palette.diffuse = {
@@ -100,24 +100,22 @@ Palette.diffuse = {
 Log.debug("TODO: finalize")
 
 function Palette.get(color, alpha)
-	assert(type(color) == "string", color)
+	assert:type(color, "string")
 	assert(Palette.colors[color], color)
-	if alpha then
-		assert(type(alpha) == "number", alpha)
-	end
+	assert:type_or_nil(alpha, "number")
 	local c = Palette.colors[color]
 	local a = alpha or c[4] or 1
 	return { c[1], c[2], c[3], a }
 end
 
 function Palette.get_diffuse(color)
-	assert(type(color) == "string", color)
+	assert:type(color, "string")
 	assert(Palette.diffuse[color], color)
 	return { unpack(Palette.diffuse[color]) }
 end
 
 function Palette.spark_colors_from_tier(tier_color)
-	assert(type(tier_color) == "table", tier_color)
+	assert:type(tier_color, "table")
 	local r, g, b = tier_color[1], tier_color[2], tier_color[3]
 	local peak = math.max(r, g, b, 1)
 	local scale = 1 / peak

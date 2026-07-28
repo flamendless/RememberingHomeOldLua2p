@@ -1,42 +1,34 @@
 Concord.component("alpha_range", function(c, min, max)
-	assert(type(min) == "number", min)
-	assert(type(max) == "number", max)
+	assert:type(min, "number")
+	assert:type(max, "number")
 	c.min = min
 	c.max = max
 end)
 
 Concord.component("color", function(c, color, original)
-	assert(type(color) == "table", color)
-	if original then
-		assert(type(original) == "table", original)
-	end
+	assert:type(color, "table")
+	assert:type_or_nil(original, "table")
 	c.value = { unpack(color) }
 	c.original = original or { unpack(color) }
 end)
 
 Concord.component("color_fade_in_out", function(c, duration, count)
-	assert(type(duration) == "number", duration)
-	if count then
-		assert(type(count) == "number", count)
-	end
+	assert:type(duration, "number")
+	assert:type_or_nil(count, "number")
 	c.duration = duration
 	c.count = count or 0
 end)
 
 Concord.component("fade_to_black", function(c, duration, delay)
-	assert(type(duration) == "number", duration)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(duration, "number")
+	assert:type_or_nil(delay, "number")
 	c.duration = duration
 	c.delay = delay or 0
 end)
 
 local c_lc = Concord.component("lerp_colors", function(c, colors, duration, delay)
-	assert(type(colors) == "table", colors)
-	if duration then
-		assert(type(duration) == "number", duration)
-	end
+	assert:type(colors, "table")
+	assert:type_or_nil(duration, "number")
 
 	c.index = 1
 	c.colors = colors
@@ -61,43 +53,37 @@ function c_lc:deserialize(data)
 end
 
 Concord.component("target_color", function(c, target, duration, delay)
-	assert(type(target) == "table", target)
-	assert(type(duration) == "number", duration)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(target, "table")
+	assert:type(duration, "number")
+	assert:type_or_nil(delay, "number")
 	c.target = { unpack(target) }
 	c.duration = duration
 	c.delay = delay or 0
 end)
 
 Concord.component("color_fade_in", function(c, duration, delay)
-	assert(type(duration) == "number", duration)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(duration, "number")
+	assert:type_or_nil(delay, "number")
 	c.duration = duration
 	c.delay = delay or 0
 end)
 
 Concord.component("color_fade_out", function(c, duration, delay)
-	assert(type(duration) == "number", duration)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(duration, "number")
+	assert:type_or_nil(delay, "number")
 	c.duration = duration
 	c.delay = delay or 0
 end)
 
 Concord.component("fade_in_target_alpha", function(c, alpha)
-	assert(type(alpha) == "number", alpha)
+	assert:type(alpha, "number")
 	c.value = alpha
 end)
 
 Concord.component("remove_blink_on_end")
 Concord.component("blink", function(c, dur, count)
-	assert(type(dur) == "number", dur)
-	assert(type(count) == "number", count)
+	assert:type(dur, "number")
+	assert:type(count, "number")
 	c.dur = dur
 	c.count = count * 2
 	c.completed = 0

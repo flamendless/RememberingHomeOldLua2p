@@ -49,7 +49,7 @@ function CustomList:has(e)
 end
 
 function CustomList:sort(fn)
-	assert(type(fn) == "function", fn)
+	assert:type(fn, "function")
 	table.sort(self, fn)
 	return self
 end

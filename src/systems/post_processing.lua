@@ -22,8 +22,8 @@ function PostProcessing:setup_post_process(t)
 end
 
 function PostProcessing:set_post_process_effect(id, bool)
-	assert(type(id) == "string", id)
-	assert(type(bool) == "boolean", bool)
+	assert:type(id, "string")
+	assert:type(bool, "boolean")
 	for _, effect in ipairs(self.effects) do
 		local t = effect.get_type and effect:get_type() or effect:type()
 		if t == id then
@@ -35,8 +35,8 @@ function PostProcessing:set_post_process_effect(id, bool)
 end
 
 function PostProcessing:ev_pp_invoke(id, str_fn, ...)
-	assert(type(id) == "string", id)
-	assert(type(str_fn) == "string", str_fn)
+	assert:type(id, "string")
+	assert:type(str_fn, "string")
 	for _, effect in ipairs(self.effects) do
 		local t = effect.get_type and effect:get_type() or effect:type()
 		if t == id then

@@ -298,7 +298,7 @@ function Intro:car_reflection_flicker()
 end
 
 function Intro:update_rain(amount)
-	assert(type(amount) == "number", amount)
+	assert:type(amount, "number")
 	self.is_raining = true
 	self.world:emit("set_particle_system", "PSRainIntro", "setEmissionRate", amount)
 end

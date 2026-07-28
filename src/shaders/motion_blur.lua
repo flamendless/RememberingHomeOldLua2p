@@ -4,9 +4,7 @@ local MotionBlur = class({
 
 function MotionBlur:new(canvas, config)
 	assert(canvas:type() == "CustomCanvas", canvas)
-	if config then
-		assert(type(config) == "table", config)
-	end
+	assert:type_or_nil(config, "table")
 	self.shader_code = love.graphics.newShader(Shaders.paths.motion_blur)
 	self.shader_code:send("u_strength", 0.1)
 	self.flag_process = false
@@ -20,12 +18,12 @@ function MotionBlur:store_previous(x, y, angle)
 end
 
 function MotionBlur:set_angle(angle)
-	assert(type(angle) == "number", angle)
+	assert:type(angle, "number")
 	self.shader_code:send("u_angle", angle)
 end
 
 function MotionBlur:set_strength(strength)
-	assert(type(strength) == "number", strength)
+	assert:type(strength, "number")
 	self.shader_code:send("u_strength", strength)
 end
 

@@ -18,12 +18,8 @@ function c_bs:set(state)
 end
 
 Concord.component("fl_spawn_offset", function(c, x, y)
-	if x then
-		assert(type(x) == "number", x)
-	end
-	if y then
-		assert(type(y) == "number", y)
-	end
+	assert:type_or_nil(x, "number")
+	assert:type_or_nil(y, "number")
 
 	c.x = x or 0
 	c.y = y or 0

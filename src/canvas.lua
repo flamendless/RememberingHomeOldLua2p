@@ -3,7 +3,7 @@ local Canvas = class({
 })
 
 function Canvas.init_canvases(canvases)
-	assert(type(canvases) == "table", canvases)
+	assert:type(canvases, "table")
 	local game_size = { x = 128, y = 32 }
 	local ww, wh = love.graphics.getDimensions()
 	local scale = math.min(ww / game_size.x, wh / game_size.y)
@@ -69,12 +69,12 @@ function Canvas.create_main(canvases)
 end
 
 function Canvas:new_default(x, y, width, height, rotation, scale)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	assert(type(width) == "number", width)
-	assert(type(height) == "number", height)
-	assert(type(rotation) == "number", rotation)
-	assert(type(scale) == "number", scale)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(width, "number")
+	assert:type(height, "number")
+	assert:type(rotation, "number")
+	assert:type(scale, "number")
 	self.canvas = love.graphics.newCanvas(width, height)
 	self.canvas:setFilter("nearest", "nearest")
 	self.x, self.y = x, y
@@ -85,7 +85,7 @@ function Canvas:new_default(x, y, width, height, rotation, scale)
 end
 
 function Canvas:new_from_table(tbl)
-	assert(type(tbl) == "table", tbl)
+	assert:type(tbl, "table")
 	self.x = tbl.x
 	self.y = tbl.y
 	self.width = tbl.width
@@ -109,22 +109,12 @@ function Canvas:new_from_canvas(source)
 end
 
 function Canvas:new(x, y, width, height, rotation, scale)
-	assert((type(x) == "number" or type(x) == "table"), x)
-	if y then
-		assert(type(y) == "number", y)
-	end
-	if width then
-		assert(type(width) == "number", width)
-	end
-	if height then
-		assert(type(height) == "number", height)
-	end
-	if rotation then
-		assert(type(rotation) == "number", rotation)
-	end
-	if scale then
-		assert(type(scale) == "number", scale)
-	end
+	assert:one_of(type(x), { "number", "table" }, x)
+	assert:type_or_nil(y, "number")
+	assert:type_or_nil(width, "number")
+	assert:type_or_nil(height, "number")
+	assert:type_or_nil(rotation, "number")
+	assert:type_or_nil(scale, "number")
 	if type(x) == "table" then
 		if x.type and x:type() == "Canvas" then
 			self:new_from_canvas(x)
@@ -137,16 +127,12 @@ function Canvas:new(x, y, width, height, rotation, scale)
 end
 
 function Canvas:set(x, y, width, height, rotation, scale)
-	assert(type(x) == "number", x)
-	assert(type(y) == "number", y)
-	assert(type(width) == "number", width)
-	assert(type(height) == "number", height)
-	if rotation then
-		assert(type(rotation) == "number", rotation)
-	end
-	if scale then
-		assert(type(scale) == "number", scale)
-	end
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(width, "number")
+	assert:type(height, "number")
+	assert:type_or_nil(rotation, "number")
+	assert:type_or_nil(scale, "number")
 	local _x, _y, _w, _h, _rotation, _scale
 
 	if type(x) == "number" then

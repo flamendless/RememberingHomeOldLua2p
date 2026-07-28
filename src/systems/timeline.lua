@@ -11,7 +11,7 @@ function Timeline:init(world)
 end
 
 function Timeline:tle_log(msg)
-	assert(type(msg) == "string", msg)
+	assert:type(msg, "string")
 	Log.debug(string.format("TLE: %s", msg))
 	self.current_name = msg
 	table.insert(self.history, msg)
@@ -21,7 +21,7 @@ function Timeline:tle_log(msg)
 end
 
 function Timeline:start_timeline(fn)
-	assert(type(fn) == "function", fn)
+	assert:type(fn, "function")
 	tablex.clear(self.history)
 	self.current_name = DEF
 	self.state = Enums.timeline.playing

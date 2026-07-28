@@ -31,13 +31,9 @@ local NGrading = class({
 local default_setting = { linear = true, dpiscale = 1 }
 
 function NGrading:new(res_id, res_id2, is_active)
-	if is_active then
-		assert(type(is_active) == "boolean", is_active)
-	end
-	assert(type(res_id) == "string", res_id)
-	if res_id2 then
-		assert(type(res_id2) == "string", res_id2)
-	end
+	assert:type_or_nil(is_active, "boolean")
+	assert:type(res_id, "string")
+	assert:type_or_nil(res_id2, "string")
 	local lut_size = Settings.current.graphics_quality == "low" and 16 or 64
 	local lut_img = Resources.data.image_data[res_id .. "_" .. lut_size]
 	local effect
@@ -99,7 +95,7 @@ end
 function NGrading:new_multi(img, img2, cs)
 	assert(img:type() == "ImageData", img)
 	assert(img2:type() == "ImageData", img2)
-	assert(type(cs) == "number", cs)
+	assert:type(cs, "number")
 	local data = img
 	local data2 = img2
 	local tw = math.floor(data:getWidth() / cs)

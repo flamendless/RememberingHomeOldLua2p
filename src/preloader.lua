@@ -11,9 +11,9 @@ local keys = {
 }
 
 function Preloader.start(resources, container, on_complete)
-	assert(type(resources) == "table", resources)
-	assert(type(container) == "table", container)
-	assert(type(on_complete) == "function", on_complete)
+	assert:type(resources, "table")
+	assert:type(container, "table")
+	assert:type(on_complete, "function")
 	Preloader.percent = 0
 	local i = 1
 	local data = {}
@@ -47,7 +47,7 @@ function Preloader.start(resources, container, on_complete)
 end
 
 function Preloader.load(data, userdata, container, on_complete)
-	assert(type(data) == "table", data)
+	assert:type(data, "table")
 	local preloader = Lily.loadMulti(data)
 	preloader:setUserData(userdata)
 	preloader:onLoaded(function(_, _, _)
@@ -66,19 +66,19 @@ function Preloader.load(data, userdata, container, on_complete)
 				local tt = pdata:getTextureType()
 				pdata:setFilter("nearest", "nearest")
 				if tt == "array" then
-					assert(type(container.array_images) == "table", container.array_images)
+					assert:type(container.array_images, "table")
 					container.array_images[pid] = pdata
 				end
-				assert(type(container.images) == "table", container.images)
+				assert:type(container.images, "table")
 				container.images[pid] = pdata
 			elseif data_type == "ImageData" then
-				assert(type(container.image_data) == "table", container.image_data)
+				assert:type(container.image_data, "table")
 				container.image_data[pid] = pdata
 			elseif data_type == "Source" then
-				assert(type(container.sources) == "table", container.sources)
+				assert:type(container.sources, "table")
 				container.sources[pid] = pdata
 			elseif data_type == "Font" then
-				assert(type(container.fonts) == "table", container.fonts)
+				assert:type(container.fonts, "table")
 				pdata:setFilter("nearest", "nearest")
 				container.fonts[pid] = pdata
 			end

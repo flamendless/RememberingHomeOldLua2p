@@ -10,18 +10,14 @@ local ranges = {
 }
 
 function DitherGradient:new(is_active, t_dither, t_pal, values)
-	if is_active then
-		assert(type(is_active) == "boolean", is_active)
-	end
+	assert:type_or_nil(is_active, "boolean")
 	if t_dither then
 		assert(t_dither:type() == "Image", t_dither)
 	end
 	if t_pal then
 		assert(t_pal:type() == "Image", t_pal)
 	end
-	if values then
-		assert(type(values) == "table", values)
-	end
+	assert:type_or_nil(values, "table")
 	self.is_active = not not is_active --default is false
 	self.shader = love.graphics.newShader(Shaders.paths.dither_gradient)
 

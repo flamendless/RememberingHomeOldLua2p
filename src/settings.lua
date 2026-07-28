@@ -48,9 +48,9 @@ end
 
 function Settings.set(id, value, should_overwrite)
 	should_overwrite = should_overwrite or false
-	assert(type(id) == "string", id)
-	assert(type(value) == "boolean" or type(value) == "number", value)
-	assert(type(should_overwrite) == "boolean", should_overwrite)
+	assert:type(id, "string")
+	assert:one_of(type(value), { "boolean", "number" }, value)
+	assert:type(should_overwrite, "boolean")
 
 	local prev = Settings.current[id]
 	if prev ~= value then
@@ -63,8 +63,8 @@ function Settings.set(id, value, should_overwrite)
 end
 
 function Settings.set_from_table(t, should_overwrite)
-	assert(type(t) == "table", t)
-	assert(type(should_overwrite) == "boolean", should_overwrite)
+	assert:type(t, "table")
+	assert:type(should_overwrite, "boolean")
 	for k, v in pairs(t) do
 		assert(Settings.current[k] ~= nil, "invalid " .. k .. " key")
 		Settings.current[k] = v

@@ -9,7 +9,7 @@ local EMPTY_FN = function() end
 
 function AnimationOld:setup_animation_data(e, new_tag)
 	assert(e.__isEntity and e:has("animation_old"), e)
-	assert(type(new_tag) == "string", new_tag)
+	assert:type(new_tag, "string")
 	if not e:has("multi_animation_data_old") then return end
 	local multi = e:get("multi_animation_data_old")
 	local data = multi.data[new_tag]
@@ -51,8 +51,8 @@ end
 
 function AnimationOld:setup_animation(e, data, on_loop)
 	assert(e.__isEntity, e)
-	assert(type(data) == "table", data)
-	assert(type(on_loop) == "function", on_loop)
+	assert:type(data, "table")
+	assert:type(on_loop, "function")
 
 	local animation = e:get("animation_old")
 	local current_tag = animation.current_tag
@@ -169,13 +169,9 @@ end
 
 function AnimationOld:switch_animation_tag(e, new_tag, base_tag, override)
 	assert(e.__isEntity, e)
-	assert(type(new_tag) == "string", new_tag)
-	if base_tag then
-		assert(type(base_tag) == "string", base_tag)
-	end
-	if override then
-		assert(type(override) == "boolean", override)
-	end
+	assert:type(new_tag, "string")
+	assert:type_or_nil(base_tag, "string")
+	assert:type_or_nil(override, "boolean")
 	self:setup_animation_data(e, new_tag)
 	local animation = e:get("animation_old")
 	local on_loop = self:setup_on_loop(e, animation)
@@ -244,9 +240,7 @@ end
 
 function AnimationOld:anim_pause_at_start(e, signal)
 	assert(e.__isEntity and e:has("animation_old"), e)
-	if signal then
-		assert(type(signal) == "string", signal)
-	end
+	assert:type_or_nil(signal, "string")
 	local anim = e:get("animation_old")
 	anim.anim8:pauseAtStart()
 	if signal then
@@ -256,9 +250,7 @@ end
 
 function AnimationOld:anim_pause_at_end(e, signal)
 	assert(e.__isEntity and e:has("animation_old"), e)
-	if signal then
-		assert(type(signal) == "string", signal)
-	end
+	assert:type_or_nil(signal, "string")
 	local anim = e:get("animation_old")
 	anim.anim8:pauseAtEnd()
 	if signal then

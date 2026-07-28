@@ -1,8 +1,6 @@
 local function ctor_single(c, signal, delay, ...)
-	assert(type(signal) == "string", signal)
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(signal, "string")
+	assert:type_or_nil(delay, "number")
 	c.signal = signal
 	c.delay = delay or 0
 	c.args = { ... }
@@ -12,10 +10,8 @@ local function ctor_multi(c, ...)
 	c.values = { ... }
 
 	for _, v in ipairs(c.values) do
-		assert(type(v.signal) == "string", v.signal)
-		if v.delay then
-			assert(type(v.delay) == "number", v.delay)
-		end
+		assert:type(v.signal, "string")
+		assert:type_or_nil(v.delay, "number")
 	end
 end
 

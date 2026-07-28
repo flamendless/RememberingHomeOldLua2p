@@ -451,9 +451,7 @@ function Menu:show_main_menu()
 end
 
 function Menu:hide_main_menu(duration)
-	if duration then
-		assert(type(duration) == "number", duration)
-	end
+	assert:type_or_nil(duration, "number")
 	for _, e in ipairs(self.pool_main_menu) do
 		e:give("target_color", Palette.get("white", 0), duration or duration_hide)
 			:give("lerp_on_finish_multi", { signal = "hide_entity", args = { e } }, { signal = "menu_unpause" })
@@ -477,9 +475,7 @@ function Menu:show_sub_menu()
 end
 
 function Menu:hide_sub_menu(duration)
-	if duration then
-		assert(type(duration) == "number", duration)
-	end
+	assert:type_or_nil(duration, "number")
 	for _, e in ipairs(self.pool_sub_menu) do
 		e:give("target_color", Palette.get("white", 0), duration or duration_hide)
 			:give("lerp_on_finish", "hide_entity", 0, e)
@@ -634,7 +630,7 @@ function Menu:state_mousepressed(mx, my, mb)
 end
 
 function Menu:open_url(str)
-	assert(type(str) == "string", str)
+	assert:type(str, "string")
 	love.system.openURL(str)
 end
 

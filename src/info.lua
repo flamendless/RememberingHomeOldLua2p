@@ -6,8 +6,8 @@ local Info = {
 local filename = "info.txt"
 
 local function insert_str(src, dest)
-	assert(type(src) == "table", src)
-	assert(type(dest) == "table", dest)
+	assert:type(src, "table")
+	assert:type(dest, "table")
 	for k, v in pairs(src) do
 		local str = string.format("\t%s: %s\n", k, v)
 		table.insert(dest, str)

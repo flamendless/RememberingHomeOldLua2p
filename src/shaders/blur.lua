@@ -3,9 +3,7 @@ local Blur = class({
 })
 
 function Blur:new(is_active)
-	if is_active then
-		assert(type(is_active) == "boolean", is_active)
-	end
+	assert:type_or_nil(is_active, "boolean")
 	self.is_active = not not is_active --default is false
 	self.shader = love.graphics.newShader(Shaders.paths.blur)
 end

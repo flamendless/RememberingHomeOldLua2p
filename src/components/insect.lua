@@ -3,7 +3,7 @@ Concord.component("ant")
 Concord.component("firefly")
 
 Concord.component("fly", function (c, radius)
-	assert(type(radius) == "number", radius)
+	assert:type(radius, "number")
 	c.max_radius = radius * (1.1 + love.math.random() * 0.4)
 	c.pull = radius * love.math.random(2, 4)
 	c.vel_x = (love.math.random() - 0.5) * 7
@@ -14,8 +14,8 @@ end)
 
 Concord.component("scatter_away_from", function (c, e_target, distance, speed)
 	assert(e_target.__isEntity)
-	assert(type(distance) == "number")
-	assert(type(speed) == "number")
+	assert:type(distance, "number")
+	assert:type(speed, "number")
 	e_target:ensure("key")
 	c.key = e_target:get("key").value
 	c.distance = distance

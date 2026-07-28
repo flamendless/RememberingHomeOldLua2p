@@ -7,14 +7,10 @@ local c_anchor = Concord.component("anchor", function(
 	padding_y
 )
 	assert(entity.__isEntity, entity)
-	assert(type(ax) == "string", ax)
-	assert(type(ay) == "string", ay)
-	if padding_x then
-		assert(type(padding_x) == "number", padding_x)
-	end
-	if padding_y then
-		assert(type(padding_y) == "number", padding_y)
-	end
+	assert:type(ax, "string")
+	assert:type(ay, "string")
+	assert:type_or_nil(padding_x, "number")
+	assert:type_or_nil(padding_y, "number")
 
 	entity:ensure("key")
 	c.key = entity:get("key").value

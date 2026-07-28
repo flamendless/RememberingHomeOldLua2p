@@ -39,7 +39,7 @@ function UIWrapper.edit_range(id, value, min, max, is_int)
 end
 
 function UIWrapper.color(color)
-	assert(type(color) == "table")
+	assert:type(color, "table")
 	assert(#color == 4 or #color == 3)
 	color[1] = UIWrapper.edit_range("r", color[1], 0, 1)
 	color[2] = UIWrapper.edit_range("g", color[2], 0, 1)

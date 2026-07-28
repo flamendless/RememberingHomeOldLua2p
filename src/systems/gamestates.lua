@@ -6,13 +6,9 @@ function GameStatesSystem:init(world)
 end
 
 function GameStatesSystem:switch_state(next_state, dur, delay)
-	assert(type(next_state) == "string", next_state)
-	if dur then
-		assert(type(dur) == "number", dur)
-	end
-	if delay then
-		assert(type(delay) == "number", delay)
-	end
+	assert:type(next_state, "string")
+	assert:type_or_nil(dur, "number")
+	assert:type_or_nil(delay, "number")
 	if self.is_switching then
 		return
 	end

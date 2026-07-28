@@ -35,8 +35,8 @@ function Fog:draw_fog(e)
 end
 
 function Fog:fade_in_fog(target_id, dur)
-	assert(type(target_id) == "string", target_id)
-	assert(type(dur) == "number", dur)
+	assert:type(target_id, "string")
+	assert:type(dur, "number")
 	for _, e in ipairs(self.pool) do
 		local id = e:get("id").value
 		if id == target_id then
@@ -47,8 +47,8 @@ function Fog:fade_in_fog(target_id, dur)
 end
 
 function Fog:fade_out_fog(target_id, dur)
-	assert(type(target_id) == "string", target_id)
-	assert(type(dur) == "number", dur)
+	assert:type(target_id, "string")
+	assert:type(dur, "number")
 	for _, e in ipairs(self.pool) do
 		local id = e:get("id").value
 		if id == target_id then

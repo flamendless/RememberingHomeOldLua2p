@@ -44,7 +44,7 @@ function BillboardGlow:update(dt)
 end
 
 function BillboardGlow:generate_glow_texture(size)
-	assert(type(size) == "number")
+	assert:type(size, "number")
 	local data = love.image.newImageData(size, size)
 	local cx, cy = size / 2, size / 2
 	local max_dist = math.sqrt(cx * cx + cy * cy)

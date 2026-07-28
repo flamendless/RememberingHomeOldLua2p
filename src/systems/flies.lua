@@ -32,7 +32,7 @@ function Flies:generate_flies(n, start_p, min_dist)
 end
 
 function Flies:generate_flies_for_room_lights(scene)
-	assert(type(scene) == "string")
+	assert:type(scene, "string")
 
 	local d = Data.Lights[scene]
 	for _, lp in ipairs(d.pl.pos) do
@@ -105,7 +105,7 @@ function Flies:update(dt)
 end
 
 function Flies:set_flies_visibility(bool)
-	assert(type(bool) == "boolean", bool)
+	assert:type(bool, "boolean")
 
 	if #self.pool == 0 then
 		Log.warn("pool is 0")

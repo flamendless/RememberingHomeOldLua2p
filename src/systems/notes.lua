@@ -22,9 +22,7 @@ function NotesSystem:open_notes()
 end
 
 function NotesSystem:close_notes(not_close)
-	if not_close then
-		assert(type(not_close) == "boolean", not_close)
-	end
+	assert:type_or_nil(not_close, "boolean")
 	self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
 	if not not_close then
 		self.world:emit("on_leave_interact_or_inventory")

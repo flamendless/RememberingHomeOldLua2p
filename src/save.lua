@@ -13,7 +13,7 @@ local save_filename = "save_data"
 local key_filename = "data_store"
 
 local function validate_checkpoints(data)
-	assert(type(data) == "table", data)
+	assert:type(data, "table")
 end
 
 function Save.init()
@@ -53,11 +53,9 @@ function Save.overwrite()
 end
 
 function Save.toggle_flag(id, should_overwrite)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	assert(Save.data[id] ~= nil, id)
-	if should_overwrite then
-		assert(type(should_overwrite) == "boolean", should_overwrite)
-	end
+	assert:type_or_nil(should_overwrite, "boolean")
 	Save.data[id] = not Save.data[id]
 	if should_overwrite then
 		Save.overwrite()
@@ -65,12 +63,10 @@ function Save.toggle_flag(id, should_overwrite)
 end
 
 function Save.set_flag(id, value, should_overwrite)
-	assert(type(id) == "string", id)
+	assert:type(id, "string")
 	assert(Save.data[id] ~= nil, id)
-	assert(type(value) == "boolean", value)
-	if should_overwrite then
-		assert(type(should_overwrite) == "boolean", should_overwrite)
-	end
+	assert:type(value, "boolean")
+	assert:type_or_nil(should_overwrite, "boolean")
 	Save.data[id] = value
 	if should_overwrite then
 		Save.overwrite()
