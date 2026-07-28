@@ -34,9 +34,8 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 * [jprof](https://github.com/pfirsich/jprof) - for profiling
 * [lily](https://github.com/MikuAuahDark/lily) - for asynchronous loading of assets
 * [log](https://github.com/flamendless/log.lua) - for logging
-* [lume](https://github.com/rxi/lume) - for some utility functions
-* [love-sdf-text](https://github.com/Tjakka5/love-sdf-text) - for SDF rendering
 * [LoveInk](https://github.com/adam85sims/LoveInk) - for Dialogues
+* [lume](https://github.com/rxi/lume) - for some utility functions
 * [ngrading](https://github.com/MikuAuahDark/NPad93/tree/master/ngrading) - color grading (heavily modified for this project)
 * [Outliner](https://love2d.org/forums/viewtopic.php?p=221215#p221215) - for Outline shader (modified for this project)
 * [ReflowPrint](https://github.com/josefnpat/reflowprint) - for alignment of text that is shown one character at a time
@@ -50,8 +49,7 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 
 * [Export-TextureAtlas](https://github.com/EngineerSmith/Export-TextureAtlas) - for generating atlas textures.
 * [HotParticles](https://github.com/ReFreezed/HotParticles) - for testing/playing with particle systems.
-* [Luapreprocess](https://github.com/ReFreezed/LuaPreprocess) - for preprocessing `.lua2p` files to `.lua`
-* [msdf-bmfont](https://www.npmjs.com/package/msdf-bmfont) - for converting `.ttf` font files to SDF
+* [Luapreprocess](https://github.com/ReFreezed/LuaPreprocess) - for preprocessing `.lua2p` files to `.lua` (DEPRECATED)
 * [love-build](https://github.com/ellraiser/love-build) - for building executables for different OS
 
 ## Credits:

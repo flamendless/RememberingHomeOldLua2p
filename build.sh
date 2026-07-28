@@ -215,6 +215,19 @@ function test()
 	return $code
 }
 
+function testslow()
+{
+	echo "Running autoplay slow test: boot_to_tutorial_end"
+	love "$dir_source" --test=boot_to_tutorial_end --speed=2 --seed=1
+	local code=$?
+	if [ $code -eq 0 ]; then
+		echo "TEST PASSED"
+	else
+		echo "TEST FAILED (exit $code)"
+	fi
+	return $code
+}
+
 function prof_viewer()
 {
 	if [ $(uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/ip') ]; then
@@ -251,7 +264,7 @@ function lovebuild() {
 
 if [ $# -eq 0 ]; then
 	echo "Must pass command:"
-	echo "  init, rebuild, clean, run, test"
+	echo "  init, rebuild, clean, run, test, testslow"
 	echo "  gen_atlas, copy_res, copy_modules, new_room, check"
 else
 	"$@"

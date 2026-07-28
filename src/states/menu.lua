@@ -25,17 +25,12 @@ local duration_hide = 0.75
 local duration_pos = 0.75
 local target_x = 176
 local tools = {
-	"Manjaro",
-	"i3-Gaps",
-	"Discord",
 	"Löve Framework",
-	"Luapreprocess",
-	"Vim",
 	"Aseprite",
-	"Audacity",
 	"Export-TextureAtlas",
+	"HotParticles",
+	"Vim",
 	"love-build",
-	"msdf-bmfont",
 }
 local libs = {
 	"Anim8",
@@ -51,12 +46,10 @@ local libs = {
 	"JProf",
 	"Lily",
 	"Log",
+	"LoveInk",
 	"Lume",
 	"ngrading",
 	"Outliner",
-	"Peeker",
-	"ReflowPrint",
-	"SDF",
 	"Semver",
 	"Slab",
 	"Splashes",
@@ -83,23 +76,23 @@ local about_template = {
 
 	{ "@COLOR" },
 	{ "Programmer:" },
-	{ "Brandon Blanker Lim-it    @flamendless" },
+	{ "@flamendless" },
 	{ "" },
 
 	{ "@COLOR" },
 	{ "Arts:" },
-	{ "Conrad Reyes    @Shizzy619" },
+	{ "@Shizzy619" },
 	{ "" },
 
 	{ "@COLOR" },
 	{ "Level Design:" },
-	{ "Piolo Maurice Laudencia    @piotato" },
+	{ "@piotato" },
 	{ "" },
 
 	--TODO add musician here
 	{ "@COLOR" },
 	{ "Music/Sound:" },
-	{ "???    @???" },
+	{ "@???" },
 	{ "" },
 
 	{ "@LAYOUT:LEFT" },
@@ -338,7 +331,7 @@ function Menu:setup_about()
 		"https://twitter.com/@flam8studio",
 		"https://discord.gg/2W4tyyV",
 		"https://flamendless.itch.io",
-		"mailto:flamendless.studio@gmail.com",
+		"mailto:flamendless.indiedev@gmail.com",
 	}
 	local _, _, w, h = self.camera:getVisible()
 	local base_x = w/2
