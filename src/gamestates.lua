@@ -83,10 +83,10 @@ function GameStates.start(resources)
 
 		GameStates.world.beforeEmit = function(world, event, ...)
 			if
-				blacklisted[event] or
-				stringx.starts_with(event, "debug_") or
-				stringx.starts_with(event, "state_") or
-				stringx.starts_with(event, "draw_")
+				blacklisted[event]
+				or stringx.starts_with(event, "debug_")
+				or stringx.starts_with(event, "state_")
+				or stringx.starts_with(event, "draw_")
 			then
 				return
 			end
@@ -113,7 +113,9 @@ function GameStates.switch(next_id)
 		GameStates.prev_id = GameStates.current_id
 		GameStates.exit()
 
-		if DEV then DevTools.clear() end
+		if DEV then
+			DevTools.clear()
+		end
 	end
 
 	Log.info("Switching to:", next_id)
@@ -127,9 +129,7 @@ function GameStates.switch_to_previous()
 end
 
 function GameStates.update(dt)
-	if not GameStates.is_ready then
-		return
-	end
+	if not GameStates.is_ready then return end
 	JPROF.push("gs state update")
 	if DEV and DevTools.cli.show then return end
 	GameStates.world:emit("state_update", dt)
@@ -137,9 +137,7 @@ function GameStates.update(dt)
 end
 
 function GameStates.draw()
-	if not GameStates.is_ready then
-		return
-	end
+	if not GameStates.is_ready then return end
 	JPROF.push("gs state draw")
 	GameStates.world:emit("state_draw")
 	if DEV then
@@ -149,38 +147,19 @@ function GameStates.draw()
 end
 
 function GameStates.keypressed(key)
-	if not GameStates.is_ready then
-		return
-	end
+	if not GameStates.is_ready then return end
 	GameStates.world:emit("state_keypressed", key)
 end
 
 function GameStates.keyreleased(key)
-	if not GameStates.is_ready then
-		return
-	end
+	if not GameStates.is_ready then return end
 	GameStates.world:emit("state_keyreleased", key)
 end
 
-function GameStates.mousemoved(mx, my, dx, dy)
-	if not GameStates.is_ready then
-		return
-	end
-	GameStates.world:emit("state_mousemoved", mx, my, dx, dy)
-end
-
 function GameStates.mousepressed(mx, my, mb)
-	if not GameStates.is_ready then
-		return
-	end
+	if not GameStates.is_ready then return end
+	if GameStates.current_id ~= Enums.game_state.Menu then return end
 	GameStates.world:emit("state_mousepressed", mx, my, mb)
-end
-
-function GameStates.mousereleased(mx, my, mb)
-	if not GameStates.is_ready then
-		return
-	end
-	GameStates.world:emit("state_mousereleased", mx, my, mb)
 end
 
 function GameStates.exit()

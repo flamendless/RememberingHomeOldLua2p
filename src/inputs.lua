@@ -7,6 +7,7 @@ local maps = {
 		s = "down",
 		e = "interact",
 		q = "cancel",
+		escape = "cancel",
 		t = "inventory",
 		f = "flashlight",
 		g = "lighter",
@@ -22,6 +23,7 @@ local maps = {
 		down = "down",
 		z = "interact",
 		x = "cancel",
+		escape = "cancel",
 		c = "inventory",
 		f = "flashlight",
 		g = "lighter",
@@ -52,6 +54,53 @@ local Inputs = {
 }
 local map_names = { "WASD", "Arrows" }
 
+local key_display = {
+	escape = "Esc",
+	left = "Left",
+	right = "Right",
+	up = "Up",
+	down = "Down",
+	lshift = "LShift",
+	rshift = "RShift",
+}
+
+local function format_key(scancode)
+	if key_display[scancode] then
+		return key_display[scancode]
+	end
+	if #scancode == 1 then
+		return string.upper(scancode)
+	end
+	return scancode
+end
+
+local function sort_binding_labels(a, b)
+	if a == "Esc" then
+		return true
+	end
+	if b == "Esc" then
+		return false
+	end
+	return a < b
+end
+
+function Inputs.get_binding_labels(map_index)
+	assert(maps[map_index], map_index)
+	local groups = {}
+	for scancode, action in pairs(maps[map_index]) do
+		if not groups[action] then
+			groups[action] = {}
+		end
+		table.insert(groups[action], format_key(scancode))
+	end
+	local labels = {}
+	for action, keys in pairs(groups) do
+		table.sort(keys, sort_binding_labels)
+		labels[action] = table.concat(keys, "/")
+	end
+	return labels
+end
+
 if DEV then
 	Inputs.dev_map = {
 		m = "play",
@@ -69,6 +118,7 @@ function Inputs.init(key_map)
 	local n = key_map or Settings.current.key_map
 	assert(maps[n], n)
 	Inputs.map = maps[n]
+	Inputs.base_map = maps[n]
 
 	if DEV then
 		tablex.overlay(Inputs.map, Inputs.dev_map)
@@ -114,9 +164,17 @@ function Inputs.held(key, threshold)
 	return Inputs.current[key] and (Inputs.hold_timers[key] or 0) >= threshold
 end
 
+local function get_input_map()
+	if DEV and GameStates and GameStates.is_ready and GameStates.current_id == Enums.game_state.Menu then
+		return Inputs.base_map
+	end
+	return Inputs.map
+end
+
 function Inputs.keypressed(_, scancode)
 	assert(type(scancode) == "string", scancode)
-	if not Inputs.map[scancode] then
+	local map = get_input_map()
+	if not map[scancode] then
 		return
 	end
 
@@ -124,12 +182,13 @@ function Inputs.keypressed(_, scancode)
 		return
 	end
 
-	Inputs.current[Inputs.map[scancode]] = true
+	Inputs.current[map[scancode]] = true
 end
 
 function Inputs.keyreleased(_, scancode)
 	assert(type(scancode) == "string", scancode)
-	if not Inputs.map[scancode] then
+	local map = get_input_map()
+	if not map[scancode] then
 		return
 	end
 
@@ -137,7 +196,7 @@ function Inputs.keyreleased(_, scancode)
 		return
 	end
 
-	Inputs.current[Inputs.map[scancode]] = false
+	Inputs.current[map[scancode]] = false
 end
 
 function Inputs.update(dt)

@@ -82,28 +82,33 @@ end
 function Menu.about_ext_link(e, id, resource_id, x, y)
 	local image = Resources.data.images[resource_id]
 	local w, h = image:getDimensions()
+	local sx, sy = 0.75, 0.75
 	e:give("id", id)
 		:give("sprite", resource_id)
-		:give("pos", x, y)
+		:give("pos", x + w * sx * 0.5, y)
 		:give("color", Palette.get("white"))
 		:give("camera")
 		:give("bounding_box", x, y, w, h)
 		:give("clickable")
 		:give("hoverable")
-		:give("transform", 0, 0.75, 0.75, 0, 0.5)
+		:give("transform", 0, sx, sy, 0.5, 0.5)
 		:give("hover_change_color", Palette.get("about_hint"), 0.25)
+		:give("hover_change_scale", 1.0, 0.2)
 end
 
 function Menu.btn_back(e, x, y)
+	local w, h = 59, 45
 	e:give("id", "btn_back")
 		:give("sprite", "btn_back")
-		:give("pos", x, y)
+		:give("pos", x + w/2, y)
 		:give("color", Palette.get("ui_not_hovered"))
 		:give("camera")
-		:give("bounding_box", x, y, 59, 45)
+		:give("bounding_box", x, y, w, h)
 		:give("clickable")
 		:give("hoverable")
-		:give("hover_change_color", Palette.get("ui_hovered"), 0.2)
+		:give("transform", 0, 1, 1, 0.5, 0.5)
+		:give("hover_change_color", Palette.get("about_hint"), 0.2)
+		:give("hover_change_scale", 1.15, 0.2)
 end
 
 return Menu

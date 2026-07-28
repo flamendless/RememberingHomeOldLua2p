@@ -146,6 +146,7 @@ Enums.input = Enum(
 Enums.list_group = Enum(
 	"main_menu",
 	"sub_menu",
+	"about",
 	"inventory_cells",
 	"inventory_choices",
 	"pause_choices",

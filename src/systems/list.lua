@@ -94,8 +94,6 @@ end
 
 function List:update_list(group)
 	local delta = 0
-	local up = group.vertical_only and "up" or "left"
-	local down = group.vertical_only and "down" or "right"
 
 	if Inputs.pressed(Enums.input.interact) then
 		local index = group.per_page * group.offset + group.cursor
@@ -103,9 +101,15 @@ function List:update_list(group)
 		assert(e, e)
 		local signal = "on_list_item_interact_" .. self.focused
 		self.world:emit(signal, e)
-	elseif Inputs.pressed(up) then
+	elseif group.vertical_only then
+		if Inputs.pressed(Enums.input.up) then
+			delta = -1
+		elseif Inputs.pressed(Enums.input.down) then
+			delta = 1
+		end
+	elseif Inputs.pressed(Enums.input.left) or Inputs.pressed(Enums.input.up) then
 		delta = -1
-	elseif Inputs.pressed(down) then
+	elseif Inputs.pressed(Enums.input.right) or Inputs.pressed(Enums.input.down) then
 		delta = 1
 	end
 
@@ -204,6 +208,24 @@ function List:update_cursor(index)
 		self.world:emit(signal, e_hovered)
 		return cursor_new_index
 	end
+end
+
+function List:clear_focus()
+	if self.focused then
+		local group_id = self.focused
+		local group = self.groups[group_id]
+		if group then
+			for _, e in ipairs(group.entities) do
+				if e:has("list_cursor") then
+					e:remove("list_cursor")
+					self.world:emit("on_list_cursor_remove_" .. group_id, e)
+				end
+				e:get("list_group").is_focused = false
+			end
+		end
+		table.insert(self.focus_stack, self.focused)
+	end
+	self.focused = nil
 end
 
 function List:set_focus_list(group_id, override_cursor)

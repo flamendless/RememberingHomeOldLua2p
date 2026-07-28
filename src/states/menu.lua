@@ -10,6 +10,10 @@ local Menu = Concord.system({
 		constructor = Ctor.ListByID,
 		id = "sub_menu",
 	},
+	pool_about = {
+		constructor = Ctor.ListByID,
+		id = "about",
+	},
 })
 
 local offset_x = 64
@@ -23,6 +27,7 @@ local ANGLE_RIGHT = 0
 local duration_show = 0.75
 local duration_hide = 0.75
 local duration_pos = 0.75
+local duration_panel = 0.45
 local target_x = 176
 local tools = {
 	"Löve Framework",
@@ -66,6 +71,19 @@ local function color_to(color, target_color, dur)
 		[3] = target_color[3],
 		[4] = target_color[4],
 	})
+end
+
+local function sync_about_focus(self, e_focused)
+	for _, e in ipairs(self.pool_about) do
+		if e:has("hoverable") and e:get("hoverable").is_hovered then
+			return
+		end
+	end
+	for _, e in ipairs(self.pool_about) do
+		if e:has("hoverable") then
+			e:get("hoverable").is_hovered = e == e_focused
+		end
+	end
 end
 
 local about_template = {
@@ -197,10 +215,13 @@ function Menu:state_update(dt)
 		self:menu_back()
 	end
 
-	local mx, my = love.mouse.getPosition()
 	self.world:emit("update", dt)
-	self.world:emit("check_mouse_hover", mx, my)
-	self.world:emit("hover_effects")
+	if self.current_state == Enums.menu_state.about then
+		local mx, my = love.mouse.getPosition()
+		self.world:emit("check_mouse_hover", mx, my)
+		sync_about_focus(self, self:get_about_focused())
+		self.world:emit("hover_effects")
+	end
 
 	if self.current_state == Enums.menu_state.settings and not self.mb.flag_process then
 		self.world:emit("update_settings", dt)
@@ -330,8 +351,15 @@ function Menu:setup_about()
 	local largest = 0
 	local dt_color = false
 	local color = Palette.get("about_normal")
+	local n_about_items = 1 + #about_links
 
-	Concord.entity(self.world):assemble(Assemblages.Menu.btn_back, 8, base_y):give("on_click", 1, "menu_back")
+	self.world:emit("create_list_group", Enums.list_group.about, false, n_about_items)
+
+	Concord.entity(self.world)
+		:assemble(Assemblages.Menu.btn_back, 8, base_y + 12)
+		:give("on_click", 1, "menu_back")
+		:give("list_item")
+		:give("list_group", Enums.list_group.about)
 
 	for i, el in ipairs(about) do
 		if type(el[1]) == "string" and el[1] ~= "_IMAGES" then
@@ -396,9 +424,12 @@ function Menu:setup_about()
 				Concord.entity(self.world)
 					:assemble(Assemblages.Menu.about_ext_link, id, resource_id, x, y)
 					:give("on_click", 1, "open_url", about_links[i2])
+					:give("list_item")
+					:give("list_group", Enums.list_group.about)
 			end
 		end
 	end
+	self.world:__flush()
 end
 
 function Menu:menu_unpause(bool)
@@ -490,6 +521,7 @@ function Menu:on_continue()
 end
 
 function Menu:on_settings()
+	self.world:emit("clear_focus")
 	local l, t, w, h = self.camera:getWorld()
 	local cworld = { x = l, y = t, w = w, h = h }
 	self.world:emit("init_settings")
@@ -503,7 +535,16 @@ function Menu:on_about()
 		self:setup_about()
 		about_done = true
 	end
+	self.world:emit("set_focus_list", Enums.list_group.about)
 	self:MB_move(nil, cworld.h, ANGLE_UP)
+end
+
+function Menu:get_about_focused()
+	for _, e in ipairs(self.pool_about) do
+		if e:has("list_cursor") then
+			return e
+		end
+	end
 end
 
 function Menu:on_exit()
@@ -535,7 +576,7 @@ function Menu:MB_move(tx, ty, angle)
 	local cx, cy = self.camera:getPosition()
 	self.world:emit("play_positional_sound", Enums.sfx.motion_blur, cx, cy, { relative = true })
 	local cpos = { x = cx, y = cy }
-	local duration = 1
+	local duration = duration_panel
 	local distance = { 1.0 }
 	local prev_angle = (angle + 180) % 360
 
@@ -561,7 +602,7 @@ function Menu:MB_return()
 	local cx, cy = self.camera:getPosition()
 	self.world:emit("play_positional_sound", Enums.sfx.motion_blur, cx, cy, { relative = true })
 	local cpos = vec2(cx, cy)
-	local duration = 1
+	local duration = duration_panel
 	local distance = { 1.0 }
 	local temp_mb = self.mb.previous
 
@@ -581,10 +622,14 @@ function Menu:MB_return()
 			self.current_state = Enums.menu_state.menu
 			Log.info("Switched Menu State to:", self.current_state)
 			self.mb.flag_process = false
+			self.world:emit("set_focus_list", Enums.list_group.main_menu)
 		end)
 end
 
 function Menu:state_mousepressed(mx, my, mb)
+	if self.current_state ~= Enums.menu_state.about then
+		return
+	end
 	self.world:emit("mousepressed", mx, my, mb)
 end
 
@@ -649,6 +694,26 @@ Menu["on_list_item_interact_" .. Enums.list_group.sub_menu] = function(self, e_h
 	elseif text == "New Game" then
 		self:on_newgame()
 	end
+end
+
+Menu["on_list_item_interact_" .. Enums.list_group.about] = function(self, e_hovered)
+	local id = e_hovered:get("id").value
+	if id == "btn_back" then
+		self:menu_back()
+	elseif e_hovered:has("on_click") then
+		local on_click = e_hovered:get("on_click")
+		if on_click.signal == "open_url" then
+			self:open_url(on_click.args[1])
+		end
+	end
+end
+
+Menu["on_list_cursor_update_" .. Enums.list_group.about] = function(self, e_hovered)
+	sync_about_focus(self, e_hovered)
+end
+
+Menu["on_list_cursor_remove_" .. Enums.list_group.about] = function(self)
+	sync_about_focus(self, nil)
 end
 
 return Menu

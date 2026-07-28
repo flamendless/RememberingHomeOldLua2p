@@ -45,7 +45,7 @@ function MenuSettings:init_settings()
 	self.wm_list = WindowMode.list
 	self.key_id = sc.key_map
 	self.key_map = tablex.copy(Inputs.map)
-	self.rev_key_map = tablex.copy(Inputs.rev_maps[self.key_id])
+	self.binding_labels = Inputs.get_binding_labels(self.key_id)
 	self.muted = sc.muted
 	self.volume = sc.volume
 	self.show_keys = sc.show_keys
@@ -169,7 +169,7 @@ function MenuSettings:update_settings(dt)
 			if Slab.TextSelectable(id) then
 				self.key_id = i
 				self.key_map = tablex.copy(Inputs.get_map_keys()[i])
-				self.rev_key_map = tablex.copy(Inputs.rev_maps[i])
+				self.binding_labels = Inputs.get_binding_labels(self.key_id)
 				for k, v in pairs(key_title) do
 					for k2, v2 in pairs(self.key_map) do
 						if k == v2 then
@@ -183,12 +183,11 @@ function MenuSettings:update_settings(dt)
 		Slab.EndComboBox()
 	end
 
-	for _, key in ipairs(ordered_key_map) do
-		local k = self.rev_key_map[key]
+	for _, action in ipairs(ordered_key_map) do
 		Slab.SetLayoutColumn(1)
-		Slab.Text(k)
+		Slab.Text(self.binding_labels[action] or "")
 		Slab.SetLayoutColumn(2)
-		Slab.Text(self.key_map[k])
+		Slab.Text(key_title[action] or action)
 	end
 	Slab.EndLayout()
 	Slab.Separator()
