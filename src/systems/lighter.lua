@@ -22,6 +22,12 @@ function Lighter:spawn_lighter(e_player)
 
 	self.e_flame = Concord.entity(self.world)
 		:assemble(Assemblages.Light.lighter_flame, FLAME_POWER)
+		:give("flame_frame_flicker", e_player, {
+			[8] = 1.01,
+			[9] = 0.97,
+			[10] = 1.02,
+			[11] = 0.99,
+		})
 
 	self.world:setResource("e_lighter", self.e_lighter)
 end

@@ -31,6 +31,15 @@ end)
 
 Concord.component("flame_suppressed")
 
+Concord.component("flame_frame_flicker", function(c, e_anim_source, frame_mults)
+	assert(e_anim_source.__isEntity and e_anim_source.animation, e_anim_source)
+	assert(type(frame_mults) == "table", frame_mults)
+	e_anim_source:ensure("key")
+	c.anim_key = e_anim_source.key.value
+	c.frame_mults = frame_mults
+	c.light_mult = 1
+end)
+
 Concord.component("candle", function(c, e_flame)
 	assert(e_flame.__isEntity, e_flame)
 	c.e_flame = e_flame

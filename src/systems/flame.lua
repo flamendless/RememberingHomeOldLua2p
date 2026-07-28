@@ -54,6 +54,23 @@ function Flame:consume_health_flicker(e, health_lost)
 	end
 end
 
+function Flame:update_frame_flicker(e)
+	local ff = e.flame_frame_flicker
+	if not ff then
+		return
+	end
+
+	local e_source = self.world:getEntityByKey(ff.anim_key)
+	if not e_source or not e_source.animation then
+		ff.light_mult = 1
+		return
+	end
+
+	local obj = e_source.animation.obj
+	local frame = math.floor(obj.anim8.position)
+	ff.light_mult = ff.frame_mults[frame] or 1
+end
+
 function Flame:update_flame_strength(e)
 	local pl = e.point_light
 	local diffuse = e.diffuse
@@ -66,9 +83,19 @@ function Flame:update_flame_strength(e)
 
 	pl.value = pl.orig_value * strength_ratio
 
+	local frame_flicker = e.flame_frame_flicker
+	if frame_flicker then
+		self:update_frame_flicker(e)
+		if self:is_lit(e) then
+			pl.value = pl.value * frame_flicker.light_mult
+		end
+	end
+
 	local windable = e.flame_windable
 	local flicker = e.flame_flicker
-	if (windable and windable.flicker_timer > 0) or (flicker and flicker.flicker_timer > 0) then
+	local wind_flicker = windable and windable.flicker_timer > 0
+	local health_flicker = flicker and flicker.flicker_timer > 0 and not frame_flicker
+	if wind_flicker or health_flicker then
 		pl.value = pl.value * (0.55 + love.math.random() * 0.45)
 	end
 
