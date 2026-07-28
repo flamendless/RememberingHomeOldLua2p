@@ -21,15 +21,15 @@ local TEXTURE_SIZE = 8
 local BUFFER = HP.emit_count + 8
 
 local PRESETS = {
-	subtle = {
-		id = "subtle",
+	[Enums.lighter_spark_intensity.subtle] = {
+		id = Enums.lighter_spark_intensity.subtle,
 		emit_count = 4,
 		speed_scale = 0.45,
 		size_scale = 0.65,
 		spread_scale = 0.7,
 	},
-	strong = {
-		id = "strong",
+	[Enums.lighter_spark_intensity.strong] = {
+		id = Enums.lighter_spark_intensity.strong,
 		emit_count = HP.emit_count,
 		speed_scale = 0.6,
 		size_scale = 0.77,
@@ -68,7 +68,7 @@ function PSLighterSpark:new(image)
 	self.x = 0
 	self.y = 0
 	self.emit_count = 0
-	self.preset_id = "subtle"
+	self.preset_id = Enums.lighter_spark_intensity.subtle
 end
 
 function PSLighterSpark:create_system()
@@ -164,13 +164,13 @@ end
 
 function LighterSparkPool:burst_subtle(x, y, dir, tier_color)
 	local burst = self:acquire()
-	burst:configure(tier_color, dir, PRESETS.subtle)
+	burst:configure(tier_color, dir, PRESETS[Enums.lighter_spark_intensity.subtle])
 	burst:burst(x, y, dir)
 end
 
 function LighterSparkPool:burst_strong(x, y, dir, tier_color)
 	local burst = self:acquire()
-	burst:configure(tier_color, dir, PRESETS.strong)
+	burst:configure(tier_color, dir, PRESETS[Enums.lighter_spark_intensity.strong])
 	burst:burst(x, y, dir)
 end
 

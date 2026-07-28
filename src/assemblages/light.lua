@@ -43,7 +43,7 @@ function Light.fl_spot(e, e_player, sync_data)
 	assert(type(sync_data) == "table", sync_data)
 
 	local p = 16
-	e:assemble(Light.spot, 0, 0, 1, { 1, 0, 0, 0.85 }, 164, {p, p, p})
+	e:assemble(Light.spot, 0, 0, 1, { 1, 0, 0, 0.85 }, 164, { p, p, p })
 		:give("id", "flashlight_fl")
 		:give("flashlight")
 		:give("anim_sync_with", e_player)
@@ -52,14 +52,14 @@ end
 
 function Light.fl_start(e) --near the player
 	local p = 1
-	e:assemble(Light.point, 0, 0, 7, 32, {p, p, p})
+	e:assemble(Light.point, 0, 0, 7, 32, { p, p, p })
 		:give("id", "flashlight_start_pl")
 		:give("flashlight_light")
 end
 
 function Light.fl_end(e) --away from the player
 	local p = 1.3
-	e:assemble(Light.point, 0, 0, 7, 64, {p, p, p})
+	e:assemble(Light.point, 0, 0, 7, 64, { p, p, p })
 		:give("id", "flashlight_end_pl")
 		:give("flashlight_light")
 end
@@ -95,10 +95,30 @@ function Light.lighter_flame(e, power)
 	Light.flame_stack(e, 0, 0, 9, power, "lighter_flame", 100, 0.15, "lighter_flame_pl")
 		:give("lighter_flame", power)
 		:give("flame_fuel_tiers", {
-			{ id = "full", min_ratio = 0.75, color = Palette.colors.lighter_flame_full, strength_cap = 1.0 },
-			{ id = "medium", min_ratio = 0.50, color = Palette.colors.lighter_flame_medium, strength_cap = 0.85 },
-			{ id = "low", min_ratio = 0.25, color = Palette.colors.lighter_flame_low, strength_cap = 0.65 },
-			{ id = "critical", min_ratio = 0.00, color = Palette.colors.lighter_flame_critical, strength_cap = 0.20 },
+			{
+				id = Enums.lighter_fuel_tier.full,
+				min_ratio = 0.75,
+				color = Palette.colors.lighter_flame_full,
+				strength_cap = 1.0,
+			},
+			{
+				id = Enums.lighter_fuel_tier.medium,
+				min_ratio = 0.50,
+				color = Palette.colors.lighter_flame_medium,
+				strength_cap = 0.90,
+			},
+			{
+				id = Enums.lighter_fuel_tier.low,
+				min_ratio = 0.25,
+				color = Palette.colors.lighter_flame_low,
+				strength_cap = 0.72,
+			},
+			{
+				id = Enums.lighter_fuel_tier.critical,
+				min_ratio = 0.00,
+				color = Palette.colors.lighter_flame_critical,
+				strength_cap = 0.28,
+			},
 		})
 end
 

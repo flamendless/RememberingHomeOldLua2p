@@ -26,10 +26,10 @@ function TotallyDarkRoom:state_setup()
 		Shaders.glitch(),
 	})
 
-	-- for _, v in pairs(Assemblages.LivingRoom.lights) do
-	-- 	Concord.entity(self.world):assemble(v):give("light_disabled")
-	-- end
-	-- self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_totally_dark_room"))
+	for _, v in pairs(Assemblages.LivingRoom.lights) do
+		Concord.entity(self.world):assemble(v):give("light_disabled")
+	end
+	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_totally_dark_room"))
 	self.world:emit("set_draw", "ev_draw_ex")
 end
 

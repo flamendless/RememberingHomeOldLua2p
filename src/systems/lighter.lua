@@ -2,7 +2,7 @@ local Lighter = Concord.system({
 	pool_flame = { "id", "lighter_flame", "point_light", "pos", "diffuse", "flame" },
 })
 
-local FLAME_POWER = 20
+local FLAME_POWER = 26
 local FLAME_FRAME = 8
 local EMPTY_OPEN_FRAME = 8
 local SPARK_FRAME_MIN = 6
@@ -10,28 +10,31 @@ local SPARK_FRAME_MAX = 7
 local WICK_X = 52
 local WICK_Y = 15
 
+local FT = Enums.lighter_fuel_tier
+local SI = Enums.lighter_spark_intensity
+
 local IGNITION_SEQUENCES = {
-	full = {
+	[FT.full] = {
 		{ at = 0, sfx = Enums.sfx.lighter_click },
 		{ at = 0.08, sfx = Enums.sfx.lighter_on, ignite = true },
 	},
-	medium = {
+	[FT.medium] = {
 		{ at = 0, sfx = Enums.sfx.lighter_click },
 		{ at = 0.08, sfx = Enums.sfx.lighter_on, ignite = true },
 	},
-	low = {
+	[FT.low] = {
 		{ at = 0, sfx = Enums.sfx.lighter_click },
 		{ at = 0.25, sfx = Enums.sfx.lighter_click },
 		{ at = 0.45, sfx = Enums.sfx.lighter_on, ignite = true },
 	},
-	critical = {
+	[FT.critical] = {
 		{ at = 0, sfx = Enums.sfx.lighter_click },
 		{ at = 0.12, sfx = Enums.sfx.lighter_click },
 		{ at = 0.25, sfx = Enums.sfx.lighter_spark },
 		{ at = 0.40, sfx = Enums.sfx.lighter_click },
 		{ at = 0.55, sfx = Enums.sfx.lighter_on, ignite = true },
 	},
-	empty = {
+	[FT.empty] = {
 		{ at = 0, sfx = Enums.sfx.lighter_click },
 		{ at = 0.12, sfx = Enums.sfx.lighter_click },
 		{ at = 0.25, sfx = Enums.sfx.lighter_spark },
@@ -206,7 +209,7 @@ function Lighter:emit_sparks_at_wick(intensity)
 	local dir = self.e_player:get("body").dir
 	local color = self:get_spark_tier_color()
 
-	if intensity == "strong" then
+	if intensity == SI.strong then
 		self.sparks:burst_strong(x, y, dir, color)
 	else
 		self.sparks:burst_subtle(x, y, dir, color)
@@ -218,7 +221,7 @@ function Lighter:emit_instability_sparks()
 		return
 	end
 
-	self:emit_sparks_at_wick("strong")
+	self:emit_sparks_at_wick(SI.strong)
 end
 
 function Lighter:try_emit_pending_spark(frame)
@@ -236,11 +239,11 @@ end
 
 function Lighter:queue_ignition_spark(sfx)
 	if sfx == Enums.sfx.lighter_spark then
-		self.pending_ignition_spark = "strong"
+		self.pending_ignition_spark = SI.strong
 		Log.debug("lighter spark queued", self.pending_ignition_spark)
 	elseif sfx == Enums.sfx.lighter_click then
-		if self.pending_ignition_spark ~= "strong" then
-			self.pending_ignition_spark = "subtle"
+		if self.pending_ignition_spark ~= SI.strong then
+			self.pending_ignition_spark = SI.subtle
 		end
 		Log.debug("lighter spark queued", self.pending_ignition_spark)
 	end
@@ -261,7 +264,7 @@ end
 function Lighter:start_ignition(tier_id)
 	self.ignition_complete = false
 	self.ignition_timer = 0
-	self.ignition_steps = IGNITION_SEQUENCES[tier_id] or IGNITION_SEQUENCES.full
+	self.ignition_steps = IGNITION_SEQUENCES[tier_id] or IGNITION_SEQUENCES[FT.full]
 	self.ignition_step_idx = 1
 	self.pending_ignition_spark = nil
 end
@@ -333,18 +336,18 @@ function Lighter:update_instability(dt)
 		return
 	end
 
-	if tier.id == "full" then
+	if tier.id == FT.full then
 		return
-	elseif tier.id == "medium" then
+	elseif tier.id == FT.medium then
 		instability.next_roll = 0.5 + love.math.random() * 0.5
 		self:trigger_flicker_boost()
-	elseif tier.id == "low" then
+	elseif tier.id == FT.low then
 		instability.next_roll = 0.4 + love.math.random() * 0.8
 		self:trigger_flicker_boost()
 		if love.math.random() < 0.4 then
 			instability.shrink_timer = 0.15
 		end
-	elseif tier.id == "critical" then
+	elseif tier.id == FT.critical then
 		instability.next_roll = 0.2 + love.math.random() * 0.5
 		self:trigger_flicker_boost()
 		local roll = love.math.random()
@@ -372,12 +375,12 @@ function Lighter:anim_open_lighter(e_player)
 	if not flame_health or flame_health.health <= 0 then
 		self.pending_ignition_spark = nil
 		self.pause_open_at_frame = EMPTY_OPEN_FRAME
-		self:start_ignition("empty")
+		self:start_ignition(FT.empty)
 		return
 	end
 
 	local tier = self:resolve_fuel_tier()
-	local tier_id = tier and tier.id or "full"
+	local tier_id = tier and tier.id or FT.full
 	self.pending_ignition_spark = nil
 	self:start_ignition(tier_id)
 end

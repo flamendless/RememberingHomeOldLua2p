@@ -230,6 +230,10 @@ Enums.sfx = Enum(
 	"motion_blur"
 )
 
+Enums.lighter_spark_intensity = Enum("subtle", "strong")
+
+Enums.lighter_fuel_tier = Enum("full", "medium", "low", "critical", "empty")
+
 if DEV then
 	Enums.ordered.game_state = {
 		Enums.game_state.Splash,
