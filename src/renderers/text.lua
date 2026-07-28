@@ -8,7 +8,7 @@ function Text.render(e)
 		return
 	end
 
-	local font = e.font or e.font_sdf
+	local font = e.font
 	if font then
 		love.graphics.setFont(font.value)
 	end
@@ -52,12 +52,6 @@ function Text.render(e)
 				oy = current_font:getHeight()
 			end
 		end
-	end
-
-	local sdf = e.sdf
-	if sdf then
-		sx = sdf.sx
-		sy = sdf.sy
 	end
 
 	local pos = e.pos

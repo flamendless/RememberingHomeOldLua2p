@@ -1,7 +1,6 @@
 return {
 	std = 'lua51+love',
 	globals = {
-		"love.graphics.newFontMSDF",
 		"love.arg.parseGameArguments",
 		"love.graphics.isCreated",
 		"love.handlers",
@@ -42,7 +41,6 @@ return {
 		"LoveSplash",
 		"Lume",
 		"ReflowPrint",
-		"SDF",
 		"Semver",
 		"Slab",
 		"Splashes",

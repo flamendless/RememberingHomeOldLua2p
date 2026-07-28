@@ -65,9 +65,9 @@ ResourcesList[G.Menu] = {
 		{ "keyboard2",   "res/ui/keyboard2.png" },
 	},
 	fonts = {
-		{ "menu",  "res/fonts/Jamboree.ttf",     24, "default" },
-		{ "about", "res/fonts/DigitalDisco.ttf", 20 },
-		{ "about", "res/fonts/DigitalDisco.ttf", 64 },
+		{ "menu",        "res/fonts/Jamboree.ttf",     24, "default" },
+		{ "about",       "res/fonts/DigitalDisco.ttf", 20 },
+		{ "about",       "res/fonts/DigitalDisco.ttf", 64 },
 	},
 }
 

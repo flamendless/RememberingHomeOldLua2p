@@ -2,7 +2,7 @@ local Renderer = Concord.system({
 	pool_circle = { "circle", "draw_mode", "pos" },
 	pool_point = { "point", "pos" },
 	pool_rect = { "rect", "pos", "draw_mode" },
-	pool_text = { "text", "pos" },
+	pool_text = { "text", "pos", "font" },
 	pool_static_text = { "static_text", "pos", "font" },
 	pool_bg = { "bg", "sprite", "pos" },
 	pool_sprite = { "sprite", "pos", "!bg" },
@@ -103,11 +103,7 @@ function Renderer:pool_on_added(pool, e)
 		should_sort = false
 	elseif pool == self.pool_bg then
 		Renderers.Sprite.set_bg(e)
-	elseif pool == self.pool_text and e.sdf then
-		assert(e.font_sdf, "sdf must have font_sdf")
-		assert(not e.font, "sdf must NOT have font")
 	elseif pool == self.pool_static_text then
-		assert(not e.sdf, "static_font can NOT use sdf font")
 		e.static_text.obj = love.graphics.newText(e.font.value, e.static_text.value)
 	end
 

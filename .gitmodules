@@ -26,10 +26,6 @@
 [submodule "modules/gamera"]
 	path = modules/gamera
 	url = https://github.com/kikito/gamera
-[submodule "modules/sdf"]
-	path = modules/sdf
-	url = https://github.com/Tjakka5/love-sdf-text.git
-	branch = development
 [submodule "modules/tle"]
 	path = modules/tle
 	url = https://github.com/babulous/TimelineEvents

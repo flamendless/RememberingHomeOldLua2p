@@ -18,7 +18,7 @@ dir_sub=(assemblages components shaders states systems)
 appdata=~/.local/share/love/rememberinghome
 
 meta_exclude_modules=(
-	spec docs example test love-sdf-text-testing rockspecs main.lua .travis
+	spec docs example test rockspecs main.lua .travis
 	.git examples .travis.yml changelog.txt README.md MakeSingle.mak bench
 	CHANGELOG.md *.rockspec config.ld performance_test.lua USAGE.md img
 )

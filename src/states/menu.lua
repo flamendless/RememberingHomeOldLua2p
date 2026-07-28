@@ -255,13 +255,8 @@ function Menu:setup_menu()
 	-- self.subtitle = Concord.entity(self.world)
 	-- 	:assemble(Assemblages.Menu.subtitle, ww * 0.25, wh * 1.5, self.title, scale_subt, subt_w/2, subt_h/2)
 
-	local jamboree_fnt = "res/fonts/Jamboree.fnt"
-	local jamboree_png = "res/fonts/Jamboree.png"
-	local sdf_menu = love.graphics.newFontMSDF(jamboree_fnt, jamboree_png)
 	local font_menu = Resources.data.fonts.menu
-	local str_target_h = font_menu:getHeight()
-	local str_h = sdf_menu:getHeight()
-	local str_scale = str_target_h / str_h * 0.75
+	local str_h = font_menu:getHeight()
 	local offset = 16
 	local padding = 2
 
@@ -272,7 +267,7 @@ function Menu:setup_menu()
 	for i, str in ipairs(options_sub) do
 		local lstr = string.lower(str)
 		lstr = string.gsub(lstr, "%s+", "")
-		local str_w = sdf_menu:getWidth(str) * str_scale
+		local str_w = font_menu:getWidth(str)
 		local x = self.canvases.bot.width - str_w - offset
 		local y = self.canvases.bot.y + (i * str_h) + (padding * i) - offset
 		local id = "text_sub_" .. lstr
@@ -282,11 +277,8 @@ function Menu:setup_menu()
 				Assemblages.Menu.option_item,
 				id,
 				str,
-				jamboree_fnt,
-				jamboree_png,
 				x,
 				y,
-				str_scale,
 				i,
 				2,
 				Enums.list_group.sub_menu
@@ -301,7 +293,7 @@ function Menu:setup_menu()
 	self.world:emit("create_list_group", Enums.list_group.main_menu, true, #options)
 	for i, str in ipairs(options) do
 		local lstr = string.lower(str)
-		local str_w = sdf_menu:getWidth(str) * str_scale
+		local str_w = font_menu:getWidth(str)
 		local x = self.canvases.bot.width - str_w - offset
 		local y = self.canvases.bot.y + (i * str_h) + (padding * i) - offset
 		local id = "text_" .. lstr
@@ -311,11 +303,8 @@ function Menu:setup_menu()
 				Assemblages.Menu.option_item,
 				id,
 				str,
-				jamboree_fnt,
-				jamboree_png,
 				x,
 				y,
-				str_scale,
 				i,
 				1,
 				Enums.list_group.main_menu

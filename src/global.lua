@@ -49,7 +49,6 @@ LoveInk = {
 LoveSplash = require("modules.splashes.o-ten-one")
 Lume = require("modules.lume.lume")
 ReflowPrint = require("modules.reflowprint.reflowprint")
-SDF = require("modules.sdf")
 Semver = require("modules.semver.semver")
 Slab = require("modules.slab")
 Splashes = require("modules.splashes.o-ten-one")
@@ -192,7 +191,6 @@ if TEST.mode then
 end
 
 require("modules.batteries"):export()
-require("modules.sdf").mount()
 
 if DEV then
 	local old_give = Concord.entity.give
