@@ -219,7 +219,7 @@ function PlayerController:is_lighter_opening()
 	if obj.base_tag ~= Enums.anim_state.open_lighter then
 		return false
 	end
-	return math.floor(obj.anim8.position) < 9
+	return obj.is_playing and math.floor(obj.anim8.position) < 9
 end
 
 function PlayerController:is_lighter_closing()

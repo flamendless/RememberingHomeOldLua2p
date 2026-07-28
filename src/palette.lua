@@ -44,7 +44,7 @@ Palette.colors = {
 	lighter_flame_full = { 3, 2, 0.5 },
 	lighter_flame_medium = { 2.4, 1.5, 0.35 },
 	lighter_flame_low = { 1.8, 1.4, 0.25 },
-	lighter_flame_critical = { 0.6, 0.35, 0.1 },
+	lighter_flame_critical = { 1.8, 0.4, 0.12 },
 }
 
 for k, v in pairs(Palette.colors) do
@@ -114,6 +114,18 @@ function Palette.get_diffuse(color)
 	assert(type(color) == "string", color)
 	assert(Palette.diffuse[color], color)
 	return { unpack(Palette.diffuse[color]) }
+end
+
+function Palette.spark_colors_from_tier(tier_color)
+	assert(type(tier_color) == "table", tier_color)
+	local r, g, b = tier_color[1], tier_color[2], tier_color[3]
+	local peak = math.max(r, g, b, 1)
+	local scale = 1 / peak
+	r, g, b = r * scale, g * scale, b * scale
+	return r, g, b, 0,
+		r, g, b, 0.83984375,
+		r * 0.95, g * 0.95, b * 0.5, 0.5,
+		math.min(r * 1.04, 1), g, b * 0.8, 0
 end
 
 return Palette

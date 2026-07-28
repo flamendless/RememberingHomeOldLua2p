@@ -229,6 +229,12 @@ function Animation:pause_at_end()
 	return self
 end
 
+function Animation:pause()
+	self.anim8:pause()
+	self.is_playing = false
+	return self
+end
+
 function Animation:goto_frame(n)
 	assert(type(n) == "number" and n > 0, n)
 	self.anim8:gotoFrame(n)

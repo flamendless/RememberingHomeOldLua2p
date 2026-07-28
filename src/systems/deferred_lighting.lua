@@ -313,6 +313,12 @@ function DeferredLighting:begin_deferred_lighting(camera, canvas)
 	love.graphics.setBlendMode("add")
 	self.world:emit("apply_ambiance")
 	love.graphics.draw(self.buffers[1].canvas)
+
+	camera:attach()
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setBlendMode("alpha")
+	self.world:emit("draw_lighter_sparks")
+	camera:detach()
 end
 
 function DeferredLighting:end_deferred_lighting()

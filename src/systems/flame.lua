@@ -200,7 +200,7 @@ function Flame:update(dt)
 			prev_health = health.health
 		end
 
-		if lit and health then
+		if lit and health and e:has("flame_fuel_drain") then
 			health.health = math.max(0, health.health - dt * health.consumption_rate)
 			if health.health <= 0 then
 				local flame_windable = e:get("flame_windable")

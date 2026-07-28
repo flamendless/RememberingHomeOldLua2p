@@ -1,0 +1,88 @@
+7
+
+:project
+bgColor 0 0 0.15
+bgChecker 0
+bgSize 8
+bgPath 0 !
+bgScale 1
+bgRepeat false false
+pixelateWorld false
+pixelateTextures false
+exportBaseDirectory 0 !
+exportParticles true
+exportParticlesOverwrite false
+exportParticlesTemplate 16 defaultLuaModule!
+exportParticlesTemplatePath 0 !
+exportParticlesPath 0 !
+exportTextures false
+exportTexturesOverwrite false
+exportTexturesDirectory 0 !
+exportClipboardTemplate 19 defaultLuaClipboard!
+exportClipboardTemplatePath 0 !
+scaleGlobalTimeEnabled true
+scaleGlobalTime 1
+scaleGlobalSpaceEnabled true
+scaleGlobalSpace 1
+scaleGlobalSizeEnabled true
+scaleGlobalSize 1
+zoom 0
+customData 0 !
+emitterPosition 0 0
+movementScaleEnabled true true
+movement 0 1 1 1
+region true 0 0
+
+:system
+blendMode 5 alpha!
+colors 0.17578125 0.75 1 0 0.171875 0.734375 1 0.83984375 0.18359375 0.87109375 1 0.5 0.16015625 0.79296875 1 0
+customData 0 !
+directionEnabled true
+direction -1.5707963267949
+emissionRate 4.3951862323796
+emitterContinuous false
+emitterLifetime 0
+emitterOffsetEnabled true
+emitterOffset 1.3605442176871 0
+insertMode 3 top!
+kickStartEmitEnabled true
+kickStartEmit 9
+kickStartStepsEnabled true
+kickStartSteps 0
+linearDampingEnabled true
+linearDamping -0.3105063846727 0.7106329553226
+offset 0.5 0.5
+particleLifetime 0.13734956976186 0.54939827904745
+radialAccelerationEnabled true
+radialAcceleration 0 0
+relativeRotation false
+rotationEnabled true
+rotation 0 0
+scaleSizeEnabled true
+scaleSize 1
+scaleSpaceEnabled true
+scaleSpace 1
+scaleTimeEnabled true
+scaleTime 1
+shaderPath 0 !
+sizes 0.55240023442911
+sizeVariationEnabled true
+sizeVariation 0.45047923322684
+speedEnabled true
+speed 19.618450734416 251.52854474375
+spinEnabled true true
+spin 0 0
+spinVariationEnabled true
+spinVariation 0
+spreadEnabled true
+spread 1.8550356621197
+tangentialAccelerationEnabled true
+tangentialAcceleration 0 0
+texture 8 lightDot!
+texturePath 0 !
+title 0 !
+emissionAreaAngleEnabled true
+emissionAreaDeltaEnabled true true
+emissionArea 4 none! 100 100 0 false
+linearAccelerationEnabled true true
+linearAcceleration 0 0 0 0

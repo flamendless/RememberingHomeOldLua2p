@@ -3,7 +3,10 @@ local Lighter = Concord.system({
 })
 
 local FLAME_POWER = 20
-local FLAME_FRAME = 7
+local FLAME_FRAME = 8
+local EMPTY_OPEN_FRAME = 8
+local SPARK_FRAME_MIN = 6
+local SPARK_FRAME_MAX = 7
 local WICK_X = 52
 local WICK_Y = 15
 
@@ -28,6 +31,12 @@ local IGNITION_SEQUENCES = {
 		{ at = 0.40, sfx = Enums.sfx.lighter_click },
 		{ at = 0.55, sfx = Enums.sfx.lighter_on, ignite = true },
 	},
+	empty = {
+		{ at = 0, sfx = Enums.sfx.lighter_click },
+		{ at = 0.12, sfx = Enums.sfx.lighter_click },
+		{ at = 0.25, sfx = Enums.sfx.lighter_spark },
+		{ at = 0.55, sfx = Enums.sfx.lighter_empty },
+	},
 }
 
 function Lighter:init(world)
@@ -39,6 +48,8 @@ function Lighter:init(world)
 	self.ignition_timer = 0
 	self.ignition_steps = nil
 	self.ignition_step_idx = 1
+	self.pending_ignition_spark = nil
+	self.pause_open_at_frame = nil
 end
 
 function Lighter:spawn_lighter(e_player)
@@ -58,6 +69,7 @@ function Lighter:spawn_lighter(e_player)
 		:give("flame_instability")
 
 	self.world:setResource("e_lighter", self.e_lighter)
+	self.sparks = ParticleSystems.LighterSpark()
 end
 
 function Lighter:lighter_update_pos(e_player)
@@ -128,14 +140,120 @@ function Lighter:request_close()
 	self.world:emit("on_close_lighter")
 end
 
+function Lighter:get_open_lighter_frame()
+	local e = self.e_player
+	if not e or not e:has("animation") then
+		return nil
+	end
+
+	local obj = e:get("animation").obj
+	local tag = obj.base_tag or obj.current_tag
+	if tag ~= Enums.anim_state.open_lighter and tag ~= Enums.anim_state.open_lighter_left then
+		return nil
+	end
+
+	return math.floor(obj.anim8.position)
+end
+
+function Lighter:is_spark_frame(frame)
+	return frame >= SPARK_FRAME_MIN and frame <= SPARK_FRAME_MAX
+end
+
 function Lighter:reset_ignition()
 	self.ignition_complete = true
 	self.ignition_timer = 0
 	self.ignition_steps = nil
 	self.ignition_step_idx = 1
+	self.pending_ignition_spark = nil
+	self.pause_open_at_frame = nil
+end
+
+function Lighter:update_open_pause()
+	if not self.pause_open_at_frame or not self.e_player then
+		return
+	end
+
+	local animation = self.e_player:get("animation")
+	if not animation then
+		return
+	end
+
+	local obj = animation.obj
+	local frame = math.floor(obj.anim8.position)
+	if frame < self.pause_open_at_frame or not obj.is_playing then
+		return
+	end
+
+	obj:goto_frame(self.pause_open_at_frame)
+	obj:pause()
+	self.pause_open_at_frame = nil
+end
+
+function Lighter:get_spark_tier_color()
+	local tier = self:resolve_fuel_tier()
+	if tier and tier.color then
+		return tier.color
+	end
+	return Palette.colors.lighter_flame_full
+end
+
+function Lighter:emit_sparks_at_wick(intensity)
+	if not self.sparks or not self.e_player then
+		return
+	end
+
+	local x, y = self:wick_world_pos(self.e_player)
+	local dir = self.e_player:get("body").dir
+	local color = self:get_spark_tier_color()
+
+	if intensity == "strong" then
+		self.sparks:burst_strong(x, y, dir, color)
+	else
+		self.sparks:burst_subtle(x, y, dir, color)
+	end
+end
+
+function Lighter:emit_instability_sparks()
+	if not self.sparks or not self.e_player then
+		return
+	end
+
+	self:emit_sparks_at_wick("strong")
+end
+
+function Lighter:try_emit_pending_spark(frame)
+	if not self.pending_ignition_spark then
+		return
+	end
+	if not frame or not self:is_spark_frame(frame) then
+		return
+	end
+
+	Log.debug("lighter spark frame trigger", frame, self.pending_ignition_spark)
+	self:emit_sparks_at_wick(self.pending_ignition_spark)
+	self.pending_ignition_spark = nil
+end
+
+function Lighter:queue_ignition_spark(sfx)
+	if sfx == Enums.sfx.lighter_spark then
+		self.pending_ignition_spark = "strong"
+		Log.debug("lighter spark queued", self.pending_ignition_spark)
+	elseif sfx == Enums.sfx.lighter_click then
+		if self.pending_ignition_spark ~= "strong" then
+			self.pending_ignition_spark = "subtle"
+		end
+		Log.debug("lighter spark queued", self.pending_ignition_spark)
+	end
+
+	self:try_emit_pending_spark(self:get_open_lighter_frame())
+end
+
+function Lighter:update_ignition_sparks()
+	self:try_emit_pending_spark(self:get_open_lighter_frame())
 end
 
 function Lighter:play_ignition_sfx(sfx)
+	self:queue_ignition_spark(sfx)
 	Log.debug("TODO: lighter ignition sfx stub", sfx)
 	self.world:emit("play_sound_on_player", sfx)
 end
@@ -145,6 +263,7 @@ function Lighter:start_ignition(tier_id)
 	self.ignition_timer = 0
 	self.ignition_steps = IGNITION_SEQUENCES[tier_id] or IGNITION_SEQUENCES.full
 	self.ignition_step_idx = 1
+	self.pending_ignition_spark = nil
 end
 
 function Lighter:update_ignition(dt)
@@ -235,6 +354,7 @@ function Lighter:update_instability(dt)
 			instability.shrink_timer = 0.15
 		else
 			instability.spark_timer = 0.05 + love.math.random() * 0.08
+			self:emit_instability_sparks()
 		end
 	end
 end
@@ -250,16 +370,23 @@ function Lighter:anim_open_lighter(e_player)
 
 	local flame_health = self.e_flame:get("flame_health")
 	if not flame_health or flame_health.health <= 0 then
-		self:reset_ignition()
-		self.ignition_complete = false
-		Log.debug("TODO: lighter opening sound with no fuel/gas left")
-		self.world:emit("play_sound_on_player", Enums.sfx.lighter_empty)
+		self.pending_ignition_spark = nil
+		self.pause_open_at_frame = EMPTY_OPEN_FRAME
+		self:start_ignition("empty")
 		return
 	end
 
 	local tier = self:resolve_fuel_tier()
 	local tier_id = tier and tier.id or "full"
+	self.pending_ignition_spark = nil
 	self:start_ignition(tier_id)
+end
+
+function Lighter:anim_close_lighter(e_player)
+	if e_player ~= self.e_player then
+		return
+	end
+	self:reset_ignition()
 end
 
 function Lighter:on_close_lighter()
@@ -290,12 +417,83 @@ function Lighter:update(dt)
 	anchor.dir = self.e_player:get("body").dir
 
 	self:update_ignition(dt)
+	self:update_ignition_sparks()
+	self:update_open_pause()
 	self:update_instability(dt)
+
+	if self.sparks then
+		self.sparks:update(dt)
+	end
 
 	if self:should_show_flame() then
 		self.e_flame:remove("flame_suppressed")
 	else
 		self.e_flame:give("flame_suppressed")
+	end
+end
+
+function Lighter:draw_lighter_sparks()
+	if self.sparks then
+		self.sparks:draw()
+	end
+end
+
+function Lighter:set_lighter_fuel(amount)
+	if not self.e_flame or not self.e_flame:has("flame_health") then
+		return
+	end
+
+	local health = self.e_flame:get("flame_health")
+	health.health = math.max(0, math.min(health.max_health, amount))
+
+	local windable = self.e_flame:get("flame_windable")
+	if windable then
+		windable.extinguished = health.health <= 0
+	end
+end
+
+if DEV then
+	local flags = {
+		freeze_fuel = false,
+	}
+	function Lighter:debug_update(dt)
+		if not self.debug_show then
+			return
+		end
+
+		self.debug_show = Slab.BeginWindow("lighter", {
+			Title = "Lighter",
+			IsOpen = self.debug_show,
+		})
+
+		local health
+		if self.e_flame and self.e_flame:has("flame_health") then
+			health = self.e_flame:get("flame_health")
+			health.health = UIWrapper.edit_range("fuel", health.health, 0, health.max_health)
+		else
+			Slab.Text("Lighter flame not spawned")
+		end
+
+		local fuel_levels = { 0, 25, 50, 75, 100 }
+		for i, amount in ipairs(fuel_levels) do
+			if i > 1 then
+				Slab.SameLine()
+			end
+			if Slab.Button(tostring(amount)) then
+				self:set_lighter_fuel(amount)
+			end
+		end
+
+		if self.e_flame and Slab.CheckBox(flags.freeze_fuel, "freeze fuel") then
+			flags.freeze_fuel = not flags.freeze_fuel
+			if flags.freeze_fuel then
+				self.e_flame:remove("flame_fuel_drain")
+			else
+				self.e_flame:give("flame_fuel_drain")
+			end
+		end
+
+		Slab.EndWindow()
 	end
 end
 

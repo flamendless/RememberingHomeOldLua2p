@@ -79,6 +79,7 @@ function Light.flame_stack(e, x, y, z, power, diffuse_key, max_health, consumpti
 		:give("id", id)
 		:give("flame")
 		:give("flame_health", max_health, consumption_rate)
+		:give("flame_fuel_drain")
 		:give("flame_flicker")
 		:give("flame_windable")
 		:give("flame_anchor", x, y, 1)

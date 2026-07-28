@@ -14,7 +14,9 @@ if DEV then
 	print("Loaded luajit modules for ", os)
 end
 
-if PROF then PROF_CAPTURE = true end
+if PROF then
+	PROF_CAPTURE = true
+end
 JPROF = require("modules.jprof.jprof")
 
 UTF8 = require("utf8")
@@ -35,9 +37,11 @@ if TEST.mode then
 	Log = setmetatable({
 		lovesave = false,
 		quit = noop,
-	}, { __index = function()
-		return noop
-	end })
+	}, {
+		__index = function()
+			return noop
+		end,
+	})
 else
 	Log = require("modules.log.log")
 end
@@ -95,7 +99,8 @@ Renderers = {
 
 ParticleSystems = {
 	RainIntro = require("particle_systems.rain_intro"),
-	RainOutside = require("particle_systems.rain_outside")
+	RainOutside = require("particle_systems.rain_outside"),
+	LighterSpark = require("particle_systems.lighter_spark"),
 }
 
 Atlases = {
@@ -105,14 +110,14 @@ Atlases = {
 	LivingRoomItems = require("atlases.living_room_items"),
 	OutsideItems = require("atlases.outside_items"),
 	StorageRoomItems = require("atlases.storage_room_items"),
-	UtilityRoomItems = require("atlases.utility_room_items")
+	UtilityRoomItems = require("atlases.utility_room_items"),
 }
 
 Ctor = {
 	BumpStorage = require("ctor.bump_storage"),
 	CustomList = require("ctor.custom_list"),
 	ListByID = require("ctor.list_by_id"),
-	SortedTable = require("ctor.sorted_table")
+	SortedTable = require("ctor.sorted_table"),
 }
 
 Beehive = {
@@ -120,11 +125,11 @@ Beehive = {
 	Invert = require("modules.beehive.beehive.invert"),
 	Repeat = require("modules.beehive.beehive.repeat"),
 	Selector = require("modules.beehive.beehive.selector"),
-	Sequence = require("modules.beehive.beehive.sequence")
+	Sequence = require("modules.beehive.beehive.sequence"),
 }
 
 Behaviors = {
-	Enemy = require("behaviors.enemy")
+	Enemy = require("behaviors.enemy"),
 }
 
 Animation = require("animation")

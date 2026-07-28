@@ -8,6 +8,8 @@ Concord.component("flame_health", function(c, max_health, consumption_rate)
 	c.consumption_rate = consumption_rate
 end)
 
+Concord.component("flame_fuel_drain")
+
 Concord.component("flame_flicker", function(c)
 	c.since_flicker = 0
 	c.next_threshold = love.math.random(3, 7)
