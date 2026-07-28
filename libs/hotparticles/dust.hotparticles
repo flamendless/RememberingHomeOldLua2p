@@ -1,0 +1,88 @@
+7
+
+:project
+bgColor 0 0 0.15
+bgChecker 0
+bgSize 8
+bgPath 0 !
+bgScale 1
+bgRepeat false false
+pixelateWorld false
+pixelateTextures false
+exportBaseDirectory 0 !
+exportParticles true
+exportParticlesOverwrite false
+exportParticlesTemplate 16 defaultLuaModule!
+exportParticlesTemplatePath 0 !
+exportParticlesPath 0 !
+exportTextures false
+exportTexturesOverwrite false
+exportTexturesDirectory 0 !
+exportClipboardTemplate 19 defaultLuaClipboard!
+exportClipboardTemplatePath 0 !
+scaleGlobalTimeEnabled true
+scaleGlobalTime 1
+scaleGlobalSpaceEnabled true
+scaleGlobalSpace 1
+scaleGlobalSizeEnabled true
+scaleGlobalSize 1
+zoom 0
+customData 0 !
+emitterPosition 0 0
+movementScaleEnabled true true
+movement 0 1 1 1
+region true 0 0
+
+:system
+blendMode 3 add!
+colors 0 0.0234375 0.05859375 1 0 0.03125 0.0546875 1 0 0.01171875 0.03125 1 0 0.01953125 0.0234375 1
+customData 0 !
+directionEnabled true
+direction 1.5707963267949
+emissionRate 9.6631383396789
+emitterContinuous false
+emitterLifetime 0.79357754428787
+emitterOffsetEnabled true
+emitterOffset 0 0
+insertMode 3 top!
+kickStartEmitEnabled true
+kickStartEmit 14
+kickStartStepsEnabled true
+kickStartSteps 2
+linearDampingEnabled true
+linearDamping 0.14882258673662 0.53098429094918
+offset 0.5 0.5
+particleLifetime 0.58794108340393 0.99362043095265
+radialAccelerationEnabled true
+radialAcceleration -98.092253672079 63.795690473518
+relativeRotation false
+rotationEnabled true
+rotation 0 0
+scaleSizeEnabled true
+scaleSize 1
+scaleSpaceEnabled true
+scaleSpace 1
+scaleTimeEnabled true
+scaleTime 1
+shaderPath 0 !
+sizes 1.1086365815973
+sizeVariationEnabled true
+sizeVariation 0.50159744408946
+speedEnabled true
+speed 133.94032806296 465.47377231573
+spinEnabled true true
+spin 0 0
+spinVariationEnabled true
+spinVariation 0
+spreadEnabled true
+spread 0
+tangentialAccelerationEnabled true
+tangentialAcceleration 0 0
+texture 8 lightDot!
+texturePath 0 !
+title 0 !
+emissionAreaAngleEnabled true
+emissionAreaDeltaEnabled true true
+emissionArea 7 ellipse! 133.38374291115 1.531190926276 0 false
+linearAccelerationEnabled true true
+linearAcceleration -177.65823883065 -31.897845236758 229.10308362849 42.921740550582

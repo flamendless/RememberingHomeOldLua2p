@@ -38,6 +38,8 @@ local PRESETS = {
 }
 
 local function generate_light_dot_texture(size)
+	assert:type(size, "number")
+	Log.trace("generating lighter spark texture", size, "x", size)
 	local data = love.image.newImageData(size, size)
 	local cx, cy = size / 2, size / 2
 	local max_dist = math.sqrt(cx * cx + cy * cy)

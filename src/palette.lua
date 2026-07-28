@@ -45,6 +45,8 @@ Palette.colors = {
 	lighter_flame_medium = { 2.4, 1.5, 0.35 },
 	lighter_flame_low = { 1.8, 1.4, 0.25 },
 	lighter_flame_critical = { 1.8, 0.4, 0.12 },
+
+	dust = { 0.055, 0.055, 0.055 },
 }
 
 for k, v in pairs(Palette.colors) do

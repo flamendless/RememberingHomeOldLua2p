@@ -126,6 +126,7 @@ function DialoguesSystem:check_if_fin()
 		self.world:emit("ev_dialogue_fin")
 		self.current_content = nil
 		self.e_dialogue = nil
+		self.ui:showContent({ type = "end" })
 	end
 end
 
@@ -165,8 +166,12 @@ function DialoguesSystem:state_update(dt)
 				component:update(dt)
 
 			elseif component.id == "choicelist" then
+				local has_choices = self.current_content
+					and self.current_content.type == "choice"
+					and #component.choices > 0
+
 				hovered_index = component.hovered_index
-				if hovered_index then
+				if hovered_index and has_choices then
 					if self.choices_history[component] then
 						is_repeat_choice = true
 					else
@@ -174,7 +179,10 @@ function DialoguesSystem:state_update(dt)
 					end
 				end
 
-				if Inputs.released(Enums.input.left) then
+				if not has_choices then
+					component.hovered_index = nil
+					hovered_index = nil
+				elseif Inputs.released(Enums.input.left) then
 					component.hovered_index = 1
 					hovered_index = 1
 					self.blood_bars[hovered_index].data.opacity = 1

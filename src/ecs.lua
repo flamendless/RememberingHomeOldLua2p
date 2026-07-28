@@ -133,6 +133,7 @@ state_systems[G.StorageRoom] = {
 	"room",
 	"systems",
 	"transform",
+	"dust",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -176,6 +177,7 @@ state_systems[G.UtilityRoom] = {
 	"room",
 	"systems",
 	"transform",
+	"dust",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -216,6 +218,7 @@ state_systems[G.Kitchen] = {
 	"room",
 	"systems",
 	"transform",
+	"dust",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -256,6 +259,7 @@ state_systems[G.LivingRoom] = {
 	"room",
 	"systems",
 	"transform",
+	"dust",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -300,6 +304,7 @@ state_systems[G.Office1] = {
 	"room",
 	"systems",
 	"transform",
+	"dust",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -329,6 +334,25 @@ local unpausable_list = {
 	"post_processing",
 	"list",
 }
+
+local hang_watch_methods = { "preupdate", "update", "state_update" }
+
+local function wrap_hang_watch(sys, name, method)
+	if sys.__hang_watch_wrapped and sys.__hang_watch_wrapped[method] then
+		return
+	end
+	if not sys.__hang_watch_wrapped then
+		sys.__hang_watch_wrapped = {}
+	end
+	sys.__hang_watch_wrapped[method] = true
+	local orig = sys[method]
+	sys[method] = function(self, ...)
+		if HANG_WATCH then
+			hang_watch(name .. ":" .. method)
+		end
+		orig(self, ...)
+	end
+end
 
 function ECS.load_systems(id, world, prev_id)
 	assert((type(id) == "string" and state_systems[id]), id)
@@ -361,11 +385,21 @@ function ECS.load_systems(id, world, prev_id)
 		sys.debug_show = DevTools.flags[v]
 		sys.debug_enabled = true
 		sys.debug_title = v
+		for _, method in ipairs(hang_watch_methods) do
+			if sys[method] then
+				wrap_hang_watch(sys, v, method)
+			end
+		end
 	end
 
 	local main_sys = states[l_id]
 	main_sys.__unpausable = true
 	main_sys.prev_id = prev_id
+	for _, method in ipairs(hang_watch_methods) do
+		if main_sys[method] then
+			wrap_hang_watch(main_sys, l_id, method)
+		end
+	end
 	world:addSystem(main_sys)
 end
 

@@ -11,6 +11,7 @@ local DevTools = {
 		camera = false,
 		culling = false,
 		dialogues = false,
+		dust = false,
 		fireflies = false,
 		flashlight = true,
 		fog = true,

@@ -114,6 +114,7 @@ ParticleSystems = {
 	RainIntro = require("particle_systems.rain_intro"),
 	RainOutside = require("particle_systems.rain_outside"),
 	LighterSpark = require("particle_systems.lighter_spark"),
+	Dust = require("particle_systems.dust"),
 }
 
 Atlases = {
@@ -184,6 +185,7 @@ Assemblages = {
 	Light = require("assemblages.light"),
 	Lighter = require("assemblages.lighter"),
 	Candle = require("assemblages.candle"),
+	Dust = require("assemblages.dust"),
 	LivingRoom = require("assemblages.living_room"),
 	Menu = require("assemblages.menu"),
 	Notes = require("assemblages.notes"),

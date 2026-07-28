@@ -79,6 +79,7 @@ function GameStates.start(resources)
 			on_flame_blown_out = true,
 			on_flame_health_empty = true,
 			spawn_candle = true,
+			draw_dust = true,
 		}
 
 		GameStates.world.beforeEmit = function(world, event, ...)
