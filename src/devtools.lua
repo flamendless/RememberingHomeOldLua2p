@@ -29,6 +29,7 @@ local DevTools = {
 		randomize_uv = false,
 		behavior_tree = false,
 		survival = true,
+		timeline = false,
 	},
 	metrics = {
 		give = {},

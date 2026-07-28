@@ -97,34 +97,15 @@ Enums.survival_state = Enum(
 	"dead"
 )
 
-Enums.tutorial_step = Enum(
-	"waiting",
-
+Enums.tutorial_beat = Enum(
 	"interact",
-	"waiting_interact",
-	"done_waiting_interact",
-
-	"show_left",
-	"waiting_left",
-	"show_left_interact",
-	"waiting_left_interact",
-	"done_left_interact",
-
-	"show_right",
-	"waiting_right",
-	"show_right_interact",
-	"waiting_right_interact",
-	"done_right_interact",
-
-	"show_lighter",
-	"wait_lighter_trigger",
-	"done_lighter_trigger",
-
+	"move_left",
+	"interact_left",
+	"move_right",
+	"interact_right",
+	"lighter",
 	"explore",
-
-	"run",
-
-	"fin"
+	"done"
 )
 
 Enums.show_keys = Enum(

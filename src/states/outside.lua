@@ -4,12 +4,6 @@ local Outside = Concord.system({
 	pool_car_lights = { "car_lights" },
 })
 
-local function tle_log(msg)
-	assert(type(msg) == "string")
-	local str = string.format("TLE: %s", msg)
-	Log.debug(str)
-end
-
 function Outside:init(world)
 	self.id = "outside"
 	self.world = world
@@ -146,7 +140,7 @@ function Outside:state_init()
 	self.timeline = TLE.Do(function()
 		-- INFO: Only do if in tutorial
 		if not Settings.current.tutorial then
-			tle_log("not in tutorial. skipping intro animations")
+			self.world:emit("tle_log", "not in tutorial. skipping intro animations")
 			return
 		end
 
@@ -160,16 +154,16 @@ function Outside:state_init()
 		self.ps1.system:setEmissionRate(self.rain_state.current)
 		self.ps2.system:setEmissionRate(self.rain_state.current)
 
-		tle_log("begin timeline")
+		self.world:emit("tle_log", "begin timeline")
 		self.world:emit("set_camera_transform", self.camera, { x = 0, y = 0, scale = 6 })
 
-		tle_log("start fade in")
+		self.world:emit("tle_log", "start fade in")
 		Flux.to(self.overlay, 4, { [4] = 0 }):oncomplete(function()
 			self.overlay_flag = false
-			tle_log("end fade in")
+			self.world:emit("tle_log", "end fade in")
 		end)
 
-		tle_log("start camera pan and zoom")
+		self.world:emit("tle_log", "start camera pan and zoom")
 		local dt_cam = {}
 		dt_cam.x, dt_cam.y = self.camera:getPosition()
 		dt_cam.scale = self.camera:getScale()
@@ -197,11 +191,11 @@ function Outside:state_init()
 			end)
 		self.timeline:Pause()
 
-		tle_log("begin rain fade")
+		self.world:emit("tle_log", "begin rain fade")
 		self:start_rain_fade()
 		self.timeline:Pause()
 
-		tle_log("car light flicker")
+		self.world:emit("tle_log", "car light flicker")
 		self.main_car_light
 			:give("d_light_flicker", 2.5, 0.75, 0.25)
 			:give("on_d_light_flicker_during", "flicker_sync", 0, self.main_car_light, self.pool_car_lights)
@@ -209,7 +203,7 @@ function Outside:state_init()
 			:give("d_light_flicker_remove_after")
 		self.timeline:Pause()
 
-		tle_log("show player")
+		self.world:emit("tle_log", "show player")
 		-- local dur_camera_follow = 1.5
 		local e_player
 		self.world:emit("spawn_player", function(e)
@@ -232,7 +226,8 @@ function Outside:state_init()
 			:oncomplete(function()
 				--INFO: this block is the start of "after all the animations and cutscenes"
 				-- self.world:emit("camera_follow", e_player, dur_camera_follow)
-				self.world:emit("tutorial_step_set", Enums.tutorial_step.interact)
+				self.world:emit("start_tutorial_timeline")
+				self.world:emit("tle_log", "outside intro complete")
 			end)
 		self.timeline:Pause()
 	end)
@@ -308,17 +303,17 @@ function Outside:start_rain_fade()
 			self.is_raining = false
 			self.ps1.system:stop()
 			self.ps2.system:stop()
-			tle_log("splashes stopped")
+			self.world:emit("tle_log", "splashes stopped")
 
 			-- TODO: fix this
 			Log.debug("TODO: fix this")
-			-- tle_log("fireflies start")
+			-- self.world:emit("tle_log", "fireflies start")
 			-- self.world:emit("show_fireflies", 5)
 			-- self.world:emit("move_fireflies")
 			self.timeline:Unpause()
 
 			self.world:emit("cleanup_rain")
-			tle_log("end rain fade")
+			self.world:emit("tle_log", "end rain fade")
 		end)
 end
 
@@ -424,6 +419,7 @@ function Outside:cleanup()
 	if self.timeline then
 		self.timeline:Die()
 	end
+	self.world:emit("kill_tutorial_timeline")
 end
 
 return Outside

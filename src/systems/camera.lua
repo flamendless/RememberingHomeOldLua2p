@@ -218,10 +218,11 @@ function Camera:screen_shake(dur, intensity)
 	assert(type(dur) == "number" and dur > 0, dur)
 	assert(type(intensity) == "number" and intensity > 0.0 and intensity < 1.0, intensity)
 	assert(self.init_screen_shake ~= nil, "make sure to emit 'prepare_screen_shake' first")
+	local world_intensity = intensity * self.init_screen_shake.scale
 	Timer.during(
 		dur,
 		function()
-			local r = love.math.random() * intensity
+			local r = love.math.random() * world_intensity
 			local x = self.init_screen_shake.x + r * mathx.random_sign()
 			local y = self.init_screen_shake.y + r * mathx.random_sign()
 			local scale = self.init_screen_shake.scale + r * mathx.random_sign()

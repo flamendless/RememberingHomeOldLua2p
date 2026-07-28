@@ -1,12 +1,29 @@
 local Timeline = Concord.system()
 
+local HISTORY_LIMIT = 100
+local DEF = "<NONE>"
+
 function Timeline:init(world)
 	self.world = world
 	self.state = Enums.timeline.created
+	self.current_name = DEF
+	self.history = {}
+end
+
+function Timeline:tle_log(msg)
+	assert(type(msg) == "string", msg)
+	Log.debug(string.format("TLE: %s", msg))
+	self.current_name = msg
+	table.insert(self.history, msg)
+	if #self.history > HISTORY_LIMIT then
+		table.remove(self.history, 1)
+	end
 end
 
 function Timeline:start_timeline(fn)
 	assert(type(fn) == "function", fn)
+	tablex.clear(self.history)
+	self.current_name = DEF
 	self.state = Enums.timeline.playing
 	self.timeline = TLE.Do(fn)
 end
@@ -50,6 +67,17 @@ if DEV then
 				end
 			end
 			Slab.EndComboBox()
+		end
+
+		Slab.Text("Current: " .. self.current_name)
+		if Slab.Button("clear") then
+			tablex.clear(self.history)
+			self.current_name = DEF
+		end
+
+		Slab.Text("History:")
+		for _, str in ipairs(self.history) do
+			Slab.Text(str)
 		end
 
 		Slab.EndWindow()
