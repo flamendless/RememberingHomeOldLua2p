@@ -7,6 +7,8 @@ local HEALTH_FLICKER_MAX = 7
 local HEALTH_FLICKER_DURATION_MIN = 0.1
 local HEALTH_FLICKER_DURATION_MAX = 0.25
 local STRENGTH_MIN_RATIO = 0.5
+local SPARK_BRIGHTNESS = 2.5
+local SHRINK_STRENGTH_MULT = 0.4
 
 function Flame:init(world)
 	self.world = world
@@ -14,6 +16,10 @@ end
 
 function Flame:is_lit(e)
 	if e:has("flame_suppressed") then
+		return false
+	end
+	local instability = e:get("flame_instability")
+	if instability and instability.out_timer > 0 then
 		return false
 	end
 	local flame_windable = e:get("flame_windable")
@@ -31,6 +37,17 @@ function Flame:health_strength_ratio(flame_health)
 	local ratio = flame_health.health / flame_health.max_health
 	local t = math.sqrt(ratio)
 	return ratio, STRENGTH_MIN_RATIO + (1 - STRENGTH_MIN_RATIO) * t
+end
+
+function Flame:resolve_fuel_tier(fuel_tiers, ratio)
+	for i, tier in ipairs(fuel_tiers.tiers) do
+		if ratio >= tier.min_ratio then
+			fuel_tiers.tier_index = i
+			return tier
+		end
+	end
+	fuel_tiers.tier_index = #fuel_tiers.tiers
+	return fuel_tiers.tiers[#fuel_tiers.tiers]
 end
 
 function Flame:trigger_health_flicker(e)
@@ -78,10 +95,19 @@ function Flame:update_flame_strength(e)
 	local diffuse = e:get("diffuse")
 	local color_ratio = 1
 	local strength_ratio = 1
+	local tier_color = nil
 
 	local flame_health = e:get("flame_health")
-	if flame_health then
-		color_ratio, strength_ratio = self:health_strength_ratio(flame_health)
+	local fuel_tiers = e:get("flame_fuel_tiers")
+	if fuel_tiers and flame_health then
+		local ratio = flame_health.health / flame_health.max_health
+		local tier = self:resolve_fuel_tier(fuel_tiers, ratio)
+		strength_ratio = tier.strength_cap or 1
+		tier_color = tier.color
+	else
+		if flame_health then
+			color_ratio, strength_ratio = self:health_strength_ratio(flame_health)
+		end
 	end
 
 	pl.value = pl.orig_value * strength_ratio
@@ -91,6 +117,16 @@ function Flame:update_flame_strength(e)
 		self:update_frame_flicker(e)
 		if self:is_lit(e) then
 			pl.value = pl.value * frame_flicker.light_mult
+		end
+	end
+
+	local instability = e:get("flame_instability")
+	if instability then
+		if instability.shrink_timer > 0 then
+			pl.value = pl.value * SHRINK_STRENGTH_MULT
+		end
+		if instability.spark_timer > 0 then
+			pl.value = pl.value * SPARK_BRIGHTNESS
 		end
 	end
 
@@ -108,13 +144,24 @@ function Flame:update_flame_strength(e)
 		pl.value = pl.value * (0.55 + love.math.random() * 0.45)
 	end
 
-	local orig = diffuse.orig_value
-	local min_r = orig[1] * 0.3
-	local min_g = orig[2] * 0.15
-	local min_b = orig[3] * 0.05
-	diffuse.value[1] = min_r + (orig[1] - min_r) * color_ratio
-	diffuse.value[2] = min_g + (orig[2] - min_g) * color_ratio
-	diffuse.value[3] = min_b + (orig[3] - min_b) * color_ratio
+	if tier_color then
+		diffuse.value[1] = tier_color[1]
+		diffuse.value[2] = tier_color[2]
+		diffuse.value[3] = tier_color[3]
+		if instability and instability.spark_timer > 0 then
+			diffuse.value[1] = tier_color[1] * SPARK_BRIGHTNESS
+			diffuse.value[2] = tier_color[2] * SPARK_BRIGHTNESS
+			diffuse.value[3] = tier_color[3] * SPARK_BRIGHTNESS
+		end
+	else
+		local orig = diffuse.orig_value
+		local min_r = orig[1] * 0.3
+		local min_g = orig[2] * 0.15
+		local min_b = orig[3] * 0.05
+		diffuse.value[1] = min_r + (orig[1] - min_r) * color_ratio
+		diffuse.value[2] = min_g + (orig[2] - min_g) * color_ratio
+		diffuse.value[3] = min_b + (orig[3] - min_b) * color_ratio
+	end
 
 	self.world:emit("update_light_pos", e)
 	self.world:emit("update_light_diffuse", e)
@@ -168,6 +215,13 @@ function Flame:update(dt)
 		if health and flicker then
 			self:consume_health_flicker(e, prev_health - health.health)
 			flicker.flicker_timer = math.max(0, flicker.flicker_timer - dt)
+		end
+
+		local instability = e:get("flame_instability")
+		if instability then
+			instability.out_timer = math.max(0, instability.out_timer - dt)
+			instability.shrink_timer = math.max(0, instability.shrink_timer - dt)
+			instability.spark_timer = math.max(0, instability.spark_timer - dt)
 		end
 
 		self:update_flame_strength(e)

@@ -40,6 +40,11 @@ Palette.colors = {
 	note_on_hovered = { 1, 0, 0 },
 
 	dialogue_important = { 0.8, 0, 0 },
+
+	lighter_flame_full = { 3, 2, 0.5 },
+	lighter_flame_medium = { 2.4, 1.5, 0.35 },
+	lighter_flame_low = { 1.8, 1.4, 0.25 },
+	lighter_flame_critical = { 0.6, 0.35, 0.1 },
 }
 
 for k, v in pairs(Palette.colors) do

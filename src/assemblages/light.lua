@@ -93,6 +93,12 @@ function Light.lighter_flame(e, power)
 
 	Light.flame_stack(e, 0, 0, 9, power, "lighter_flame", 100, 0.15, "lighter_flame_pl")
 		:give("lighter_flame", power)
+		:give("flame_fuel_tiers", {
+			{ id = "full", min_ratio = 0.75, color = Palette.colors.lighter_flame_full, strength_cap = 1.0 },
+			{ id = "medium", min_ratio = 0.50, color = Palette.colors.lighter_flame_medium, strength_cap = 0.85 },
+			{ id = "low", min_ratio = 0.25, color = Palette.colors.lighter_flame_low, strength_cap = 0.65 },
+			{ id = "critical", min_ratio = 0.00, color = Palette.colors.lighter_flame_critical, strength_cap = 0.20 },
+		})
 end
 
 function Light.candle_flame(e, x, y, power)

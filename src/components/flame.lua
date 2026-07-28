@@ -45,3 +45,16 @@ Concord.component("candle", function(c, e_flame)
 	c.e_flame = e_flame
 	c.is_extinguished = false
 end)
+
+Concord.component("flame_fuel_tiers", function(c, tiers)
+	assert(type(tiers) == "table", tiers)
+	c.tiers = tiers
+	c.tier_index = #tiers
+end)
+
+Concord.component("flame_instability", function(c)
+	c.out_timer = 0
+	c.shrink_timer = 0
+	c.spark_timer = 0
+	c.next_roll = 0
+end)

@@ -223,6 +223,9 @@ Enums.sfx = Enum(
 	"flashlight_on",
 	"car_power",
 	"lighter_empty",
+	"lighter_click",
+	"lighter_spark",
+	"lighter_on",
 	"static",
 	"motion_blur"
 )
