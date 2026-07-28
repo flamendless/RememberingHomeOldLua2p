@@ -32,7 +32,7 @@ function DialoguesSystem:state_setup()
 		return
 	end
 
-	self.dialogue = LoveInk.Dialogue.new(data, "start")
+	self.dialogue = LoveInk.Dialogue.new(data, Enums.dialogue_knot.start)
 	self.choices_history = {}
 end
 
@@ -117,12 +117,12 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 end
 
 function DialoguesSystem:force_end_dialogue()
-	self.dialogue:divertTo(DIALOGUE_FIN)
+	self.dialogue:divertTo(Enums.dialogue_knot.fin)
 	self:check_if_fin()
 end
 
 function DialoguesSystem:check_if_fin()
-	if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+	if self.dialogue:getCurrentKnot() == Enums.dialogue_knot.fin then
 		self.world:emit("ev_dialogue_fin")
 		self.current_content = nil
 		self.e_dialogue = nil
@@ -149,12 +149,11 @@ end
 function DialoguesSystem:state_update(dt)
 	if not self.dialogue then return end
 
-	-- if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+	-- if self.dialogue:getCurrentKnot() == Enums.dialogue_knot.fin then
 	-- 	self.current_content = nil
 	-- end
 
-	--TODO: use enums for keys instead of strings
-	if Inputs.released("interact") then
+	if Inputs.released(Enums.input.interact) then
 		self:ev_advance()
 	end
 
@@ -175,15 +174,15 @@ function DialoguesSystem:state_update(dt)
 					end
 				end
 
-				if Inputs.released("left") then
+				if Inputs.released(Enums.input.left) then
 					component.hovered_index = 1
 					hovered_index = 1
 					self.blood_bars[hovered_index].data.opacity = 1
-				elseif Inputs.released("right") then
+				elseif Inputs.released(Enums.input.right) then
 					component.hovered_index = 2
 					hovered_index = 2
 					self.blood_bars[hovered_index].data.opacity = 1
-				elseif Inputs.released("interact") then
+				elseif Inputs.released(Enums.input.interact) then
 					if component.hovered_index and component.on_choice then
 						component.on_choice(component.hovered_index)
 					end
@@ -355,7 +354,7 @@ if DEV then
 
 		local start_disabled = self.current_content ~= nil
 		if Slab.Button("start", { Disabled = start_disabled }) then
-			if self.dialogue:getCurrentKnot() == DIALOGUE_FIN then
+			if self.dialogue:getCurrentKnot() == Enums.dialogue_knot.fin then
 				self.dialogue:divertTo("start")
 			end
 			self.current_content = self.dialogue:getNext()

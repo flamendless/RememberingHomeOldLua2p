@@ -146,10 +146,10 @@ function PositionalAudio:play_sound_on_entity(e, source, opts)
 end
 
 function PositionalAudio:play_sound_on_player(source, opts)
-	if not e_player then
+	if not self.e_player then
 		return
 	end
-	self:play_sound_on_entity(e_player, source, opts)
+	self:play_sound_on_entity(self.e_player, source, opts)
 end
 
 function PositionalAudio:stop_sound_on_entity(e)

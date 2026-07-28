@@ -14,7 +14,7 @@ function Typewriter:update(dt)
 			rfp.dt = rfp.dt + dt * rfp.speed
 			if rfp.dt * #text > #text then
 				e:give("text_can_proceed")
-			elseif Inputs.pressed("interact") then
+			elseif Inputs.pressed(Enums.input.interact) then
 				rfp.dt = #text - 1
 				e:give("text_skipped")
 			end

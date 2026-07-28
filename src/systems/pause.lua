@@ -41,7 +41,7 @@ function Pause:create_pause_entities()
 	local fnt = Resources.data.fonts.ui
 	local fh = fnt:getHeight() * scale + 8
 
-	self.world:emit("create_list_group", "pause_choices", true, #opt)
+	self.world:emit("create_list_group", Enums.list_group.pause_choices, true, #opt)
 	for i, str in ipairs(opt) do
 		local x = ww2
 		local y = by + (i - 1) * fh
@@ -53,7 +53,7 @@ function Pause:update(dt)
 	if self.is_paused then
 		self.timer:update(dt)
 	end
-	if Inputs.pressed("pause") then
+	if Inputs.pressed(Enums.input.pause) then
 		self:on_pause()
 	end
 end
@@ -76,7 +76,7 @@ function Pause:on_pause()
 		tablex.clear(self.prev)
 		self.e_bg:destroy()
 		self.e_title:destroy()
-		self.world:emit("destroy_list", "pause_choices")
+		self.world:emit("destroy_list", Enums.list_group.pause_choices)
 	end
 
 	self.is_paused = not self.is_paused
@@ -85,7 +85,7 @@ function Pause:on_pause()
 	Log.info("Paused:", self.is_paused)
 end
 
-Pause["on_list_cursor_update_" .. "pause_choices"] = function(self, e_hovered)
+Pause["on_list_cursor_update_" .. Enums.list_group.pause_choices] = function(self, e_hovered)
 	self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "do_random_glitch", self.reset_after)
 	for _, e in ipairs(self.pool_choice) do
 		if e ~= e_hovered then
@@ -101,7 +101,7 @@ Pause["on_list_cursor_update_" .. "pause_choices"] = function(self, e_hovered)
 	hovered_color[3] = 0
 end
 
-Pause["on_list_item_interact_" .. "pause_choices"] = function(self, e_hovered)
+Pause["on_list_item_interact_" .. Enums.list_group.pause_choices] = function(self, e_hovered)
 	local text = e_hovered.static_text.value
 	if text == "Resume" then
 		self:on_pause()

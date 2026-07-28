@@ -1,7 +1,7 @@
 local AsmItems = {}
 
 function AsmItems.flashlight(e)
-	local info = Items.get_info("flashlight")
+	local info = Items.get_info(Enums.item_id.flashlight)
 	e:give("id", "item_flashlight")
 		:give("sprite", "flashlight")
 		:give("item", info.id, info.name, info.desc)

@@ -36,10 +36,10 @@ end
 
 function PlayerController:on_toggle_equip_flashlight()
 	if DEV then
-		Items.add("flashlight")
-		Items.toggle_equip("flashlight")
+		Items.add(Enums.item_id.flashlight)
+		Items.toggle_equip(Enums.item_id.flashlight)
 	end
-	local has_f = Items.is_equipped("flashlight")
+	local has_f = Items.is_equipped(Enums.item_id.flashlight)
 	local data, mods = Assemblages.Player.get_multi_anim_data(has_f, self.player.can_open_door)
 	self.player.animation.obj:set_data(data, mods, Enums.anim_state.idle)
 	local tag = (self.player.body.dir == -1) and Enums.anim_state.idle_left or Enums.anim_state.idle
@@ -132,29 +132,29 @@ function PlayerController:on_open_lighter()
 		return
 	end
 	if DEV then
-		Items.add("lighter1")
-		Items.toggle_equip("lighter1")
+		Items.add(Enums.item_id.lighter1)
+		Items.toggle_equip(Enums.item_id.lighter1)
 	end
 	self.last_desired_dir = 0
 	self.world:emit("anim_open_lighter", self.player)
 	self.on_lighter = true
-	self.player:remove("can_lighter")
+	self.player:remove(Enums.player_cap.can_lighter)
 	self.lighter_opened_this_frame = true
 end
 
 function PlayerController:on_toggle_equip_lighter()
 	if DEV then
-		Items.add("lighter1")
-		Items.toggle_equip("lighter1")
+		Items.add(Enums.item_id.lighter1)
+		Items.toggle_equip(Enums.item_id.lighter1)
 	end
 	-- local has_l = Items.is_equipped("lighter1")
 	-- self.world:emit("lighter_update_pos", self.player)
 	-- self.world:emit("flip_e_id_component", "lighter1", "hidden")
 	self.last_desired_dir = 0
-	if not self.on_lighter and self.player:has("can_lighter") then
+	if not self.on_lighter and self.player:has(Enums.player_cap.can_lighter) then
 		self.world:emit("anim_open_lighter", self.player)
 		self.on_lighter = true
-		self.player:remove("can_lighter")
+		self.player:remove(Enums.player_cap.can_lighter)
 	elseif self.on_lighter and not self.player:has("block_lighter_close") then
 		self.world:emit("anim_close_lighter", self.player)
 		self.on_lighter = false
@@ -162,7 +162,7 @@ function PlayerController:on_toggle_equip_lighter()
 end
 
 function PlayerController:on_anim_close_lighter_done()
-	self.player:give("can_lighter"):remove("override_animation")
+	self.player:give(Enums.player_cap.can_lighter):remove("override_animation")
 end
 
 function PlayerController:is_lighter_opening()
@@ -219,7 +219,7 @@ function PlayerController:update(dt)
 	local skip_lighter_input = self.lighter_opened_this_frame
 	self.lighter_opened_this_frame = false
 
-	local lighter_pressed = Inputs.pressed("lighter")
+	local lighter_pressed = Inputs.pressed(Enums.input.lighter)
 	if lighter_pressed and not skip_lighter_input then
 		if self:is_lighter_opening() or self:is_lighter_closing() then
 			return
@@ -227,7 +227,7 @@ function PlayerController:update(dt)
 		if self.on_lighter and not self.player:has("block_lighter_close") then
 			self:on_toggle_equip_lighter()
 			return
-		elseif self.player:has("can_lighter") then
+		elseif self.player:has(Enums.player_cap.can_lighter) then
 			self:on_toggle_equip_lighter()
 			return
 		end
@@ -244,7 +244,7 @@ function PlayerController:update(dt)
 	body.dx = 0
 
 	if self.player.can_run then
-		self.player.is_running.value = Inputs.down("run_mod")
+		self.player.is_running.value = Inputs.down(Enums.input.run_mod)
 	end
 
 	-- SIMPLE MOVEMENT (causes left/right spamming to instantly flip)
@@ -260,8 +260,8 @@ function PlayerController:update(dt)
 	local turn_delay = self.turn_delay
 	self.turn_cooldown = math.max(0, turn_cd - dt)
 
-	local left_held = Inputs.held("left")
-	local right_held = Inputs.held("right")
+	local left_held = Inputs.held(Enums.input.left)
+	local right_held = Inputs.held(Enums.input.right)
 	local only_left = self.player.can_move_left_only
 	local only_right = self.player.can_move_right_only
 
@@ -291,13 +291,13 @@ function PlayerController:update(dt)
 			end
 		else
 			body.dx = 0
-			if not Inputs.down("left") and not Inputs.down("right") then
+			if not Inputs.down(Enums.input.left) and not Inputs.down(Enums.input.right) then
 				self.last_desired_dir = 0
 			end
 		end
 	end
 
-	if within_int and self.player.can_interact and Inputs.pressed("interact") then
+	if within_int and self.player.can_interact and Inputs.pressed(Enums.input.interact) then
 		local other = within_int.entity
 		local req = other.req_col_dir
 		local proceed = true
@@ -382,9 +382,9 @@ function PlayerController:on_interact_or_inventory()
 		self.player:give("prev_can", self.player)
 		self.world:emit("anim_idle", self.player, true)
 	end
-	self.world:emit("toggle_component", self.player, "can_move", false)
-	self.world:emit("toggle_component", self.player, "can_interact", false)
-	self.world:emit("toggle_component", self.player, "can_run", false)
+	self.world:emit("toggle_component", self.player, Enums.player_cap.can_move, false)
+	self.world:emit("toggle_component", self.player, Enums.player_cap.can_interact, false)
+	self.world:emit("toggle_component", self.player, Enums.player_cap.can_run, false)
 end
 
 function PlayerController:on_leave_interact_or_inventory()
@@ -393,17 +393,17 @@ function PlayerController:on_leave_interact_or_inventory()
 		return
 	end
 	if prev_can.move then
-		self.player:give("can_move")
+		self.player:give(Enums.player_cap.can_move)
 	end
 	if prev_can.run then
-		self.player:give("can_run")
+		self.player:give(Enums.player_cap.can_run)
 	end
 	if prev_can.interact then
 		GameStates.after(0.5, function()
 			if not self.player or not self.player.__isEntity then
 				return
 			end
-			self.player:give("can_interact")
+			self.player:give(Enums.player_cap.can_interact)
 			self.player.is_interacting.value = false
 		end)
 	end

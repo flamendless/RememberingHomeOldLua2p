@@ -20,7 +20,7 @@ end
 --      This is the reason why we have flip_component now...
 function Entity:toggle_component(e, prop, bool)
 	assert(e.__isEntity)
-	assert(type(prop) == "string", prop)
+	assert(Enums.player_cap[prop], prop)
 	assert(type(bool) == "boolean", bool)
 	if bool then
 		e:give(prop)

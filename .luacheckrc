@@ -17,7 +17,6 @@ return {
 		"PROF_CAPTURE",
 		"GIT_COMMIT",
 		"TODO",
-		"DIALOGUE_FIN",
 		"JPROF",
 		"MAX_Z",
 		"GAME_SPEED_MULT",

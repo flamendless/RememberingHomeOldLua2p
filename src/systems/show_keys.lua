@@ -13,7 +13,7 @@ function ShowKeys:init(world)
 end
 
 function ShowKeys:create_key_with_text(id, txt, key)
-	assert(type(id) == "string")
+	assert(Enums.show_keys[id], id)
 	assert(type(txt) == "string")
 	assert(type(key) == "string")
 
@@ -137,21 +137,21 @@ function ShowKeys:create_inventory_key()
 	if not Settings.current.show_keys then
 		return
 	end
-	self:create_key_with_text("inventory", "Switch to Notes", Inputs.rev_map.inventory)
+	self:create_key_with_text(Enums.show_keys.inventory, "Switch to Notes", Inputs.rev_map[Enums.input.inventory])
 end
 
 function ShowKeys:create_notes_key()
 	if not Settings.current.show_keys then
 		return
 	end
-	self:create_key_with_text("notes", "Switch to Inventory", Inputs.rev_map.inventory)
+	self:create_key_with_text(Enums.show_keys.notes, "Switch to Inventory", Inputs.rev_map[Enums.input.inventory])
 end
 
 function ShowKeys:create_dialogue_key()
 	if not Settings.current.show_keys then return end
 	local w, h = love.graphics.getDimensions()
 	self.keys.dialogue = Concord.entity(self.world)
-		:assemble(asm, Inputs.rev_map.interact)
+		:assemble(asm, Inputs.rev_map[Enums.input.interact])
 		:give("id", "dialogue_proceed_key")
 		:give("key", "dialogue_proceed_key")
 		:give("pos", w - 8, h - 8)
@@ -165,7 +165,7 @@ function ShowKeys:create_lighter_key()
 	if not Settings.current.show_keys then return end
 	local w, h = love.graphics.getDimensions()
 	self.keys.lighter = Concord.entity(self.world)
-		:assemble(asm, Inputs.rev_map.lighter)
+		:assemble(asm, Inputs.rev_map[Enums.input.lighter])
 		:give("id", "dialogue_lighter_key")
 		:give("key", "dialogue_lighter_key")
 		:give("pos", w - 8, h - 8)
@@ -179,7 +179,7 @@ function ShowKeys:create_left_key()
 	if not Settings.current.show_keys then return end
 	local w, h = love.graphics.getDimensions()
 	self.keys.left = Concord.entity(self.world)
-		:assemble(asm, Inputs.rev_map.left)
+		:assemble(asm, Inputs.rev_map[Enums.input.left])
 		:give("id", "left_proceed_key")
 		:give("key", "left_proceed_key")
 		:give("pos", w - 8, h - 8)
@@ -192,7 +192,7 @@ function ShowKeys:create_right_key()
 	if not Settings.current.show_keys then return end
 	local w, h = love.graphics.getDimensions()
 	self.keys.right = Concord.entity(self.world)
-		:assemble(asm, Inputs.rev_map.right)
+		:assemble(asm, Inputs.rev_map[Enums.input.right])
 		:give("id", "right_proceed_key")
 		:give("key", "right_proceed_key")
 		:give("pos", w - 8, h - 8)
@@ -242,6 +242,7 @@ function ShowKeys:destroy_key(id)
 		self:fade_skip_hand(0)
 		return
 	end
+	assert(Enums.show_keys[id], id)
 	self.keys[id]:destroy()
 	local t = self.texts[id]
 	if t then

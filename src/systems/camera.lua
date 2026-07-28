@@ -367,14 +367,14 @@ if DEV then
 		end
 
 		local dx, dy = 0, 0
-		if Inputs.down("camera_down") then
+		if Inputs.down(Enums.input.camera_down) then
 			dy = 1
-		elseif Inputs.down("camera_up") then
+		elseif Inputs.down(Enums.input.camera_up) then
 			dy = -1
 		end
-		if Inputs.down("camera_left") then
+		if Inputs.down(Enums.input.camera_left) then
 			dx = -1
-		elseif Inputs.down("camera_right") then
+		elseif Inputs.down(Enums.input.camera_right) then
 			dx = 1
 		end
 

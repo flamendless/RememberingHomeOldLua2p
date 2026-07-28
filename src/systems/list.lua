@@ -52,7 +52,7 @@ function List:update(dt)
 end
 
 function List:create_list_group(id, vertical_only, per_page, use_max_threshold, limit)
-	assert(type(id) == "string", id)
+	assert(Enums.list_group[id], id)
 	assert(type(vertical_only) == "boolean", vertical_only)
 	assert((type(per_page) == "number" and per_page > 0), per_page)
 	assert(self.groups[id] == nil, id .. " was already added")
@@ -75,7 +75,7 @@ function List:create_list_group(id, vertical_only, per_page, use_max_threshold, 
 end
 
 function List:create_list_group_grid(id, rows, cols)
-	assert(type(id) == "string", id)
+	assert(Enums.list_group[id], id)
 	assert(self.groups[id] == nil, id .. " was already added")
 	assert(type(rows) == "number" and rows > 0, rows)
 	assert(type(cols) == "number" and cols > 0, cols)
@@ -96,7 +96,7 @@ function List:update_list(group)
 	local up = group.vertical_only and "up" or "left"
 	local down = group.vertical_only and "down" or "right"
 
-	if Inputs.pressed("interact") then
+	if Inputs.pressed(Enums.input.interact) then
 		local index = group.per_page * group.offset + group.cursor
 		local e = group.entities[index]
 		assert(e, e)
@@ -151,18 +151,18 @@ end
 
 function List:update_list_grid(group)
 	local dx, dy = 0, 0
-	if Inputs.pressed("interact") then
+	if Inputs.pressed(Enums.input.interact) then
 		local index = group.per_page * group.offset + group.cursor
 		assert(group.entities[index], index)
 		local signal = "on_list_item_interact_" .. self.focused
 		self.world:emit(signal, group.entities[index])
-	elseif Inputs.pressed("left") then
+	elseif Inputs.pressed(Enums.input.left) then
 		dx = -1
-	elseif Inputs.pressed("right") then
+	elseif Inputs.pressed(Enums.input.right) then
 		dx = 1
-	elseif Inputs.pressed("up") then
+	elseif Inputs.pressed(Enums.input.up) then
 		dy = -1
-	elseif Inputs.pressed("down") then
+	elseif Inputs.pressed(Enums.input.down) then
 		dy = 1
 	end
 
@@ -208,7 +208,8 @@ end
 function List:set_focus_list(group_id, override_cursor)
 	local group = self.groups[group_id]
 	if group_id then
-		assert((type(group_id) == "string" and group), group_id)
+		assert(Enums.list_group[group_id], group_id)
+		assert(group, group_id)
 	end
 	if self.focused then
 		table.insert(self.focus_stack, self.focused)
@@ -225,6 +226,7 @@ function List:set_focus_list(group_id, override_cursor)
 end
 
 function List:destroy_list(group_id)
+	assert(Enums.list_group[group_id], group_id)
 	if not self.groups[group_id] then
 		return
 	end

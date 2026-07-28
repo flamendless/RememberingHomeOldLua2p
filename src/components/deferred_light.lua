@@ -6,7 +6,7 @@ Concord.component("light_id", function(c, n)
 end)
 
 Concord.component("light_group", function(c, id)
-	assert(type(id) == "string", id)
+	assert(Enums.light_group[id], id)
 	c.value = id
 end)
 

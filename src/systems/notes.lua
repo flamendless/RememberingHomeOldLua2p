@@ -14,9 +14,9 @@ function NotesSystem:init(world)
 end
 
 function NotesSystem:open_notes()
-	self.world:emit("set_system_to", "dialogues", false)
+	self.world:emit("set_system_to", Enums.ui_system.dialogues, false)
 	self.is_open = true
-	self.world:emit("set_post_process_effect", "Blur", true)
+	self.world:emit("set_post_process_effect", Enums.shaders.blur, true)
 	self:create_notes()
 	self.world:emit("create_note_items")
 end
@@ -25,29 +25,29 @@ function NotesSystem:close_notes(not_close)
 	if not_close then
 		assert(type(not_close) == "boolean", not_close)
 	end
-	self.world:emit("set_system_to", "dialogues", true)
+	self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
 	if not not_close then
 		self.world:emit("on_leave_interact_or_inventory")
 	end
 	self.is_open = false
 	self.world:emit("set_post_process_effect", Enums.shaders.blur, false)
-	self.world:emit("destroy_key", "notes")
+	self.world:emit("destroy_key", Enums.show_keys.notes)
 	self.e_bg:destroy()
 	self.e_cursor:destroy()
 	for _, e in ipairs(self.pool_item) do
 		e:destroy()
 	end
-	self.world:emit("destroy_list", "notes")
+	self.world:emit("destroy_list", Enums.list_group.notes)
 	self.world:emit("inventory_to_notes", true)
 end
 
 function NotesSystem:update(dt)
 	if self.is_open then
-		if Inputs.pressed("inventory") then
+		if Inputs.pressed(Enums.input.inventory) then
 			Inputs.flush()
 			self.world:emit("close_notes", true)
 			self.world:emit("open_inventory")
-		elseif Inputs.pressed("cancel") then
+		elseif Inputs.pressed(Enums.input.cancel) then
 			self:close_notes()
 		end
 	end
@@ -76,7 +76,7 @@ function NotesSystem:create_notes()
 	local rows = math.floor(ih * scale * 0.75 / row_h)
 
 	self.rows_per_page = rows
-	self.world:emit("create_list_group", "notes", true, rows * 2)
+	self.world:emit("create_list_group", Enums.list_group.notes, true, rows * 2)
 
 	local acquired_notes = Notes.get_acquired()
 	for i, note in ipairs(acquired_notes) do
@@ -100,7 +100,7 @@ function NotesSystem:create_notes()
 	self.world:emit("create_notes_key", "notes")
 end
 
-NotesSystem["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
+NotesSystem["on_list_cursor_update_" .. Enums.list_group.notes] = function(self, e_hovered)
 	assert((self.pool_item:has(e_hovered)), self)
 	local font = e_hovered.font.value
 	local c_pos = self.e_cursor.pos
@@ -114,13 +114,13 @@ NotesSystem["on_list_cursor_update_" .. "notes"] = function(self, e_hovered)
 	self.world:emit("lerp_color", e_hovered, c_on_hovered, 0.25, "circin")
 end
 
-NotesSystem["on_list_cursor_remove_" .. "notes"] = function(self, e_hovered)
+NotesSystem["on_list_cursor_remove_" .. Enums.list_group.notes] = function(self, e_hovered)
 	assert((self.pool_item:has(e_hovered)), self)
 	self.world:emit("lerp_color", self.e_cursor, { 1, 1, 1, 0 }, 0.25, "circin")
 	self.world:emit("lerp_color", e_hovered, e_hovered.color.original, 0.25, "circin")
 end
 
-NotesSystem["on_list_item_interact_" .. "notes"] = function(self, e_hovered)
+NotesSystem["on_list_item_interact_" .. Enums.list_group.notes] = function(self, e_hovered)
 	print(e_hovered.id.value)
 end
 

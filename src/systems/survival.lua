@@ -73,7 +73,7 @@ function Survival:survival_on()
 	self.timer_open_flashlight = Timer.new()
 	self.timer_open_flashlight_t = self.timer_open_flashlight:after(1, function()
 		self.world:emit("play_sound_on_player", Enums.sfx.flashlight_on)
-		self.world:emit("toggle_light_group", "player_flashlight", true)
+		self.world:emit("toggle_light_group", Enums.light_group.player_flashlight, true)
 	end)
 end
 

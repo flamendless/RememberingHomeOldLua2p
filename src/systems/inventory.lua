@@ -46,11 +46,11 @@ function Inventory:open_inventory()
 		return
 	end
 	self.world:emit("on_interact_or_inventory")
-	self.world:emit("set_system_to", "dialogues", false)
-	self.world:emit("set_post_process_effect", "Blur", true)
+	self.world:emit("set_system_to", Enums.ui_system.dialogues, false)
+	self.world:emit("set_post_process_effect", Enums.shaders.blur, true)
 	self:create_inventory()
 	self.world:__flush()
-	self.world:emit("set_focus_list", "inventory_cells")
+	self.world:emit("set_focus_list", Enums.list_group.inventory_cells)
 	self.world:emit("create_inventory_key")
 	self.world:emit("create_items")
 	self.is_open = true
@@ -61,8 +61,8 @@ function Inventory:close_inventory(not_close)
 		assert(type(not_close) == "boolean", not_close)
 	end
 	self.world:emit("destroy_items")
-	self.world:emit("destroy_key", "inventory")
-	self.world:emit("set_system_to", "dialogues", true)
+	self.world:emit("destroy_key", Enums.show_keys.inventory)
+	self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
 	if not not_close then
 		self.world:emit("on_leave_interact_or_inventory")
 	end
@@ -73,8 +73,8 @@ function Inventory:close_inventory(not_close)
 	for _, e in ipairs(self.pool_border) do
 		e:destroy()
 	end
-	self.world:emit("destroy_list", "inventory_cells")
-	self.world:emit("destroy_list", "inventory_choices")
+	self.world:emit("destroy_list", Enums.list_group.inventory_cells)
+	self.world:emit("destroy_list", Enums.list_group.inventory_choices)
 	self.world:emit("set_post_process_effect", Enums.shaders.blur, false)
 end
 
@@ -85,9 +85,9 @@ function Inventory:update(dt)
 	Log.debug("TODO: do we need inventory screen?")
 	if DEV then return end
 
-	if not self.is_open and Inputs.pressed("inventory") then
+	if not self.is_open and Inputs.pressed(Enums.input.inventory) then
 		if not added then
-			Items.add("flashlight")
+			Items.add(Enums.item_id.flashlight)
 			Notes.add("test1")
 			Notes.add("test2")
 			added = true
@@ -95,14 +95,14 @@ function Inventory:update(dt)
 
 		self:open_inventory()
 	elseif self.is_open then
-		if Inputs.pressed("inventory") then
+		if Inputs.pressed(Enums.input.inventory) then
 			Inputs.flush()
 			self:close_inventory(true)
 			self.world:emit("inventory_to_notes")
 			self.world:emit("open_notes")
-		elseif Inputs.pressed("cancel") then
+		elseif Inputs.pressed(Enums.input.cancel) then
 			if self.in_choices then
-				self["on_list_item_interact_" .. "inventory_choices"](self, self.pool_choice[3])
+				self["on_list_item_interact_" .. Enums.list_group.inventory_choices](self, self.pool_choice[3])
 			else
 				self:close_inventory()
 			end
@@ -126,7 +126,7 @@ function Inventory:create_inventory()
 	local orig_x = x - bg_w/2
 	local orig_y = y - bg_h/2
 	self.entities.bg = Concord.entity(self.world):assemble(Assemblages.Inventory.bg, x, y, scale)
-	self.world:emit("create_list_group", "inventory_choices", true, 3)
+	self.world:emit("create_list_group", Enums.list_group.inventory_choices, true, 3)
 
 	local c_bx = orig_x + bg_w - pad
 	local c_by = orig_y + bg_h/2
@@ -137,7 +137,7 @@ function Inventory:create_inventory()
 		Concord.entity(self.world):assemble(Assemblages.Inventory.choice, str, c_bx, c_y)
 	end
 
-	self.world:emit("create_list_group_grid", "inventory_cells", rows, cols)
+	self.world:emit("create_list_group_grid", Enums.list_group.inventory_cells, rows, cols)
 
 	local rx = orig_x + bg_w * 0.4
 	local ry = orig_y + pad * 0.3
@@ -176,14 +176,14 @@ function Inventory:get_selected_item()
 	return nil
 end
 
-Inventory["on_list_cursor_update_" .. "inventory_cells"] = function(self, e_hovered)
+Inventory["on_list_cursor_update_" .. Enums.list_group.inventory_cells] = function(self, e_hovered)
 	for _, e in ipairs(self.pool_cell) do
 		local alpha_range = e.alpha_range
 		e.color.value[4] = e == e_hovered and alpha_range.max or alpha_range.min
 	end
 end
 
-Inventory["on_list_cursor_update_" .. "inventory_choices"] = function(self, e_hovered)
+Inventory["on_list_cursor_update_" .. Enums.list_group.inventory_choices] = function(self, e_hovered)
 	if not e_hovered.list_group.is_focused then
 		return
 	end
@@ -192,7 +192,7 @@ Inventory["on_list_cursor_update_" .. "inventory_choices"] = function(self, e_ho
 	end
 end
 
-Inventory["on_list_item_interact_" .. "inventory_cells"] = function(self, e_hovered)
+Inventory["on_list_item_interact_" .. Enums.list_group.inventory_cells] = function(self, e_hovered)
 	if not self:get_selected_item() then
 		self.world:emit("play_sound_on_player", Enums.sfx.inventory_invalid)
 		return
@@ -202,11 +202,11 @@ Inventory["on_list_item_interact_" .. "inventory_cells"] = function(self, e_hove
 		e.color.value[4] = alpha_range.max
 	end
 	self.world:emit("show_key", Enums.show_keys.inventory, false)
-	self.world:emit("set_focus_list", "inventory_choices")
+	self.world:emit("set_focus_list", Enums.list_group.inventory_choices)
 	self.in_choices = true
 end
 
-Inventory["on_list_item_interact_" .. "inventory_choices"] = function(self, e_hovered)
+Inventory["on_list_item_interact_" .. Enums.list_group.inventory_choices] = function(self, e_hovered)
 	local text = e_hovered.static_text.value
 	local item = self:get_selected_item()
 	if text == "Use" then
@@ -218,7 +218,7 @@ Inventory["on_list_item_interact_" .. "inventory_choices"] = function(self, e_ho
 			local alpha_range = e.alpha_range
 			e.color.value[4] = alpha_range.min
 		end
-		self.world:emit("set_focus_list", "inventory_cells")
+		self.world:emit("set_focus_list", Enums.list_group.inventory_cells)
 		self.world:emit("show_key", Enums.show_keys.inventory, true)
 		self.in_choices = false
 	end

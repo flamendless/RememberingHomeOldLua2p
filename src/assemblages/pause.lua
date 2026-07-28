@@ -26,7 +26,7 @@ function Pause.choice(e, str, x, y, scale)
 		:give("pos", x, y)
 		:give("color", { 1, 1, 1, 1 })
 		:give("list_item")
-		:give("list_group", "pause_choices")
+		:give("list_group", Enums.list_group.pause_choices)
 		:give("transform", 0, scale, scale, 0.5, 0.5)
 		:give("ui_element")
 end

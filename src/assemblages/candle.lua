@@ -8,7 +8,7 @@ function AsmCandle.candle(e, x, y, e_flame)
 	assert(type(y) == "number", y)
 	assert(e_flame.__isEntity, e_flame)
 
-	local info = Items.get_info("lighter1")
+	local info = Items.get_info(Enums.item_id.lighter1)
 	e:give("id", "candle")
 		:give("sprite", info.id)
 		:give("pos", x, y)

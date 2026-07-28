@@ -38,7 +38,7 @@ function Tutorial:init(world)
 	if self.state then
 		self.e_dialogue_car1 = Concord.entity(self.world)
 			:give("id", "dialogue_car1")
-			:give("dialogue_key", "car_doors")
+			:give("dialogue_key", Enums.dialogue_knot.car_doors)
 	end
 
 	self.step = Enums.tutorial_step.waiting
@@ -254,7 +254,7 @@ function Tutorial:tutorial_step_set(step)
 		self.left_target_x = tx - 18
 
 	elseif self.step == Enums.tutorial_step.waiting_left then
-		self.e_player:give("can_move"):give("can_move_left_only")
+		self.e_player:give(Enums.player_cap.can_move):give(Enums.player_cap.can_move_left_only)
 
 	elseif self.step == Enums.tutorial_step.show_left_interact then
 		local tx, ty = self.e_last_hand.pos.x, self.e_last_hand.pos.y
@@ -301,7 +301,9 @@ function Tutorial:tutorial_step_set(step)
 		self.right_target_x = tx + 7
 
 	elseif self.step == Enums.tutorial_step.waiting_right then
-		self.e_player:give("can_move"):remove("can_move_left_only"):give("can_move_right_only")
+		self.e_player:give(Enums.player_cap.can_move)
+			:remove(Enums.player_cap.can_move_left_only)
+			:give(Enums.player_cap.can_move_right_only)
 
 	elseif self.step == Enums.tutorial_step.show_right_interact then
 		self.world:emit("player_force_face_dir", -1)
@@ -396,7 +398,7 @@ function Tutorial:complete_move_left()
 	local e = self.e_player
 	e.pos.x = self.left_target_x
 	self:sync_player_bump(e)
-	e:remove("can_move"):remove("can_move_left_only")
+	e:remove(Enums.player_cap.can_move):remove(Enums.player_cap.can_move_left_only)
 	self.world:__flush()
 	self.world:emit("player_stop")
 	self.world:emit("player_force_face_dir", 1)
@@ -407,7 +409,7 @@ function Tutorial:complete_move_right()
 	local e = self.e_player
 	e.pos.x = self.right_target_x
 	self:sync_player_bump(e)
-	e:remove("can_move"):remove("can_move_right_only")
+	e:remove(Enums.player_cap.can_move):remove(Enums.player_cap.can_move_right_only)
 	self.world:__flush()
 	self.world:emit("player_stop")
 	self.world:emit("player_force_face_dir", -1)
@@ -450,7 +452,7 @@ function Tutorial:state_update(dt)
 	self:sync_hand_key_label()
 
 	if self.step == Enums.tutorial_step.waiting_interact then
-		if Inputs.pressed("interact") or Inputs.down("interact") then
+		if Inputs.pressed(Enums.input.interact) or Inputs.down(Enums.input.interact) then
 			self.hold_interact_timer = self.hold_interact_timer + dt * 0.3
 		end
 
@@ -468,7 +470,7 @@ function Tutorial:state_update(dt)
 				"start_dialogue",
 				self.e_player,
 				self.e_dialogue_car1,
-				"car_doors"
+				Enums.dialogue_knot.car_doors
 			)
 		elseif self.hit_n == 1 and progress > 0.25 and progress <= 0.5 then
 			self.hit_n = 2
@@ -502,7 +504,7 @@ function Tutorial:state_update(dt)
 		end
 
 	elseif self.step == Enums.tutorial_step.waiting_left_interact and not self.is_fluxing then
-		if Inputs.pressed("interact") then
+		if Inputs.pressed(Enums.input.interact) then
 			self.is_fluxing = true
 			local progress = {value = 0}
 			Flux.to(progress, 2, { value = 1 }):onupdate(function()
@@ -515,7 +517,7 @@ function Tutorial:state_update(dt)
 		end
 
 	elseif self.step == Enums.tutorial_step.waiting_right_interact and not self.is_fluxing then
-		if Inputs.pressed("interact") then
+		if Inputs.pressed(Enums.input.interact) then
 			self.is_fluxing = true
 			local progress = {value = 0}
 			Flux.to(progress, 2, { value = 1 }):onupdate(function()
@@ -528,7 +530,7 @@ function Tutorial:state_update(dt)
 		end
 
 	elseif self.step == Enums.tutorial_step.wait_lighter_trigger and not self.triggered_lighter then
-		if Inputs.pressed("lighter") then
+		if Inputs.pressed(Enums.input.lighter) then
 			self.triggered_lighter = true
 			self.e_player:give("block_lighter_close")
 			self.world:emit("on_open_lighter")
@@ -570,9 +572,9 @@ function Tutorial:ev_on_hide_bars_complete()
 	if self.step ~= Enums.tutorial_step.explore then
 		return
 	end
-	self.world:emit("toggle_component", self.e_player, "can_move", true)
-	self.world:emit("toggle_component", self.e_player, "can_interact", true)
-	self.world:emit("toggle_component", self.e_player, "can_run", false)
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_interact, true)
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_run, false)
 end
 
 return Tutorial

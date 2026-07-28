@@ -26,6 +26,6 @@ Concord.component("glow_pulse", function(c, speed, amplitude)
 end)
 
 Concord.component("glow_group", function(c, id)
-	assert(type(id) == "string")
+	assert(Enums.glow_group[id], id)
 	c.id = id
 end)

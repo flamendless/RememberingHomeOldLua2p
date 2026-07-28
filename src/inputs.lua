@@ -92,26 +92,22 @@ function Inputs.init(key_map)
 end
 
 function Inputs.pressed(key)
-	assert(type(key) == "string", key)
-	assert(Inputs.current[key] ~= nil, key)
+	assert(Enums.input[key], key)
 	return Inputs.current[key] and not Inputs.previous[key]
 end
 
 function Inputs.released(key)
-	assert(type(key) == "string", key)
-	assert(Inputs.current[key] ~= nil, key)
+	assert(Enums.input[key], key)
 	return not Inputs.current[key] and Inputs.previous[key]
 end
 
 function Inputs.down(key)
-	assert(type(key) == "string", key)
-	assert(Inputs.current[key] ~= nil, key)
+	assert(Enums.input[key], key)
 	return Inputs.current[key]
 end
 
 function Inputs.held(key, threshold)
-	assert(type(key) == "string", key)
-	assert(Inputs.current[key] ~= nil, key)
+	assert(Enums.input[key], key)
 	if not threshold then
 		threshold = Inputs.default_hold_threshold
 	end

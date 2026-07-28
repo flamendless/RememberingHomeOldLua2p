@@ -41,9 +41,9 @@ end
 function Office1:state_init()
 	self.world:emit("spawn_player", function(e_player)
 		self.world:emit("camera_follow", e_player, 0.25)
-		self.world:emit("toggle_component", e_player, "can_move", true)
-		self.world:emit("toggle_component", e_player, "can_interact", true)
-		self.world:emit("toggle_component", e_player, "can_run", true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_run, true)
 		self.e_player = e_player
 	end)
 

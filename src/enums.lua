@@ -132,7 +132,79 @@ Enums.show_keys = Enum(
 	"left",
 	"right",
 	"inventory",
+	"notes",
 	"lighter"
+)
+
+Enums.dialogue_knot = Enum(
+	"start",
+	"fin",
+	"car_doors",
+	"test"
+)
+
+Enums.input = Enum(
+	"left",
+	"right",
+	"up",
+	"down",
+	"interact",
+	"cancel",
+	"inventory",
+	"flashlight",
+	"lighter",
+	"run_mod",
+	"pause",
+	"play",
+	"camera_down",
+	"camera_up",
+	"camera_left",
+	"camera_right"
+)
+
+Enums.list_group = Enum(
+	"main_menu",
+	"sub_menu",
+	"inventory_cells",
+	"inventory_choices",
+	"pause_choices",
+	"notes"
+)
+
+Enums.ui_system = Enum(
+	"dialogues",
+	"inventory",
+	"notes"
+)
+
+Enums.item_id = Enum(
+	"flashlight",
+	"frontdoor_key",
+	"storage_room_drawer_key",
+	"lighter1",
+	"lighter2"
+)
+
+Enums.player_cap = Enum(
+	"can_move",
+	"can_interact",
+	"can_run",
+	"can_lighter",
+	"can_open_door",
+	"can_move_left_only",
+	"can_move_right_only"
+)
+
+Enums.light_group = Enum(
+	"player_flashlight",
+	"side_pl",
+	"mid_pl",
+	"pl_mid"
+)
+
+Enums.glow_group = Enum(
+	"car_glow",
+	"pc_glow"
 )
 
 Enums.decals = Enum(

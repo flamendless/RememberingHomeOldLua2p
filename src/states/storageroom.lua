@@ -36,9 +36,9 @@ function StorageRoom:state_init()
 	self.world:emit("spawn_player", function(e_player)
 		self.e_player = e_player
 		self.world:emit("camera_follow", e_player, 0.25)
-		self.world:emit("toggle_component", e_player, "can_move", true)
-		self.world:emit("toggle_component", e_player, "can_interact", true)
-		self.world:emit("toggle_component", e_player, "can_run", true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_run, true)
 	end)
 
 	if DEV then
@@ -96,7 +96,7 @@ function StorageRoom:search_shelf(e, dialogues_t)
 end
 
 function StorageRoom:check_drawer_key(e, dialogues_t)
-	local has_key = Items.has("storage_room_drawer_key")
+	local has_key = Items.has(Enums.item_id.storage_room_drawer_key)
 	if not has_key then
 		local t = tablex.copy(dialogues_t.no_key_yet)
 		self.world:emit("spawn_dialogue_ex", t)

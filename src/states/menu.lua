@@ -191,7 +191,7 @@ function Menu:state_init()
 		-- self.subtitle:remove("anchor")
 		self:show_main_menu()
 		self.timeline:Pause()
-		self.world:emit("set_focus_list", "main_menu")
+		self.world:emit("set_focus_list", Enums.list_group.main_menu)
 		self.is_transition = false
 	end)
 end
@@ -200,7 +200,7 @@ function Menu:state_update(dt)
 	if self.is_transition then
 		return
 	end
-	if Inputs.released("cancel") then
+	if Inputs.released(Enums.input.cancel) then
 		self:menu_back()
 	end
 
@@ -275,7 +275,7 @@ function Menu:setup_menu()
 	local has_save = Save.valid_checkpoints
 	local n_opt_sub = has_save and #options_sub or (#options_sub - 1)
 
-	self.world:emit("create_list_group", "sub_menu", true, n_opt_sub)
+	self.world:emit("create_list_group", Enums.list_group.sub_menu, true, n_opt_sub)
 	for i, str in ipairs(options_sub) do
 		local lstr = string.lower(str)
 		lstr = string.gsub(lstr, "%s+", "")
@@ -285,7 +285,19 @@ function Menu:setup_menu()
 		local id = "text_sub_" .. lstr
 
 		local e = Concord.entity(self.world)
-			:assemble(Assemblages.Menu.option_item, id, str, jamboree_fnt, jamboree_png, x, y, str_scale, i, 2, "sub_menu")
+			:assemble(
+				Assemblages.Menu.option_item,
+				id,
+				str,
+				jamboree_fnt,
+				jamboree_png,
+				x,
+				y,
+				str_scale,
+				i,
+				2,
+				Enums.list_group.sub_menu
+			)
 			:give("on_enter_menu", "on_" .. lstr)
 
 		if not has_save and str == "Continue" then
@@ -293,7 +305,7 @@ function Menu:setup_menu()
 		end
 	end
 
-	self.world:emit("create_list_group", "main_menu", true, #options)
+	self.world:emit("create_list_group", Enums.list_group.main_menu, true, #options)
 	for i, str in ipairs(options) do
 		local lstr = string.lower(str)
 		local str_w = sdf_menu:getWidth(str) * str_scale
@@ -302,7 +314,19 @@ function Menu:setup_menu()
 		local id = "text_" .. lstr
 
 		Concord.entity(self.world)
-			:assemble(Assemblages.Menu.option_item, id, str, jamboree_fnt, jamboree_png, x, y, str_scale, i, 1, "main_menu")
+			:assemble(
+				Assemblages.Menu.option_item,
+				id,
+				str,
+				jamboree_fnt,
+				jamboree_png,
+				x,
+				y,
+				str_scale,
+				i,
+				1,
+				Enums.list_group.main_menu
+			)
 			:give("on_enter_menu", "on_" .. lstr, 0, lstr)
 	end
 	self.world:__flush()
@@ -410,7 +434,7 @@ function Menu:show_main_menu()
 			:give("move_to_original", duration_pos)
 	end
 	self.current_state = Enums.menu_state.menu
-	self.world:emit("set_focus_list", "main_menu")
+	self.world:emit("set_focus_list", Enums.list_group.main_menu)
 end
 
 function Menu:hide_main_menu(duration)
@@ -435,7 +459,7 @@ function Menu:show_sub_menu()
 	GameStates.after(duration_show, function()
 		self.current_state = Enums.menu_state.sub_menu
 		local override_cursor = Save.valid_checkpoints and 1 or 2
-		self.world:emit("set_focus_list", "sub_menu", override_cursor)
+		self.world:emit("set_focus_list", Enums.list_group.sub_menu, override_cursor)
 	end)
 end
 
@@ -587,7 +611,7 @@ function Menu:open_url(str)
 	love.system.openURL(str)
 end
 
-Menu["on_list_cursor_update_" .. "main_menu"] = function(self, e_hovered)
+Menu["on_list_cursor_update_" .. Enums.list_group.main_menu] = function(self, e_hovered)
 	for _, e in ipairs(self.pool_main_menu) do
 		local pos = e.pos
 		local color = e.color
@@ -601,7 +625,7 @@ Menu["on_list_cursor_update_" .. "main_menu"] = function(self, e_hovered)
 	end
 end
 
-Menu["on_list_cursor_update_" .. "sub_menu"] = function(self, e_hovered)
+Menu["on_list_cursor_update_" .. Enums.list_group.sub_menu] = function(self, e_hovered)
 	for _, e in ipairs(self.pool_sub_menu) do
 		local pos = e.pos
 		local color = e.color
@@ -618,7 +642,7 @@ Menu["on_list_cursor_update_" .. "sub_menu"] = function(self, e_hovered)
 	end
 end
 
-Menu["on_list_item_interact_" .. "main_menu"] = function(self, e_hovered)
+Menu["on_list_item_interact_" .. Enums.list_group.main_menu] = function(self, e_hovered)
 	local text = e_hovered.text.value
 	if text == "Play" then
 		self.is_transition = true
@@ -636,7 +660,7 @@ Menu["on_list_item_interact_" .. "main_menu"] = function(self, e_hovered)
 	end
 end
 
-Menu["on_list_item_interact_" .. "sub_menu"] = function(self, e_hovered)
+Menu["on_list_item_interact_" .. Enums.list_group.sub_menu] = function(self, e_hovered)
 	local text = e_hovered.text.value
 	if text == "Continue" then
 		self:on_continue()

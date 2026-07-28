@@ -89,7 +89,7 @@ local Data = {
 		y = 111,
 		z = 6,
 		-- no_col = true,
-		dialogue_key = "test",
+		dialogue_key = Enums.dialogue_knot.test,
 		-- dialogue_force_pause = {"all"}, -- TODO: Implement pause (a)
 	},
 	{

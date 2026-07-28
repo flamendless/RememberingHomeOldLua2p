@@ -136,7 +136,7 @@ Outside.glows.car = function(world)
 	)
 
 	for i, e in ipairs(es) do
-		e:give("id", "car_glow" .. i):give("glow_group", "car_glow")
+		e:give("id", "car_glow" .. i):give("glow_group", Enums.glow_group.car_glow)
 	end
 
 	-- local bw, bh = 2, 13

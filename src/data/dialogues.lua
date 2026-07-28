@@ -114,25 +114,25 @@ Dialogues.outside = {
 	start = {},
 	car_doors = {
 		LoveInk.Helpers.text("Handle is a little bit stuck..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_doors2 = {
 		LoveInk.Helpers.text("Just a little bit more..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_doors3 = {
 		LoveInk.Helpers.text("There!"),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_headlights = {
 		LoveInk.Helpers.text("Headlights busted..."),
 		LoveInk.Helpers.text("Doe might have gutted out the trunk..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_trunk_pre = {
 		LoveInk.Helpers.text("It's too dark to see...", nil, {Enums.dialogue_tags.important}),
 		LoveInk.Helpers.text("Good thing I brought my pal..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_trunk = {
 		LoveInk.Helpers.text("I can't move while using it though...", nil, {Enums.dialogue_tags.important}),
@@ -154,7 +154,7 @@ Dialogues.outside = {
 	car_run_to_house = {
 		LoveInk.Helpers.text("It might rain again soon..."),
 		LoveInk.Helpers.text("I better get going..."),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	fin = {},
 }
@@ -164,10 +164,10 @@ Dialogues.office2 = {
 	test = {
 		LoveInk.Helpers.text("Test from LoveInk"),
 		LoveInk.Helpers.choice("check shelf?", {
-			{ "yes",       divert = DIALOGUE_FIN },
+			{ "yes",       divert = Enums.dialogue_knot.fin },
 			{ "im scared", divert = "test" },
 		}),
-		LoveInk.Helpers.divert(DIALOGUE_FIN),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	fin = {},
 }

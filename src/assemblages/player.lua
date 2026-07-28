@@ -57,16 +57,16 @@ function Player.base(e, x, y, speed_data, can)
 		:give("camera_follow_offset", 0, 0)
 
 	if can.move then
-		e:give("can_move")
+		e:give(Enums.player_cap.can_move)
 	end
 	if can.run then
-		e:give("can_run")
+		e:give(Enums.player_cap.can_run)
 	end
 	if can.interact then
-		e:give("can_interact")
+		e:give(Enums.player_cap.can_interact)
 	end
 	if can.open_door then
-		e:give("can_open_door")
+		e:give(Enums.player_cap.can_open_door)
 	end
 end
 

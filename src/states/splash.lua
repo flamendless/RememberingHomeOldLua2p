@@ -157,7 +157,7 @@ function Splash:state_update(dt)
 	self.world:emit("update", dt)
 
 	if Save.data.splash_done then
-		if Inputs.released("interact") then
+		if Inputs.released(Enums.input.interact) then
 			if self.current_state == Enums.splash_state.love and self.skippable then
 				self.world:emit("fade_skip_hand", 0.4)
 				self.splash_love:skip()

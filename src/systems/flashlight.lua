@@ -38,10 +38,12 @@ function Flashlight:create_flashlight()
 	)
 	:give("battery", 100)
 	:give("battery_state", Enums.battery_state.full)
-	:give("light_group", "player_flashlight")
+	:give("light_group", Enums.light_group.player_flashlight)
 
-	self.start_l = Concord.entity(self.world):assemble(Assemblages.Light.fl_start):give("light_group", "player_flashlight")
-	self.end_l = Concord.entity(self.world):assemble(Assemblages.Light.fl_end):give("light_group", "player_flashlight")
+	self.start_l = Concord.entity(self.world):assemble(Assemblages.Light.fl_start)
+		:give("light_group", Enums.light_group.player_flashlight)
+	self.end_l = Concord.entity(self.world):assemble(Assemblages.Light.fl_end)
+		:give("light_group", Enums.light_group.player_flashlight)
 	table.insert(self.pool_flashlight, self.start_l)
 	table.insert(self.pool_flashlight, self.end_l)
 end
@@ -57,7 +59,7 @@ function Flashlight:update(dt)
 		self:update_battery(dt)
 	end
 
-	if Inputs.released("flashlight") then
+	if Inputs.released(Enums.input.flashlight) then
 		local pl = self.start_l.point_light
 		if self.flashlight.light_disabled then
 			self.flashlight:remove("light_disabled")

@@ -387,6 +387,7 @@ if DEV then
 	end
 
 	function BillboardGlow:glow_group_set_disable(group_id, is_d, e)
+		assert(Enums.glow_group[group_id], group_id)
 		for _, other in ipairs(self.groups[group_id]) do
 			if e ~= other then
 				if is_d then

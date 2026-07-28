@@ -7,7 +7,7 @@ function AsmLighter.lighter(e, e_player)
 	--TODO: parametrize lighter variation 1 or 2
 	Log.debug("TODO: parametrize lighter variation 1 or 2")
 	local dir = e_player.body.dir
-	local info = Items.get_info("lighter1")
+	local info = Items.get_info(Enums.item_id.lighter1)
 	e:give("id", info.id)
 		:give("sprite", info.id)
 		:give("item", info.id, info.name, info.desc)

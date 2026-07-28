@@ -84,8 +84,8 @@ function ItemsSystem:on_item_use_with(item, other)
 	if other then
 		assert((other.__isEntity and other.interactive), other)
 	end
-	self.world:emit("set_system_to", "dialogues", true)
-	self.world:emit("set_system_to", "inventory", false)
+	self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
+	self.world:emit("set_system_to", Enums.ui_system.inventory, false)
 	local item_id = item.item.id
 	if not other then
 		local dialogue_t = Dialogues.get("common", "item_without")
@@ -107,9 +107,9 @@ end
 function ItemsSystem:on_item_equip(item_e)
 	assert((item_e.__isEntity and item_e.item), item_e)
 	local item = item_e.item
-	if item.id == "flashlight" then
-		self.world:emit("set_system_to", "dialogues", true)
-		self.world:emit("set_system_to", "inventory", false)
+	if item.id == Enums.item_id.flashlight then
+		self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
+		self.world:emit("set_system_to", Enums.ui_system.inventory, false)
 		if not item.has_batteries then
 			local dialogue_t = Dialogues.get("ItemsSystem", "no_batteries")
 			self.world:emit("spawn_dialogue_ex", dialogue_t, "dialogue_to_inventory")

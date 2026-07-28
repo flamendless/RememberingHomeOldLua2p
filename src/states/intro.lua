@@ -229,11 +229,11 @@ end
 function Intro:state_update(dt)
 	self.world:emit("preupdate", dt)
 
-	if DEV and Inputs.pressed("play") then
+	if DEV and Inputs.pressed(Enums.input.play) then
 		self.world:emit("resume_timeline")
 	end
 
-	if (Save.data.intro_done or DEV) and not self.is_switching and Inputs.pressed("interact") then
+	if (Save.data.intro_done or DEV) and not self.is_switching and Inputs.pressed(Enums.input.interact) then
 		self.world:emit("fade_skip_hand", 0.5)
 		Fade.fade_out(function()
 			Save.toggle_flag("intro_done", true)

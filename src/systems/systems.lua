@@ -1,6 +1,10 @@
 local Systems = Concord.system()
 
-local classes = { "dialogues", "inventory", "notes" }
+local classes = {
+	Enums.ui_system.dialogues,
+	Enums.ui_system.inventory,
+	Enums.ui_system.notes,
+}
 local system_classes = {}
 
 function Systems:init(world)
@@ -11,7 +15,7 @@ function Systems:init(world)
 end
 
 function Systems:set_system_to(id, bool)
-	assert(type(id) == "string", id)
+	assert(Enums.ui_system[id], id)
 	assert(type(bool) == "boolean", bool)
 	assert(system_classes[id] ~= nil, id)
 	local sys = self.world:getSystem(system_classes[id])
@@ -19,8 +23,8 @@ function Systems:set_system_to(id, bool)
 end
 
 function Systems:dialogue_to_inventory()
-	self:set_system_to("dialogues", false)
-	self:set_system_to("inventory", true)
+	self:set_system_to(Enums.ui_system.dialogues, false)
+	self:set_system_to(Enums.ui_system.inventory, true)
 	Log.trace("dialogue_to_inventory")
 end
 
@@ -29,11 +33,11 @@ function Systems:inventory_to_notes(reversed)
 		assert(type(reversed) == "boolean", reversed)
 	end
 	if not reversed then
-		self:set_system_to("inventory", false)
-		self:set_system_to("notes", true)
+		self:set_system_to(Enums.ui_system.inventory, false)
+		self:set_system_to(Enums.ui_system.notes, true)
 	else
-		self:set_system_to("inventory", true)
-		self:set_system_to("notes", false)
+		self:set_system_to(Enums.ui_system.inventory, true)
+		self:set_system_to(Enums.ui_system.notes, false)
 	end
 	Log.trace("inventory_to_notes")
 end

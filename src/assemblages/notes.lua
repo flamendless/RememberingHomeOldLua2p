@@ -16,7 +16,7 @@ function Notes.text(e, i, title, x, y, ox)
 		:give("pos", x, y)
 		:give("color", Palette.get("note_list"))
 		:give("list_item")
-		:give("list_group", "notes")
+		:give("list_group", Enums.list_group.notes)
 		:give("transform", 0, 1, 1, ox, 0, -0.25)
 		:give("ui_element")
 end

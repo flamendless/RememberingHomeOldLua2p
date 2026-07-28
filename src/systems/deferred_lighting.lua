@@ -176,7 +176,7 @@ function DeferredLighting:shutdown_lights()
 end
 
 function DeferredLighting:toggle_light_group(group_id, state)
-	assert(type(group_id) == "string")
+	assert(Enums.light_group[group_id], group_id)
 	assert(type(state) == "boolean")
 	for _, other in ipairs(self.groups[group_id]) do
 		if state then
@@ -188,7 +188,7 @@ function DeferredLighting:toggle_light_group(group_id, state)
 end
 
 function DeferredLighting:light_group_set_disable(group_id, is_d, e)
-	assert(type(group_id) == "string")
+	assert(Enums.light_group[group_id], group_id)
 	assert(type(is_d) == "boolean")
 	assert(e.__isEntity)
 
