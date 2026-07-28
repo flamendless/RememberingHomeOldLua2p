@@ -7,16 +7,17 @@ function AnimationState:init(world)
 end
 
 function AnimationState:anim_idle(e, should_stop)
-	if not (e.__isEntity and e.animation and e.body and e.animation_ev_update) then return end
+	if not (e.__isEntity and e:has("animation") and e:has("body") and e:has("animation_ev_update")) then return end
 	if should_stop then assert(type(should_stop) == "boolean", should_stop) end
-	if e.override_animation then
+	if e:has("override_animation") then
 		return
 	end
-	local body = e.body
+	local body = e:get("body")
+	local animation_ev_update = e:get("animation_ev_update")
 	if body.dir == -1 then
-		self.world:emit(e.animation_ev_update.value, ANIM_STATE.idle, "_left")
+		self.world:emit(animation_ev_update.value, ANIM_STATE.idle, "_left")
 	else
-		self.world:emit(e.animation_ev_update.value, ANIM_STATE.idle)
+		self.world:emit(animation_ev_update.value, ANIM_STATE.idle)
 	end
 	if should_stop then
 		body.dx = 0
@@ -26,38 +27,58 @@ function AnimationState:anim_idle(e, should_stop)
 end
 
 function AnimationState:anim_face_left(e)
-	if not (e.__isEntity and e.animation and e.body and e.animation_ev_update) then return end
-	if e.override_animation then
+	if not (e.__isEntity and e:has("animation") and e:has("body") and e:has("animation_ev_update")) then return end
+	if e:has("override_animation") then
 		return
 	end
-	e.body.dir = -1
-	self.world:emit(e.animation_ev_update.value, ANIM_STATE.idle, "_left")
+	local body = e:get("body")
+	body.dir = -1
+	self.world:emit(e:get("animation_ev_update").value, ANIM_STATE.idle, "_left")
 end
 
 function AnimationState:anim_face_right(e)
-	if not (e.__isEntity and e.animation and e.body and e.animation_ev_update) then return end
-	if e.override_animation then
+	if not (e.__isEntity and e:has("animation") and e:has("body") and e:has("animation_ev_update")) then return end
+	if e:has("override_animation") then
 		return
 	end
-	e.body.dir = 1
-	self.world:emit(e.animation_ev_update.value, ANIM_STATE.idle)
+	local body = e:get("body")
+	body.dir = 1
+	self.world:emit(e:get("animation_ev_update").value, ANIM_STATE.idle)
 end
 
 function AnimationState:anim_open_door(e)
-	if not (e.__isEntity and e.animation and e.body) then return end
-	local tag = (e.body.dir == -1) and ANIM_STATE.open_door_left or ANIM_STATE.open_door
+	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = ANIM_STATE.open_door_left
+	else
+		tag = ANIM_STATE.open_door
+	end
 	e:give("change_animation_tag", tag):give("override_animation"):give("animation_on_loop", "anim_pause_at_end", 0, e)
 end
 
 function AnimationState:anim_open_locked_door(e)
-	if not (e.__isEntity and e.animation and e.body) then return end
-	local tag = (e.body.dir == -1) and ANIM_STATE.open_locked_door_left or ANIM_STATE.open_locked_door
+	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = ANIM_STATE.open_locked_door_left
+	else
+		tag = ANIM_STATE.open_locked_door
+	end
 	e:give("change_animation_tag", tag):give("override_animation"):give("animation_on_loop", "anim_pause_at_end", 0, e)
 end
 
 function AnimationState:anim_open_lighter(e)
-	if not (e.__isEntity and e.animation and e.body) then return end
-	local tag = (e.body.dir == -1) and ANIM_STATE.open_lighter_left or ANIM_STATE.open_lighter
+	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = ANIM_STATE.open_lighter_left
+	else
+		tag = ANIM_STATE.open_lighter
+	end
 	e:give("change_animation_tag", tag):give("override_animation"):give(
 		"animation_on_loop",
 		"anim_loop_over_to",
@@ -68,8 +89,14 @@ function AnimationState:anim_open_lighter(e)
 end
 
 function AnimationState:anim_close_lighter(e)
-	if not (e.__isEntity and e.animation and e.body) then return end
-	local tag = (e.body.dir == -1) and ANIM_STATE.close_lighter_left or ANIM_STATE.close_lighter
+	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = ANIM_STATE.close_lighter_left
+	else
+		tag = ANIM_STATE.close_lighter
+	end
 	e:give("change_animation_tag", tag)
 		:give("override_animation")
 		:give("animation_on_loop", "anim_pause_at_end", 0, e)

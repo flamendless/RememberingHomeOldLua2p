@@ -34,18 +34,20 @@ end
 
 function RenderUI:draw_ui_default()
 	for _, e in ipairs(self.pool_ui) do
-		local hidden = e.hidden
-		local culled = e.cullable and e.cullable.value
-		if (not hidden) and not culled then
-			local text = e.text
-			local stext = e.static_text
-			local sprite = e.sprite
+		local culled = false
+		if e:has("cullable") then
+			culled = e:get("cullable").value
+		end
+		if not e:has("hidden") and not culled then
+			local has_text = e:has("text")
+			local has_stext = e:has("static_text")
+			local has_sprite = e:has("sprite")
 
-			if (text or stext) and not e.nf_renderer then
+			if (has_text or has_stext) and not e:has("nf_renderer") then
 				self.world:emit("draw_text_ex", e)
 			end
 
-			if sprite and not e.nf_renderer then
+			if has_sprite and not e:has("nf_renderer") then
 				self.world:emit("draw_sprite_ex", e)
 			end
 		end
@@ -55,18 +57,20 @@ end
 function RenderUI:draw_ui_layers()
 	for _, pool in ipairs(self.layers) do
 		for _, e in ipairs(pool) do
-			local hidden = e.hidden
-			local culled = e.cullable and e.cullable.value
-			if (not hidden) and not culled then
-				local text = e.text
-				local stext = e.static_text
-				local sprite = e.sprite
+			local culled = false
+			if e:has("cullable") then
+				culled = e:get("cullable").value
+			end
+			if not e:has("hidden") and not culled then
+				local has_text = e:has("text")
+				local has_stext = e:has("static_text")
+				local has_sprite = e:has("sprite")
 
-				if (text or stext) and not e.nf_renderer then
+				if (has_text or has_stext) and not e:has("nf_renderer") then
 					self.world:emit("draw_text_ex", e)
 				end
 
-				if sprite and not e.nf_renderer then
+				if has_sprite and not e:has("nf_renderer") then
 					self.world:emit("draw_sprite_ex", e)
 				end
 			end

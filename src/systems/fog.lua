@@ -5,14 +5,14 @@ local Fog = Concord.system({
 function Fog:init(world)
 	self.world = world
 	self.pool.onAdded = function(pool, e)
-		e.sprite.image = e.noise_texture.texture
+		e:get("sprite").image = e:get("noise_texture").texture
 	end
 end
 
 function Fog:update()
 	for _, e in ipairs(self.pool) do
-		if not e.hidden then
-			local fog = e.fog
+		if not e:has("hidden") then
+			local fog = e:get("fog")
 			fog.shader:send("u_fog_speed", fog.speed)
 			fog.shader:send("u_time", love.timer.getTime())
 		end
@@ -24,10 +24,10 @@ function Fog:draw_fog(e)
 		return
 	end
 
-	assert(e.__isEntity, e.fog)
+	assert(e.__isEntity and e:has("fog"), e)
 
-	local fog = e.fog
-	local color = e.color.value
+	local fog = e:get("fog")
+	local color = e:get("color").value
 	love.graphics.setColor(color)
 	love.graphics.setShader(fog.shader)
 	e.renderer.render(e)
@@ -38,7 +38,7 @@ function Fog:fade_in_fog(target_id, dur)
 	assert(type(target_id) == "string", target_id)
 	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
-		local id = e.id.value
+		local id = e:get("id").value
 		if id == target_id then
 			e:remove("hidden"):give("color_fade_in", dur)
 			break
@@ -50,7 +50,7 @@ function Fog:fade_out_fog(target_id, dur)
 	assert(type(target_id) == "string", target_id)
 	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
-		local id = e.id.value
+		local id = e:get("id").value
 		if id == target_id then
 			e:give("color_fade_out", dur):give("color_fade_out_finish", "hide_entity", 0, e)
 			break

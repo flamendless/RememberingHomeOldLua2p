@@ -3,8 +3,8 @@ local Point = {
 }
 
 function Point.render(e)
-	local pos = e.pos
-	love.graphics.setPointSize(e.point.value)
+	local pos = e:get("pos")
+	love.graphics.setPointSize(e:get("point").value)
 	love.graphics.points(pos.x, pos.y)
 end
 

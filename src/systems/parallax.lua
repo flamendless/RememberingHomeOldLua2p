@@ -14,11 +14,11 @@ function Parallax:init(world)
 	self.tags = {}
 
 	self.pool.onAdded = function(pool, e)
-		e.sprite.image:setWrap("repeat")
+		e:get("sprite").image:setWrap("repeat")
 	end
 
 	self.pool_multi.onAdded = function(pool, e)
-		local tag = e.parallax_multi_sprite.value
+		local tag = e:get("parallax_multi_sprite").value
 		if self.tags[tag] == nil then
 			self.tags[tag] = {}
 		end
@@ -36,9 +36,15 @@ end
 
 function Parallax:push_to_end(e, t)
 	local last_e = t[#t]
-	local pos = e.pos
-	local gap = e.parallax_gap and e.parallax_gap.value or 0
-	pos.x = last_e.pos.x + last_e.quad.info.w * last_e.quad_transform.sx + gap
+	local pos = e:get("pos")
+	local gap = 0
+	if e:has("parallax_gap") then
+		gap = e:get("parallax_gap").value
+	end
+	local last_pos = last_e:get("pos")
+	local last_quad = last_e:get("quad")
+	local last_qt = last_e:get("quad_transform")
+	pos.x = last_pos.x + last_quad.info.w * last_qt.sx + gap
 	Utils.table.rotate(t, -1)
 end
 
@@ -66,7 +72,7 @@ end
 
 function Parallax:slow_parallax(amount)
 	for _, e in ipairs(self.pool) do
-		local parallax = e.parallax
+		local parallax = e:get("parallax")
 		local dx = parallax.vx * amount
 		parallax.vx = dx
 	end
@@ -74,9 +80,9 @@ end
 
 function Parallax:parallax_move_x(dt, dir)
 	for _, e in ipairs(self.pool) do
-		if not e.parallax_stop then
-			local parallax = e.parallax
-			local quad = e.quad
+		if not e:has("parallax_stop") then
+			local parallax = e:get("parallax")
+			local quad = e:get("quad")
 			local x, y, w, h = quad.quad:getViewport()
 
 			x = x + parallax.vx * dir * dt
@@ -86,11 +92,11 @@ function Parallax:parallax_move_x(dt, dir)
 
 	for _, v in pairs(self.tags) do
 		for _, e in ipairs(v) do
-			if not e.parallax_stop then
-				local parallax = e.parallax
-				local quad = e.quad
-				local qt = e.quad_transform
-				local pos = e.pos
+			if not e:has("parallax_stop") then
+				local parallax = e:get("parallax")
+				local quad = e:get("quad")
+				local qt = e:get("quad_transform")
+				local pos = e:get("pos")
 
 				pos.x = pos.x + parallax.vx * dir * dt
 

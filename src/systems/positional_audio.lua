@@ -20,7 +20,7 @@ function PositionalAudio:init(world)
 	end
 
 	self.pool_emitter.onAdded = function(_, e)
-		local se = e.sound_emitter
+		local se = e:get("sound_emitter")
 		if se.autoplay then
 			self:start_emitter(e)
 		end
@@ -32,7 +32,7 @@ function PositionalAudio:init(world)
 end
 
 function PositionalAudio:start_emitter(e)
-	local se = e.sound_emitter
+	local se = e:get("sound_emitter")
 	if se.active then
 		return
 	end
@@ -42,7 +42,7 @@ function PositionalAudio:start_emitter(e)
 		return
 	end
 
-	local pos = e.pos
+	local pos = e:get("pos")
 	se.active = Audio.play_positional(template, pos.x, pos.y, {
 		volume = se.volume,
 		loop = se.loop,
@@ -54,7 +54,7 @@ function PositionalAudio:start_emitter(e)
 end
 
 function PositionalAudio:stop_emitter(e)
-	local se = e.sound_emitter
+	local se = e:get("sound_emitter")
 	if se.active then
 		Audio.stop_source(se.active)
 		se.active = nil
@@ -76,15 +76,15 @@ function PositionalAudio:update(dt)
 	local listeners = self.pool_listener
 	if #listeners > 0 then
 		local e = listeners[1]
-		local pos = e.pos
-		local body = e.body
+		local pos = e:get("pos")
+		local body = e:get("body")
 		Audio.set_listener(pos.x, pos.y, body.dir)
 	end
 
 	for _, e in ipairs(self.pool_emitter) do
-		local se = e.sound_emitter
+		local se = e:get("sound_emitter")
 		if se.active then
-			local pos = e.pos
+			local pos = e:get("pos")
 			local ax, ay, az = Audio.to_audio_pos(pos.x, pos.y)
 			se.active:setPosition(ax, ay, az)
 			if se.oneshot and not se.active:isPlaying() then
@@ -124,11 +124,11 @@ end
 
 function PositionalAudio:play_sound_on_entity(e, source, opts)
 	assert(e.__isEntity, e)
-	Log.debug("playing sound", e.id.value, source)
+	Log.debug("playing sound", e:get("id").value, source)
 	opts = opts or {}
 
 	if opts.persist then
-		if e.sound_emitter then
+		if e:has("sound_emitter") then
 			self:stop_emitter(e)
 		end
 		e:give("sound_emitter", source, opts)
@@ -136,7 +136,7 @@ function PositionalAudio:play_sound_on_entity(e, source, opts)
 			self:start_emitter(e)
 		end
 	else
-		local pos = e.pos
+		local pos = e:get("pos")
 		local template = Audio.resolve_source(source)
 		local active = Audio.play_positional(template, pos.x, pos.y, opts)
 		if active and not opts.loop then
@@ -154,7 +154,7 @@ end
 
 function PositionalAudio:stop_sound_on_entity(e)
 	assert(e.__isEntity, e)
-	if e.sound_emitter then
+	if e:has("sound_emitter") then
 		self:stop_emitter(e)
 	end
 end

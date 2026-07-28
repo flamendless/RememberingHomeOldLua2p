@@ -8,7 +8,8 @@ function Common.bg(e, bg_id, w)
 	e:give("id", "bg"):give("pos", 0, 0):give("sprite", bg_id):give("bg")
 
 	if w then
-		local iw = e.sprite.iw
+		local sprite = e:get("sprite")
+		local iw = sprite.iw
 		local sx = w/iw
 		e:give("transform", 0, sx, 1)
 	end

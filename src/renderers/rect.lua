@@ -3,19 +3,25 @@ local Rect = {
 }
 
 function Rect.render(e)
-	local pos = e.pos
-	local rect = e.rect
-	local draw_mode = e.draw_mode.value
+	local pos = e:get("pos")
+	local rect = e:get("rect")
+	local draw_mode = e:get("draw_mode").value
 	local x, y, w, h = pos.x, pos.y, rect.w, rect.h
 	local rx, ry = 0, 0
 
-	local border = e.rect_border
+	local border
+	if e:has("rect_border") then
+		border = e:get("rect_border")
+	end
 	if border then
 		rx = border.rx
 		ry = border.ry
 	end
 
-	local t = e.transform
+	local t
+	if e:has("transform") then
+		t = e:get("transform")
+	end
 	if t then
 		w = w * t.sx
 		h = h * t.sy
@@ -31,7 +37,11 @@ function Rect.render(e)
 		end
 	end
 
-	local lw, temp_lw = e.line_width
+	local lw
+	if e:has("line_width") then
+		lw = e:get("line_width")
+	end
+	local temp_lw
 	if lw then
 		temp_lw = love.graphics.getLineWidth()
 		love.graphics.setLineWidth(lw.value)

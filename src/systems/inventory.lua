@@ -19,21 +19,21 @@ function Inventory:init(world)
 
 	self.pool_item.onAdded = function(pool, e)
 		local e_cell = self.pool_cell[#pool]
-		local c_pos = e_cell.pos
-		local c_rect = e_cell.rect
-		local refs = e_cell.refs.value
+		local c_pos = e_cell:get("pos")
+		local c_rect = e_cell:get("rect")
+		local refs = e_cell:get("refs").value
 		local e_dline1 = self.world:getEntityByKey(refs[1])
 		local e_dline2 = self.world:getEntityByKey(refs[2])
 		e_dline1:give("hidden")
 		e_dline2:give("hidden")
-		local pos = e.pos
+		local pos = e:get("pos")
 		pos.x = c_pos.x + c_rect.half_w
 		pos.y = c_pos.y + c_rect.half_h
 	end
 
 	self.pool_item.onRemoved = function(pool, e)
 		local e_cell = self.pool_cell[#pool + 1]
-		local refs = e_cell.refs.value
+		local refs = e_cell:get("refs").value
 		local e_dline1 = self.world:getEntityByKey(refs[1])
 		local e_dline2 = self.world:getEntityByKey(refs[2])
 		e_dline1:remove("hidden")
@@ -114,7 +114,7 @@ function Inventory:create_inventory()
 	local _, _, w, h = self.world:getResource("camera"):getWindow()
 	local img = Resources.data.images.bg_inventory
 	local iw, ih = img:getDimensions()
-	local bar_h = self.world:getResource("e_camera").bar_height.value
+	local bar_h = self.world:getResource("e_camera"):get("bar_height").value
 	local pad = 48
 	local nh = h - pad * 2 - bar_h * 2
 	local scale = math.min(w / iw, nh / ih)
@@ -169,7 +169,7 @@ end
 
 function Inventory:get_selected_item()
 	for i, e in ipairs(self.pool_cell) do
-		if e.list_cursor then
+		if e:has("list_cursor") then
 			return self.pool_item[i]
 		end
 	end
@@ -178,17 +178,27 @@ end
 
 Inventory["on_list_cursor_update_" .. Enums.list_group.inventory_cells] = function(self, e_hovered)
 	for _, e in ipairs(self.pool_cell) do
-		local alpha_range = e.alpha_range
-		e.color.value[4] = e == e_hovered and alpha_range.max or alpha_range.min
+		local alpha_range = e:get("alpha_range")
+		local color = e:get("color")
+		if e == e_hovered then
+			color.value[4] = alpha_range.max
+		else
+			color.value[4] = alpha_range.min
+		end
 	end
 end
 
 Inventory["on_list_cursor_update_" .. Enums.list_group.inventory_choices] = function(self, e_hovered)
-	if not e_hovered.list_group.is_focused then
+	if not e_hovered:get("list_group").is_focused then
 		return
 	end
 	for _, e in ipairs(self.pool_choice) do
-		e.color.value[4] = e == e_hovered and 1 or 0.25
+		local color = e:get("color")
+		if e == e_hovered then
+			color.value[4] = 1
+		else
+			color.value[4] = 0.25
+		end
 	end
 end
 
@@ -198,8 +208,8 @@ Inventory["on_list_item_interact_" .. Enums.list_group.inventory_cells] = functi
 		return
 	end
 	for _, e in ipairs(self.pool_choice) do
-		local alpha_range = e.alpha_range
-		e.color.value[4] = alpha_range.max
+		local alpha_range = e:get("alpha_range")
+		e:get("color").value[4] = alpha_range.max
 	end
 	self.world:emit("show_key", Enums.show_keys.inventory, false)
 	self.world:emit("set_focus_list", Enums.list_group.inventory_choices)
@@ -207,7 +217,7 @@ Inventory["on_list_item_interact_" .. Enums.list_group.inventory_cells] = functi
 end
 
 Inventory["on_list_item_interact_" .. Enums.list_group.inventory_choices] = function(self, e_hovered)
-	local text = e_hovered.static_text.value
+	local text = e_hovered:get("static_text").value
 	local item = self:get_selected_item()
 	if text == "Use" then
 		self.world:emit("on_item_use", item)
@@ -215,8 +225,8 @@ Inventory["on_list_item_interact_" .. Enums.list_group.inventory_choices] = func
 		self.world:emit("on_item_equip", item)
 	elseif text == "Cancel" then
 		for _, e in ipairs(self.pool_choice) do
-			local alpha_range = e.alpha_range
-			e.color.value[4] = alpha_range.min
+			local alpha_range = e:get("alpha_range")
+			e:get("color").value[4] = alpha_range.min
 		end
 		self.world:emit("set_focus_list", Enums.list_group.inventory_cells)
 		self.world:emit("show_key", Enums.show_keys.inventory, true)

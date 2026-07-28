@@ -29,10 +29,10 @@ end)
 Concord.component("prev_can", function(c, e_player)
 	assert(e_player.__isEntity, e_player)
 	c.value = {
-		move = e_player.can_move,
-		run = e_player.can_run,
-		interact = e_player.can_interact,
-		open_door = e_player.can_open_door,
-		can_lighter = e_player.can_lighter,
+		move = e_player:has("can_move"),
+		run = e_player:has("can_run"),
+		interact = e_player:has("can_interact"),
+		open_door = e_player:has("can_open_door"),
+		can_lighter = e_player:has("can_lighter"),
 	}
 end)

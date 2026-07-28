@@ -27,35 +27,37 @@ function TextPaint:init(world)
 end
 
 function TextPaint:show_text_paint(e, dur, widest)
-	assert((e.__isEntity and e.text_with_paint), e)
+	assert((e.__isEntity and e:has("text_with_paint")), e)
 	assert(type(dur) == "number", dur)
 	if widest then
 		assert(type(widest) == "string", widest)
 	end
 	self:show_paint(e, dur, widest)
 	e:remove("hidden")
-	Flux.to(e.color.value, dur, { [4] = 1 })
+	Flux.to(e:get("color").value, dur, { [4] = 1 })
 end
 
 function TextPaint:fade_text_paint(e, dur, on_complete)
 	assert(e.__isEntity, e)
-	assert(e.text_with_paint, e)
-	assert(e.text_with_paint.e_paint.paint, e)
+	assert(e:has("text_with_paint"), e)
+	assert(e:get("text_with_paint").e_paint:has("paint"), e)
 	assert(type(dur) == "number", dur)
 	if on_complete then
 		assert(type(on_complete) == "function", on_complete)
 	end
 	local delay = 0
 
-	if e.task then
-		local target = e.task.value
-		local original = { unpack(e.color.value) }
+	if e:has("task") then
+		local task = e:get("task")
+		local target = task.value
+		local color = e:get("color")
+		local original = { unpack(color.value) }
 
-		flash_to_color(e.color.value, target, original, dur_flash, 2)
+		flash_to_color(color.value, target, original, dur_flash, 2)
 		delay = def_delay_task
 	end
 
-	Flux.to(e.color.value, dur, { [4] = 0 }):delay(delay):oncomplete(function()
+	Flux.to(e:get("color").value, dur, { [4] = 0 }):delay(delay):oncomplete(function()
 		if on_complete then
 			on_complete()
 		end
@@ -63,7 +65,7 @@ function TextPaint:fade_text_paint(e, dur, on_complete)
 		e:give("hidden")
 		-- e:destroy()
 	end)
-	self:fade_paint(e.text_with_paint.e_paint, dur, delay)
+	self:fade_paint(e:get("text_with_paint").e_paint, dur, delay)
 end
 
 function TextPaint:show_paint(e, dur_in, widest)
@@ -72,29 +74,31 @@ function TextPaint:show_paint(e, dur_in, widest)
 	if widest then
 		assert(type(widest) == "string", widest)
 	end
-	if e.static_text then
-		assert(e.static_text ~= nil, e.static_text)
+	if e:has("static_text") then
+		local static_text = e:get("static_text")
+		assert(static_text ~= nil, static_text)
 	end
-	if e.text then
-		assert(e.text ~= nil, e.text)
+	if e:has("text") then
+		local text = e:get("text")
+		assert(text ~= nil, text)
 	end
 	local str
-	local text = e.text
-	local static_text = e.static_text
-
-	if static_text then
-		str = static_text.value
+	if e:has("static_text") then
+		str = e:get("static_text").value
 	else
-		str = text.value
+		str = e:get("text").value
 	end
 
-	local font = e.font.value
-	local transform = e.transform
+	local font = e:get("font").value
+	local transform
+	if e:has("transform") then
+		transform = e:get("transform")
+	end
 	local str_w = font:getWidth(widest or str)
 	local str_h = font:getHeight(str)
 	local offset = 96
 	local x, y
-	local text_pos = e.pos
+	local text_pos = e:get("pos")
 	local chance = Lume.randomchoice({ true, false })
 	local sx = chance == true and -1 or 1
 	local sy = 0.75
@@ -110,7 +114,7 @@ function TextPaint:show_paint(e, dur_in, widest)
 	local paint = Concord.entity(self.world)
 		:give("id", "text_paint")
 		:give("pos", x, y)
-		:give("animation", Animation.new_single(tablex.copy(e.animation.obj:current_clip()), true))
+		:give("animation", Animation.new_single(tablex.copy(e:get("animation").obj:current_clip()), true))
 		:give("auto_scale", str_w + offset, str_h + offset, false)
 		:give("transform", 0, sx, sy, 0.5, 0.5)
 		:give("color", { 1, 1, 1, 0 })
@@ -118,18 +122,18 @@ function TextPaint:show_paint(e, dur_in, widest)
 		:give("ui_element")
 		:ensure("key")
 
-	e.text_with_paint.e_paint = paint
-	Flux.to(paint.color.value, dur_in, { [4] = 1 })
+	e:get("text_with_paint").e_paint = paint
+	Flux.to(paint:get("color").value, dur_in, { [4] = 1 })
 end
 
 function TextPaint:fade_paint(paint, dur, delay)
 	assert(paint.__isEntity, paint)
 	assert(type(dur) == "number", dur)
-	assert(paint.paint, paint)
+	assert(paint:has("paint"), paint)
 	if delay then
 		assert(type(delay) == "number", delay)
 	end
-	Flux.to(paint.color.value, dur, { [4] = 0 }):delay(delay or def_delay_paint):oncomplete(function()
+	Flux.to(paint:get("color").value, dur, { [4] = 0 }):delay(delay or def_delay_paint):oncomplete(function()
 		paint:destroy()
 	end)
 end

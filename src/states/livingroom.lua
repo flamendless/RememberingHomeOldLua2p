@@ -40,7 +40,7 @@ function LivingRoom:state_init()
 		self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
 		self.world:emit("toggle_component", e_player, Enums.player_cap.can_run, true)
 
-		local pos = e_player.pos
+		local pos = e_player:get("pos")
 		local ex = pos.x - 96
 		local ey = pos.y
 		self.world:emit("spawn_enemy", Enums.enemy_type.suit, ex, ey, e_player)

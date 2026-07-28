@@ -66,13 +66,31 @@ function BoundingBox.render(e, camera)
 		assert(camera.__camera, camera)
 	end
 	local w, h = 0, 0
-	local sprite = e.sprite
-	local quad = e.quad
-	local rect = e.rect
-	local text = e.text
-	local static_text = e.static_text
-	local culled = e.cullable and e.cullable.value
-	local is_not_drawn = e.nf_renderer or e.hidden or culled
+	local sprite
+	if e:has("sprite") then
+		sprite = e:get("sprite")
+	end
+	local quad
+	if e:has("quad") then
+		quad = e:get("quad")
+	end
+	local rect
+	if e:has("rect") then
+		rect = e:get("rect")
+	end
+	local text
+	if e:has("text") then
+		text = e:get("text")
+	end
+	local static_text
+	if e:has("static_text") then
+		static_text = e:get("static_text")
+	end
+	local culled = false
+	if e:has("cullable") then
+		culled = e:get("cullable").value
+	end
+	local is_not_drawn = e:has("nf_renderer") or e:has("hidden") or culled
 	local mode = is_not_drawn and "fill" or "line"
 
 	if
@@ -97,7 +115,7 @@ function BoundingBox.render(e, camera)
 		w, h = rect.w, rect.h
 		color = COL_RECT
 	elseif text then
-		local font = e.font.value
+		local font = e:get("font").value
 		w = font:getWidth(text.value)
 		h = font:getHeight()
 		color = COL_TEXT
@@ -110,7 +128,10 @@ function BoundingBox.render(e, camera)
 	local rotation = 0
 	local sx, sy = 1, 1
 	local ox, oy = 0, 0
-	local transform = e.transform
+	local transform
+	if e:has("transform") then
+		transform = e:get("transform")
+	end
 	if transform then
 		sx, sy = transform.sx, transform.sy
 		rotation = transform.rotation
@@ -123,7 +144,7 @@ function BoundingBox.render(e, camera)
 		sy = sy / scale
 	end
 
-	local pos = e.pos
+	local pos = e:get("pos")
 	local x, y = pos.x, pos.y
 	if camera then
 		x, y = camera:toWorld(x, y)

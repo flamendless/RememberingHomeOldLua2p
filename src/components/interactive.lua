@@ -4,15 +4,15 @@ Concord.component("is_door")
 
 Concord.component("target_interactive", function(c, interactive_e)
 	assert(interactive_e.__isEntity, interactive_e)
-	assert(interactive_e.interactive, interactive_e)
+	assert(interactive_e:has("interactive"), interactive_e)
 	interactive_e:ensure("key")
 	c.interactive_e = interactive_e
 end)
 
 Concord.component("within_interactive", function(c, entity)
 	assert(entity.__isEntity, entity)
-	assert(entity.id, entity)
-	assert(entity.interactive, entity)
+	assert(entity:has("id"), entity)
+	assert(entity:has("interactive"), entity)
 	entity:ensure("key")
 	c.entity = entity
 end)

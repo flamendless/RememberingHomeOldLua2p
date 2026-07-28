@@ -407,10 +407,10 @@ function DevTools.draw_entities_list()
 	entity_list.n_es_id = 0
 	entity_list.n_active = 0
 	for _, e in ipairs(entity_list.t_es) do
-		if e.id then
+		if e:has("id") then
 			entity_list.n_es_id = entity_list.n_es_id + 1
 		end
-		if not e.hidden then
+		if not e:has("hidden") then
 			entity_list.n_active = entity_list.n_active + 1
 		end
 	end
@@ -428,10 +428,13 @@ function DevTools.draw_entities_list()
 		})
 		local i = 1
 		for _, e in ipairs(entity_list.t_es) do
-			local id = e.id and e.id.value
+			local id
+			if e:has("id") then
+				id = e:get("id").value
+			end
 			if id then
 				Slab.SetLayoutColumn(i)
-				local hidden = e.hidden
+				local hidden = e:has("hidden")
 				if Slab.CheckBox(not hidden, id) then
 					hidden = not hidden
 					if hidden then
@@ -487,26 +490,28 @@ function DevTools.draw_component_list()
 
 	local entities = GameStates.world:getEntities()
 	for _, e in ipairs(entities) do
-		local id = e.id.value
-		if id then
-			if Slab.BeginTree(id) then
-				local components = e:getComponents()
-				if Slab.Button("Debug Pos") then
-					table.insert(DevTools.debug_pos, e)
-				end
-				Slab.SameLine()
-				if Slab.Button("Clear Debug Pos") then
-					tablex.clear(DevTools.debug_pos)
-				end
-				for k in pairs(components) do
-					if Slab.BeginTree(k) then
-						local fn = slab_components[k]
-						if fn then fn(e) end
-						Slab.EndTree()
+		if e:has("id") then
+			local id = e:get("id").value
+			if id then
+				if Slab.BeginTree(id) then
+					local components = e:getComponents()
+					if Slab.Button("Debug Pos") then
+						table.insert(DevTools.debug_pos, e)
 					end
-				end
+					Slab.SameLine()
+					if Slab.Button("Clear Debug Pos") then
+						tablex.clear(DevTools.debug_pos)
+					end
+					for k in pairs(components) do
+						if Slab.BeginTree(k) then
+							local fn = slab_components[k]
+							if fn then fn(e) end
+							Slab.EndTree()
+						end
+					end
 
-				Slab.EndTree()
+					Slab.EndTree()
+				end
 			end
 		end
 	end
@@ -544,8 +549,8 @@ function DevTools.draw_debug_list()
 end
 
 function DevTools.slab_hidden(e)
-	if not e.hidden and not e.dev_hidden then return end
-	if Slab.CheckBox(e.hidden ~= nil, "hidden") then
+	if not e:has("hidden") and not e:has("dev_hidden") then return end
+	if Slab.CheckBox(e:has("hidden"), "hidden") then
 		if e:has("hidden") then
 			e:remove("hidden"):give("dev_hidden")
 		else
@@ -555,22 +560,23 @@ function DevTools.slab_hidden(e)
 end
 
 function DevTools.slab_id(e)
-	if not e.id then return end
-	Slab.Text("id: " .. e.id.value)
-	if e.id.sub_id then
-		Slab.Text("sub id: " .. e.id.sub_id)
+	if not e:has("id") then return end
+	local id = e:get("id")
+	Slab.Text("id: " .. id.value)
+	if id.sub_id then
+		Slab.Text("sub id: " .. id.sub_id)
 	end
 end
 
 function DevTools.slab_color(e)
-	if not e.color then return end
-	UIWrapper.color(e.color.value)
+	if not e:has("color") then return end
+	UIWrapper.color(e:get("color").value)
 end
 
 function DevTools.slab_z_index(e)
-	if not e.z_index then return end
-	local id = e.id.value
-	local z_index = e.z_index
+	if not e:has("z_index") then return end
+	local id = e:get("id").value
+	local z_index = e:get("z_index")
 	if Slab.CheckBox(z_index.sortable, id .. ".sortable") then
 		z_index.sortable = not z_index.sortable
 	end
@@ -578,7 +584,7 @@ function DevTools.slab_z_index(e)
 end
 
 function DevTools.slab_sprite(e)
-	if not e.sprite then return end
+	if not e:has("sprite") then return end
 	if Slab.Button("Show Sprite") then
 		image_viewer.show = true
 		image_viewer.e = e
@@ -593,11 +599,12 @@ function DevTools.slab_sprite(e)
 end
 
 function DevTools.slab_attach_to(e)
-	if not e.attach_to then return end
-	local e_other = GameStates.world:getEntityByKey(e.attach_to.key)
-	Slab.Text("Attached to ID: " .. e_other.id.value)
-	if e.attach_to_offset and Slab.BeginTree("Attach to offset") then
-		local ato = e.attach_to_offset
+	if not e:has("attach_to") then return end
+	local attach_to = e:get("attach_to")
+	local e_other = GameStates.world:getEntityByKey(attach_to.key)
+	Slab.Text("Attached to ID: " .. e_other:get("id").value)
+	if e:has("attach_to_offset") and Slab.BeginTree("Attach to offset") then
+		local ato = e:get("attach_to_offset")
 		ato.ox = UIWrapper.edit_number("ox", ato.ox, true)
 		ato.oy = UIWrapper.edit_number("oy", ato.oy, true)
 		Slab.EndTree()
@@ -605,34 +612,37 @@ function DevTools.slab_attach_to(e)
 end
 
 function DevTools.slab_pos(e)
-	if not e.pos then return end
-	local pos = e.pos
+	if not e:has("pos") then return end
+	local pos = e:get("pos")
 	pos.x = UIWrapper.edit_number("x", pos.x, true)
 	pos.y = UIWrapper.edit_number("y", pos.y, true)
 end
 
 function DevTools.slab_transform(e)
-	local transform = e.transform
-	if transform and Slab.BeginTree("Transform") then
-		transform.rotation = UIWrapper.edit_range("r", transform.rotation, 0, 1, false)
-		transform.sx = UIWrapper.edit_number("sx", transform.sx, false)
-		transform.sy = UIWrapper.edit_number("sy", transform.sy, false)
-		transform.ox = UIWrapper.edit_number("ox", transform.ox, false)
-		transform.oy = UIWrapper.edit_number("oy", transform.oy, false)
-		transform.kx = UIWrapper.edit_number("kx", transform.kx, false)
-		transform.ky = UIWrapper.edit_number("ky", transform.ky, false)
-		Slab.EndTree()
+	if e:has("transform") then
+		local transform = e:get("transform")
+		if Slab.BeginTree("Transform") then
+			transform.rotation = UIWrapper.edit_range("r", transform.rotation, 0, 1, false)
+			transform.sx = UIWrapper.edit_number("sx", transform.sx, false)
+			transform.sy = UIWrapper.edit_number("sy", transform.sy, false)
+			transform.ox = UIWrapper.edit_number("ox", transform.ox, false)
+			transform.oy = UIWrapper.edit_number("oy", transform.oy, false)
+			transform.kx = UIWrapper.edit_number("kx", transform.kx, false)
+			transform.ky = UIWrapper.edit_number("ky", transform.ky, false)
+			Slab.EndTree()
+		end
 	end
 
-	local quad = e.quad
-	local quad_transform = e.quad_transform
-	if quad and quad_transform and Slab.BeginTree("Quad Transform") then
-		quad_transform.rotation = UIWrapper.edit_range("r", quad_transform.rotation, 0, 1, false)
-		quad_transform.sx = UIWrapper.edit_number("sx", quad_transform.sx, false)
-		quad_transform.sy = UIWrapper.edit_number("sy", quad_transform.sy, false)
-		quad_transform.ox = UIWrapper.edit_number("ox", quad_transform.ox, false)
-		quad_transform.oy = UIWrapper.edit_number("oy", quad_transform.oy, false)
-	Slab.EndTree()
+	if e:has("quad") and e:has("quad_transform") then
+		local quad_transform = e:get("quad_transform")
+		if Slab.BeginTree("Quad Transform") then
+			quad_transform.rotation = UIWrapper.edit_range("r", quad_transform.rotation, 0, 1, false)
+			quad_transform.sx = UIWrapper.edit_number("sx", quad_transform.sx, false)
+			quad_transform.sy = UIWrapper.edit_number("sy", quad_transform.sy, false)
+			quad_transform.ox = UIWrapper.edit_number("ox", quad_transform.ox, false)
+			quad_transform.oy = UIWrapper.edit_number("oy", quad_transform.oy, false)
+		Slab.EndTree()
+		end
 	end
 end
 
@@ -683,22 +693,25 @@ function DevTools.draw_image_viewer()
 	if e then
 		Slab.SameLine()
 		Slab.Text("Mode: " .. image_viewer.mode)
-		local sprite = e.sprite
-		if image_viewer.mode == "quad" then
-			local subx, suby, subw, subh = e.quad.quad:getViewport()
-			Slab.Image(e.id.value,
-				{
+		if e:has("sprite") then
+			local sprite = e:get("sprite")
+			if image_viewer.mode == "quad" and e:has("quad") then
+				local quad = e:get("quad")
+				local subx, suby, subw, subh = quad.quad:getViewport()
+				Slab.Image(e:get("id").value,
+					{
+						Image = sprite.image,
+						SubX = subx, SubY = suby,
+						SubW = subw, SubH = subh,
+						W = subw * 2, H = subh * 2,
+					}
+				)
+			elseif image_viewer.mode == "full" then
+				Slab.Image(e:get("id").value, {
 					Image = sprite.image,
-					SubX = subx, SubY = suby,
-					SubW = subw, SubH = subh,
-					W = subw * 2, H = subh * 2,
-				}
-			)
-		elseif image_viewer.mode == "full" then
-			Slab.Image(e.id.value, {
-				Image = sprite.image,
-				W = sprite.iw, H = sprite.ih,
-			})
+					W = sprite.iw, H = sprite.ih,
+				})
+			end
 		end
 	end
 	Slab.EndWindow()
@@ -723,9 +736,9 @@ function DevTools.draw_designer()
 	if Slab.BeginComboBox("cb_designer_e", { Selected = designer.selected }) then
 		local entities = GameStates.world:getEntities()
 		for _, e in ipairs(entities) do
-			if e.room_item and e.id and e.pos and e.sprite then
-				if Slab.TextSelectable(e.id.value) then
-					designer.selected = e.id.value
+			if e:has("room_item") and e:has("id") and e:has("pos") and e:has("sprite") then
+				if Slab.TextSelectable(e:get("id").value) then
+					designer.selected = e:get("id").value
 					designer.selected_e = e
 					tablex.clear(DevTools.debug_pos)
 					table.insert(DevTools.debug_pos, e)
@@ -738,10 +751,10 @@ function DevTools.draw_designer()
 
 	if designer.selected_e then
 		Slab.Separator()
-		Slab.Text("Selected Entity: " .. designer.selected_e.id.value)
+		Slab.Text("Selected Entity: " .. designer.selected_e:get("id").value)
 		Slab.Text("Position:")
-		local pos = designer.selected_e.pos
-		local z_index = designer.selected_e.z_index
+		local pos = designer.selected_e:get("pos")
+		local z_index = designer.selected_e:get("z_index")
 		pos.x = UIWrapper.edit_number("x", pos.x, true)
 		pos.y = UIWrapper.edit_number("y", pos.y, true)
 		z_index.value = UIWrapper.edit_number("z", z_index.value, true)
@@ -750,7 +763,7 @@ function DevTools.draw_designer()
 		end
 
 		if Slab.Button("Print") then
-			print("id", designer.selected_e.id.value)
+			print("id", designer.selected_e:get("id").value)
 			print("x", pos.x)
 			print("y", pos.y)
 		end
@@ -871,7 +884,7 @@ function DevTools.mousepressed(mx, my, mb)
 			world_x, world_y = camera:toWorld(mx, my)
 		end
 
-		local pos = designer.selected_e.pos
+		local pos = designer.selected_e:get("pos")
 		local dist = math.sqrt((world_x - pos.x)^2 + (world_y - pos.y)^2)
 		if dist < 40 then
 			designer.dragging = true
@@ -907,7 +920,7 @@ function DevTools.mousemoved(mx, my, dx, dy)
 			world_x, world_y = camera:toWorld(mx, my)
 		end
 
-		local pos = designer.selected_e.pos
+		local pos = designer.selected_e:get("pos")
 		pos.x = world_x - designer.drag_offset_x
 		pos.y = world_y - designer.drag_offset_y
 	end

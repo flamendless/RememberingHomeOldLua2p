@@ -30,7 +30,7 @@ end
 
 function UI.speech_bubble(e, player, x, y)
 	local sx = 0.5
-	if player.body.dir == -1 then
+	if player:get("body").dir == -1 then
 		sx = -sx
 	end
 

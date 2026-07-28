@@ -8,7 +8,7 @@ function Outline:init(world)
 
 	local col_outline = Palette.colors.outline
 	self.pool.onAdded = function(pool, e)
-		local outline = e.outline
+		local outline = e:get("outline")
 		local outliner = Outliner(true)
 		outliner:outline(unpack(col_outline))
 		outline.outliner = outliner
@@ -16,35 +16,40 @@ function Outline:init(world)
 end
 
 function Outline:create_outline(e)
-	assert((e.__isEntity and e.id and e.pos), e)
-	local sprite = e.sprite
+	assert((e.__isEntity and e:has("id") and e:has("pos")), e)
+	local sprite = e:get("sprite")
 	if not sprite then
 		return
 	end
 
-	local grouped = e.grouped
-	local id = "outline_" .. (grouped and grouped.value or e.id.value)
+	local grouped = e:get("grouped")
+	local id
+	if grouped then
+		id = "outline_" .. grouped.value
+	else
+		id = "outline_" .. e:get("id").value
+	end
 	local cached_e = Cache.get_entity(id)
 	if cached_e then
 		cached_e:remove("hidden")
 		return
 	end
 
-	local pos = e.pos
+	local pos = e:get("pos")
 	local x, y = pos.x - "4", pos.y - "4"
 	local outline_e = Concord.entity(self.world)
 		:give("id", id)
 		:give("pos", x, y)
 		:give("sprite", sprite.resource_id)
 		:give("outline")
-		:give("outline_val", e.outline_val.value)
-		:give("z_index", e.z_index.value - 1, false)
+		:give("outline_val", e:get("outline_val").value)
+		:give("z_index", e:get("z_index").value - 1, false)
 
-	local quad = e.quad
+	local quad = e:get("quad")
 	if quad then
 		local qx, qy, qw, qh = quad.quad:getViewport()
 		local qsw, qsh = quad.quad:getTextureDimensions()
-		local qt = e.quad_transform
+		local qt = e:get("quad_transform")
 		if qt then
 			outline_e:give("quad_transform", 0, qt.sx, qt.sy)
 		end
@@ -64,10 +69,10 @@ function Outline:on_change_interactive(e, other)
 end
 
 function Outline:on_collide_interactive(_, other)
-	local other_grouped = other.grouped
+	local other_grouped = other:get("grouped")
 	if other_grouped then
 		for _, e in ipairs(self.pool_grouped) do
-			if e.grouped.value == other_grouped.value then
+			if e:get("grouped").value == other_grouped.value then
 				self:create_outline(e)
 			end
 		end

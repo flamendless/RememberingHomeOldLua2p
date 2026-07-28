@@ -6,7 +6,10 @@ function Depth:init(world)
 	self.world = world
 
 	self.pool.onAdded = function(pool, e)
-		assert(e.transform or e.quad_transform, e.id.value .. " must have a transform or quad_transform component")
+		assert(
+			e:has("transform") or e:has("quad_transform"),
+			e:get("id").value .. " must have a transform or quad_transform component"
+		)
 	end
 end
 
@@ -17,8 +20,11 @@ function Depth:tween_depth_zoom(dur, factor, ease)
 		assert(type(ease) == "string", ease)
 	end
 	for _, e in ipairs(self.pool) do
-		local zf = e.depth_zoom.value
-		local t = e.transform or e.quad_transform
+		local zf = e:get("depth_zoom").value
+		local t = e:get("transform")
+		if not t then
+			t = e:get("quad_transform")
+		end
 		Flux.to(t, dur, {
 			sx = math.max(t.orig_sx, t.orig_sx + zf * factor),
 			sy = math.max(t.orig_sy, t.orig_sy + zf * factor),
@@ -29,8 +35,11 @@ end
 if DEV then
 	function Depth:debug_wheelmoved(wx, wy)
 		for _, e in ipairs(self.pool) do
-			local zf = e.depth_zoom.value
-			local t = e.transform or e.quad_transform
+			local zf = e:get("depth_zoom").value
+			local t = e:get("transform")
+			if not t then
+				t = e:get("quad_transform")
+			end
 			t.sx = math.max(t.orig_sx, t.orig_sx + zf * wy)
 			t.sy = math.max(t.orig_sy, t.orig_sy + zf * wy)
 		end

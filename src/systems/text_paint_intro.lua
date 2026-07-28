@@ -11,7 +11,7 @@ function TextPaintIntro:fade_text(e, dur, on_finish)
 	self:generate_paint(e, dur)
 	e:remove("hidden")
 
-	local color = e.color
+	local color = e:get("color")
 	Flux.to(color.value, dur, { [4] = 1 }):oncomplete(function()
 		Flux.to(color.value, dur, { [4] = 0 }):oncomplete(on_finish)
 	end)
@@ -23,13 +23,16 @@ function TextPaintIntro:generate_paint(e, dur_in, dur_out)
 	if dur_out then
 		assert(type(dur_out) == "number", dur_out)
 	end
-	local transform = e.transform
-	local text = e.static_text.value
-	local font = e.font.value
+	local transform
+	if e:has("transform") then
+		transform = e:get("transform")
+	end
+	local text = e:get("static_text").value
+	local font = e:get("font").value
 	local str_w = font:getWidth(text)
 	local str_h = font:getHeight(text)
 	local offset = 96
-	local text_pos = e.pos
+	local text_pos = e:get("pos")
 	local x = text_pos.x + str_w/2
 	local y = text_pos.y + str_h/2
 	local chance = Lume.randomchoice({ true, false })
@@ -42,7 +45,7 @@ function TextPaintIntro:generate_paint(e, dur_in, dur_out)
 
 	local paint = Concord.entity(self.world)
 		:give("id", "text_paint_intro")
-		:give("animation", Animation.new_single(tablex.copy(e.animation.obj:current_clip()), true))
+		:give("animation", Animation.new_single(tablex.copy(e:get("animation").obj:current_clip()), true))
 		:give("ui_element")
 		:give("pos", x, y)
 		:give("auto_scale", str_w + offset, str_h + offset, false)
@@ -50,7 +53,7 @@ function TextPaintIntro:generate_paint(e, dur_in, dur_out)
 		:give("color", { 1, 1, 1, 0 })
 		:give("layer", "text", 1)
 
-	local color = paint.color
+	local color = paint:get("color")
 
 	Flux.to(color.value, dur_in, { [4] = 1 }):oncomplete(function()
 		Flux.to(color.value, dur_out or dur_in, { [4] = 0 }):delay(1):oncomplete(function()

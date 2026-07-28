@@ -43,7 +43,7 @@ function Entity:flip_e_id_component(e_id, component)
 	assert(type(e_id) == "string")
 	assert(type(component) == "string")
 	for _, e in ipairs(self.pool) do
-		if e.id.value == e_id then
+		if e:get("id").value == e_id then
 			self:flip_e_component(e, component)
 			return
 		end

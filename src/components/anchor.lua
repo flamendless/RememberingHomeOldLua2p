@@ -17,7 +17,7 @@ local c_anchor = Concord.component("anchor", function(
 	end
 
 	entity:ensure("key")
-	c.key = entity.key.value
+	c.key = entity:get("key").value
 	c.anchor_x = ax
 	c.anchor_y = ay
 	c.padding_x = padding_x

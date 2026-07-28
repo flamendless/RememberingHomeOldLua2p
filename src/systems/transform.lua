@@ -16,27 +16,27 @@ local Transform = Concord.system({
 function Transform:init(world)
 	self.world = world
 	self.pool.onAdded = function(pool, e)
-		if e.quad and e.atlas then
-			local id = e.id.value
+		if e:has("quad") and e:has("atlas") then
+			local id = e:get("id").value
 			Log.warn(id, "has quad but uses transform, maybe you want quad_transform?")
 		end
 
-		local t = e.transform
+		local t = e:get("transform")
 		local w, h
-		local sprite = e.sprite
-		local text = e.text
-		local textf = e.textf
-		local s_text = e.static_text
+		local sprite = e:get("sprite")
+		local text = e:get("text")
+		local textf = e:get("textf")
+		local s_text = e:get("static_text")
 
 		if sprite then
 			w, h = sprite.iw, sprite.ih
 		elseif textf then
-			local font = e.font.value
+			local font = e:get("font").value
 			w = textf.limit
 			h = font:getHeight(" ")
 		elseif text then
-			local font = e.font.value
-			local target_text = e.target_text
+			local font = e:get("font").value
+			local target_text = e:get("target_text")
 			if target_text then
 				w = font:getWidth(target_text.value)
 			else
@@ -62,8 +62,8 @@ function Transform:init(world)
 	end
 
 	self.pool_atlas.onAdded = function(pool, e)
-		local frame = e.atlas.value
-		local qt = e.quad_transform
+		local frame = e:get("atlas").value
+		local qt = e:get("quad_transform")
 		if qt.ox == 0.5 then
 			qt.ox = frame.w/2
 		elseif qt.ox == 1 then
@@ -82,19 +82,19 @@ function Transform:init(world)
 	end
 
 	self.pool_pos_vec2.onAdded = function(pool, e)
-		local pos = e.pos
-		e.pos_vec2.value = vec2(pos.x, pos.y)
+		local pos = e:get("pos")
+		e:get("pos_vec2").value = vec2(pos.x, pos.y)
 	end
 
 	self.pool_attach.onAdded = function(pool, e)
-		local attach = e.attach_to
+		local attach = e:get("attach_to")
 		local target = self.world:getEntityByKey(attach.key)
-		assert(target.pos, "Target entity must have a pos component")
+		assert(target:has("pos"), "Target entity must have a pos component")
 	end
 
 	self.pool_auto_scale.onAdded = function(pool, e)
-		local auto_scale = e.auto_scale
-		local transform = e.transform
+		local auto_scale = e:get("auto_scale")
+		local transform = e:get("transform")
 		local fw, fh = Helper.get_frame_size(e)
 		local dsx, dsy = 1, 1
 
@@ -118,15 +118,15 @@ function Transform:init(world)
 end
 
 function Transform:update_anchor(e)
-	local anchor = e.anchor
+	local anchor = e:get("anchor")
 	local e_target = self.world:getEntityByKey(anchor.key)
 	assert(e_target, e_target)
-	local target_pos = e_target.pos
-	local target_sprite = e_target.sprite
+	local target_pos = e_target:get("pos")
+	local target_sprite = e_target:get("sprite")
 	assert(target_sprite.image:type() == "Image")
 
 	local sx, sy, ox, oy = 1, 1, 0, 0
-	local target_transform = e_target.transform
+	local target_transform = e_target:get("transform")
 	if target_transform then
 		sx = target_transform.sx or sx
 		sy = target_transform.sy or sy
@@ -134,7 +134,7 @@ function Transform:update_anchor(e)
 		oy = target_transform.oy or oy
 	end
 
-	local target_qt = e_target.quad_transform
+	local target_qt = e_target:get("quad_transform")
 	if target_qt then
 		sx = target_qt.sx or sx
 		sy = target_qt.sy or sy
@@ -171,7 +171,7 @@ function Transform:update_anchor(e)
 		y = y + anchor.padding_y
 	end
 
-	local pos = e.pos
+	local pos = e:get("pos")
 	pos.x = x
 	pos.y = y
 	pos.orig_x = pos.x
@@ -180,7 +180,7 @@ end
 
 function Transform:canvas_resize(ww, wh, scale)
 	for _, e in ipairs(self.pool) do
-		local transform = e.transform
+		local transform = e:get("transform")
 
 		if transform then
 			transform.sx = scale
@@ -191,7 +191,7 @@ end
 
 function Transform:update_position(l, t)
 	for _, e in ipairs(self.pool_camera) do
-		local pos = e.pos
+		local pos = e:get("pos")
 		pos.x = pos.x + l
 		pos.y = pos.y + t
 		pos.orig_x = pos.x
@@ -200,11 +200,12 @@ function Transform:update_position(l, t)
 end
 
 function Transform:update_attachment(e)
-	local attach = e.attach_to
-	local pos = e.pos
-	local offset = e.attach_to_offset
+	local attach = e:get("attach_to")
+	local pos = e:get("pos")
+	local offset = e:get("attach_to_offset")
 	local target = self.world:getEntityByKey(attach.key)
-	local tx, ty = target.pos.x, target.pos.y
+	local target_pos = target:get("pos")
+	local tx, ty = target_pos.x, target_pos.y
 
 	if offset then
 		tx = tx + offset.ox
@@ -217,8 +218,8 @@ end
 
 function Transform:update(dt)
 	for _, e in ipairs(self.pool_pos_vec2) do
-		local pv = e.pos_vec2.value
-		local pos = e.pos
+		local pv = e:get("pos_vec2").value
+		local pos = e:get("pos")
 		pv.x = pos.x
 		pv.y = pos.y
 	end
@@ -232,15 +233,15 @@ function Transform:update(dt)
 	end
 
 	for _, e in ipairs(self.pool_spawn) do
-		local pos = e.pos
-		local sp = e.attach_to_spawn_point.pos
+		local pos = e:get("pos")
+		local sp = e:get("attach_to_spawn_point").pos
 		pos.x = sp.x
 		pos.y = sp.y
 	end
 
 	for _, e in ipairs(self.pool_controller) do
 		local x, y = calc_e_controller_origin(e)
-		local controller_origin = e.controller_origin
+		local controller_origin = e:get("controller_origin")
 		controller_origin.x = x
 		controller_origin.y = y
 		controller_origin.vec2.x = x
@@ -257,14 +258,17 @@ function Transform:debug_update(dt)
 		IsOpen = self.debug_show,
 	})
 	for _, e in ipairs(self.pool_pos) do
-		local id = e.id.value
+		local id = e:get("id").value
 		if Slab.BeginTree(id, { Title = id }) then
 			Slab.Indent()
-			local pos = e.pos
-			local t = e.transform or e.quad_transform
+			local pos = e:get("pos")
+			local t = e:get("transform")
+			if not t then
+				t = e:get("quad_transform")
+			end
 			pos.x = UIWrapper.edit_number("x", pos.x, true)
 			pos.y = UIWrapper.edit_number("y", pos.y, true)
-			local z_index = e.z_index
+			local z_index = e:get("z_index")
 			if z_index and z_index.sortable then
 				z_index.value = UIWrapper.edit_number("z", z_index.value, true)
 			end
@@ -277,7 +281,7 @@ function Transform:debug_update(dt)
 				t.kx = UIWrapper.edit_number("kx", t.kx)
 				t.ky = UIWrapper.edit_number("ky", t.ky)
 			end
-			if e.point_light then
+			if e:has("point_light") then
 				self.world:emit("update_light_pos", e)
 			end
 			Slab.EndTree()

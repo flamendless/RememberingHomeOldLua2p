@@ -7,12 +7,13 @@ local function randomf(min, max)
 end
 
 local function generate_recolor(e)
-	local light = e.light
-	local color = e.color.value
-	local timer = e.light_timer
-	local range = e.light_recolor.color_range
-	local power_range = e.light_recolor.power_range
-	local speed_range = e.light_recolor.speed_range
+	local light = e:get("light")
+	local color = e:get("color").value
+	local timer = e:get("light_timer")
+	local recolor = e:get("light_recolor")
+	local range = recolor.color_range
+	local power_range = recolor.power_range
+	local speed_range = recolor.speed_range
 
 	color[1] = randomf(range.min[1], range.max[1])
 	color[2] = randomf(range.min[2], range.max[2])
@@ -23,11 +24,11 @@ local function generate_recolor(e)
 end
 
 local function generate_flicker(e)
-	local flicker = e.light_flicker.off_chance
-	local color = e.color.value
+	local flicker = e:get("light_flicker")
+	local color = e:get("color").value
 	local r = love.math.random()
 
-	if r < flicker then
+	if r < flicker.off_chance then
 		color[4] = 0.3
 	else
 		color[4] = 1
@@ -51,16 +52,16 @@ function Light:init(world)
 	self.ambient = { 0, 0, 0 }
 
 	self.pool.onAdded = function(pool, e)
-		local light = e.light
-		local recolor = e.light_recolor
-		local flash = e.light_flash
-		local flicker = e.light_flicker
+		local light = e:get("light")
+		local recolor = e:get("light_recolor")
+		local flash = e:get("light_flash")
+		local flicker = e:get("light_flicker")
 
 		if recolor or flash or flicker then
 			e:give("light_timer")
 		end
 
-		manage_offset(light.light_shape, e.transform, e.sprite.image)
+		manage_offset(light.light_shape, e:get("transform"), e:get("sprite").image)
 	end
 end
 
@@ -87,12 +88,12 @@ end
 
 function Light:update_light(dt)
 	for _, e in ipairs(self.pool) do
-		local light = e.light
-		local timer = e.light_timer
-		local recolor = e.light_recolor
-		local flash = e.light_flash
-		local flicker = e.light_flicker
-		local disabled = e.light_disabled
+		local light = e:get("light")
+		local timer = e:get("light_timer")
+		local recolor = e:get("light_recolor")
+		local flash = e:get("light_flash")
+		local flicker = e:get("light_flicker")
+		local disabled = e:get("light_disabled")
 
 		if not disabled and timer then
 			if recolor then
@@ -134,17 +135,17 @@ function Light:draw_light()
 	local _r, _g, _b, _a = love.graphics.getColor()
 
 	for _, e in ipairs(self.pool) do
-		local light = e.light
-		local disabled = e.light_disabled
-		local hidden = e.hidden
+		local light = e:get("light")
+		local disabled = e:get("light_disabled")
+		local hidden = e:get("hidden")
 
 		if not (disabled or hidden) then
-			local color = e.color.value
-			local sprite = e.sprite.image
+			local color = e:get("color").value
+			local sprite = e:get("sprite").image
 			local power = light.power
-			local pos = e.pos
-			local transform = e.transform
-			local quad = e.quad
+			local pos = e:get("pos")
+			local transform = e:get("transform")
+			local quad = e:get("quad")
 
 			love.graphics.setColor(color)
 			if quad then

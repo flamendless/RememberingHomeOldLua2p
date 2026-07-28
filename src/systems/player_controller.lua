@@ -3,12 +3,13 @@ local PlayerController = Concord.system({
 })
 
 local function stop_body_motion(e)
-	local body = e.body
+	local body = e:get("body")
 	body.dx = 0
 	body.vel_x = 0
 	body.vel_y = 0
-	if e.is_running then
-		e.is_running.value = false
+	local is_running = e:get("is_running")
+	if is_running then
+		is_running.value = false
 	end
 end
 
@@ -40,24 +41,34 @@ function PlayerController:on_toggle_equip_flashlight()
 		Items.toggle_equip(Enums.item_id.flashlight)
 	end
 	local has_f = Items.is_equipped(Enums.item_id.flashlight)
-	local data, mods = Assemblages.Player.get_multi_anim_data(has_f, self.player.can_open_door)
-	self.player.animation.obj:set_data(data, mods, Enums.anim_state.idle)
-	local tag = (self.player.body.dir == -1) and Enums.anim_state.idle_left or Enums.anim_state.idle
-	self.player.animation.obj:play(tag, Enums.anim_state.idle, true)
+	local can_open_door = self.player:get("can_open_door")
+	local data, mods = Assemblages.Player.get_multi_anim_data(has_f, can_open_door)
+	local animation = self.player:get("animation")
+	animation.obj:set_data(data, mods, Enums.anim_state.idle)
+	local body = self.player:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = Enums.anim_state.idle_left
+	else
+		tag = Enums.anim_state.idle
+	end
+	animation.obj:play(tag, Enums.anim_state.idle, true)
 end
 
 -- Player-side animation state actions. These replace the legacy AnimationState
 -- system for the player: they drive the Anim instance directly and register
 -- callbacks on it instead of giving trigger/signal components.
 function PlayerController:anim_idle(e, should_stop)
-	if not (e and e.animation) then return end
+	if not e then return end
+	local animation = e:get("animation")
+	if not animation then return end
 	if should_stop then assert(type(should_stop) == "boolean", should_stop) end
-	if e.override_animation then return end
-	local body = e.body
+	if e:has("override_animation") then return end
+	local body = e:get("body")
 	if body.dir == -1 then
-		e.animation.obj:play(Enums.anim_state.idle_left, Enums.anim_state.idle)
+		animation.obj:play(Enums.anim_state.idle_left, Enums.anim_state.idle)
 	else
-		e.animation.obj:play(Enums.anim_state.idle)
+		animation.obj:play(Enums.anim_state.idle)
 	end
 	if should_stop then
 		stop_body_motion(e)
@@ -65,24 +76,38 @@ function PlayerController:anim_idle(e, should_stop)
 end
 
 function PlayerController:anim_face_left(e)
-	if not (e and e.animation) then return end
-	if e.override_animation then return end
-	e.body.dir = -1
-	e.animation.obj:play(Enums.anim_state.idle_left, Enums.anim_state.idle)
+	if not e then return end
+	local animation = e:get("animation")
+	if not animation then return end
+	if e:has("override_animation") then return end
+	local body = e:get("body")
+	body.dir = -1
+	animation.obj:play(Enums.anim_state.idle_left, Enums.anim_state.idle)
 end
 
 function PlayerController:anim_face_right(e)
-	if not (e and e.animation) then return end
-	if e.override_animation then return end
-	e.body.dir = 1
-	e.animation.obj:play(Enums.anim_state.idle)
+	if not e then return end
+	local animation = e:get("animation")
+	if not animation then return end
+	if e:has("override_animation") then return end
+	local body = e:get("body")
+	body.dir = 1
+	animation.obj:play(Enums.anim_state.idle)
 end
 
 function PlayerController:anim_open_door(e)
-	if not (e and e.animation) then return end
+	if not e then return end
+	local animation = e:get("animation")
+	if not animation then return end
 	stop_body_motion(e)
-	local obj = e.animation.obj
-	local tag = (e.body.dir == -1) and Enums.anim_state.open_door_left or Enums.anim_state.open_door
+	local obj = animation.obj
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = Enums.anim_state.open_door_left
+	else
+		tag = Enums.anim_state.open_door
+	end
 	obj:play(tag)
 	obj:on("loop", function()
 		obj:pause_at_end()
@@ -91,10 +116,18 @@ function PlayerController:anim_open_door(e)
 end
 
 function PlayerController:anim_open_lighter(e)
-	if not (e and e.animation) then return end
+	if not e then return end
+	local animation = e:get("animation")
+	if not animation then return end
 	stop_body_motion(e)
-	local obj = e.animation.obj
-	local tag = (e.body.dir == -1) and Enums.anim_state.open_lighter_left or Enums.anim_state.open_lighter
+	local obj = animation.obj
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = Enums.anim_state.open_lighter_left
+	else
+		tag = Enums.anim_state.open_lighter
+	end
 	obj:play(tag, Enums.anim_state.open_lighter, true)
 	obj:on("loop", function()
 		obj:goto_frame(9)
@@ -103,11 +136,19 @@ function PlayerController:anim_open_lighter(e)
 end
 
 function PlayerController:anim_close_lighter(e)
-	if not (e and e.animation) then return end
+	if not e then return end
+	local animation = e:get("animation")
+	if not animation then return end
 	stop_body_motion(e)
-	local obj = e.animation.obj
+	local obj = animation.obj
 	local world = self.world
-	local tag = (e.body.dir == -1) and Enums.anim_state.close_lighter_left or Enums.anim_state.close_lighter
+	local body = e:get("body")
+	local tag
+	if body.dir == -1 then
+		tag = Enums.anim_state.close_lighter_left
+	else
+		tag = Enums.anim_state.close_lighter
+	end
 	obj:play(tag, Enums.anim_state.close_lighter, true)
 	obj:on("loop", function()
 		obj:pause_at_end()
@@ -167,10 +208,14 @@ end
 
 function PlayerController:is_lighter_opening()
 	local e = self.player
-	if not e or not e.override_animation or not e.animation then
+	if not e or not e:has("override_animation") then
 		return false
 	end
-	local obj = e.animation.obj
+	local animation = e:get("animation")
+	if not animation then
+		return false
+	end
+	local obj = animation.obj
 	if obj.base_tag ~= Enums.anim_state.open_lighter then
 		return false
 	end
@@ -179,10 +224,14 @@ end
 
 function PlayerController:is_lighter_closing()
 	local e = self.player
-	if not e or not e.override_animation or not e.animation then
+	if not e or not e:has("override_animation") then
 		return false
 	end
-	return e.animation.obj.base_tag == Enums.anim_state.close_lighter
+	local animation = e:get("animation")
+	if not animation then
+		return false
+	end
+	return animation.obj.base_tag == Enums.anim_state.close_lighter
 end
 
 function PlayerController:spawn_player(fn)
@@ -233,18 +282,19 @@ function PlayerController:update(dt)
 		end
 	end
 
-	if self.player.override_animation then
+	if self.player:has("override_animation") then
 		stop_body_motion(self.player)
 		return
 	end
-	if not self.player.can_move then return end
+	if not self.player:has("can_move") then return end
 
-	local within_int = self.player.within_interactive
-	local body = self.player.body
+	local within_int = self.player:get("within_interactive")
+	local body = self.player:get("body")
 	body.dx = 0
 
-	if self.player.can_run then
-		self.player.is_running.value = Inputs.down(Enums.input.run_mod)
+	if self.player:has("can_run") then
+		local is_running = self.player:get("is_running")
+		is_running.value = Inputs.down(Enums.input.run_mod)
 	end
 
 	-- SIMPLE MOVEMENT (causes left/right spamming to instantly flip)
@@ -262,8 +312,8 @@ function PlayerController:update(dt)
 
 	local left_held = Inputs.held(Enums.input.left)
 	local right_held = Inputs.held(Enums.input.right)
-	local only_left = self.player.can_move_left_only
-	local only_right = self.player.can_move_right_only
+	local only_left = self.player:get("can_move_left_only")
+	local only_right = self.player:get("can_move_right_only")
 
 	local desired_dir = 0
 	if left_held and (only_right == nil) then
@@ -297,9 +347,9 @@ function PlayerController:update(dt)
 		end
 	end
 
-	if within_int and self.player.can_interact and Inputs.pressed(Enums.input.interact) then
+	if within_int and self.player:has("can_interact") and Inputs.pressed(Enums.input.interact) then
 		local other = within_int.entity
-		local req = other.req_col_dir
+		local req = other:get("req_col_dir")
 		local proceed = true
 
 		if req and (body.dir ~= req.value) then
@@ -307,17 +357,17 @@ function PlayerController:update(dt)
 		end
 
 		if proceed then
-			if other.dialogue_key then
+			if other:has("dialogue_key") then
 				self:on_player_interact(self.player, other)
-			elseif other.is_door then
+			elseif other:has("is_door") then
 				self.world:emit("on_interact_door", self.player, other)
-			elseif other.candle then
+			elseif other:has("candle") then
 				self.world:emit("on_interact_candle", self.player, other)
 			end
 		end
 	end
 
-	if self.player.override_animation then
+	if self.player:has("override_animation") then
 		stop_body_motion(self.player)
 	else
 		local anim_name = self:player_update_animation()
@@ -328,7 +378,8 @@ end
 
 function PlayerController:player_force_face_dir(dir)
 	assert(type(dir) == "number", dir)
-	self.player.body.dir = dir
+	local body = self.player:get("body")
+	body.dir = dir
 	local anim_name = self:player_update_animation()
 	self.world:emit("update_speed_data", self.player, anim_name)
 end
@@ -336,11 +387,12 @@ end
 function PlayerController:player_update_animation(override_name, override_variant)
 	local anim_name = override_name
 	local anim_variant = override_variant or ""
-	local body = self.player.body
+	local body = self.player:get("body")
 
 	if not anim_name then
-		if body.dx ~= 0 and not self.player.hit_wall then
-			if self.player.is_running.value then
+		if body.dx ~= 0 and not self.player:has("hit_wall") then
+			local is_running = self.player:get("is_running")
+			if is_running.value then
 				anim_name = Enums.anim_state.run
 			else
 				anim_name = Enums.anim_state.walk
@@ -359,15 +411,15 @@ function PlayerController:player_update_animation(override_name, override_varian
 			return DevTools.debug_anim.tag
 		end
 	end
-	self.player.animation.obj:play(anim_name .. anim_variant, anim_name)
+	self.player:get("animation").obj:play(anim_name .. anim_variant, anim_name)
 
 	return anim_name
 end
 
 function PlayerController:on_player_interact(player, e_interactive)
-	assert((player.__isEntity and player.player), player)
-	assert((e_interactive.__isEntity and e_interactive.interactive), e_interactive)
-	self.player.is_interacting.value = true
+	assert((player.__isEntity and player:has("player")), player)
+	assert((e_interactive.__isEntity and e_interactive:has("interactive")), e_interactive)
+	self.player:get("is_interacting").value = true
 	-- self.world:emit("on_interact_or_inventory")
 	-- self.world:emit("create_speech_bubble", player)
 	-- local d = interactive.dialogue_meta
@@ -378,7 +430,7 @@ function PlayerController:on_player_interact(player, e_interactive)
 end
 
 function PlayerController:on_interact_or_inventory()
-	if not self.player.prev_can then
+	if not self.player:has("prev_can") then
 		self.player:give("prev_can", self.player)
 		self.world:emit("anim_idle", self.player, true)
 	end
@@ -388,7 +440,11 @@ function PlayerController:on_interact_or_inventory()
 end
 
 function PlayerController:on_leave_interact_or_inventory()
-	local prev_can = self.player.prev_can and self.player.prev_can.value
+	local prev_can_comp = self.player:get("prev_can")
+	local prev_can
+	if prev_can_comp then
+		prev_can = prev_can_comp.value
+	end
 	if not prev_can then
 		return
 	end
@@ -404,7 +460,7 @@ function PlayerController:on_leave_interact_or_inventory()
 				return
 			end
 			self.player:give(Enums.player_cap.can_interact)
-			self.player.is_interacting.value = false
+			self.player:get("is_interacting").value = false
 		end)
 	end
 	self.player:remove("prev_can")
@@ -438,14 +494,14 @@ if DEV then
 			return
 		end
 
-		local pos = self.player.pos
+		local pos = self.player:get("pos")
 		Slab.Text("Pos")
 		Slab.Indent()
 		view_number("x", pos.x, true)
 		view_number("y", pos.y)
 		Slab.Unindent()
 
-		local transform = self.player.transform
+		local transform = self.player:get("transform")
 		Slab.Text("Transform")
 		Slab.Indent()
 		view_number("sx", transform.sx, true)
@@ -454,7 +510,7 @@ if DEV then
 		view_number("oy", transform.oy)
 		Slab.Unindent()
 
-		local qt = self.player.quad_transform
+		local qt = self.player:get("quad_transform")
 		if qt then
 			Slab.Text("Quad Transform")
 			Slab.Indent()
@@ -465,7 +521,7 @@ if DEV then
 			Slab.Unindent()
 		end
 
-		local obj = self.player.animation.obj
+		local obj = self.player:get("animation").obj
 		Slab.Text("animation")
 		Slab.Indent()
 		Slab.Input("anim_tag", { Text = obj.current_tag, ReadOnly = true })
@@ -473,7 +529,7 @@ if DEV then
 		view_number("frame", obj.frame)
 		Slab.Unindent()
 
-		local quad = self.player.quad
+		local quad = self.player:get("quad")
 		local qx, qy, qw, qh = quad.quad:getViewport()
 		local qsw, qsh = quad.quad:getTextureDimensions()
 		Slab.Text("quad")
@@ -487,7 +543,7 @@ if DEV then
 		Slab.Unindent()
 
 		Slab.Text("body")
-		local body = self.player.body
+		local body = self.player:get("body")
 		Slab.Indent()
 		view_number("dx", body.dx, true)
 		view_number("dir", body.dir, false)
@@ -495,17 +551,17 @@ if DEV then
 		view_number("vel_y", body.vel_y, false)
 		Slab.Unindent()
 
-		Slab.CheckBox(self.player.can_move, "move")
+		Slab.CheckBox(self.player:get("can_move"), "move")
 		Slab.SameLine()
-		Slab.CheckBox(self.player.can_move_left_only, "left only")
+		Slab.CheckBox(self.player:get("can_move_left_only"), "left only")
 		Slab.SameLine()
-		Slab.CheckBox(self.player.can_move_right_only, "right only")
+		Slab.CheckBox(self.player:get("can_move_right_only"), "right only")
 		Slab.SameLine()
-		Slab.CheckBox(self.player.can_run, "run")
+		Slab.CheckBox(self.player:get("can_run"), "run")
 		Slab.SameLine()
-		Slab.CheckBox(self.player.can_interact, "interact")
+		Slab.CheckBox(self.player:get("can_interact"), "interact")
 		Slab.SameLine()
-		Slab.CheckBox(self.player.can_open_door, "open_door")
+		Slab.CheckBox(self.player:get("can_open_door"), "open_door")
 
 		Slab.EndWindow()
 	end

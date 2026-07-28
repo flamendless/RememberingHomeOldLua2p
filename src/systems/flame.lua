@@ -13,13 +13,15 @@ function Flame:init(world)
 end
 
 function Flame:is_lit(e)
-	if e.flame_suppressed then
+	if e:has("flame_suppressed") then
 		return false
 	end
-	if e.flame_windable and e.flame_windable.extinguished then
+	local flame_windable = e:get("flame_windable")
+	if flame_windable and flame_windable.extinguished then
 		return false
 	end
-	if e.flame_health and e.flame_health.health <= 0 then
+	local flame_health = e:get("flame_health")
+	if flame_health and flame_health.health <= 0 then
 		return false
 	end
 	return true
@@ -32,7 +34,7 @@ function Flame:health_strength_ratio(flame_health)
 end
 
 function Flame:trigger_health_flicker(e)
-	local flicker = e.flame_flicker
+	local flicker = e:get("flame_flicker")
 	if not flicker then
 		return
 	end
@@ -42,11 +44,11 @@ function Flame:trigger_health_flicker(e)
 end
 
 function Flame:consume_health_flicker(e, health_lost)
-	if health_lost <= 0 or not e.flame_flicker then
+	if health_lost <= 0 or not e:has("flame_flicker") then
 		return
 	end
 
-	local flicker = e.flame_flicker
+	local flicker = e:get("flame_flicker")
 	flicker.since_flicker = flicker.since_flicker + health_lost
 	while flicker.since_flicker >= flicker.next_threshold do
 		flicker.since_flicker = flicker.since_flicker - flicker.next_threshold
@@ -55,35 +57,36 @@ function Flame:consume_health_flicker(e, health_lost)
 end
 
 function Flame:update_frame_flicker(e)
-	local ff = e.flame_frame_flicker
+	local ff = e:get("flame_frame_flicker")
 	if not ff then
 		return
 	end
 
 	local e_source = self.world:getEntityByKey(ff.anim_key)
-	if not e_source or not e_source.animation then
+	if not e_source or not e_source:has("animation") then
 		ff.light_mult = 1
 		return
 	end
 
-	local obj = e_source.animation.obj
+	local obj = e_source:get("animation").obj
 	local frame = math.floor(obj.anim8.position)
 	ff.light_mult = ff.frame_mults[frame] or 1
 end
 
 function Flame:update_flame_strength(e)
-	local pl = e.point_light
-	local diffuse = e.diffuse
+	local pl = e:get("point_light")
+	local diffuse = e:get("diffuse")
 	local color_ratio = 1
 	local strength_ratio = 1
 
-	if e.flame_health then
-		color_ratio, strength_ratio = self:health_strength_ratio(e.flame_health)
+	local flame_health = e:get("flame_health")
+	if flame_health then
+		color_ratio, strength_ratio = self:health_strength_ratio(flame_health)
 	end
 
 	pl.value = pl.orig_value * strength_ratio
 
-	local frame_flicker = e.flame_frame_flicker
+	local frame_flicker = e:get("flame_frame_flicker")
 	if frame_flicker then
 		self:update_frame_flicker(e)
 		if self:is_lit(e) then
@@ -91,10 +94,16 @@ function Flame:update_flame_strength(e)
 		end
 	end
 
-	local windable = e.flame_windable
-	local flicker = e.flame_flicker
-	local wind_flicker = windable and windable.flicker_timer > 0
-	local health_flicker = flicker and flicker.flicker_timer > 0 and not frame_flicker
+	local windable = e:get("flame_windable")
+	local flicker = e:get("flame_flicker")
+	local wind_flicker = false
+	if windable and windable.flicker_timer > 0 then
+		wind_flicker = true
+	end
+	local health_flicker = false
+	if flicker and flicker.flicker_timer > 0 and not frame_flicker then
+		health_flicker = true
+	end
 	if wind_flicker or health_flicker then
 		pl.value = pl.value * (0.55 + love.math.random() * 0.45)
 	end
@@ -112,12 +121,15 @@ function Flame:update_flame_strength(e)
 end
 
 function Flame:update_flame_pos(e)
-	local anchor = e.flame_anchor
-	local windable = e.flame_windable
-	local pos = e.pos
+	local anchor = e:get("flame_anchor")
+	local windable = e:get("flame_windable")
+	local pos = e:get("pos")
 
 	if anchor then
-		local offset = windable and windable.offset or 0
+		local offset = 0
+		if windable then
+			offset = windable.offset
+		end
 		local dir = anchor.dir
 		pos.x = anchor.base_x + offset * dir
 		pos.y = anchor.base_y
@@ -135,22 +147,27 @@ end
 function Flame:update(dt)
 	for _, e in ipairs(self.pool) do
 		local lit = self:is_lit(e)
-		local health = e.flame_health
-		local prev_health = health and health.health or 0
+		local health = e:get("flame_health")
+		local prev_health = 0
+		if health then
+			prev_health = health.health
+		end
 
 		if lit and health then
 			health.health = math.max(0, health.health - dt * health.consumption_rate)
 			if health.health <= 0 then
-				if e.flame_windable then
-					e.flame_windable.extinguished = true
+				local flame_windable = e:get("flame_windable")
+				if flame_windable then
+					flame_windable.extinguished = true
 				end
 				self.world:emit("on_flame_health_empty", e)
 			end
 		end
 
-		if health and e.flame_flicker then
+		local flicker = e:get("flame_flicker")
+		if health and flicker then
 			self:consume_health_flicker(e, prev_health - health.health)
-			e.flame_flicker.flicker_timer = math.max(0, e.flame_flicker.flicker_timer - dt)
+			flicker.flicker_timer = math.max(0, flicker.flicker_timer - dt)
 		end
 
 		self:update_flame_strength(e)
@@ -173,9 +190,15 @@ if DEV then
 		})
 
 		for _, e in ipairs(self.pool) do
-			local health = e.flame_health
+			local health = e:get("flame_health")
 			if health then
-				local id = e.id and e.id.value or "flame"
+				local id_c = e:get("id")
+				local id
+				if id_c then
+					id = id_c.value
+				else
+					id = "flame"
+				end
 				health.health = UIWrapper.edit_range(
 					id .. " health",
 					health.health,
@@ -198,8 +221,8 @@ if DEV then
 		end
 
 		for _, e in ipairs(self.pool) do
-			local pos = e.pos
-			local pl = e.point_light
+			local pos = e:get("pos")
+			local pl = e:get("point_light")
 			love.graphics.setColor(1, 0, 0, 1)
 			love.graphics.circle("line", pos.x, pos.y, pl.value)
 		end

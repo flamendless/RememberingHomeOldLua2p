@@ -9,8 +9,8 @@ function ID:init(world)
 	self.ref_id = {}
 
 	self.pool.onAdded = function(pool, e)
-		local id = e.id
-		if not e.preserve_id then
+		local id = e:get("id")
+		if not e:has("preserve_id") then
 			local ref_id = self.ref_id[id.value]
 			if ref_id then
 				self.ref_id[id.value] = self.ref_id[id.value] + 1
@@ -26,9 +26,12 @@ function ID:init(world)
 	end
 
 	self.pool.onRemoved = function(pool, e)
-		local id = e.id and e.id.value
+		local id
+		if e:has("id") then
+			id = e:get("id").value
+		end
 		if id then
-			self.ref_id[e.id.value] = nil
+			self.ref_id[e:get("id").value] = nil
 		else
 			for i = #pool, 1, -1 do
 				if e == pool[i] then
@@ -95,7 +98,7 @@ if DEV then
 		love.graphics.setFont(fnt)
 
 		for _, e in ipairs(self.pool_dev) do
-			local id = e.id.value
+			local id = e:get("id").value
 			local px, py, iw, ih = Helper.get_ltwh(e)
 			local iw2, ih2 = iw / 2, ih / 2
 			local av = vec2(px + iw2, py + ih2)

@@ -8,15 +8,15 @@ end
 
 function TypewriterSplash:start_typewriter()
 	for _, e in ipairs(self.pool) do
-		local text = e.text
-		local typewriter = e.typewriter
-		local timer = e.typewriter_timer
-		local cb = e.typewriter_on_finish
+		local text = e:get("text")
+		local typewriter = e:get("typewriter")
+		local timer = e:get("typewriter_timer")
+		local cb = e:get("typewriter_on_finish")
 
 		if not timer.timer then
 			timer.timer = Timer()
 			timer.timer:every(typewriter.every, function()
-				local target = e.target_text.value
+				local target = e:get("target_text").value
 
 				if #text.value ~= #target then
 					local ch = target:sub(#text.value + 1, #text.value + 1)
@@ -35,7 +35,7 @@ end
 
 function TypewriterSplash:update(dt)
 	for _, e in ipairs(self.pool) do
-		local timer = e.typewriter_timer
+		local timer = e:get("typewriter_timer")
 		if timer.timer then
 			timer.timer:update(dt)
 		end

@@ -64,7 +64,7 @@ function Intro:state_setup()
 		:give("intro_light")
 	self.e_car_reflect = Concord.entity(self.world)
 		:assemble(Assemblages.Intro.car_reflect, self.e_car)
-	self.e_car_reflect.animation.obj:on("loop", function()
+	self.e_car_reflect:get("animation").obj:on("loop", function()
 		self:car_reflection_flicker()
 	end)
 
@@ -142,7 +142,7 @@ function Intro:state_init()
 		self.world:emit("enable_next_intro_text")
 		self.world:emit("pause_timeline")
 
-		local car_pos = self.e_car.pos
+		local car_pos = self.e_car:get("pos")
 		self.world:emit("tween_depth_zoom", 5, 2 / max_n_cam_t, "circout")
 		self.world:emit("tween_camera_scale", self.camera, 5, 5, "circout")
 		self.world:emit("tween_camera_pos_rel", self.camera, 5, 160, -32, "circout")

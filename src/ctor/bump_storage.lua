@@ -15,11 +15,11 @@ end
 
 function BumpStorage:add(e)
 	assert(e.__isEntity, e)
-	local pos = e.pos
-	local collider = e.collider
+	local pos = e:get("pos")
+	local collider = e:get("collider")
 	local x, y = pos.x, pos.y
 	local w, h = collider.w, collider.h
-	local col_offset = e.collider_offset
+	local col_offset = e:get("collider_offset")
 	if col_offset then
 		x = x + col_offset.ox
 		y = y + col_offset.oy

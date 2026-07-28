@@ -9,7 +9,7 @@ function List:init(world)
 	self.focused = nil
 
 	self.pool.onAdded = function(pool, e)
-		local group_id = e.list_group.value
+		local group_id = e:get("list_group").value
 		local group = self.groups[group_id]
 		assert(group, group_id .. " does not exist")
 		table.insert(group.entities, e)
@@ -42,7 +42,8 @@ function List:update(dt)
 	for i, e in ipairs(group.entities) do
 		local min = group.per_page * group.offset
 		local max = group.per_page * (group.offset + 1)
-		e.list_item.on_current_page = (i > min) and (i <= max)
+		local list_item = e:get("list_item")
+		list_item.on_current_page = (i > min) and (i <= max)
 		if cursor_new_index and i ~= cursor_new_index then
 			e:remove("list_cursor")
 			local signal = "on_list_cursor_remove_" .. self.focused
@@ -194,7 +195,7 @@ function List:update_cursor(index)
 	if not e_hovered then
 		return
 	end
-	if e_hovered.list_item_skip then
+	if e_hovered:has("list_item_skip") then
 		return
 	end
 	if e_hovered then
@@ -217,7 +218,7 @@ function List:set_focus_list(group_id, override_cursor)
 	self.focused = group_id
 	for k, g in pairs(self.groups) do
 		for _, e in ipairs(g.entities) do
-			e.list_group.is_focused = k == group_id
+			e:get("list_group").is_focused = k == group_id
 		end
 	end
 	group.cursor = override_cursor or group.cursor
@@ -275,7 +276,7 @@ function List:debug_update(dt)
 	local group = self.groups[selected or self.focused]
 	if group and group.entities then
 		for _, e in ipairs(group.entities) do
-			Slab.CheckBox(e.list_cursor, e.text.value)
+			Slab.CheckBox(e:has("list_cursor"), e:get("text").value)
 		end
 	end
 	Slab.EndWindow()

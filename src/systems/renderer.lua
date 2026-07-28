@@ -34,17 +34,27 @@ local function get_list(self, e_or_bool)
 	if e_or_bool then
 		assert((type(e_or_bool) == "boolean" or e_or_bool.__isEntity), e_or_bool)
 	end
-	local is_ui = e_or_bool and (type(e_or_bool) == "boolean" or e_or_bool.ui_element)
+	local is_ui = false
+	if e_or_bool then
+		if type(e_or_bool) == "boolean" then
+			is_ui = e_or_bool
+		else
+			is_ui = e_or_bool:has("ui_element")
+		end
+	end
 	return is_ui and self.list_ui or self.list
 end
 
 local function fn_sort_z(a, b)
-	local a_z, b_z = a.z_index, b.z_index
+	local a_z = a:get("z_index")
+	local b_z = b:get("z_index")
 	if a_z == nil or b_z == nil then
 		return
 	end
 	if a_z.sortable and b_z.sortable then
-		return a.pos.y < b.pos.y
+		local a_pos = a:get("pos")
+		local b_pos = b:get("pos")
+		return a_pos.y < b_pos.y
 	elseif a_z.current and b_z.current then
 		return a_z.current < b_z.current
 	end
@@ -86,7 +96,7 @@ function Renderer:sort_by_z(list)
 	end
 	list:sort(fn_sort_z)
 	for i, e in ipairs(list) do
-		local z_index = e.z_index
+		local z_index = e:get("z_index")
 		if z_index then
 			z_index.current = i
 		end
@@ -97,19 +107,20 @@ function Renderer:pool_on_added(pool, e)
 	local should_sort = false
 	if pool == self.pool_layer or pool == self.pool_sprite then
 		Renderers.Sprite.setup(e)
-		should_sort = e.z_index ~= nil
+		should_sort = e:has("z_index")
 	elseif pool == self.pool_decals then
 		Renderers.Decals.setup(e)
 		should_sort = false
 	elseif pool == self.pool_bg then
 		Renderers.Sprite.set_bg(e)
 	elseif pool == self.pool_static_text then
-		e.static_text.obj = love.graphics.newText(e.font.value, e.static_text.value)
+		local static_text = e:get("static_text")
+		static_text.obj = love.graphics.newText(e:get("font").value, static_text.value)
 	end
 
 	local list = get_list(self, e)
 	if list:has(e) then
-		Log.warn(e.id.value, "is already in list")
+		Log.warn(e:get("id").value, "is already in list")
 	else
 		list:add(e)
 		e.renderer = renderer_per_pool[pool.id]
@@ -157,8 +168,12 @@ function Renderer:draw(is_ui)
 	local list = get_list(self, is_ui)
 	for _, e in ipairs(list) do
 		love.graphics.setColor(1, 1, 1, 1)
-		local culled = e.cullable and e.cullable.value
-		local is_not_drawn = e.nf_renderer or e.hidden or culled
+		local culled = false
+		local cullable = e:get("cullable")
+		if cullable then
+			culled = cullable.value
+		end
+		local is_not_drawn = e:has("nf_renderer") or e:has("hidden") or culled
 
 		if not is_not_drawn then
 			-- local temp_shader
@@ -167,12 +182,12 @@ function Renderer:draw(is_ui)
 			-- 	love.graphics.setShader()
 			-- end
 
-			local color = e.color
-			if color then
+			if e:has("color") then
+				local color = e:get("color")
 				love.graphics.setColor(color.value)
 			end
 
-			local custom_renderer = e.custom_renderer
+			local custom_renderer = e:get("custom_renderer")
 			if custom_renderer then
 				self.world:emit(custom_renderer.value, e)
 			else
@@ -209,9 +224,13 @@ if DEV then
 		if Slab.BeginTree(id .. " size: " .. #list) then
 			Slab.Indent()
 			for i, e in ipairs(list) do
-				local culled = e.cullable and e.cullable.value
-				local is_not_drawn = e.nf_renderer or e.hidden or culled
-				local e_id = e.id.value
+				local culled = false
+				local cullable = e:get("cullable")
+				if cullable then
+					culled = cullable.value
+				end
+				local is_not_drawn = e:has("nf_renderer") or e:has("hidden") or culled
+				local e_id = e:get("id").value
 				if #search == 0 or stringx.contains(e_id, search) then
 					if Slab.CheckBox(not is_not_drawn, i) then
 						is_not_drawn = not is_not_drawn

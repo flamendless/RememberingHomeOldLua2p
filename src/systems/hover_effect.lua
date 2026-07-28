@@ -7,7 +7,7 @@ function HoverEffect:init(world)
 	self.world = world
 
 	self.pool_change_scale.onRemoved = function(pool, e)
-		local transform = e.transform
+		local transform = e:get("transform")
 		transform.sx = transform.orig_sx
 		transform.sy = transform.orig_sy
 	end
@@ -20,9 +20,9 @@ end
 
 function HoverEffect:hover_change_color()
 	for _, e in ipairs(self.pool_change_color) do
-		local color = e.color
-		local hcc = e.hover_change_color
-		local hoverable = e.hoverable
+		local color = e:get("color")
+		local hcc = e:get("hover_change_color")
+		local hoverable = e:get("hoverable")
 
 		if hoverable.is_hovered then
 			color.value[1] = mathx.lerp(color.value[1], hcc.target[1], hcc.step)
@@ -40,9 +40,9 @@ end
 
 function HoverEffect:hover_change_scale(mx, my)
 	for _, e in ipairs(self.pool_change_scale) do
-		local hoverable = e.hoverable
-		local transform = e.transform
-		local hcs = e.hover_change_scale
+		local hoverable = e:get("hoverable")
+		local transform = e:get("transform")
+		local hcs = e:get("hover_change_scale")
 
 		if hoverable.is_hovered then
 			transform.sx = mathx.lerp(transform.sx, hcs.target, hcs.step)

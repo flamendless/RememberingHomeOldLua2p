@@ -7,7 +7,7 @@ end)
 function c_twp:serialize()
 	if self.e_paint then
 		return {
-			paint_key = self.e_paint.key.value,
+			paint_key = self.e_paint:get("key").value,
 		}
 	else
 		return {}

@@ -8,14 +8,14 @@ end
 
 function Typewriter:update(dt)
 	for _, e in ipairs(self.pool) do
-		if not e.text_can_proceed and not e.text_skipped then
-			local text = e.text.value
-			local rfp = e.reflowprint
+		if not e:has("text_can_proceed") and not e:has("text_skipped") then
+			local text = e:get("text")
+			local rfp = e:get("reflowprint")
 			rfp.dt = rfp.dt + dt * rfp.speed
-			if rfp.dt * #text > #text then
+			if rfp.dt * #text.value > #text.value then
 				e:give("text_can_proceed")
 			elseif Inputs.pressed(Enums.input.interact) then
-				rfp.dt = #text - 1
+				rfp.dt = #text.value - 1
 				e:give("text_skipped")
 			end
 		end

@@ -595,8 +595,8 @@ end
 
 Menu["on_list_cursor_update_" .. Enums.list_group.main_menu] = function(self, e_hovered)
 	for _, e in ipairs(self.pool_main_menu) do
-		local pos = e.pos
-		local color = e.color
+		local pos = e:get("pos")
+		local color = e:get("color")
 		if e == e_hovered then
 			color_to(color, color_select, dur_in)
 			Flux.to(pos, dur_in, { x = pos.orig_x - offset_x })
@@ -609,9 +609,9 @@ end
 
 Menu["on_list_cursor_update_" .. Enums.list_group.sub_menu] = function(self, e_hovered)
 	for _, e in ipairs(self.pool_sub_menu) do
-		local pos = e.pos
-		local color = e.color
-		if e.list_item_skip then
+		local pos = e:get("pos")
+		local color = e:get("color")
+		if e:has("list_item_skip") then
 			color_to(color, color_disabled, dur_out)
 			Flux.to(pos, dur_out, { x = pos.orig_x })
 		elseif e == e_hovered then
@@ -625,7 +625,7 @@ Menu["on_list_cursor_update_" .. Enums.list_group.sub_menu] = function(self, e_h
 end
 
 Menu["on_list_item_interact_" .. Enums.list_group.main_menu] = function(self, e_hovered)
-	local text = e_hovered.text.value
+	local text = e_hovered:get("text").value
 	if text == "Play" then
 		self.is_transition = true
 		self:hide_main_menu()
@@ -643,7 +643,7 @@ Menu["on_list_item_interact_" .. Enums.list_group.main_menu] = function(self, e_
 end
 
 Menu["on_list_item_interact_" .. Enums.list_group.sub_menu] = function(self, e_hovered)
-	local text = e_hovered.text.value
+	local text = e_hovered:get("text").value
 	if text == "Continue" then
 		self:on_continue()
 	elseif text == "New Game" then

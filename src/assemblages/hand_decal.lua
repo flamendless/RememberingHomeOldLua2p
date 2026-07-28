@@ -60,13 +60,15 @@ function HandDecal.create(e, opts)
 end
 
 function HandDecal.fade_in(e, target_opacity, duration, delay)
-	assert(e.__isEntity and e.decals_shaders)
-	return Flux.to(e.decals_shaders.data, duration, { opacity = target_opacity }):delay(delay or 0)
+	assert(e.__isEntity and e:has("decals_shaders"))
+	local decals_shaders = e:get("decals_shaders")
+	return Flux.to(decals_shaders.data, duration, { opacity = target_opacity }):delay(delay or 0)
 end
 
 function HandDecal.fade_out(e, duration, on_complete)
-	assert(e.__isEntity and e.decals_shaders)
-	return Flux.to(e.decals_shaders.data, duration, { opacity = 0 }):oncomplete(function()
+	assert(e.__isEntity and e:has("decals_shaders"))
+	local decals_shaders = e:get("decals_shaders")
+	return Flux.to(decals_shaders.data, duration, { opacity = 0 }):oncomplete(function()
 		e:destroy()
 		if on_complete then
 			on_complete()
@@ -75,12 +77,13 @@ function HandDecal.fade_out(e, duration, on_complete)
 end
 
 function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
-	assert(e.__isEntity and e.decals_shaders)
+	assert(e.__isEntity and e:has("decals_shaders"))
 	min_opacity = min_opacity or 0
 	max_opacity = max_opacity or 1
 	count = count or 0
 
-	local data = e.decals_shaders.data
+	local decals_shaders = e:get("decals_shaders")
+	local data = decals_shaders.data
 	local cycles = 0
 	local fade_in, fade_out
 
@@ -112,19 +115,21 @@ function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
 end
 
 function HandDecal.set_progress(e, progress, base_opacity, label)
-	if not e or not e.decals_shaders then
+	if not e or not e:has("decals_shaders") then
 		return
 	end
 	progress = mathx.clamp(progress, 0, 1)
 	base_opacity = base_opacity or 0.9
-	local data = e.decals_shaders.data
+	local decals_shaders = e:get("decals_shaders")
+	local data = decals_shaders.data
 	data.opacity = base_opacity * (1 - progress)
 	data.blood_amount = progress
 	data.damage_amount = progress
 	data.distort_amount = progress
 
-	if label and label.color then
-		label.color.value[4] = data.opacity
+	if label and label:has("color") then
+		local label_color = label:get("color")
+		label_color.value[4] = data.opacity
 	end
 end
 
@@ -161,26 +166,31 @@ function HandDecal.create_key_label(world, text, opts)
 end
 
 function HandDecal.sync_key_label(hand, label, camera, ox, oy)
-	assert(hand.__isEntity and hand.decals_shaders)
-	assert(label.__isEntity and label.pos and label.color)
+	assert(hand.__isEntity and hand:has("decals_shaders"))
+	assert(label.__isEntity and label:has("pos") and label:has("color"))
 
 	ox = ox or HandDecal.KEY_LABEL_OFFSET.x
 	oy = oy or HandDecal.KEY_LABEL_OFFSET.y
-	label.color.value[4] = hand.decals_shaders.data.opacity
+	local hand_decals_shaders = hand:get("decals_shaders")
+	local label_color = label:get("color")
+	label_color.value[4] = hand_decals_shaders.data.opacity
 
+	local hand_pos = hand:get("pos")
+	local label_pos = label:get("pos")
 	if camera then
-		local sx, sy = camera:toScreen(hand.pos.x, hand.pos.y)
-		label.pos.x = sx + ox
-		label.pos.y = sy + oy
+		local sx, sy = camera:toScreen(hand_pos.x, hand_pos.y)
+		label_pos.x = sx + ox
+		label_pos.y = sy + oy
 	else
-		label.pos.x = hand.pos.x + ox
-		label.pos.y = hand.pos.y + oy
+		label_pos.x = hand_pos.x + ox
+		label_pos.y = hand_pos.y + oy
 	end
 end
 
 function HandDecal.fade_key_label(e, duration, on_complete)
-	assert(e.__isEntity and e.color)
-	Flux.to(e.color.value, duration, { [4] = 0 }):oncomplete(function()
+	assert(e.__isEntity and e:has("color"))
+	local color = e:get("color")
+	Flux.to(color.value, duration, { [4] = 0 }):oncomplete(function()
 		e:destroy()
 		if on_complete then
 			on_complete()

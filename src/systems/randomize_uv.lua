@@ -14,7 +14,7 @@ function RandomizeUV:update(dt)
 		return
 	end
 	for _, e in ipairs(self.pool_room_item) do
-		local quad = e.quad
+		local quad = e:get("quad")
 		local dx = love.math.random() < 0.5 and -self.power or self.power
 		local dy = love.math.random() < 0.5 and -self.power or self.power
 		local x, y = quad.info.x, quad.info.y
@@ -28,13 +28,16 @@ function RandomizeUV:randomize_uv()
 	Log.info("Randomizing UV for room items")
 	local choices = {}
 	for i, e in ipairs(self.pool_room_item) do
-		choices[i] = { id = e.id.value, info = e.quad.info }
+		local id = e:get("id")
+		local quad = e:get("quad")
+		choices[i] = { id = id.value, info = quad.info }
 	end
 
 	for _, e in ipairs(self.pool_room_item) do
-		local id = e.id.value
-		if not self.orig_data[id] then
-			self.orig_data[id] = tablex.copy(e.quad.info)
+		local id = e:get("id")
+		local quad = e:get("quad")
+		if not self.orig_data[id.value] then
+			self.orig_data[id.value] = tablex.copy(quad.info)
 		end
 
 		local other = tablex.take_random(choices)
@@ -49,9 +52,9 @@ function RandomizeUV:reset_uv()
 	end
 	Log.info("Resetting UV for room items")
 	for _, e in ipairs(self.pool_room_item) do
-		local id = e.id.value
-		assert(self.orig_data[id], id .. " is missing orig quad data")
-		self.world:emit("update_atlas", e, self.orig_data[id])
+		local id = e:get("id")
+		assert(self.orig_data[id.value], id.value .. " is missing orig quad data")
+		self.world:emit("update_atlas", e, self.orig_data[id.value])
 	end
 	tablex.clear(self.orig_data)
 	self.has_randomized = false

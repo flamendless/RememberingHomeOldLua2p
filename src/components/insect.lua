@@ -17,7 +17,7 @@ Concord.component("scatter_away_from", function (c, e_target, distance, speed)
 	assert(type(distance) == "number")
 	assert(type(speed) == "number")
 	e_target:ensure("key")
-	c.key = e_target.key.value
+	c.key = e_target:get("key").value
 	c.distance = distance
 	c.speed = speed
 	c.is_overlap = false

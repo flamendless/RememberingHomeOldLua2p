@@ -7,9 +7,12 @@ local Sprite = {
 }
 
 local function draw(e, ...)
-	local outline = e.outline and e.outline.outliner
+	local outline
+	if e:has("outline") then
+		outline = e:get("outline").outliner
+	end
 	if outline then
-		outline:draw(e.outline_val.value, ...)
+		outline:draw(e:get("outline_val").value, ...)
 	else
 		love.graphics.draw(...)
 	end
@@ -26,7 +29,7 @@ end
 function Sprite.setup(e)
 	if not DEV then return end
 	assert(e.__isEntity)
-	local sprite = e.sprite
+	local sprite = e:get("sprite")
 	local s_id = sprite.resource_id
 	if not Sprite.debug_batched[s_id] then
 		Sprite.debug_batched[s_id] = { highest = 0, total = 0, current = 0 }
@@ -36,13 +39,13 @@ end
 function Sprite.remove(e)
 	if not DEV then return end
 	assert(e.__isEntity)
-	local sprite = e.sprite
+	local sprite = e:get("sprite")
 	local s_id = sprite.resource_id
 	Sprite.debug_batched[s_id] = nil
 end
 
 function Sprite.set_bg(e)
-	assert((e.__isEntity and e.sprite and e.bg), e)
+	assert((e.__isEntity and e:has("sprite") and e:has("bg")), e)
 	assert(Sprite.e_bg == nil, "only 1 bg entity is allowed")
 	Sprite.e_bg = e
 end
@@ -55,10 +58,13 @@ end
 function Sprite.render(e)
 	assert(e.__isEntity)
 	local rot, sx, sy, ox, oy, kx, ky
-	local pos = e.pos
-	local sprite = e.sprite
+	local pos = e:get("pos")
+	local sprite = e:get("sprite")
 
-	local transform = e.transform
+	local transform
+	if e:has("transform") then
+		transform = e:get("transform")
+	end
 	if transform then
 		rot = transform.rotation
 		sx, sy = transform.sx, transform.sy
@@ -66,9 +72,15 @@ function Sprite.render(e)
 		kx, ky = transform.kx, transform.ky
 	end
 
-	local quad = e.quad
+	local quad
+	if e:has("quad") then
+		quad = e:get("quad")
+	end
 	if quad then
-		local quad_transform = e.quad_transform
+		local quad_transform
+		if e:has("quad_transform") then
+			quad_transform = e:get("quad_transform")
+		end
 		if quad_transform then
 			rot = quad_transform.rotation
 			sx, sy = quad_transform.sx, quad_transform.sy
@@ -95,7 +107,7 @@ if DEV then
 	end
 
 	function Sprite.debug_batching_update(e)
-		local resource_id = e.sprite.resource_id
+		local resource_id = e:get("sprite").resource_id
 		local db = Sprite.debug_batched[resource_id]
 		if not db then
 			return

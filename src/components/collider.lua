@@ -45,7 +45,7 @@ Concord.component("collider_circle", function(c, size, ox, oy)
 end)
 
 Concord.component("collide_with", function(c, e)
-	assert((e.__isEntity and e.collider), e)
+	assert((e.__isEntity and e:has("collider")), e)
 	e:ensure("key")
-	c.value = e.key.value
+	c.value = e:get("key").value
 end)

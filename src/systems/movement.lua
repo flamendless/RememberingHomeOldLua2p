@@ -6,8 +6,8 @@ local Movement = Concord.system({
 function Movement:init(world)
 	self.world = world
 	self.pool.onRemoved = function(pool, e)
-		local c_body = e.body
-		if c_body then
+		if e:has("body") then
+			local c_body = e:get("body")
 			c_body.dx = 0
 			c_body.vel_x = 0
 		end
@@ -16,9 +16,9 @@ end
 
 function Movement:update(dt)
 	for _, e in ipairs(self.pool_walk) do
-		local random_walk = e.random_walk
-		local diff = random_walk.orig_pos:distance(e.pos_vec2.value)
-		local body = e.body
+		local random_walk = e:get("random_walk")
+		local diff = random_walk.orig_pos:distance(e:get("pos_vec2").value)
+		local body = e:get("body")
 
 		local dir = random_walk.dir
 		if diff <= random_walk.distance then
@@ -31,13 +31,13 @@ function Movement:update(dt)
 	end
 
 	for _, e in ipairs(self.pool) do
-		local vel_x, vel_y = 0, e.gravity.value * dt
-		local body = e.body
+		local vel_x, vel_y = 0, e:get("gravity").value * dt
+		local body = e:get("body")
 
-		if e.override_animation then
+		if e:has("override_animation") then
 			body.dx = 0
 		elseif body.dx ~= 0 then
-			vel_x = e.speed.vx * body.dx * dt
+			vel_x = e:get("speed").vx * body.dx * dt
 		end
 
 		body.vel_x, body.vel_y = vel_x, vel_y
@@ -47,14 +47,14 @@ function Movement:update(dt)
 end
 
 function Movement:update_speed_data(e, anim_name)
-	assert((e.__isEntity and e.speed and e.speed_data and e.body), e)
+	assert((e.__isEntity and e:has("speed") and e:has("speed_data") and e:has("body")), e)
 	assert(type(anim_name) == "string", anim_name)
-	local new_speed = e.speed_data.speed_data[anim_name]
+	local new_speed = e:get("speed_data").speed_data[anim_name]
 	if not new_speed then
 		Log.warn("No speed data for anim", anim_name)
 		return
 	end
-	local speed = e.speed
+	local speed = e:get("speed")
 	speed.vx = mathx.lerp(speed.vx, new_speed.x, 0.5)
 end
 
@@ -73,7 +73,7 @@ function Movement:debug_update(dt)
 	if Slab.CheckBox(flags.gravity, "gravity") then
 		flags.gravity = not flags.gravity
 		for _, e in ipairs(self.pool) do
-			local gravity = e.gravity
+			local gravity = e:get("gravity")
 			if not flags.gravity then
 				gravity.temp = gravity.value
 				gravity.value = 0
@@ -88,7 +88,7 @@ end
 function Movement:debug_on_drag(bool)
 	assert(type(bool) == "boolean", bool)
 	for _, e in ipairs(self.pool) do
-		local gravity = e.gravity
+		local gravity = e:get("gravity")
 		if bool then
 			gravity.temp = gravity.value
 			gravity.value = 0

@@ -45,7 +45,12 @@ local function get_query_point(self)
 end
 
 local function filter(item, other)
-	return other.collider.filter or Enums.bump_filter.slide
+	local collider = other:get("collider")
+	local filter_val = collider.filter
+	if not filter_val then
+		filter_val = Enums.bump_filter.slide
+	end
+	return filter_val
 end
 
 local function overlaps_query_rect(pool, e, x, y, w, h)
@@ -59,12 +64,12 @@ end
 
 function BumpCollision:preupdate(dt)
 	for _, e in ipairs(self.pool:getItems()) do
-		e.collider.is_hit = false
+		e:get("collider").is_hit = false
 		if e:has("hit_wall") then
 			e:remove("hit_wall")
 		end
 
-		e.bump.debug_hovered = false
+		e:get("bump").debug_hovered = false
 	end
 end
 
@@ -76,7 +81,7 @@ function BumpCollision:update(dt)
 	for i = 1, all_len do
 		local e = all[i]
 		-- Skip dragged debug bodies; do not abort the whole update.
-		if e.body and not e.bump.debug_clicked and overlaps_query_rect(pool, e, x, y, w, h) then
+		if e:has("body") and not e:get("bump").debug_clicked and overlaps_query_rect(pool, e, x, y, w, h) then
 			self:update_body(e)
 			self:check_col(e)
 		end
@@ -84,8 +89,8 @@ function BumpCollision:update(dt)
 end
 
 function BumpCollision:update_body(e)
-	local body = e.body
-	local pos = e.pos
+	local body = e:get("body")
+	local pos = e:get("pos")
 
 	if body.vel_x == 0 and body.vel_y == 0 then
 		return
@@ -102,12 +107,12 @@ function BumpCollision:update_body(e)
 	for i = 1, len do
 		local c = cols[i]
 		local other = c.other
-		local other_col = other.collider
+		local other_col = other:get("collider")
 		other_col.is_hit = true
 		other_col.normal.x = c.normalX
 		other_col.normal.y = c.normalY
 
-		if other.wall then
+		if other:has("wall") then
 			e:give("hit_wall")
 		end
 	end
@@ -120,30 +125,33 @@ function BumpCollision:check_col(e)
 	local has_collide_interactive = false
 
 	local int_len = 0
-	local within_int = e.within_interactive
+	local within_int = e:get("within_interactive")
 	for i = 1, len do
 		local c = cols[i]
 		local e_other = c.other
-		local other_col = e_other.collider
+		local other_col = e_other:get("collider")
 		other_col.normal.x = c.normalX
 		other_col.normal.y = c.normalY
 
-		if e_other.interactive then
+		if e_other:has("interactive") then
 			int_len = int_len + 1
 		end
 
-		if e.can_interact and e_other.interactive then
+		if e:has("can_interact") and e_other:has("interactive") then
 			local proceed = true
-			local req = e_other.req_col_dir
+			local req = e_other:get("req_col_dir")
 
-			if req and (e.body.dir ~= req.value) then
-				proceed = false
+			if req then
+				local body = e:get("body")
+				if body.dir ~= req.value then
+					proceed = false
+				end
 			end
 
 			if proceed then
-				if not within_int and e_other.interactive then
+				if not within_int and e_other:has("interactive") then
 					self.world:emit("on_collide_interactive", e, e_other)
-				elseif within_int.entity ~= e_other and e_other.interactive then
+				elseif within_int.entity ~= e_other and e_other:has("interactive") then
 					self.world:emit("on_change_interactive", e, e_other)
 				end
 			end
@@ -151,11 +159,11 @@ function BumpCollision:check_col(e)
 			has_collide_interactive = true
 		end
 
-		if e_other.controller then
+		if e_other:has("controller") then
 			e:ensure("collide_with", e_other)
 			has_collide_with = true
 		end
-		if e.controller then
+		if e:has("controller") then
 			e_other:ensure("collide_with", e)
 			has_collide_with = true
 		end
@@ -167,7 +175,7 @@ function BumpCollision:check_col(e)
 		self.world:emit("remove_outlines")
 	end
 
-	local col = e.collider
+	local col = e:get("collider")
 	if not col.is_hit and within_int and int_len == 0 then
 		self.world:emit("on_leave_interactive", e, within_int.entity)
 	end
@@ -186,7 +194,7 @@ function BumpCollision:overlap_at(e)
 end
 
 function BumpCollision:on_item_use(item)
-	assert((item.__isEntity and item.item), item)
+	assert((item.__isEntity and item:has("item")), item)
 	local x, y, w, h = get_query_rect(self)
 	local items, len = self.pool:queryRect(x, y, w, h)
 	local e_other
@@ -196,7 +204,8 @@ function BumpCollision:on_item_use(item)
 		for c = 1, c_len do
 			local col = cols[c]
 			local other = col.other
-			if e.within_interactive and other.interactive then
+			local within_int = e:get("within_interactive")
+			if within_int and other:has("interactive") then
 				e_other = other
 				break
 			end
@@ -207,11 +216,11 @@ function BumpCollision:on_item_use(item)
 end
 
 function BumpCollision:update_collider(e)
-	assert((e.__isEntity and e.collider and e.animation), e)
-	if e.skip_collider_update then
+	assert((e.__isEntity and e:has("collider") and e:has("animation")), e)
+	if e:has("skip_collider_update") then
 		return
 	end
-	local id = e.id
+	local id = e:get("id")
 	if id.value ~= "enemy" then
 		return
 	end
@@ -220,16 +229,23 @@ function BumpCollision:update_collider(e)
 	if sub_id then
 		new_collider = new_collider[sub_id]
 	end
-	new_collider = new_collider[e.animation.obj.current_tag]
+	local animation = e:get("animation")
+	new_collider = new_collider[animation.obj.current_tag]
 	if not new_collider then
 		return
 	end
 
-	local collider = e.collider
-	local pos = e.pos
-	local w = new_collider.w or collider.w
-	local h = new_collider.h or collider.h
-	local col_offset = e.collider_offset
+	local collider = e:get("collider")
+	local pos = e:get("pos")
+	local w = new_collider.w
+	if not w then
+		w = collider.w
+	end
+	local h = new_collider.h
+	if not h then
+		h = collider.h
+	end
+	local col_offset = e:get("collider_offset")
 	if col_offset then
 		pos.x = pos.x + col_offset.ox
 		pos.y = pos.y + col_offset.oy
@@ -240,11 +256,23 @@ function BumpCollision:update_collider(e)
 	collider.h_h = h / 2
 
 	if new_collider.ox or new_collider.oy then
-		local t = e.transform
-		t.sx = new_collider.sx or t.sx
-		t.sy = new_collider.sy or t.sy
-		t.ox = new_collider.ox or t.ox
-		t.oy = new_collider.oy or t.oy
+		local t = e:get("transform")
+		local sx = new_collider.sx
+		if sx then
+			t.sx = sx
+		end
+		local sy = new_collider.sy
+		if sy then
+			t.sy = sy
+		end
+		local ox = new_collider.ox
+		if ox then
+			t.ox = ox
+		end
+		local oy = new_collider.oy
+		if oy then
+			t.oy = oy
+		end
 	end
 
 	self.pool:update(e, pos.x, pos.y, w, h)
@@ -320,14 +348,14 @@ if DEV then
 
 			for i = 1, len do
 				local e = items[i]
-				local id = e.id.value
-				if Slab.BeginTree(id, { Title = id, IsOpen = e.bump.debug_selected }) then
+				local id = e:get("id").value
+				if Slab.BeginTree(id, { Title = id, IsOpen = e:get("bump").debug_selected }) then
 					Slab.Indent()
 					local x, y, w, h = self.pool:getRect(e)
-					x = edit("x", x, e.pos)
-					y = edit("y", y, e.pos)
-					w = edit("w", w, e.collider)
-					h = edit("h", h, e.collider)
+					x = edit("x", x, e:get("pos"))
+					y = edit("y", y, e:get("pos"))
+					w = edit("w", w, e:get("collider"))
+					h = edit("h", h, e:get("collider"))
 					self.pool:update(e, x, y, w, h)
 					Slab.EndTree()
 				end
@@ -339,9 +367,9 @@ if DEV then
 		local items, len = self.pool:queryPoint(mx, my)
 		for i = 1, len do
 			local e = items[i]
-			e.bump.debug_hovered = true
-			e.bump.debug_selected = love.mouse.isDown(2)
-			if love.keyboard.isDown("lshift") and e.bump.debug_selected then
+			e:get("bump").debug_hovered = true
+			e:get("bump").debug_selected = love.mouse.isDown(2)
+			if love.keyboard.isDown("lshift") and e:get("bump").debug_selected then
 				self.world:emit("debug_e_right_clicked", e)
 			end
 		end
@@ -359,7 +387,7 @@ if DEV then
 		local items, len = self.pool:queryRect(x, y, w, h)
 		for i = 1, len do
 			local e = items[i]
-			local id = e.id.value
+			local id = e:get("id").value
 			local rx, ry, rw, rh = self.pool:getRect(e)
 
 			if flags.fill then
@@ -368,7 +396,9 @@ if DEV then
 			end
 
 			love.graphics.setLineWidth(1 / scale)
-			if e.bump.debug_hovered or (e.interactive and e.collider.is_hit) then
+			local bump = e:get("bump")
+			local collider = e:get("collider")
+			if bump.debug_hovered or (e:has("interactive") and collider.is_hit) then
 				love.graphics.setColor(1, 1, 0, 0.7)
 			else
 				love.graphics.setColor(1, 0, 0, 0.7)
@@ -388,11 +418,13 @@ if DEV then
 			local items, len = self.pool:queryRect(x, y, w, h)
 			for i = 1, len do
 				local e = items[i]
-				if e.bump.debug_clicked then
+				local bump = e:get("bump")
+				if bump.debug_clicked then
+					local pos = e:get("pos")
 					local _, _, rw, rh = self.pool:getRect(e)
-					e.pos.x = math.floor(mx)
-					e.pos.y = math.floor(my)
-					self.pool:update(e, e.pos.x, e.pos.y, rw, rh)
+					pos.x = math.floor(mx)
+					pos.y = math.floor(my)
+					self.pool:update(e, pos.x, pos.y, rw, rh)
 				end
 			end
 		end
@@ -409,8 +441,9 @@ if DEV then
 		local items, len = self.pool:queryPoint(mx, my)
 		for i = 1, len do
 			local e = items[i]
-			if e.bump.debug_hovered then
-				e.bump.debug_clicked = true
+			local bump = e:get("bump")
+			if bump.debug_hovered then
+				bump.debug_clicked = true
 			end
 		end
 	end
@@ -422,12 +455,14 @@ if DEV then
 			local items, len = self.pool:queryRect(x, y, w, h)
 			for i = 1, len do
 				local e = items[i]
-				if e.bump.debug_clicked then
+				local bump = e:get("bump")
+				if bump.debug_clicked then
+					local pos = e:get("pos")
 					local _, _, rw, rh = self.pool:getRect(e)
-					e.pos.x = math.floor(mx)
-					e.pos.y = math.floor(my)
-					e.bump.debug_clicked = false
-					self.pool:update(e, e.pos.x, e.pos.y, rw, rh)
+					pos.x = math.floor(mx)
+					pos.y = math.floor(my)
+					bump.debug_clicked = false
+					self.pool:update(e, pos.x, pos.y, rw, rh)
 				end
 			end
 		end

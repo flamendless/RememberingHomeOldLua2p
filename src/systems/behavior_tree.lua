@@ -6,14 +6,14 @@ function BehaviorTree:init(world)
 	self.world = world
 
 	self.pool.onAdded = function(_, e)
-		local bt = e.behavior_tree
+		local bt = e:get("behavior_tree")
 		bt.beehive = bt.beehive(self.world, e)
 	end
 end
 
 function BehaviorTree:update(dt)
 	for _, e in ipairs(self.pool) do
-		local bt = e.behavior_tree
+		local bt = e:get("behavior_tree")
 		bt.result = bt.beehive(self.world, e)
 	end
 end
@@ -27,9 +27,9 @@ function BehaviorTree:debug_update()
 		IsOpen = self.debug_show,
 	})
 	for _, e in ipairs(self.pool) do
-		local id = e.id.value
-		local bt = e.behavior_tree
-		Slab.Text(id)
+		local id = e:get("id")
+		local bt = e:get("behavior_tree")
+		Slab.Text(id.value)
 		Slab.SameLine()
 
 		local current_node = bt.current_node

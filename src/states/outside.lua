@@ -60,7 +60,7 @@ function Outside:state_setup()
 	--setup lights
 	for k, v in pairs(Assemblages.Outside.lights) do
 		local e = Concord.entity(self.world):assemble(v, k)
-		if e.id.value == "pl_car_headlight" then
+		if e:get("id").value == "pl_car_headlight" then
 			self.main_car_light = e
 		end
 	end
@@ -104,14 +104,15 @@ function Outside:state_init()
 			self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
 			self.world:emit("camera_follow", e_player, 0.25)
 			self.camera:setScale(3)
-			self.camera:setPosition(e_player.pos.x, e_player.pos.y)
+			local player_pos = e_player:get("pos")
+			self.camera:setPosition(player_pos.x, player_pos.y)
 			self.camera:setScale(3)
 			self.e_player = e_player
 		end)
 		Fade.set_alpha(0)
 
 		for _, e in ipairs(self.pool_bump) do
-			local id = e.id.value
+			local id = e:get("id").value
 			if id == "backdoor" then
 				e:remove("dialogue_meta"):give("is_door")
 			end
@@ -215,7 +216,8 @@ function Outside:state_init()
 		end)
 		dt_cam.x, dt_cam.y = self.camera:getPosition()
 		dt_cam.scale = self.camera:getScale()
-		Flux.to(dt_cam, 3, { x = e_player.pos.x, y = e_player.pos.y + 32, scale = 5 })
+		local player_pos = e_player:get("pos")
+		Flux.to(dt_cam, 3, { x = player_pos.x, y = player_pos.y + 32, scale = 5 })
 			:onupdate(function()
 				self.world:emit("set_camera_transform", self.camera, {
 					x = dt_cam.x,
@@ -319,7 +321,7 @@ end
 
 function Outside:on_car_light_flicker_after()
 	for _, e in ipairs(self.pool_car_lights) do
-		local diff = e.diffuse
+		local diff = e:get("diffuse")
 		-- diff.value[1] = diff.orig_value[1]
 		-- diff.value[2] = diff.orig_value[2]
 		-- diff.value[3] = diff.orig_value[3]
@@ -335,7 +337,7 @@ function Outside:on_car_light_flicker_after()
 end
 
 function Outside:get_flashlight(e, dialogues_t)
-	assert((e.__isEntity and e.dialogue_meta), e)
+	assert((e.__isEntity and e:has("dialogue_meta")), e)
 	assert(type(dialogues_t) == "table", dialogues_t)
 	local has_flashlight = Items.has(Enums.item_id.flashlight)
 	if not has_flashlight then
@@ -356,7 +358,7 @@ function Outside:toggle_car_power(ent)
 	self.world:emit("play_sound_on_entity", ent, Enums.sfx.car_power)
 	self.world:emit("wait_dialogue", true)
 	self.world:emit("remove_choices")
-	local mcl = self.main_car_light.light_disabled
+	local mcl = self.main_car_light:has("light_disabled")
 	for _, e in ipairs(self.pool_car_lights) do
 		e:remove("light_disabled")
 	end
@@ -380,7 +382,7 @@ function Outside:toggle_car_power_after(ent, flag)
 end
 
 function Outside:check_frontdoor(e, dialogues_t)
-	assert((e.__isEntity and e.dialogue_meta), e)
+	assert((e.__isEntity and e:has("dialogue_meta")), e)
 	assert(type(dialogues_t) == "table", dialogues_t)
 	self.world:emit("remove_choices")
 	if not Items.has(Enums.item_id.frontdoor_key) then
@@ -391,7 +393,7 @@ end
 
 function Outside:make_car_interactive()
 	for _, e in ipairs(self.pool_bump) do
-		if e.id.value == "car" then
+		if e:get("id").value == "car" then
 			e:give("interactive")
 			break
 		end
@@ -399,7 +401,7 @@ function Outside:make_car_interactive()
 end
 
 function Outside:check_backdoor(e, dialogues_t)
-	assert((e.__isEntity and e.dialogue_meta), e)
+	assert((e.__isEntity and e:has("dialogue_meta")), e)
 	assert((e.__isEntity and self.e_player), e)
 	assert(type(dialogues_t) == "table", dialogues_t)
 	local has_flashlight = Items.has(Enums.item_id.flashlight)

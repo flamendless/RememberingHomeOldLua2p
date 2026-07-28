@@ -50,18 +50,19 @@ end
 function Color:init(world)
 	self.world = world
 	self.pool_fade_in.onAdded = function(pool, e)
-		local c = e.color_fade_in
-		local f_in = e.fade_in_target_alpha
+		local c = e:get("color_fade_in")
+		local f_in = e:get("fade_in_target_alpha")
+		local color = e:get("color")
 		local target = 1
 
 		if f_in then
 			target = f_in.value
 		end
 
-		local f = Flux.to(e.color.value, c.duration, { [4] = target })
+		local f = Flux.to(color.value, c.duration, { [4] = target })
 			:delay(c.delay)
 			:oncomplete(function()
-				local on_complete = e.color_fade_in_finish
+				local on_complete = e:get("color_fade_in_finish")
 				if on_complete then
 					self.world:emit(on_complete.signal, unpack(on_complete.args))
 					-- e:remove("color_fade_in_finish")
@@ -70,17 +71,19 @@ function Color:init(world)
 				Log.info("color fade in oncomplete done")
 			end)
 
-		local ease = e.ease
+		local ease = e:get("ease")
 		if ease then
 			f:ease(ease.value)
 		end
 	end
 
 	self.pool_fade_out.onAdded = function(pool, e)
-		local f = Flux.to(e.color.value, e.color_fade_out.duration, { [4] = 0 })
-			:delay(e.color_fade_out.delay)
+		local color = e:get("color")
+		local fade_out = e:get("color_fade_out")
+		local f = Flux.to(color.value, fade_out.duration, { [4] = 0 })
+			:delay(fade_out.delay)
 			:oncomplete(function()
-				local on_complete = e.color_fade_out_finish
+				local on_complete = e:get("color_fade_out_finish")
 				if on_complete then
 					self.world:emit(on_complete.signal, unpack(on_complete.args))
 					-- e:remove("color_fade_out_finish")
@@ -89,16 +92,16 @@ function Color:init(world)
 				Log.info("color fade out oncomplete done")
 			end)
 
-		local ease = e.ease
+		local ease = e:get("ease")
 		if ease then
 			f:ease(ease.value)
 		end
 	end
 
 	self.pool_fade_in_out.onAdded = function(pool, e)
-		local color = e.color
-		local f_in_out = e.color_fade_in_out
-		local ease = e.ease
+		local color = e:get("color")
+		local f_in_out = e:get("color_fade_in_out")
+		local ease = e:get("ease")
 		local f
 		local count = 0
 		local fn_out, fn_in
@@ -143,11 +146,11 @@ function Color:init(world)
 	end
 
 	self.pool_color.onAdded = function(pool, e)
-		local color = e.color
-		local target = e.target_color
-		local target_color = e.target_color.target
-		local on_finish = e.lerp_on_finish
-		local on_finish_multi = e.lerp_on_finish_multi
+		local color = e:get("color")
+		local target = e:get("target_color")
+		local target_color = target.target
+		local on_finish = e:get("lerp_on_finish")
+		local on_finish_multi = e:get("lerp_on_finish_multi")
 
 		local f = Flux.to(color.value, target.duration, {
 			[1] = target_color[1],
@@ -175,7 +178,7 @@ function Color:init(world)
 				e:remove("target_color")
 			end)
 
-		local ease = e.ease
+		local ease = e:get("ease")
 		if ease then
 			f:ease(ease.value)
 		end
@@ -187,8 +190,8 @@ function Color:init(world)
 end
 
 function Color:setup_blink(e)
-	local blink = e.blink
-	local color = e.color.value
+	local blink = e:get("blink")
+	local color = e:get("color").value
 	Flux.to(color, blink.dur, {
 		[4] = 1 - color[4],
 	}):oncomplete(function()
@@ -196,11 +199,11 @@ function Color:setup_blink(e)
 		if blink.completed < blink.count then
 			self:setup_blink(e)
 		else
-			local obe = e.on_blink_end
+			local obe = e:get("on_blink_end")
 			if obe then
 				self.world:emit(obe.signal, e)
 			end
-			if e.remove_blink_on_end then
+			if e:has("remove_blink_on_end") then
 				e:remove("blink"):remove("remove_blink_on_end"):remove("on_blink_end")
 			end
 		end
@@ -210,8 +213,8 @@ end
 
 function Color:start_fade()
 	for _, e in ipairs(self.pool_fade_to_black) do
-		local color = e.color
-		local fade = e.fade_to_black
+		local color = e:get("color")
+		local fade = e:get("fade_to_black")
 
 		local f = Flux.to(color.value, fade.duration, {
 			[1] = 0,
@@ -220,7 +223,7 @@ function Color:start_fade()
 			[4] = 0,
 		}):delay(fade.delay)
 
-		local ease = e.ease
+		local ease = e:get("ease")
 		if ease then
 			f:ease(ease.value)
 		end
@@ -229,20 +232,21 @@ end
 
 function Color:start_colors_lerp()
 	for _, e in ipairs(self.pool_colors) do
-		local color = e.color
-		local lc = e.lerp_colors
+		local color = e:get("color")
+		local lc = e:get("lerp_colors")
 		lerp_colors(lc, color)
 	end
 end
 
 function Color:lerp_color(e, color, dur, ease)
-	assert((e.__isEntity and e.color), e)
+	assert((e.__isEntity and e:has("color")), e)
 	assert(type(color) == "table", color)
 	assert(type(dur) == "number", dur)
 	if ease then
 		assert(type(ease) == "string", ease)
 	end
-	Flux.to(e.color.value, dur, {
+	local e_color = e:get("color")
+	Flux.to(e_color.value, dur, {
 		[1] = color[1],
 		[2] = color[2],
 		[3] = color[3],

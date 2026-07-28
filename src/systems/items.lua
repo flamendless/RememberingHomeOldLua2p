@@ -47,16 +47,16 @@ function ItemsSystem:initialize_entities()
 end
 
 function ItemsSystem:create_item_preview(bg_e, item_e)
-	assert((bg_e.__isEntity and bg_e.cell_bg), bg_e)
-	assert((item_e.__isEntity and item_e.item), item_e)
+	assert((bg_e.__isEntity and bg_e:has("cell_bg")), bg_e)
+	assert((item_e.__isEntity and item_e:has("item")), item_e)
 	local scale = 4
 	local pad = 32
 	local pad_p = pad * 2
-	local bg_pos = bg_e.pos
-	local bg_sprite = bg_e.sprite
-	local bg_t = bg_e.transform
+	local bg_pos = bg_e:get("pos")
+	local bg_sprite = bg_e:get("sprite")
+	local bg_t = bg_e:get("transform")
 
-	local res_id = item_e.sprite.resource_id
+	local res_id = item_e:get("sprite").resource_id
 	local img = Resources.data.images[res_id]
 	local tw = (img:getWidth() + 16) * scale
 	local th = (img:getHeight() + 16) * scale
@@ -80,22 +80,22 @@ function ItemsSystem:item_response(dialogue_t, main, sub)
 end
 
 function ItemsSystem:on_item_use_with(item, other)
-	assert((item.__isEntity and item.item), item)
+	assert((item.__isEntity and item:has("item")), item)
 	if other then
-		assert((other.__isEntity and other.interactive), other)
+		assert((other.__isEntity and other:has("interactive")), other)
 	end
 	self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
 	self.world:emit("set_system_to", Enums.ui_system.inventory, false)
-	local item_id = item.item.id
+	local item_id = item:get("item").id
 	if not other then
 		local dialogue_t = Dialogues.get("common", "item_without")
 		self:item_response(dialogue_t, "common", "item_without")
 	else
-		local other_id = other.id.value
+		local other_id = other:get("id").value
 		local t = list[item_id] and list[item_id][other_id]
-		assert(other.usable_with_item ~= nil and t ~= nil, "add usable_with_item component?")
-		assert(other.usable_with_item ~= nil and t ~= nil, "add to list?")
-		if other.usable_with_item and t ~= nil then
+		assert(other:has("usable_with_item") and t ~= nil, "add usable_with_item component?")
+		assert(other:has("usable_with_item") and t ~= nil, "add to list?")
+		if other:has("usable_with_item") and t ~= nil then
 			self:item_response(t, "_none", "_none")
 		else
 			local t2 = { string.format("%s can not be used here", item_id) }
@@ -105,8 +105,8 @@ function ItemsSystem:on_item_use_with(item, other)
 end
 
 function ItemsSystem:on_item_equip(item_e)
-	assert((item_e.__isEntity and item_e.item), item_e)
-	local item = item_e.item
+	assert((item_e.__isEntity and item_e:has("item")), item_e)
+	local item = item_e:get("item")
 	if item.id == Enums.item_id.flashlight then
 		self.world:emit("set_system_to", Enums.ui_system.dialogues, true)
 		self.world:emit("set_system_to", Enums.ui_system.inventory, false)

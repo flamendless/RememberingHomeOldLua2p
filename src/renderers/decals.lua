@@ -25,13 +25,16 @@ end
 function Decals.setup(e)
 	assert(e.__isEntity)
 
-	local c_decals_shaders = e.decals_shaders
+	local c_decals_shaders
+	if e:has("decals_shaders") then
+		c_decals_shaders = e:get("decals_shaders")
+	end
 	if c_decals_shaders then
 		c_decals_shaders.shader = love.graphics.newShader(Shaders.paths[c_decals_shaders.value])
 	end
 
-	local c_decals_embed = e.decals_embed
-	if c_decals_embed then
+	if e:has("decals_embed") then
+		local c_decals_embed = e:get("decals_embed")
 		local e_other = Decals.world:getEntityByKey(c_decals_embed.value)
 		assert(e_other ~= nil)
 	end
@@ -54,12 +57,13 @@ function Decals.remove(e)
 end
 
 function Decals.send_uniforms(e)
-	local c_decals_shaders = e.decals_shaders
-	if not c_decals_shaders then
+	local c_decals_shaders
+	if not e:has("decals_shaders") then
 		return
 	end
+	c_decals_shaders = e:get("decals_shaders")
 
-	local c_decals = e.decals
+	local c_decals = e:get("decals")
 	if c_decals.kind ~= Enums.decals.hand then
 		return
 	end
@@ -78,9 +82,9 @@ end
 function Decals.update(dt, e)
 	assert(e.__isEntity)
 
-	local c_decals_shaders = e.decals_shaders
-	if c_decals_shaders then
-		local c_decals = e.decals
+	if e:has("decals_shaders") then
+		local c_decals_shaders = e:get("decals_shaders")
+		local c_decals = e:get("decals")
 		if c_decals.kind == Enums.decals.hand then
 			c_decals_shaders.data.time = c_decals_shaders.data.time + dt
 		end
@@ -90,15 +94,18 @@ end
 
 function Decals.render_hand(e)
 	assert(e.__isEntity)
-	assert(e.decals.kind == Enums.decals.hand, e.decals.kind)
+	local c_decals = e:get("decals")
+	assert(c_decals.kind == Enums.decals.hand, c_decals.kind)
 
-	local rot = e.decals_shaders.data.rotation
-	local sx, sy = unpack(e.decals_shaders.data.scale)
+	local c_decals_shaders = e:get("decals_shaders")
+	local rot = c_decals_shaders.data.rotation
+	local sx, sy = unpack(c_decals_shaders.data.scale)
 	local w, h = Decals.tex_hand:getDimensions()
+	local pos = e:get("pos")
 	love.graphics.draw(
 		Decals.tex_hand,
-		e.pos.x,
-		e.pos.y,
+		pos.x,
+		pos.y,
 		rot,
 		sx,
 		sy,
@@ -111,17 +118,23 @@ function Decals.render(e)
 	assert(e.__isEntity)
 
 	local temp_shader
-	local c_decals_shaders = e.decals_shaders
+	local c_decals_shaders
+	if e:has("decals_shaders") then
+		c_decals_shaders = e:get("decals_shaders")
+	end
 	if c_decals_shaders then
 		temp_shader = love.graphics.getShader()
 		Decals.send_uniforms(e)
 		love.graphics.setShader(c_decals_shaders.shader)
 	end
 
-	local c_color = e.color and e.color.value or Palette.colors.white
+	local c_color = Palette.colors.white
+	if e:has("color") then
+		c_color = e:get("color").value
+	end
 	love.graphics.setColor(c_color)
 
-	local c_decals = e.decals
+	local c_decals = e:get("decals")
 	if c_decals.kind == Enums.decals.hand then
 		Decals.render_hand(e)
 	end
@@ -150,14 +163,14 @@ if DEV then
 		if Slab.CheckBox(debug_outline, "Outline") then debug_outline = not debug_outline end
 
 		for _, e in ipairs(Decals.debug_list) do
-			if Slab.BeginTree(e.id.value) then
+			if Slab.BeginTree(e:get("id").value) then
 				Slab.Indent()
 
-				local c_decals = e.decals
+				local c_decals = e:get("decals")
 				Slab.Text("kind: " .. c_decals.kind)
 
 				if c_decals.kind == Enums.decals.hand then
-					local c_decals_shaders = e.decals_shaders
+					local c_decals_shaders = e:get("decals_shaders")
 					local data = c_decals_shaders.data
 					local _ = nil
 					data.opacity, _ = UIWrapper.edit_range("opacity", data.opacity, 0, 1, false)
@@ -169,8 +182,8 @@ if DEV then
 					data.rotation, _ = UIWrapper.edit_range("rot", data.rotation, 0, 360, true)
 				end
 
-				local c_color = e.color
-				if c_color then
+				if e:has("color") then
+					local c_color = e:get("color")
 					UIWrapper.color(c_color.value)
 				end
 
@@ -186,14 +199,16 @@ if DEV then
 		if not debug_outline then return end
 		love.graphics.setColor(1, 0, 0, 1)
 		for _, e in ipairs(Decals.debug_list) do
-			local c_decals = e.decals
+			local c_decals = e:get("decals")
 			if c_decals.kind == Enums.decals.hand then
-				local sx, sy = unpack(e.decals_shaders.data.scale)
+				local c_decals_shaders = e:get("decals_shaders")
+				local sx, sy = unpack(c_decals_shaders.data.scale)
 				local w, h = Decals.tex_hand:getDimensions()
+				local pos = e:get("pos")
 				love.graphics.rectangle(
 					"line",
-					e.pos.x - w * sx/2,
-					e.pos.y - h * sy/2,
+					pos.x - w * sx/2,
+					pos.y - h * sy/2,
 					w * sx,
 					h * sy
 				)

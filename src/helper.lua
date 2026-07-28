@@ -6,10 +6,10 @@ end
 
 function Helper.get_real_size(e)
 	assert(e.__isEntity, e)
-	local box = e.bounding_box
+	local box = e:get("bounding_box")
 	local bw, bh = box.w, box.h
-	local t = e.transform
-	if t then
+	if e:has("transform") then
+		local t = e:get("transform")
 		bw = bw * t.sx
 		bh = bh * t.sy
 	end
@@ -17,22 +17,24 @@ function Helper.get_real_size(e)
 end
 
 function Helper.get_frame_size(e)
-	local anim = e.animation
-	if anim and anim.obj then
-		local clip = anim.obj:current_clip()
-		if clip then
-			return clip.frame_width, clip.frame_height
+	if e:has("animation") then
+		local anim = e:get("animation")
+		if anim.obj then
+			local clip = anim.obj:current_clip()
+			if clip then
+				return clip.frame_width, clip.frame_height
+			end
 		end
 	end
-	local sprite = e.sprite
-	if sprite then
+	if e:has("sprite") then
+		local sprite = e:get("sprite")
 		return sprite.iw, sprite.ih
 	end
 end
 
 function Helper.get_offset(e)
 	assert(e.__isEntity, e)
-	local transform = e.transform
+	local transform = e:get("transform")
 	local fw, fh = Helper.get_frame_size(e)
 	local ox = transform.ox
 	local oy = transform.oy
@@ -56,20 +58,18 @@ end
 
 function Helper.get_real_pos_box(e)
 	assert(e.__isEntity, e)
-	local box = e.bounding_box
-	local pos = e.pos
-	local transform = e.transform
-	local camera = e.camera
-
+	local box = e:get("bounding_box")
+	local pos = e:get("pos")
 	local x = pos.x
 	local y = pos.y
 
-	if camera then
+	if e:has("camera") then
 		x = box.screen_pos.x
 		y = box.screen_pos.y
 	end
 
-	if transform then
+	if e:has("transform") then
+		local transform = e:get("transform")
 		local ox, oy = Helper.get_offset(e)
 		x = x - ox * transform.orig_sx
 		y = y - oy * transform.orig_sy
@@ -81,12 +81,12 @@ end
 function Helper.get_ltwh(e)
 	assert(e.__isEntity, e)
 	--get the size
-	local sprite = e.sprite
+	local sprite = e:get("sprite")
 	local w, h = sprite.iw, sprite.ih
-	local collider = e.collider
 	local fw, fh = Helper.get_frame_size(e)
 
-	if collider then
+	if e:has("collider") then
+		local collider = e:get("collider")
 		w = collider.w
 		h = collider.h
 	elseif fw and fh then
@@ -96,15 +96,16 @@ function Helper.get_ltwh(e)
 
 	--get the scale
 	local sx, sy = 1, 1
-	local t = e.transform
-	if t then
+	local t
+	if e:has("transform") then
+		t = e:get("transform")
 		sx = t.orig_sx
 		sy = t.orig_sy
 	end
 
 	--get the offset
 	local ox, oy = 0, 0
-	if t and not collider then
+	if t and not e:has("collider") then
 		ox = t.ox
 		oy = t.oy
 		if ox == 0.5 then
@@ -120,7 +121,7 @@ function Helper.get_ltwh(e)
 	end
 
 	--get the pos
-	local pos = e.pos
+	local pos = e:get("pos")
 	local x, y = pos.x, pos.y
 
 	--calculate

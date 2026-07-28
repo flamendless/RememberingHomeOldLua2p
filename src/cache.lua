@@ -6,13 +6,13 @@ local Cache = {
 
 function Cache.add_entity(e)
 	assert(e.__isEntity, e)
-	local id = e.id.value
+	local id = e:get("id").value
 	Cache.entities[id] = e
 	Log.info(id, "added to cache")
 end
 
 function Cache.has_entity(e)
-	return Cache.get_entity(e.id.value) ~= nil
+	return Cache.get_entity(e:get("id").value) ~= nil
 end
 
 function Cache.get_entity(id)
@@ -22,7 +22,7 @@ end
 
 function Cache.remove_entity(e)
 	assert(e.__isEntity, e)
-	local id = e.id.value
+	local id = e:get("id").value
 	if Cache.entities[id] then
 		Cache.entities[id] = nil
 		Log.info(id, "removed from cache")

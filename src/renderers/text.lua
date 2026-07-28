@@ -3,22 +3,35 @@ local Text = {
 }
 
 function Text.render(e)
-	local str = (e.text and e.text.value) or (e.static_text and e.static_text.value)
+	local str
+	if e:has("text") then
+		str = e:get("text").value
+	elseif e:has("static_text") then
+		str = e:get("static_text").value
+	end
 	if (not str) or #str == 0 then
 		return
 	end
 
-	local font = e.font
-	if font then
-		love.graphics.setFont(font.value)
+	if e:has("font") then
+		love.graphics.setFont(e:get("font").value)
 	end
 
 	local current_font = love.graphics.getFont()
 	local r, sx, sy, ox, oy, kx, ky
 
-	local textf = e.textf
-	local static_text = e.static_text
-	local transform = e.transform
+	local textf
+	if e:has("textf") then
+		textf = e:get("textf")
+	end
+	local static_text
+	if e:has("static_text") then
+		static_text = e:get("static_text")
+	end
+	local transform
+	if e:has("transform") then
+		transform = e:get("transform")
+	end
 	if transform then
 		r = transform.rotation
 		sx, sy = transform.sx, transform.sy
@@ -54,10 +67,13 @@ function Text.render(e)
 		end
 	end
 
-	local pos = e.pos
+	local pos = e:get("pos")
 	local x, y = pos.x, pos.y
 
-	local rfp = e.reflowprint
+	local rfp
+	if e:has("reflowprint") then
+		rfp = e:get("reflowprint")
+	end
 	if rfp then
 		x = x - ox
 		y = y - oy

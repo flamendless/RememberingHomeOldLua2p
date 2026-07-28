@@ -16,23 +16,27 @@ function Wind:init(world)
 end
 
 function Wind:is_blow_out_candidate(e)
-	local windable = e.flame_windable
+	local windable = e:get("flame_windable")
 	if windable.extinguished then
 		return false
 	end
-	if e.flame_suppressed then
+	if e:has("flame_suppressed") then
 		return false
 	end
-	if e.flame_health and e.flame_health.health <= 0 then
+	local flame_health = e:get("flame_health")
+	if flame_health and flame_health.health <= 0 then
 		return false
 	end
 	return true
 end
 
 function Wind:apply_gust(e, strength)
-	local windable = e.flame_windable
-	local anchor = e.flame_anchor
-	local dir = anchor and anchor.dir or 1
+	local windable = e:get("flame_windable")
+	local anchor = e:get("flame_anchor")
+	local dir = 1
+	if anchor then
+		dir = anchor.dir
+	end
 	local sign = love.math.random() < 0.5 and -1 or 1
 	windable.offset_target = sign * strength * WIND_OFFSET_SCALE * dir
 	windable.flicker_timer = WIND_FLICKER_BASE + strength * 0.04
@@ -54,7 +58,7 @@ function Wind:on_blow_wind(strength, x, y, radius)
 	local r2 = radius * radius
 
 	for _, e in ipairs(self.pool) do
-		local pos = e.pos
+		local pos = e:get("pos")
 		local dx = pos.x - x
 		local dy = pos.y - y
 		if dx * dx + dy * dy <= r2 then
@@ -66,7 +70,7 @@ end
 function Wind:update(dt)
 	local blend = math.min(1, dt * 8)
 	for _, e in ipairs(self.pool) do
-		local windable = e.flame_windable
+		local windable = e:get("flame_windable")
 		windable.offset = windable.offset + (windable.offset_target - windable.offset) * blend
 		windable.offset_target = windable.offset_target * math.max(0, 1 - dt * WIND_OFFSET_DECAY)
 		windable.flicker_timer = math.max(0, windable.flicker_timer - dt)
@@ -100,8 +104,9 @@ if DEV then
 			local x, y = 0, 0
 			local e_player = self.world:getResource("e_player")
 			if e_player then
-				x = e_player.pos.x
-				y = e_player.pos.y
+				local pos = e_player:get("pos")
+				x = pos.x
+				y = pos.y
 			end
 			self:on_blow_wind(self.debug_wind_strength, x, y, self.debug_blow_radius)
 		end

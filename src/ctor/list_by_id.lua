@@ -11,7 +11,7 @@ local function ctor(def)
 end
 
 function ListByID:add(entity)
-	if entity.list_group.value == self.id then
+	if entity:get("list_group").value == self.id then
 		table.insert(self, entity)
 		return true
 	end

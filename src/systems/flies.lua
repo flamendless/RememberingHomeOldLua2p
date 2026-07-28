@@ -55,9 +55,9 @@ end
 
 function Flies:update(dt)
 	for _, e in ipairs(self.pool) do
-		local pos = e.pos
-		local ref = e.ref_pos_vec2.value
-		local fly = e.fly
+		local pos = e:get("pos")
+		local ref = e:get("ref_pos_vec2").value
+		local fly = e:get("fly")
 
 		fly.turn_timer = fly.turn_timer - dt
 		if fly.turn_timer <= 0 then

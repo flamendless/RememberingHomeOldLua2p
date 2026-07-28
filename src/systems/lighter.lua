@@ -15,7 +15,7 @@ function Lighter:init(world)
 end
 
 function Lighter:spawn_lighter(e_player)
-	assert(e_player.__isEntity and e_player.player)
+	assert(e_player.__isEntity and e_player:has("player"))
 	self.e_player = e_player
 	self.e_lighter = Concord.entity(self.world)
 		:assemble(Assemblages.Lighter.lighter, e_player)
@@ -33,19 +33,19 @@ function Lighter:spawn_lighter(e_player)
 end
 
 function Lighter:lighter_update_pos(e_player)
-	assert(e_player.__isEntity and e_player.player)
-	local dir = e_player.body.dir
-	self.e_lighter.anchor.padding_x = 16 * dir
-	self.e_lighter.transform.sx = -dir
+	assert(e_player.__isEntity and e_player:has("player"))
+	local dir = e_player:get("body").dir
+	self.e_lighter:get("anchor").padding_x = 16 * dir
+	self.e_lighter:get("transform").sx = -dir
 end
 
 function Lighter:is_flame_frame_lit()
 	local e = self.e_player
-	if not e or not e.animation then
+	if not e or not e:has("animation") then
 		return false
 	end
 
-	local obj = e.animation.obj
+	local obj = e:get("animation").obj
 	local tag = obj.base_tag
 	local frame = math.floor(obj.anim8.position)
 
@@ -59,18 +59,21 @@ function Lighter:is_flame_frame_lit()
 end
 
 function Lighter:wick_world_pos(e_player)
-	local pos = e_player.pos
+	local pos = e_player:get("pos")
 	local ox, oy = Helper.get_offset(e_player)
 	local sx, sy = 1, 1
-	local qt = e_player.quad_transform
+	local qt = e_player:get("quad_transform")
 	if qt then
 		sx = qt.sx
 		sy = qt.sy
 		ox = qt.ox
 		oy = qt.oy
-	elseif e_player.transform then
-		sx = e_player.transform.sx
-		sy = e_player.transform.sy
+	else
+		local transform = e_player:get("transform")
+		if transform then
+			sx = transform.sx
+			sy = transform.sy
+		end
 	end
 
 	return pos.x + (WICK_X - ox) * sx, pos.y + (WICK_Y - oy) * sy
@@ -85,11 +88,12 @@ function Lighter:request_close()
 end
 
 function Lighter:on_anim_open_lighter(e_player)
-	if not self.e_flame or not self.e_flame.flame_windable then
+	if not self.e_flame or not self.e_flame:has("flame_windable") then
 		return
 	end
-	self.e_flame.flame_windable.extinguished = false
-	if self.e_flame.flame_health and self.e_flame.flame_health.health <= 0 then
+	self.e_flame:get("flame_windable").extinguished = false
+	local flame_health = self.e_flame:get("flame_health")
+	if flame_health and flame_health.health <= 0 then
 		self.world:emit("play_sound_on_player", Enums.sfx.lighter_empty)
 	end
 end
@@ -111,11 +115,11 @@ function Lighter:update(dt)
 		return
 	end
 
-	local anchor = self.e_flame.flame_anchor
+	local anchor = self.e_flame:get("flame_anchor")
 	local bx, by = self:wick_world_pos(self.e_player)
 	anchor.base_x = bx
 	anchor.base_y = by
-	anchor.dir = self.e_player.body.dir
+	anchor.dir = self.e_player:get("body").dir
 
 	if self:is_flame_frame_lit() then
 		self.e_flame:remove("flame_suppressed")

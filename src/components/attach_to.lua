@@ -1,7 +1,7 @@
 local c_attach_to = Concord.component("attach_to", function(c, e_target)
 	assert(e_target.__isEntity, e_target)
 	e_target:ensure("key")
-	c.key = e_target.key.value
+	c.key = e_target:get("key").value
 end)
 
 function c_attach_to:serialize()

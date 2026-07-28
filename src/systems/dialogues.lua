@@ -90,7 +90,7 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert(e.__isEntity)
 	assert(e_other.__isEntity)
 	if override_dialogue_key then assert(type(override_dialogue_key) == "string", override_dialogue_key) end
-	local dialogue_key = override_dialogue_key or e_other.dialogue_key.value
+	local dialogue_key = override_dialogue_key or e_other:get("dialogue_key").value
 	assert(type(dialogue_key) == "string")
 
 	if self.dialogue:getCurrentKnot() ~= dialogue_key then
@@ -103,8 +103,8 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 
 		--TODO: Implement pause (b)
 		Log.debug("TODO: Implement pause (b)")
-		if e_other.dialogue_force_pause then
-			for _, key in ipairs(e_other.dialogue_force_pause.values) do
+		if e_other:has("dialogue_force_pause") then
+			for _, key in ipairs(e_other:get("dialogue_force_pause").values) do
 				local e_to_pause = self.world:getEntityByKey(key)
 				if e_to_pause then
 					e_to_pause:give("paused")
@@ -366,7 +366,7 @@ if DEV then
 		Slab.Text("Dialogue:")
 		Slab.Indent()
 		if self.e_dialogue then
-			Slab.Text("Dialogue Entity ID: " .. self.e_dialogue.id.value)
+			Slab.Text("Dialogue Entity ID: " .. self.e_dialogue:get("id").value)
 		end
 		Slab.Text("Current Knot: " .. self.dialogue:getCurrentKnot())
 		Slab.Text("Visit Count: " .. self.dialogue:getKnotVisitCount(self.dialogue:getCurrentKnot()))

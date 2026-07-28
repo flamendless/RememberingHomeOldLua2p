@@ -59,9 +59,9 @@ function Survival:survival_on()
 	local DUR = 1
 	local SCALE = 2
 
-	local cfo = e_player.camera_follow_offset
-	if cfo then
-		local coll = e_player.collider
+	if e_player:has("camera_follow_offset") then
+		local cfo = e_player:get("camera_follow_offset")
+		local coll = e_player:get("collider")
 		self.prev_state.camera_follow_offset = tablex.copy(cfo)
 		cfo.x = coll.w / 2
 		cfo.y = coll.h / 4
@@ -88,11 +88,12 @@ function Survival:survival_off()
 
 	camera.scale = self.prev_state.camera.scale
 
-	local cfo = e_player.camera_follow_offset
-	if cfo then
+	if e_player:has("camera_follow_offset") then
 		self.prev_state.camera = tablex.copy(camera)
 		local prev_cfo = self.prev_state.camera_follow_offset
-		e_player.camera_follow_offset = prev_cfo
+		local cfo = e_player:get("camera_follow_offset")
+		cfo.x = prev_cfo.x
+		cfo.y = prev_cfo.y
 	end
 end
 

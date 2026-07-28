@@ -3,7 +3,9 @@ local SortedTable = {}
 SortedTable.__mt = { __index = SortedTable }
 
 local function sort_by_id(a, b)
-	return a.layer.n < b.layer.n
+	local a_layer = a:get("layer")
+	local b_layer = b:get("layer")
+	return a_layer.n < b_layer.n
 end
 
 local function ctor(def)
@@ -15,7 +17,7 @@ local function ctor(def)
 end
 
 function SortedTable:add(entity)
-	if entity.layer.id == self.layer_id then
+	if entity:get("layer").id == self.layer_id then
 		table.insert(self, entity)
 		sort.insertion_sort(self, sort_by_id)
 		return true

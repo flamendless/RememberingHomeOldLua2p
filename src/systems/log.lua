@@ -12,28 +12,33 @@ function LogsSystem:init(world)
 end
 
 function LogsSystem:on_add_entity(e)
-	local str = "on_add_entity: " .. e.id.value
+	local id = e:get("id")
+	local str = "on_add_entity: " .. id.value
 	table.insert(self.logs.all, str)
 	table.insert(self.logs.entity, str)
 	if DEV then Log.debug("Log", str) end
 end
 
 function LogsSystem:on_remove_entity(e)
-	local str = "on_remove_entity: " .. e.id.value
+	local id = e:get("id")
+	local str = "on_remove_entity: " .. id.value
 	table.insert(self.logs.all, str)
 	table.insert(self.logs.entity, str)
 	if DEV then Log.debug("Log", str) end
 end
 
 function LogsSystem:on_collide_interactive(e, other)
-	local str = string.format("on_col: %s, %s", e.id.value, other.id.value)
+	local e_id = e:get("id")
+	local other_id = other:get("id")
+	local str = string.format("on_col: %s, %s", e_id.value, other_id.value)
 	table.insert(self.logs.all, str)
 	table.insert(self.logs.interactive, str)
 	if DEV then Log.debug("Log", str) end
 end
 
 function LogsSystem:on_leave_interactive(e)
-	local str = "on_leave_col: " .. e.id.value
+	local id = e:get("id")
+	local str = "on_leave_col: " .. id.value
 	table.insert(self.logs.all, str)
 	table.insert(self.logs.interactive, str)
 	if DEV then Log.debug("Log", str) end

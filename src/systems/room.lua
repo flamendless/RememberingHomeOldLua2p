@@ -120,8 +120,8 @@ function Room:create_grouped_items(group, group_t, frames, list)
 		local w, h = -math.huge, -math.huge
 		local frame = frames[id]
 		for _, e in ipairs(t) do
-			local pos = e.pos
-			local scale = e.quad_transform.sx
+			local pos = e:get("pos")
+			local scale = e:get("quad_transform").sx
 			x = math.min(x, pos.x)
 			y = math.min(y, pos.y)
 			w = math.max(w, pos.x + frame.w * scale)
@@ -168,7 +168,7 @@ if DEV then
 		local spr_res = "atlas_" .. self.current_res .. "_items"
 
 		for _, e in ipairs(self.pool) do
-			local id = e.id.value
+			local id = e:get("id").value
 			local found = false
 			for _, data in ipairs(list) do
 				local data_id = data.name or data.id
@@ -189,27 +189,30 @@ if DEV then
 			local found = false
 
 			for _, e in ipairs(self.pool) do
-				local id = e.id.value
+				local id = e:get("id").value
 
 				if id == data_id then
-					if e.pos.x ~= data.x then
-						e.pos.x = data.x
+					local pos = e:get("pos")
+					if pos.x ~= data.x then
+						pos.x = data.x
 						print(id, "Updated pos.x")
 					end
-					if e.pos.y ~= data.y then
-						e.pos.y = data.y
+					if pos.y ~= data.y then
+						pos.y = data.y
 						print(id, "Updated pos.y")
 					end
 
-					if e.z_index.value ~= data.z then
-						e.z_index.value = data.z
+					local z_index = e:get("z_index")
+					if z_index.value ~= data.z then
+						z_index.value = data.z
 						print(id, "Updated z_index")
 					end
 
 					if data.tint then
+						local color = e:get("color")
 						for i, c in ipairs(Palette.cmap) do
-							if e.color.value[i] ~= data.tint[i] then
-								e.color.value[i] = data.tint[i]
+							if color.value[i] ~= data.tint[i] then
+								color.value[i] = data.tint[i]
 								print(id, "Updated color." .. c)
 							end
 						end
@@ -222,7 +225,7 @@ if DEV then
 
 			if not found then
 				local e = self:create_room_item(frames, spr_res, data)
-				print("created new room item", e.id.value)
+				print("created new room item", e:get("id").value)
 			end
 		end
 	end

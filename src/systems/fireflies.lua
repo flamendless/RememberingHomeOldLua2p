@@ -36,7 +36,7 @@ function Fireflies:show_fireflies(dur)
 	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
 		e:remove("light_disabled")
-		Flux.to(e.diffuse.value, dur, {
+		Flux.to(e:get("diffuse").value, dur, {
 			[1] = col_target[1],
 			[2] = col_target[2],
 			[3] = col_target[3],
@@ -45,7 +45,7 @@ function Fireflies:show_fireflies(dur)
 				self.world:emit("update_light_diffuse", e)
 			end)
 			:oncomplete(function()
-				local lp = e.point_light.value
+				local lp = e:get("point_light").value
 				local amount = love.math.random(lp * 0.25, lp * 0.4)
 				e:give("light_fading", amount, -1)
 			end)
@@ -58,7 +58,7 @@ function Fireflies:hide_fireflies(dur)
 	assert(type(dur) == "number", dur)
 	for _, e in ipairs(self.pool) do
 		e:remove("light_fading")
-		Flux.to(e.diffuse.value, dur, {
+		Flux.to(e:get("diffuse").value, dur, {
 			[1] = 0,
 			[2] = 0,
 			[3] = 0,

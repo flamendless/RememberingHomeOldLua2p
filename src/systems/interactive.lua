@@ -9,8 +9,14 @@ end
 function Interactive:on_collide_interactive(e, other)
 	assert(e.__isEntity, e)
 	assert(other.__isEntity, other)
-	local body = e.body
-	local req_n = other.interactive_req_player_dir
+	local body
+	if e:has("body") then
+		body = e:get("body")
+	end
+	local req_n
+	if other:has("interactive_req_player_dir") then
+		req_n = other:get("interactive_req_player_dir")
+	end
 	if body and req_n and req_n.x ~= body.dir then
 		return
 	end

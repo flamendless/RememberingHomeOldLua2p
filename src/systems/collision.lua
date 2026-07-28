@@ -11,8 +11,8 @@ end
 
 function Collision:check_circle_to_rect(cx, cy, cr)
 	for _, er in ipairs(self.pool) do
-		local pos = er.pos.pos
-		local col = er.collider
+		local pos = er:get("pos").pos
+		local col = er:get("collider")
 		local rx = pos.x
 		local ry = pos.y
 		local rw = col.size.x
@@ -35,8 +35,8 @@ end
 
 function Collision:check_rect_to_circle(rx, ry, rw, rh)
 	for _, ec in ipairs(self.pool_circle) do
-		local pos = ec.pos.pos
-		local col = ec.collider_circle
+		local pos = ec:get("pos").pos
+		local col = ec:get("collider_circle")
 		local cx = pos.x
 		local cy = pos.y
 		local cr = col.size
@@ -57,9 +57,15 @@ function Collision:check_rect_to_circle(rx, ry, rw, rh)
 end
 
 function Collision:check_collision(e)
-	local pos = e.pos.pos
-	local col = e.collider
-	local col_c = e.collider_circle
+	local pos = e:get("pos").pos
+	local col
+	if e:has("collider") then
+		col = e:get("collider")
+	end
+	local col_c
+	if e:has("collider_circle") then
+		col_c = e:get("collider_circle")
+	end
 
 	if col then
 		local rx = pos.x

@@ -55,13 +55,13 @@ function Flashlight:update(dt)
 
 	self:update_flashlight_pos()
 
-	if not self.flashlight.light_disabled then
+	if not self.flashlight:has("light_disabled") then
 		self:update_battery(dt)
 	end
 
 	if Inputs.released(Enums.input.flashlight) then
-		local pl = self.start_l.point_light
-		if self.flashlight.light_disabled then
+		local pl = self.start_l:get("point_light")
+		if self.flashlight:has("light_disabled") then
 			self.flashlight:remove("light_disabled")
 			-- self.start_l:remove("light_disabled")
 			self.end_l:remove("light_disabled")
@@ -81,12 +81,12 @@ function Flashlight:update(dt)
 end
 
 function Flashlight:update_flashlight_pos()
-	local body = self.player.body
-	local p_pos = self.player.pos
-	local col = self.player.collider
-	local offset = self.player.fl_spawn_offset
-	local f_pos = self.flashlight.pos
-	local ldir = self.flashlight.light_dir
+	local body = self.player:get("body")
+	local p_pos = self.player:get("pos")
+	local col = self.player:get("collider")
+	local offset = self.player:get("fl_spawn_offset")
+	local f_pos = self.flashlight:get("pos")
+	local ldir = self.flashlight:get("light_dir")
 	local fd = ldir.value
 
 	local bx = p_pos.x + col.w_h
@@ -101,12 +101,12 @@ function Flashlight:update_flashlight_pos()
 
 	f_pos.y = by + offset.y
 
-	local s_pos = self.start_l.pos
+	local s_pos = self.start_l:get("pos")
 	s_pos.x = f_pos.x
 	s_pos.y = f_pos.y
 
-	local strength = self.flashlight.point_light.value
-	local e_pos = self.end_l.pos
+	local strength = self.flashlight:get("point_light").value
+	local e_pos = self.end_l:get("pos")
 	e_pos.x = f_pos.x + strength * fd[1] * fd[4] * END_LIGHT_CLOSENESS
 	e_pos.y = f_pos.y
 end
@@ -115,13 +115,16 @@ function Flashlight:update_battery(dt)
 	if not self.flashlight then
 		return
 	end
-	local battery = self.flashlight.battery
-	local bs = self.flashlight.battery_state
-	if not battery or bs.value == Enums.battery_state.empty then
+	if not self.flashlight:has("battery") then
+		return
+	end
+	local battery = self.flashlight:get("battery")
+	local bs = self.flashlight:get("battery_state")
+	if bs.value == Enums.battery_state.empty then
 		return
 	end
 
-	local f_pl = self.flashlight.point_light
+	local f_pl = self.flashlight:get("point_light")
 	if f_pl.value <= 0 then
 		bs:set(Enums.battery_state.empty)
 		self.flashlight:give("light_disabled"):remove("battery"):remove("d_light_flicker")
@@ -133,8 +136,8 @@ function Flashlight:update_battery(dt)
 	battery.pct = battery.pct - dt * consumption_rate
 	f_pl.value = f_pl.orig_value * battery.pct / 100
 
-	local flicker = self.flashlight.d_light_flicker
-	local f_repeat = self.flashlight.d_light_flicker_repeat
+	local flicker = self.flashlight:get("d_light_flicker")
+	local f_repeat = self.flashlight:get("d_light_flicker_repeat")
 	if bs.value == Enums.battery_state.full and battery.pct <= 50 then
 		bs:set(Enums.battery_state.low)
 		flicker.during = 0.5
@@ -167,18 +170,21 @@ if DEV then
 			flags.pos = not flags.pos
 		end
 
-		local battery = self.flashlight and self.flashlight.battery
+		local battery
+		if self.flashlight and self.flashlight:has("battery") then
+			battery = self.flashlight:get("battery")
+		end
 		if battery then
-			Slab.Text("state: " .. self.flashlight.battery_state.value)
+			Slab.Text("state: " .. self.flashlight:get("battery_state").value)
 			UIWrapper.edit_range("battery", battery.pct, 0, 100)
 			consumption_rate = UIWrapper.edit_range("consumption rate", consumption_rate, 0, 10)
-			local pl = self.flashlight.point_light
+			local pl = self.flashlight:get("point_light")
 			UIWrapper.edit_range("power", pl.value, 0, pl.orig_value)
 
-			local p_pos = self.player.pos
-			local col = self.player.collider
-			local offset = self.player.fl_spawn_offset
-			local ldir = self.flashlight.light_dir
+			local p_pos = self.player:get("pos")
+			local col = self.player:get("collider")
+			local offset = self.player:get("fl_spawn_offset")
+			local ldir = self.flashlight:get("light_dir")
 			local fd = ldir.value
 			local bx = p_pos.x + col.w_h
 			local by = p_pos.y + col.h_h
@@ -196,11 +202,11 @@ if DEV then
 			return
 		end
 
-		local body = self.player.body
-		local p_pos = self.player.pos
-		local col = self.player.collider
-		local offset = self.player.fl_spawn_offset
-		local ldir = self.flashlight.light_dir
+		local body = self.player:get("body")
+		local p_pos = self.player:get("pos")
+		local col = self.player:get("collider")
+		local offset = self.player:get("fl_spawn_offset")
+		local ldir = self.flashlight:get("light_dir")
 		local fd = ldir.value
 		local bx = p_pos.x + col.w_h
 		local by = p_pos.y + col.h_h
@@ -214,7 +220,7 @@ if DEV then
 		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.circle("fill", fx, fy, 2)
 
-		local e_pos = self.end_l.pos
+		local e_pos = self.end_l:get("pos")
 		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.circle("fill", e_pos.x, e_pos.y, 2)
 	end

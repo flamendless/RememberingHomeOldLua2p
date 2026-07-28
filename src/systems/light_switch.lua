@@ -10,13 +10,13 @@ function LightSwitch:toggle_light_switch(_, _, choice)
 	for _, e in ipairs(self.pool_lights) do
 		local valid = true
 		if choice then
-			local ls_id = e.light_switch_id.value
+			local ls_id = e:get("light_switch_id").value
 			valid = ls_id == choice
 		end
 
 		if valid then
 			self.world:emit("play_sound_on_entity", e, Enums.sfx.light_switch)
-			if e.light_disabled then
+			if e:has("light_disabled") then
 				e:remove("light_disabled")
 			else
 				e:give("light_disabled")

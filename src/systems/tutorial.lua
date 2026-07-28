@@ -115,11 +115,12 @@ function Tutorial:create_hand_key_label(hand, action)
 		return
 	end
 
+	local hand_pos = hand:get("pos")
 	self.e_hand_key_label = Assemblages.HandDecal.create_key_label(self.world, text, {
 		id = "tutorial_hand_key_label",
 		key = "tutorial_hand_key_label",
-		x = hand.pos.x,
-		y = hand.pos.y,
+		x = hand_pos.x,
+		y = hand_pos.y,
 		ui_element = true,
 		hand_scale = Assemblages.HandDecal.SKIP_HAND_SCALE,
 	})
@@ -211,9 +212,10 @@ function Tutorial:show_hands_trail(
 		Assemblages.HandDecal.fade_in(e_hand, target_opacity, dur, delay)
 			:oncomplete(function()
 				if i == n then
-					self.prev_hx, self.prev_hy = e_hand.pos.x, e_hand.pos.y
+					local e_hand_pos = e_hand:get("pos")
+					self.prev_hx, self.prev_hy = e_hand_pos.x, e_hand_pos.y
 					local tw, th = self.world:getResource("tex_glow"):getDimensions()
-					local hx, hy = e_hand.pos.x - tw * scale / 2, e_hand.pos.y - th * scale / 2
+					local hx, hy = e_hand_pos.x - tw * scale / 2, e_hand_pos.y - th * scale / 2
 					self.e_glow = Concord.entity(self.world):assemble(
 							Assemblages.BillboardGlow.create,
 							hx, hy,
@@ -229,7 +231,7 @@ function Tutorial:show_hands_trail(
 						on_complete()
 					end
 				else
-					Flux.to(e_hand.decals_shaders.data, dur * 0.9, { opacity = 0 })
+					Flux.to(e_hand:get("decals_shaders").data, dur * 0.9, { opacity = 0 })
 						:delay(delay * 0.3)
 						:oncomplete(function() e_hand:destroy() end)
 				end
@@ -246,7 +248,8 @@ end
 
 function Tutorial:fade_hand_and_glow(duration, on_complete)
 	if self.e_last_hand then
-		self.prev_hx, self.prev_hy = self.e_last_hand.pos.x, self.e_last_hand.pos.y
+		local last_hand_pos = self.e_last_hand:get("pos")
+		self.prev_hx, self.prev_hy = last_hand_pos.x, last_hand_pos.y
 		local hand = self.e_last_hand
 		Assemblages.HandDecal.fade_out(hand, duration, function()
 			if self.e_last_hand == hand then
@@ -309,8 +312,8 @@ function Tutorial:run_tutorial()
 	self:set_beat(Enums.tutorial_beat.interact)
 	self.world:emit("display_bars")
 
-	local pos = self.e_player.pos
-	local col = self.e_player.collider
+	local pos = self.e_player:get("pos")
+	local col = self.e_player:get("collider")
 	local tx, ty = pos.x - col.w_h + 8, pos.y + col.h_h + 4
 	local bx = tx - 72
 	local by = ty + 8
@@ -329,13 +332,13 @@ function Tutorial:run_tutorial()
 	-- Move left
 	self.world:emit("tle_log", "beat move left")
 	self:set_beat(Enums.tutorial_beat.move_left)
-	pos = self.e_player.pos
-	col = self.e_player.collider
+	pos = self.e_player:get("pos")
+	col = self.e_player:get("collider")
 	tx, ty = pos.x - col.w_h - 60, pos.y + col.h_h
 	bx = self.prev_hx
 	by = self.prev_hy
 	self:wait_hand_trail(5, bx, by, tx, ty, 270, "left", false)
-	self.left_start_x = self.e_player.pos.x
+	self.left_start_x = pos.x
 	self.left_target_x = tx - 18
 	self.e_player:give(Enums.player_cap.can_move):give(Enums.player_cap.can_move_left_only)
 	self:wait_move_left()
@@ -363,11 +366,11 @@ function Tutorial:run_tutorial()
 	self.world:emit("tle_log", "beat move right")
 	self:set_beat(Enums.tutorial_beat.move_right)
 	local startx, starty = self.prev_hx, self.prev_hy
-	pos = self.e_player.pos
-	col = self.e_player.collider
+	pos = self.e_player:get("pos")
+	col = self.e_player:get("collider")
 	tx, ty = pos.x - col.w_h + 144, pos.y + col.h_h + 4
 	self:wait_hand_trail(8, startx, starty, tx, ty, 0, "right", false)
-	self.right_start_x = self.e_player.pos.x
+	self.right_start_x = pos.x
 	self.right_target_x = tx + 7
 	self.e_player:give(Enums.player_cap.can_move)
 		:remove(Enums.player_cap.can_move_left_only)
@@ -443,13 +446,14 @@ end
 
 function Tutorial:sync_player_bump(e)
 	local bump_sys = self.world:getSystem(ECS.get_system_class("bump_collision"))
-	local col = e.collider
-	bump_sys.pool:update(e, e.pos.x, e.pos.y, col.w, col.h)
+	local pos = e:get("pos")
+	local col = e:get("collider")
+	bump_sys.pool:update(e, pos.x, pos.y, col.w, col.h)
 end
 
 function Tutorial:complete_move_left()
 	local e = self.e_player
-	e.pos.x = self.left_target_x
+	e:get("pos").x = self.left_target_x
 	self:sync_player_bump(e)
 	e:remove(Enums.player_cap.can_move):remove(Enums.player_cap.can_move_left_only)
 	self.world:__flush()
@@ -460,7 +464,7 @@ end
 
 function Tutorial:complete_move_right()
 	local e = self.e_player
-	e.pos.x = self.right_target_x
+	e:get("pos").x = self.right_target_x
 	self:sync_player_bump(e)
 	e:remove(Enums.player_cap.can_move):remove(Enums.player_cap.can_move_right_only)
 	self.world:__flush()
@@ -471,7 +475,7 @@ end
 
 function Tutorial:update_movement(dt)
 	if self.wait_kind == "move_left" then
-		local current = self.e_player.pos.x
+		local current = self.e_player:get("pos").x
 		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
 		progress = mathx.clamp(progress, 0, 1)
 		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
@@ -481,7 +485,7 @@ function Tutorial:update_movement(dt)
 		end
 
 	elseif self.wait_kind == "move_right" then
-		local current = self.e_player.pos.x
+		local current = self.e_player:get("pos").x
 		local progress = (self.right_start_x - current) / (self.right_start_x - self.right_target_x)
 		progress = mathx.clamp(progress, 0, 1)
 		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)

@@ -10,10 +10,11 @@ end
 
 function Tree:update(dt)
 	for _, e in ipairs(self.pool_bg_tree) do
-		if e.bg_tree.is_cover then
-			local pos = e.pos
-			local qt = e.quad_transform
-			if pos.x + e.quad.info.w * qt.sx < 0 then
+		if e:get("bg_tree").is_cover then
+			local pos = e:get("pos")
+			local qt = e:get("quad_transform")
+			local quad = e:get("quad")
+			if pos.x + quad.info.w * qt.sx < 0 then
 				e:destroy()
 			end
 		end

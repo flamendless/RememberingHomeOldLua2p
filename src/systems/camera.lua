@@ -15,9 +15,9 @@ function Camera:init(world)
 	self.state = Enums.camera_state.zoomed_out
 
 	self.pool.onAdded = function(pool, e)
-		local camera = e.camera
-		if e.camera_transform then
-			local t = e.camera_transform
+		local camera = e:get("camera")
+		if e:has("camera_transform") then
+			local t = e:get("camera_transform")
 			camera.camera:setAngle(t.rot)
 			camera.camera:setScale(t.scale)
 		end
@@ -69,10 +69,10 @@ end
 
 function Camera:get_follow_coords(target)
 	assert(target.__isEntity, target)
-	local pos = target.pos
+	local pos = target:get("pos")
 	local x, y = pos.x, pos.y
-	if target.camera_follow_offset then
-		local offset = target.camera_follow_offset
+	if target:has("camera_follow_offset") then
+		local offset = target:get("camera_follow_offset")
 		x = x + offset.x
 		y = y + offset.y
 	end
@@ -105,11 +105,12 @@ function Camera:draw_clip()
 		return
 	end
 	for _, e in ipairs(self.pool_clip) do
-		local cam = e.camera.camera
+		local cam = e:get("camera").camera
 		local cx, cy, cw, ch = cam:getWindow()
 		local scale = cam:getScale()
-		local diff = (ch - e.camera_clip.h * scale)/2
-		love.graphics.setColor(e.camera_clip.color)
+		local camera_clip = e:get("camera_clip")
+		local diff = (ch - camera_clip.h * scale)/2
+		love.graphics.setColor(camera_clip.color)
 		love.graphics.rectangle("fill", cx, cy, cw, diff)
 		love.graphics.rectangle("fill", cx, ch - diff, cw, diff)
 	end
@@ -324,7 +325,7 @@ if DEV then
 
 			if self.to_follow then
 				Slab.Indent()
-				Slab.Text("to follow id: " .. self.to_follow.id.value)
+				Slab.Text("to follow id: " .. self.to_follow:get("id").value)
 				Slab.Unindent()
 			end
 
@@ -334,7 +335,7 @@ if DEV then
 			if Slab.CheckBox(flags.clip, "Debug Clip") then
 				flags.clip = not flags.clip
 				for _, e in ipairs(self.pool_clip) do
-					local clip = e.camera_clip
+					local clip = e:get("camera_clip")
 					if flags.clip then
 						clip.debug_prev = clip.color
 						clip.color = { 1, 0, 0, 1 }

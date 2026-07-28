@@ -9,14 +9,14 @@ function Notification:init(world)
 end
 
 function Notification:create_speech_bubble(e_player)
-	assert((e_player.__isEntity and e_player.player), e_player)
-	local pos = e_player.pos
+	assert((e_player.__isEntity and e_player:has("player")), e_player)
+	local pos = e_player:get("pos")
 	local _ = Concord.entity(self.world):assemble(Assemblages.ui.speech_bubble, e_player, pos.x, pos.y)
 end
 
 function Notification:remove_speech_bubble()
 	for _, e in ipairs(self.pool) do
-		local n_id = e.notification.value
+		local n_id = e:get("notification").value
 		if n_id == "speech_bubble" then
 			e:destroy()
 		end

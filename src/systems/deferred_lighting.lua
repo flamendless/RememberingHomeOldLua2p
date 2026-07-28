@@ -47,20 +47,23 @@ function DeferredLighting:init(world)
 	}
 
 	self.pool.onAdded = function(pool, e)
-		local pos = e.pos
-		local pl = e.point_light
-		local diffuse = e.diffuse
-		local ld = e.light_dir
-		local dir = ld and ld.value
+		local pos = e:get("pos")
+		local pl = e:get("point_light")
+		local diffuse = e:get("diffuse")
+		local ld = e:get("light_dir")
 		local id = #pool
 		self.mesh.pos:setVertex(id, { pos.x, pos.y, pos.z, pl.value })
 		self.mesh.diffuse:setVertex(id, diffuse.value)
-		if dir then
-			self.mesh.dir:setVertex(id, dir)
+		if ld then
+			self.mesh.dir:setVertex(id, ld.value)
 		end
 		e:give("light_id", id)
 
-		local group_id = e.light_group and e.light_group.value
+		local light_group = e:get("light_group")
+		local group_id
+		if light_group then
+			group_id = light_group.value
+		end
 		if group_id then
 			if not self.groups[group_id] then
 				self.groups[group_id] = {}
@@ -70,12 +73,12 @@ function DeferredLighting:init(world)
 	end
 
 	self.pool_disabled.onAdded = function(pool, e)
-		self.mesh.diffuse:setVertex(e.light_id.value, { 0, 0, 0 })
+		self.mesh.diffuse:setVertex(e:get("light_id").value, { 0, 0, 0 })
 	end
 
 	self.pool_disabled.onRemoved = function(pool, e)
-		local diffuse = e.diffuse
-		self.mesh.diffuse:setVertex(e.light_id.value, diffuse.value)
+		local diffuse = e:get("diffuse")
+		self.mesh.diffuse:setVertex(e:get("light_id").value, diffuse.value)
 	end
 
 	self.pool_flicker.onAdded = function(pool, e)
@@ -84,14 +87,14 @@ function DeferredLighting:init(world)
 end
 
 function DeferredLighting:start_flicker(e)
-	local dlf = e.d_light_flicker
+	local dlf = e:get("d_light_flicker")
 	if not dlf then
 		return
 	end
-	local diff = e.diffuse
+	local diff = e:get("diffuse")
 	local orig_diff = diff.orig_value
-	local signal_during = e.on_d_light_flicker_during
-	local signal_after = e.on_d_light_flicker_after
+	local signal_during = e:get("on_d_light_flicker_during")
+	local signal_after = e:get("on_d_light_flicker_after")
 
 	self.timer:during(dlf.during, function()
 		local c = Lume.weightedchoice({ on = dlf.on_chance, off = dlf.off_chance })
@@ -112,15 +115,15 @@ function DeferredLighting:start_flicker(e)
 		if signal_after then
 			self.world:emit(signal_after.signal, unpack(signal_after.args))
 		end
-		local on_repeat = e.d_light_flicker_repeat
-		if e.d_light_flicker_remove_after then
+		local on_repeat = e:get("d_light_flicker_repeat")
+		if e:has("d_light_flicker_remove_after") then
 			e:remove("d_light_flicker")
 				:remove("d_light_flicker_remove_after")
 				:remove("on_d_light_flicker_during")
 				:remove("on_d_light_flicker_after")
 		elseif on_repeat then
 			on_repeat.count = on_repeat.count - 1
-			if e.d_light_flicker_sure_on_after then
+			if e:has("d_light_flicker_sure_on_after") then
 				diff.value[1] = orig_diff[1]
 				diff.value[2] = orig_diff[2]
 				diff.value[3] = orig_diff[3]
@@ -204,20 +207,20 @@ function DeferredLighting:light_group_set_disable(group_id, is_d, e)
 end
 
 function DeferredLighting:update_light_pos(e)
-	if e.light_disabled then
+	if e:has("light_disabled") then
 		return
 	end
-	local pl = e.point_light
-	local pos = e.pos
-	self.mesh.pos:setVertex(e.light_id.value, { pos.x, pos.y, pos.z, pl.value })
+	local pl = e:get("point_light")
+	local pos = e:get("pos")
+	self.mesh.pos:setVertex(e:get("light_id").value, { pos.x, pos.y, pos.z, pl.value })
 end
 
 function DeferredLighting:update_light_radius_group(group_id, e)
-	local pl = e.point_light
+	local pl = e:get("point_light")
 	for _, other in ipairs(self.groups[group_id]) do
-		local o_id = other.light_id.value
-		local o_pl = other.point_light
-		local o_pos = other.pos
+		local o_id = other:get("light_id").value
+		local o_pl = other:get("point_light")
+		local o_pos = other:get("pos")
 		if e ~= other then
 			o_pl.value = pl.value
 		end
@@ -226,11 +229,11 @@ function DeferredLighting:update_light_radius_group(group_id, e)
 end
 
 function DeferredLighting:update_light_pos_group(group_id, e, prop)
-	local pos = e.pos
+	local pos = e:get("pos")
 	for _, other in ipairs(self.groups[group_id]) do
-		local o_id = other.light_id.value
-		local o_pos = other.pos
-		local o_pl = other.point_light
+		local o_id = other:get("light_id").value
+		local o_pos = other:get("pos")
+		local o_pl = other:get("point_light")
 		if e ~= other then
 			o_pos[prop] = pos[prop]
 			o_pos.z = pos.z
@@ -240,18 +243,18 @@ function DeferredLighting:update_light_pos_group(group_id, e, prop)
 end
 
 function DeferredLighting:update_light_diffuse(e)
-	if e.light_disabled then
+	if e:has("light_disabled") then
 		return
 	end
-	local diffuse = e.diffuse
-	self.mesh.diffuse:setVertex(e.light_id.value, diffuse.value)
+	local diffuse = e:get("diffuse")
+	self.mesh.diffuse:setVertex(e:get("light_id").value, diffuse.value)
 end
 
 function DeferredLighting:update_light_diff_group(group_id, e, prop)
-	local diff = e.diffuse.value
+	local diff = e:get("diffuse").value
 	for _, other in ipairs(self.groups[group_id]) do
-		local o_id = other.light_id.value
-		local o_diff = other.diffuse.value
+		local o_id = other:get("light_id").value
+		local o_diff = other:get("diffuse").value
 		if e ~= other then
 			o_diff[prop] = diff[prop]
 		end
@@ -260,21 +263,21 @@ function DeferredLighting:update_light_diff_group(group_id, e, prop)
 end
 
 function DeferredLighting:update_light_dir(e)
-	if e.light_disabled then
+	if e:has("light_disabled") then
 		return
 	end
-	local dir = e.light_dir
+	local dir = e:get("light_dir")
 	if not dir then
 		return
 	end
-	self.mesh.dir:setVertex(e.light_id.value, dir.value)
+	self.mesh.dir:setVertex(e:get("light_id").value, dir.value)
 end
 
 function DeferredLighting:update_light_fading(dt)
 	for _, e in ipairs(self.pool_fading) do
-		if not e.light_disabled then
-			local lp = e.point_light
-			local f = e.light_fading
+		if not e:has("light_disabled") then
+			local lp = e:get("point_light")
+			local f = e:get("light_fading")
 			if lp.value >= lp.orig_value then
 				f.dir = -1
 			elseif lp.value <= lp.orig_value - f.amount then
@@ -332,11 +335,13 @@ function DeferredLighting:cull_and_draw_lights(camera)
 
 	local visible = {}
 	for _, e in ipairs(self.pool) do
-		if e.light_disabled then
+		if e:has("light_disabled") then
 			goto continue
 		end
-		local lx, ly, lz = e.pos.x, e.pos.y, e.pos.z
-		local radius = e.point_light.value
+		local pos = e:get("pos")
+		local pl = e:get("point_light")
+		local lx, ly, lz = pos.x, pos.y, pos.z
+		local radius = pl.value
 		local screen_x = cx + (lx - cam_x)
 		local screen_y = cy + (ly - cam_y)
 		local extent = radius * 2
@@ -358,11 +363,11 @@ function DeferredLighting:cull_and_draw_lights(camera)
 	end
 
 	for i, e in ipairs(visible) do
-		-- local id = e.light_id.value
-		local pos = e.pos
-		local pl = e.point_light
-		local diff = e.diffuse
-		local ld = e.light_dir
+		-- local id = e:get("light_id").value
+		local pos = e:get("pos")
+		local pl = e:get("point_light")
+		local diff = e:get("diffuse")
+		local ld = e:get("light_dir")
 		self.mesh.pos:setVertex(i, { pos.x, pos.y, pos.z, pl.value })
 		self.mesh.diffuse:setVertex(i, diff.value)
 		if ld then
@@ -406,11 +411,12 @@ end
 function DeferredLighting:flicker_sync(main, others)
 	assert(main.__isEntity, main)
 	assert(type(others) == "table", others)
-	local main_diff = main.diffuse.value
+	local main_diff = main:get("diffuse").value
 	local is_off = main_diff[1] == 0
 	for _, e in ipairs(others) do
-		local diff = e.diffuse.value
-		local orig = e.diffuse.orig_value
+		local diffuse = e:get("diffuse")
+		local diff = diffuse.value
+		local orig = diffuse.orig_value
 		local r, g, b
 		if is_off then
 			r, g, b = 0, 0, 0
@@ -511,10 +517,10 @@ if DEV then
 				return
 			end
 
-			local id = e.id.value
+			local id = e:get("id").value
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
-				local ld = e.light_disabled
+				local ld = e:get("light_disabled")
 				if Slab.CheckBox(ld, "Disabled") then
 					local is_d
 					if ld then
@@ -529,7 +535,7 @@ if DEV then
 					end
 				end
 
-				local flicker = e.d_light_flicker
+				local flicker = e:get("d_light_flicker")
 				if flicker then
 					if not cache[id] then
 						cache[id] = { flicker.during, flicker.on_chance, flicker.off_chance }
@@ -544,10 +550,14 @@ if DEV then
 					end
 				end
 
-				local pos = e.pos
-				local pl = e.point_light
-				local diffuse = e.diffuse.value
-				local dir = e.light_dir and e.light_dir.value
+				local pos = e:get("pos")
+				local pl = e:get("point_light")
+				local diffuse = e:get("diffuse").value
+				local light_dir = e:get("light_dir")
+				local dir
+				if light_dir then
+					dir = light_dir.value
+				end
 				local b_x, b_y, b_z, b_r, b_g, b_b, b_v, b_dx, b_dy, b_dz, b_da
 				pos.x, b_x = UIWrapper.edit_number("x", pos.x, true)
 				pos.y, b_y = UIWrapper.edit_number("y", pos.y, true)

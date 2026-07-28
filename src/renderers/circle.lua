@@ -3,12 +3,18 @@ local Circle = {
 }
 
 function Circle.render(e)
-	local pos = e.pos
-	local circle = e.circle
-	local mode = e.draw_mode.value
-	local arc_type = e.arc_type
+	local pos = e:get("pos")
+	local circle = e:get("circle")
+	local mode = e:get("draw_mode").value
+	local arc_type
+	if e:has("arc_type") then
+		arc_type = e:get("arc_type")
+	end
 
-	local line_width = e.line_width
+	local line_width
+	if e:has("line_width") then
+		line_width = e:get("line_width")
+	end
 	if line_width then
 		love.graphics.setLineWidth(line_width.value)
 	end

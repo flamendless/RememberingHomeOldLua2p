@@ -10,12 +10,12 @@ end
 
 function MouseHover:update(dt)
 	for _, e in ipairs(self.pool_bb_emit) do
-		local hoverable = e.hoverable
+		local hoverable = e:get("hoverable")
 
 		if hoverable.prev_hovered and not hoverable.is_hovered then
 			hoverable.prev_hovered = false
 
-			local item = e.item
+			local item = e:get("item")
 
 			if item then
 				self.world:emit("mouse_unhovered_item", e)
@@ -26,8 +26,8 @@ end
 
 function MouseHover:check_mouse_hover(mx, my)
 	for _, e in ipairs(self.pool_bb) do
-		if not e.hidden and not e.ui_element then
-			local hoverable = e.hoverable
+		if not e:has("hidden") and not e:has("ui_element") then
+			local hoverable = e:get("hoverable")
 			local bx, by = Helper.get_real_pos_box(e)
 			local bw, bh = Helper.get_real_size(e)
 			local result = Helper.check_point_rect(mx, my, bx, by, bw, bh)
@@ -38,10 +38,10 @@ end
 
 function MouseHover:check_mouse_hover_ui(mx, my)
 	for _, e in ipairs(self.pool_bb_ui) do
-		if not e.hidden then
-			local hoverable = e.hoverable
-			local hover_emit = e.hover_emit
-			local box = e.bounding_box
+		if not e:has("hidden") then
+			local hoverable = e:get("hoverable")
+			local hover_emit = e:get("hover_emit")
+			local box = e:get("bounding_box")
 			local bx, by = box.screen_pos:unpack()
 			local bw, bh = box.w, box.h
 			local result = Helper.check_point_rect(mx, my, bx, by, bw, bh)
@@ -52,7 +52,7 @@ function MouseHover:check_mouse_hover_ui(mx, my)
 				if not hoverable.prev_hovered then
 					hoverable.prev_hovered = true
 
-					local item = e.item
+					local item = e:get("item")
 
 					if item then
 						self.world:emit("mouse_hovered_item", e)

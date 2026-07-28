@@ -8,8 +8,8 @@ function Path:init(world)
 end
 
 function Path:get_points(e)
-	local path = e.path
-	local bezier_curve = e.apply_bezier_curve
+	local path = e:get("path")
+	local has_bezier = e:has("apply_bezier_curve")
 	local low = path.current_point
 	local high = low + path.max
 
@@ -20,7 +20,7 @@ function Path:get_points(e)
 	local points = {}
 	for i = low, high do
 		local p = path.points[i]
-		if bezier_curve then
+		if has_bezier then
 			table.insert(points, p.x)
 			table.insert(points, p.y)
 		else
@@ -28,7 +28,7 @@ function Path:get_points(e)
 		end
 	end
 
-	if bezier_curve then
+	if has_bezier then
 		points = love.math.newBezierCurve(unpack(points))
 	end
 
@@ -36,8 +36,8 @@ function Path:get_points(e)
 end
 
 function Path:move_linear(dt, e, points)
-	local pos = e.pos
-	local speed = e.path_speed.value
+	local pos = e:get("pos")
+	local speed = e:get("path_speed").value
 
 	local target = points[1]
 	if not target then return false end
@@ -63,9 +63,9 @@ function Path:move_linear(dt, e, points)
 end
 
 function Path:move_curve(dt, e, points)
-	local pos = e.pos
-	local speed = e.path_speed.value
-	local bz = e.apply_bezier_curve
+	local pos = e:get("pos")
+	local speed = e:get("path_speed").value
+	local bz = e:get("apply_bezier_curve")
 
 	bz.t = (bz.t or 0) + dt / speed
 	if bz.t > 1 then
@@ -82,11 +82,11 @@ end
 
 function Path:update(dt)
 	for _, e in ipairs(self.pool_move) do
-		local path = e.path
+		local path = e:get("path")
 		local points, _ = self:get_points(e)
 
 		local reached
-		if e.apply_bezier_curve then
+		if e:has("apply_bezier_curve") then
 			reached = self:move_curve(dt, e, points)
 		else
 			reached = self:move_linear(dt, e, points)
@@ -98,15 +98,17 @@ function Path:update(dt)
 			if path.current_point > path.n_points then
 				path.current_point = 1
 
-				if e.path_repeat then
+				if e:has("path_repeat") then
 					local p = path.points[1]
-					e.pos.x, e.pos.y = p.x, p.y
+					local pos = e:get("pos")
+					pos.x, pos.y = p.x, p.y
 				end
 
-				if e.on_path_reached_end then
+				if e:has("on_path_reached_end") then
+					local on_path_reached_end = e:get("on_path_reached_end")
 					self.world:emit(
-						e.on_path_reached_end.signal,
-						unpack(e.on_path_reached_end.args)
+						on_path_reached_end.signal,
+						unpack(on_path_reached_end.args)
 					)
 				end
 			end
@@ -163,8 +165,8 @@ if DEV then
 			end
 			love.graphics.setLineWidth(scale/2)
 			for _, e in ipairs(self.pool) do
-				if component_filter and e[component_filter] then
-					local path = e.path
+				if component_filter and e:has(component_filter) then
+					local path = e:get("path")
 					if not flags.bezier then
 						for i = 1, path.n_points - 1 do
 							local a = path.points[i]

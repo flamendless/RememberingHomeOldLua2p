@@ -31,7 +31,7 @@ function Culling:update(dt)
 	local h2 = h/2
 
 	for _, e in ipairs(self.pool_sprite) do
-		local cullable = e.cullable
+		local cullable = e:get("cullable")
 		local px, py, iw, ih = Helper.get_ltwh(e)
 		local iw2, ih2 = iw/2, ih/2
 		local a_pos = vec2(px, py)
@@ -52,8 +52,8 @@ function Culling:debug_update(dt)
 		IsOpen = self.debug_show,
 	})
 	for _, e in ipairs(self.pool_sprite) do
-		local id = e.id.value
-		local culled = e.cullable.value
+		local id = e:get("id").value
+		local culled = e:get("cullable").value
 		Slab.CheckBox(culled, id)
 	end
 	Slab.EndWindow()

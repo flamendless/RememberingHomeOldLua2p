@@ -1,7 +1,9 @@
 Concord.component("anim_sync_with", function(c, e_target)
-	assert((e_target.__isEntity and e_target.animation and e_target.animation.obj), e_target)
+	assert(e_target.__isEntity and e_target:has("animation"), e_target)
+	local animation = e_target:get("animation")
+	assert(animation.obj, e_target)
 	e_target:ensure("key")
-	c.key = e_target.key.value
+	c.key = e_target:get("key").value
 end)
 
 Concord.component("anim_sync_data", function(c, c_name, c_props, t)

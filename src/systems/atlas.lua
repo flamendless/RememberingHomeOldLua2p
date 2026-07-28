@@ -3,9 +3,9 @@ local Atlas = Concord.system({
 })
 
 local function create_quad(e)
-	local sprite = e.sprite
-	local atlas = e.atlas.value
-	return love.graphics.newQuad(atlas.x, atlas.y, atlas.w, atlas.h, sprite.iw, sprite.ih)
+	local sprite = e:get("sprite")
+	local atlas = e:get("atlas")
+	return love.graphics.newQuad(atlas.value.x, atlas.value.y, atlas.value.w, atlas.value.h, sprite.iw, sprite.ih)
 end
 
 function Atlas:init()
@@ -17,7 +17,7 @@ end
 function Atlas:update_atlas(e, new_data)
 	assert((self.pool:has(e)), self)
 	assert(type(new_data) == "table", new_data)
-	local quad = e.quad
+	local quad = e:get("quad")
 	quad.quad:setViewport(new_data.x, new_data.y, new_data.w, new_data.h)
 	quad.info = tablex.copy(new_data)
 end

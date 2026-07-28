@@ -102,26 +102,38 @@ end
 
 NotesSystem["on_list_cursor_update_" .. Enums.list_group.notes] = function(self, e_hovered)
 	assert((self.pool_item:has(e_hovered)), self)
-	local font = e_hovered.font.value
-	local c_pos = self.e_cursor.pos
-	local pos = e_hovered.pos
-	local on_left = e_hovered.list_cursor.value <= self.rows_per_page
-	local dx = on_left and -1 or 1
+	local font = e_hovered:get("font")
+	local c_pos = self.e_cursor:get("pos")
+	local pos = e_hovered:get("pos")
+	local list_cursor = e_hovered:get("list_cursor")
+	local on_left = list_cursor.value <= self.rows_per_page
+	local dx
+	if on_left then
+		dx = -1
+	else
+		dx = 1
+	end
 	c_pos.x = pos.x + 4 * dx
-	c_pos.y = pos.y - font:getHeight("")/2
-	self.e_cursor.transform.ox = on_left and 1 or 0
+	c_pos.y = pos.y - font.value:getHeight("")/2
+	local transform = self.e_cursor:get("transform")
+	if on_left then
+		transform.ox = 1
+	else
+		transform.ox = 0
+	end
 	self.world:emit("lerp_color", self.e_cursor, { 1, 1, 1, 1 }, 0.25, "circin")
 	self.world:emit("lerp_color", e_hovered, c_on_hovered, 0.25, "circin")
 end
 
 NotesSystem["on_list_cursor_remove_" .. Enums.list_group.notes] = function(self, e_hovered)
 	assert((self.pool_item:has(e_hovered)), self)
+	local color = e_hovered:get("color")
 	self.world:emit("lerp_color", self.e_cursor, { 1, 1, 1, 0 }, 0.25, "circin")
-	self.world:emit("lerp_color", e_hovered, e_hovered.color.original, 0.25, "circin")
+	self.world:emit("lerp_color", e_hovered, color.original, 0.25, "circin")
 end
 
 NotesSystem["on_list_item_interact_" .. Enums.list_group.notes] = function(self, e_hovered)
-	print(e_hovered.id.value)
+	print(e_hovered:get("id").value)
 end
 
 return NotesSystem

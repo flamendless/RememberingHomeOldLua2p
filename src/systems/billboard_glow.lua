@@ -21,7 +21,7 @@ function BillboardGlow:init(world)
 	self.blocker_mask = nil
 
 	self.pool.onAdded = function(pool, e)
-		local g = e.glow_group
+		local g = e:get("glow_group")
 		if not g then return end
 		if not self.groups[g.id] then
 			self.groups[g.id] = {}
@@ -32,12 +32,12 @@ end
 
 function BillboardGlow:update(dt)
 	for _, e in ipairs(self.pool_pulse) do
-		if not e.hidden and not e.glow_disabled then
-			local pulse = e.glow_pulse
+		if not e:has("hidden") and not e:has("glow_disabled") then
+			local pulse = e:get("glow_pulse")
 			pulse.time = pulse.time + dt * pulse.speed
 
 			local intensity = math.sin(pulse.time) * pulse.amplitude
-			local glow = e.billboard_glow
+			local glow = e:get("billboard_glow")
 			glow.intensity = glow.orig_intensity + intensity
 		end
 	end
@@ -79,9 +79,9 @@ function BillboardGlow:create_blocker_mask(camera)
 	love.graphics.setColor(1, 1, 1, 1)
 
 	for _, e in ipairs(self.pool_blocker_rect) do
-		if not e.hidden and not e.glow_blocker_disabled then
-			local pos = e.pos
-			local rect = e.rect
+		if not e:has("hidden") and not e:has("glow_blocker_disabled") then
+			local pos = e:get("pos")
+			local rect = e:get("rect")
 			local sx, sy = camera:toScreen(pos.x, pos.y)
 			local screen_half_w = rect.half_w * camera:getScale()
 			local screen_half_h = rect.half_h * camera:getScale()
@@ -94,12 +94,16 @@ function BillboardGlow:create_blocker_mask(camera)
 	end
 
 	for _, e in ipairs(self.pool_blocker_circle) do
-		if not e.hidden then
-			local pos = e.pos
-			local circle = e.circle
+		if not e:has("hidden") then
+			local pos = e:get("pos")
+			local circle = e:get("circle")
 			local sx, sy = camera:toScreen(pos.x, pos.y)
 			local screen_radius = circle.radius * camera:getScale()
-			love.graphics.circle("fill", sx, sy, screen_radius, circle.segments or 32)
+			local segments = 32
+			if circle.segments then
+				segments = circle.segments
+			end
+			love.graphics.circle("fill", sx, sy, screen_radius, segments)
 		end
 	end
 
@@ -127,7 +131,7 @@ function BillboardGlow:draw_billboard_glow(camera)
 	camera:attach()
 	self.batch:clear()
 	for _, e in ipairs(self.pool) do
-		if not e.hidden and not e.glow_disabled then
+		if not e:has("hidden") and not e:has("glow_disabled") then
 			self:add_to_batch(e)
 		end
 	end
@@ -142,11 +146,11 @@ function BillboardGlow:draw_billboard_glow(camera)
 end
 
 function BillboardGlow:add_to_batch(e)
-	local pos = e.pos
-	local glow = e.billboard_glow
+	local pos = e:get("pos")
+	local glow = e:get("billboard_glow")
 	local size = glow.size
 	local intensity = glow.intensity
-	local color = e.color.value
+	local color = e:get("color").value
 
 	local tex = self.glow_texture
 	local sx = tex:getWidth() / size
@@ -221,10 +225,10 @@ if DEV then
 				return
 			end
 
-			local id = e.id.value
+			local id = e:get("id").value
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
-				local gd = e.glow_disabled
+				local gd = e:get("glow_disabled")
 				if Slab.CheckBox(gd, "Disabled") then
 					local is_d
 					if gd then
@@ -239,16 +243,16 @@ if DEV then
 					end
 				end
 
-				local pos = e.pos
+				local pos = e:get("pos")
 				local nx, _, dx = UIWrapper.edit_number("x", pos.x, true)
 				local ny, _, dy = UIWrapper.edit_number("y", pos.y, true)
 				local nz, _, dz = UIWrapper.edit_range("z", pos.z, 1, 256, true)
 
-				local g = e.billboard_glow
+				local g = e:get("billboard_glow")
 				local ns, _, _ = UIWrapper.edit_range("size", g.size, 0, 16, false)
 				local intensity, _, _ = UIWrapper.edit_range("intensity", g.intensity, 0, 5, false)
 
-				local pulse = e.glow_pulse
+				local pulse = e:get("glow_pulse")
 				if pulse then
 					local speed, _, _ = UIWrapper.edit_range("speed", pulse.speed, 0, 10, true)
 					local amp, _, _ = UIWrapper.edit_range("amplitude", pulse.amplitude, 0, 10, false)
@@ -256,27 +260,29 @@ if DEV then
 					pulse.amplitude = amp
 				end
 
-				local color = e.color.value
+				local color = e:get("color").value
 				local nr, _, _ = UIWrapper.edit_range("r", color[1], 0, 1)
 				local ng, _, _ = UIWrapper.edit_range("g", color[2], 0, 1)
 				local nb, _, _ = UIWrapper.edit_range("b", color[3], 0, 1)
 
 				if group_id then
 					for _, e2 in ipairs(self.groups[group_id]) do
-						e2.pos.x = e2.pos.x - dx
-						e2.pos.y = e2.pos.y - dy
-						e2.pos.z = e2.pos.z - dz
-						e2.billboard_glow.size = ns
-						e2.billboard_glow.intensity = intensity
-						local color2 = e2.color.value
+						local pos2 = e2:get("pos")
+						pos2.x = pos2.x - dx
+						pos2.y = pos2.y - dy
+						pos2.z = pos2.z - dz
+						local glow2 = e2:get("billboard_glow")
+						glow2.size = ns
+						glow2.intensity = intensity
+						local color2 = e2:get("color").value
 						color2[1] = nr
 						color2[2] = ng
 						color2[3] = nb
 					end
 				else
-					e.pos.x = nx
-					e.pos.y = ny
-					e.pos.z = nz
+					pos.x = nx
+					pos.y = ny
+					pos.z = nz
 					g.size = ns
 					g.intensity = intensity
 					color[1] = nr
@@ -292,10 +298,16 @@ if DEV then
 
 	function BillboardGlow:debug_edit_blockers()
 		for _, e in ipairs(self.pool_blocker_rect) do
-			local id = e.id and e.id.value or "rect_blocker"
+			local id_comp = e:get("id")
+			local id
+			if id_comp then
+				id = id_comp.value
+			else
+				id = "rect_blocker"
+			end
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
-				local gd = e.glow_blocker_disabled
+				local gd = e:get("glow_blocker_disabled")
 				if Slab.CheckBox(gd, "Disabled") then
 					if gd then
 						e:remove("glow_blocker_disabled")
@@ -304,18 +316,18 @@ if DEV then
 					end
 				end
 
-				local pos = e.pos
+				local pos = e:get("pos")
 				local nx, _, _ = UIWrapper.edit_number("x", pos.x, true)
 				local ny, _, _ = UIWrapper.edit_number("y", pos.y, true)
 				local nz, _, _ = UIWrapper.edit_range("z", pos.z, 1, 256, true)
 
-				local rect = e.rect
+				local rect = e:get("rect")
 				local nw, _, _ = UIWrapper.edit_range("w", rect.w, 1, 512, true)
 				local nh, _, _ = UIWrapper.edit_range("h", rect.h, 1, 512, true)
 
-				e.pos.x = nx
-				e.pos.y = ny
-				e.pos.z = nz
+				pos.x = nx
+				pos.y = ny
+				pos.z = nz
 				rect.w = nw
 				rect.h = nh
 				rect.half_w = rect.w / 2
@@ -327,20 +339,26 @@ if DEV then
 		end
 
 		for _, e in ipairs(self.pool_blocker_circle) do
-			local id = e.id and e.id.value or "circle_blocker"
+			local id_comp = e:get("id")
+			local id
+			if id_comp then
+				id = id_comp.value
+			else
+				id = "circle_blocker"
+			end
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
-				local pos = e.pos
+				local pos = e:get("pos")
 				local nx, _, _ = UIWrapper.edit_number("x", pos.x, true)
 				local ny, _, _ = UIWrapper.edit_number("y", pos.y, true)
 				local nz, _, _ = UIWrapper.edit_range("z", pos.z, 1, 256, true)
 
-				local circle = e.circle
+				local circle = e:get("circle")
 				local nr, _, _ = UIWrapper.edit_range("radius", circle.radius, 1, 512, true)
 
-				e.pos.x = nx
-				e.pos.y = ny
-				e.pos.z = nz
+				pos.x = nx
+				pos.y = ny
+				pos.z = nz
 				circle.radius = nr
 				circle.segments = circle.radius
 
@@ -360,24 +378,24 @@ if DEV then
 		camera:attach()
 
 		for _, e in ipairs(self.pool_blocker_rect) do
-			local pos = e.pos
-			local rect = e.rect
+			local pos = e:get("pos")
+			local rect = e:get("rect")
 			local x = pos.x - rect.half_w
 			local y = pos.y - rect.half_h
 			love.graphics.rectangle("line", x, y, rect.w, rect.h)
 		end
 
 		for _, e in ipairs(self.pool_blocker_circle) do
-			local pos = e.pos
-			local circle = e.circle
+			local pos = e:get("pos")
+			local circle = e:get("circle")
 			love.graphics.circle("line", pos.x, pos.y, circle.radius, circle.segments)
 		end
 
 		local tex = self.glow_texture
 		local w, h = tex:getDimensions()
 		for _, e in ipairs(self.pool) do
-			local pos = e.pos
-			local g = e.billboard_glow
+			local pos = e:get("pos")
+			local g = e:get("billboard_glow")
 			love.graphics.circle("line", pos.x + w/2, pos.y + h/2, w/g.size, 32)
 		end
 

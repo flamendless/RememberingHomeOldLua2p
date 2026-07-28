@@ -89,20 +89,20 @@ Pause["on_list_cursor_update_" .. Enums.list_group.pause_choices] = function(sel
 	self.world:emit("ev_pp_invoke", Enums.shaders.glitch, "do_random_glitch", self.reset_after)
 	for _, e in ipairs(self.pool_choice) do
 		if e ~= e_hovered then
-			local color = e.color.value
+			local color = e:get("color").value
 			color[1] = 1
 			color[2] = 1
 			color[3] = 1
 		end
 	end
-	local hovered_color = e_hovered.color.value
+	local hovered_color = e_hovered:get("color").value
 	hovered_color[1] = 1
 	hovered_color[2] = 0
 	hovered_color[3] = 0
 end
 
 Pause["on_list_item_interact_" .. Enums.list_group.pause_choices] = function(self, e_hovered)
-	local text = e_hovered.static_text.value
+	local text = e_hovered:get("static_text").value
 	if text == "Resume" then
 		self:on_pause()
 	elseif text == "Settings" then

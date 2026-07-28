@@ -123,9 +123,10 @@ function Intro.car(e)
 end
 
 function Intro.car_reflect(e, car)
+	local car_pos = car:get("pos")
 	e:give("id", "car_reflect")
 		:give("animation", Animation.new_single(Animation.get("car_reflect"), false))
-		:give("pos", car.pos.x, car.pos.y)
+		:give("pos", car_pos.x, car_pos.y)
 		:give("attach_to", car)
 		:give("z_index", z_index.car[1] + 8)
 		:give("depth_zoom", z_index.car_reflect[2])

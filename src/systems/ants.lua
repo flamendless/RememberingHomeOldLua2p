@@ -4,17 +4,18 @@ local Ants = Concord.system({
 
 local function find_nearest_exit(world, e)
 	local room_size = world:getResource("room_size")
-	local rx, ry    = 0, 0
-	local rw, rh    = room_size.width, room_size.height
-	local x         = e.pos.x
-	local y         = e.pos.y
+	local rx, ry = 0, 0
+	local rw, rh = room_size.width, room_size.height
+	local pos = e:get("pos")
+	local x = pos.x
+	local y = pos.y
 
-	local left      = math.abs(x - rx)
-	local right     = math.abs((rx + rw) - x)
-	local top       = math.abs(y - ry)
-	local bottom    = math.abs((ry + rh) - y)
+	local left = math.abs(x - rx)
+	local right = math.abs((rx + rw) - x)
+	local top = math.abs(y - ry)
+	local bottom = math.abs((ry + rh) - y)
 
-	local min_edge  = math.min(left, right, top, bottom)
+	local min_edge = math.min(left, right, top, bottom)
 	local tx, ty
 
 	if min_edge == left then
@@ -43,7 +44,7 @@ function Ants:init(world)
 	self.cache_size = {}
 
 	self.pool.onAdded = function(pool, e)
-		local saf = e.scatter_away_from
+		local saf = e:get("scatter_away_from")
 		if saf then
 			find_nearest_exit(world, e)
 		end
@@ -124,7 +125,7 @@ end
 
 function Ants:update(dt)
 	for _, e in ipairs(self.pool) do
-		local saf = e.scatter_away_from
+		local saf = e:get("scatter_away_from")
 		if not saf.is_overlap then
 			local e_target = self.world:getEntityByKey(saf.key)
 			local px, py, iw, ih = Helper.get_ltwh(e_target)
@@ -140,25 +141,22 @@ function Ants:update(dt)
 			player_center.y = py + ihh
 
 			local player_size = self.cache_size[saf.key]
-			saf.is_overlap = intersect.circle_aabb_overlap(
-				e.pos_vec2.value,
-				saf.distance,
-				player_center,
-				player_size
-			)
+			saf.is_overlap =
+				intersect.circle_aabb_overlap(e:get("pos_vec2").value, saf.distance, player_center, player_size)
 		else
-			local dx = e.escape_target.x - e.pos.x
-			local dy = e.escape_target.y - e.pos.y
+			local pos = e:get("pos")
+			local dx = e.escape_target.x - pos.x
+			local dy = e.escape_target.y - pos.y
 			local dist = math.sqrt(dx * dx + dy * dy)
 
 			local step = saf.speed * dt
 			if dist <= step then
 				e:destroy()
 			else
-				e.pos.x = e.pos.x + (dx / dist) * step
-				e.pos.y = e.pos.y + (dy / dist) * step
-				e.pos.x = e.pos.x + (love.math.random() - 0.5) * 0.4
-				e.pos.y = e.pos.y + (love.math.random() - 0.5) * 0.4
+				pos.x = pos.x + (dx / dist) * step
+				pos.y = pos.y + (dy / dist) * step
+				pos.x = pos.x + (love.math.random() - 0.5) * 0.4
+				pos.y = pos.y + (love.math.random() - 0.5) * 0.4
 			end
 		end
 	end
@@ -247,14 +245,14 @@ if DEV then
 		if flags.show_distance then
 			love.graphics.setLineWidth(0.3)
 			for _, e in ipairs(self.pool) do
-				local saf = e.scatter_away_from
+				local saf = e:get("scatter_away_from")
 				if saf then
 					if saf.is_overlap then
 						love.graphics.setColor(1, 0, 0, 0.2)
 					else
 						love.graphics.setColor(1, 1, 1, 0.2)
 					end
-					local pos = e.pos
+					local pos = e:get("pos")
 					love.graphics.circle("line", pos.x, pos.y, saf.distance, 32)
 
 					local e_target = self.world:getEntityByKey(saf.key)

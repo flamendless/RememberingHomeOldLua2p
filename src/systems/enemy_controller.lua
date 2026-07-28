@@ -34,24 +34,29 @@ end
 
 function EnemyController:update(dt)
 	for _, e in ipairs(self.pool) do
-		local body = e.body
+		local body = e:get("body")
 		body.dx = 0
 
-		local current_node = e.behavior_tree.current_node
+		local current_node = e:get("behavior_tree").current_node
 		if current_node == Enums.bt.enemy.walk then
-			local random_walk = e.random_walk
-			if not random_walk then
-				local line_of_sight = e.line_of_sight.value
+			if not e:has("random_walk") then
+				local line_of_sight = e:get("line_of_sight").value
 				local dir = 1 - love.math.random(0, 1) * 2
 				local distance = love.math.random(line_of_sight * 0.25, line_of_sight)
-				local pos = e.pos
+				local pos = e:get("pos")
 				e:give("random_walk", dir, distance, pos.x, pos.y)
 			end
 		elseif current_node == Enums.bt.enemy.chase then
-			local other_e = self.world:getEntityByKey(e.ref_e_key.value)
-			local collide_with = e.collide_with
-			if (not collide_with) or (collide_with.value ~= other_e.key.value) then
-				body.dx = (e.pos.x <= other_e.pos.x) and 1 or -1
+			local other_e = self.world:getEntityByKey(e:get("ref_e_key").value)
+			local other_pos = other_e:get("pos")
+			local other_key = other_e:get("key")
+			if not e:has("collide_with") or e:get("collide_with").value ~= other_key.value then
+				local pos = e:get("pos")
+				if pos.x <= other_pos.x then
+					body.dx = 1
+				else
+					body.dx = -1
+				end
 			end
 		end
 
@@ -60,7 +65,7 @@ function EnemyController:update(dt)
 			anim_name = anim_name .. "_left"
 		end
 
-		e.animation.obj:play(anim_name, base_tag_for(anim_name))
+		e:get("animation").obj:play(anim_name, base_tag_for(anim_name))
 		self.world:emit("update_speed_data", e, current_node or anim_name)
 	end
 end
@@ -80,7 +85,7 @@ function EnemyController:debug_update(dt)
 	end
 	if Slab.Button("flip") then
 		for _, e in ipairs(self.pool) do
-			local body = e.body
+			local body = e:get("body")
 			body.dir = body.dir * -1
 		end
 	end
@@ -97,9 +102,9 @@ function EnemyController:debug_draw()
 		love.graphics.setColor(1, 0, 0, 1)
 
 		for _, e in ipairs(self.pool) do
-			local line_of_sight = e.line_of_sight.value
-			local dir = e.body.dir
-			local controller_origin = e.controller_origin
+			local line_of_sight = e:get("line_of_sight").value
+			local dir = e:get("body").dir
+			local controller_origin = e:get("controller_origin")
 			local x = controller_origin.x
 			local y = controller_origin.y
 			love.graphics.line(x, y, x + line_of_sight * dir, y)

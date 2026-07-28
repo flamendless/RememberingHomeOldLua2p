@@ -17,14 +17,14 @@ function AnimationSystem:init(world)
 end
 
 function AnimationSystem:refresh_render(e)
-	local obj = e.animation.obj
+	local obj = e:get("animation").obj
 	local clip = obj:current_clip()
 	local quad, _, _, r, sx, sy, ox, oy = obj:get_frame_info()
 
 	e:give("sprite", clip.resource_id):give("quad", quad)
 
 	if clip.is_flipped then
-		local transform = e.transform
+		local transform = e:get("transform")
 		if transform then
 			ox = ox - transform.ox
 			oy = oy - transform.oy
@@ -39,9 +39,9 @@ end
 
 function AnimationSystem:update(dt)
 	for _, e in ipairs(self.pool) do
-		local obj = e.animation.obj
+		local obj = e:get("animation").obj
 		local entity_dt = dt
-		local dt_multiplier = e.dt_multiplier
+		local dt_multiplier = e:get("dt_multiplier")
 		if dt_multiplier then
 			entity_dt = dt * dt_multiplier.mul
 		end
@@ -52,8 +52,9 @@ function AnimationSystem:update(dt)
 			self:refresh_render(e)
 		end
 
-		if e.quad then
-			e.quad.quad = obj:get_quad()
+		local quad = e:get("quad")
+		if quad then
+			quad.quad = obj:get_quad()
 		end
 	end
 end
@@ -82,18 +83,19 @@ if DEV then
 	end
 
 	function AnimationSystem:debug_play(e, tag)
-		local obj = e.animation.obj
+		local obj = e:get("animation").obj
 		obj:invalidate_tag(tag)
 		obj:play(tag, base_tag_for(tag), true)
 		self:refresh_render(e)
-		if e.quad then
-			e.quad.quad = obj:get_quad()
+		local quad = e:get("quad")
+		if quad then
+			quad.quad = obj:get_quad()
 		end
 	end
 
 	function AnimationSystem:debug_slab(e)
-		if not e.animation then return end
-		local obj = e.animation.obj
+		if not e:has("animation") then return end
+		local obj = e:get("animation").obj
 		Slab.Text("tag: " .. (obj.current_tag or ""))
 		Slab.Text("base: " .. (obj.base_tag or ""))
 		Slab.Text(string.format("frame: %d / %d", obj.frame, obj.frame_max))
@@ -114,12 +116,12 @@ if DEV then
 
 		if Slab.BeginComboBox("animation_cb_e", { Selected = selected }) then
 			for _, e in ipairs(self.pool) do
-				if e.id then
-					local id = e.id.value
+				if e:has("id") then
+					local id = e:get("id").value
 					if Slab.TextSelectable(id) then
 						selected = id
 						selected_e = e
-						selected_anim = e.animation.obj.current_tag
+						selected_anim = e:get("animation").obj.current_tag
 						break
 					end
 				end
@@ -127,87 +129,91 @@ if DEV then
 			Slab.EndComboBox()
 		end
 
-		if selected_e and selected_e.animation then
-			local obj = selected_e.animation.obj
-			local clips = obj.clips
-			local tags = sorted_tags(clips)
+		if selected_e then
+			local animation = selected_e:get("animation")
+			if animation then
+				local obj = animation.obj
+				local clips = obj.clips
+				local tags = sorted_tags(clips)
 
-			Slab.Text("Tag: " .. obj.current_tag)
-			Slab.SameLine()
-			Slab.Text("Base: " .. (obj.base_tag or ""))
+				Slab.Text("Tag: " .. obj.current_tag)
+				Slab.SameLine()
+				Slab.Text("Base: " .. (obj.base_tag or ""))
 
-			Slab.Text("By tag")
-			Slab.SameLine()
-			if Slab.BeginComboBox("animation_cb_anim", { Selected = selected_anim }) then
-				for _, tag in ipairs(tags) do
-					if Slab.TextSelectable(tag) then
-						selected_anim = tag
-						self:debug_play(selected_e, tag)
-						DevTools.debug_anim.tag = tag
-						break
+				Slab.Text("By tag")
+				Slab.SameLine()
+				if Slab.BeginComboBox("animation_cb_anim", { Selected = selected_anim }) then
+					for _, tag in ipairs(tags) do
+						if Slab.TextSelectable(tag) then
+							selected_anim = tag
+							self:debug_play(selected_e, tag)
+							DevTools.debug_anim.tag = tag
+							break
+						end
+					end
+					Slab.EndComboBox()
+				end
+
+				Slab.Text("By signal")
+				Slab.SameLine()
+				if Slab.BeginComboBox("animation_cb_ev", { Selected = selected_anim }) then
+					for _, tag in ipairs(tags) do
+						local ev = "anim_" .. tag
+						if Slab.TextSelectable(ev) then
+							selected_anim = tag
+							self.world:emit(ev, selected_e)
+							DevTools.debug_anim.tag = obj.current_tag
+							self:refresh_render(selected_e)
+							break
+						end
+					end
+					Slab.EndComboBox()
+				end
+
+				if selected_anim and clips[selected_anim] then
+					local clip = clips[selected_anim]
+					local max = clip.n_frames or obj.frame_max
+
+					Slab.Text("Frame")
+					Slab.SameLine()
+					if Slab.InputNumberSlider("animation_frame", obj.frame, 1, max, opt_slider) then
+						local v = Slab.GetInputNumber()
+						obj:goto_frame(v)
+						local quad = selected_e:get("quad")
+						if quad then
+							quad.quad = obj:get_quad()
+						end
+					end
+
+					if Slab.Button("Pause start") then
+						obj:pause_at_start()
+					end
+					Slab.SameLine()
+					if Slab.Button("Pause end") then
+						obj:pause_at_end()
+					end
+					Slab.SameLine()
+					if Slab.Button("Resume") then
+						obj:resume()
+					end
+					Slab.SameLine()
+					if Slab.Button("Rebuild tag") then
+						self:debug_play(selected_e, obj.current_tag)
+					end
+
+					local has_override = selected_e:has("override_animation")
+					if Slab.CheckBox(has_override, "Override") then
+						if has_override then
+							selected_e:remove("override_animation")
+						else
+							selected_e:give("override_animation")
+						end
 					end
 				end
-				Slab.EndComboBox()
-			end
 
-			Slab.Text("By signal")
-			Slab.SameLine()
-			if Slab.BeginComboBox("animation_cb_ev", { Selected = selected_anim }) then
-				for _, tag in ipairs(tags) do
-					local ev = "anim_" .. tag
-					if Slab.TextSelectable(ev) then
-						selected_anim = tag
-						self.world:emit(ev, selected_e)
-						DevTools.debug_anim.tag = selected_e.animation.obj.current_tag
-						self:refresh_render(selected_e)
-						break
-					end
+				if obj.anim8 then
+					Slab.Text("Status: " .. obj.anim8.status)
 				end
-				Slab.EndComboBox()
-			end
-
-			if selected_anim and clips[selected_anim] then
-				local clip = clips[selected_anim]
-				local max = clip.n_frames or obj.frame_max
-
-				Slab.Text("Frame")
-				Slab.SameLine()
-				if Slab.InputNumberSlider("animation_frame", obj.frame, 1, max, opt_slider) then
-					local v = Slab.GetInputNumber()
-					obj:goto_frame(v)
-					if selected_e.quad then
-						selected_e.quad.quad = obj:get_quad()
-					end
-				end
-
-				if Slab.Button("Pause start") then
-					obj:pause_at_start()
-				end
-				Slab.SameLine()
-				if Slab.Button("Pause end") then
-					obj:pause_at_end()
-				end
-				Slab.SameLine()
-				if Slab.Button("Resume") then
-					obj:resume()
-				end
-				Slab.SameLine()
-				if Slab.Button("Rebuild tag") then
-					self:debug_play(selected_e, obj.current_tag)
-				end
-
-				local has_override = selected_e:has("override_animation")
-				if Slab.CheckBox(has_override, "Override") then
-					if has_override then
-						selected_e:remove("override_animation")
-					else
-						selected_e:give("override_animation")
-					end
-				end
-			end
-
-			if obj.anim8 then
-				Slab.Text("Status: " .. obj.anim8.status)
 			end
 		end
 

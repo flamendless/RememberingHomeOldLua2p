@@ -8,7 +8,7 @@ end
 
 function BoundingBox:update(dt)
 	for _, e in ipairs(self.pool) do
-		local box = e.bounding_box
+		local box = e:get("bounding_box")
 		local x, y = Helper.get_real_pos_box(e)
 		box.x = x
 		box.y = y
@@ -18,12 +18,12 @@ end
 function BoundingBox:on_camera_move(camera)
 	assert(Gamera.isCamera(camera), camera)
 	for _, e in ipairs(self.pool) do
-		local ui = e.ui_element
-		local box = e.bounding_box
-		local pos = e.pos
+		local ui = e:get("ui_element")
+		local box = e:get("bounding_box")
+		local pos = e:get("pos")
 		local bx, by
 		if ui then
-			local transform = e.transform
+			local transform = e:get("transform")
 			bx = pos.x
 			by = pos.y
 			if transform then
@@ -60,7 +60,7 @@ function BoundingBox:debug_draw()
 		local bx, by = Helper.get_real_pos_box(e)
 		local bw, bh = Helper.get_real_size(e)
 		love.graphics.setColor(1, 0, 0, 1)
-		if e.hoverabl and e.hoverable.is_hovered then
+		if e:has("hoverable") and e:get("hoverable").is_hovered then
 			love.graphics.setColor(1, 1, 0, 1)
 		end
 		love.graphics.rectangle("line", bx, by, bw, bh)

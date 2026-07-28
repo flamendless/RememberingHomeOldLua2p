@@ -46,7 +46,7 @@ local SPLASH_HAND_EFFECTS = Assemblages.HandDecal.SPLASH_HAND_EFFECTS
 local SKIP_HAND_TEX = Assemblages.HandDecal.HAND_TEX
 
 local function fade_ui_color(e, duration, on_complete)
-	Flux.to(e.color.value, duration, { [4] = 0 }):oncomplete(function()
+	Flux.to(e:get("color").value, duration, { [4] = 0 }):oncomplete(function()
 		e:destroy()
 		if on_complete then
 			on_complete()
@@ -232,8 +232,9 @@ function ShowKeys:show_key_at(id, bool, pos)
 	assert(pos:type() == "vec2")
 
 	local e = self.keys[id]
-	e.pos.x = pos.x
-	e.pos.y = pos.y
+	local e_pos = e:get("pos")
+	e_pos.x = pos.x
+	e_pos.y = pos.y
 	self:show_key(id, bool)
 end
 
@@ -256,9 +257,9 @@ function ShowKeys:update(dt)
 
 	if not Settings.current.show_keys then return end
 	for _, e in pairs(self.keys) do
-		local fp = e.fake_pulse
-		if not e.hidden and fp then
-			local qt = e.quad_transform
+		if not e:has("hidden") and e:has("fake_pulse") then
+			local fp = e:get("fake_pulse")
+			local qt = e:get("quad_transform")
 
 			if qt.sx > fp.sx then
 				fp.dirx = -1
