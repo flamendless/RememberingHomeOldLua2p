@@ -47,10 +47,6 @@ local DevTools = {
 	}
 }
 
-if DEV then
-	DevTools.cli.font = love.graphics.newFont(32)
-end
-
 local slab_components
 
 local stats = {
@@ -112,6 +108,19 @@ local designer = {
 	show_outline = true,
 }
 
+local room_map = {
+	show = false,
+	title = "Room Map",
+	pan_x = 0,
+	pan_y = 0,
+	zoom = 1,
+	dragging = false,
+	graph = nil,
+	font = nil,
+	save_message = nil,
+	save_message_until = 0,
+}
+
 local list = {
 	stats,
 	mouse,
@@ -123,7 +132,13 @@ local list = {
 	fade,
 	image_viewer,
 	designer,
+	room_map,
 }
+
+if DEV then
+	DevTools.cli.font = love.graphics.newFont(32)
+	room_map.font = love.graphics.newFont(14)
+end
 
 local getFPS = love.timer.getFPS
 local font = love.graphics.getFont()
@@ -134,7 +149,14 @@ function DevTools.init()
 	DevTools.init_input()
 end
 
+function DevTools.blocks_input()
+	return room_map.show
+end
+
 function DevTools.update(dt)
+	if room_map.show then
+		return
+	end
 	if not DevTools.show then
 		return
 	end
@@ -162,6 +184,9 @@ function DevTools.update(dt)
 	for _, v in ipairs(list) do
 		if Slab.CheckBox(v.show, v.title) then
 			v.show = not v.show
+			if v == room_map and v.show then
+				DevTools.build_room_map_layout()
+			end
 		end
 	end
 	Slab.EndWindow()
@@ -200,7 +225,12 @@ function DevTools.draw()
 		love.graphics.setFont(temp_fnt)
 	end
 
-	if not DevTools.show then return end
+	if not DevTools.show then
+		if room_map.show and GameStates.world then
+			DevTools.draw_room_map()
+		end
+		return
+	end
 	if not GameStates.world then return end
 
 	love.graphics.setFont(font)
@@ -224,6 +254,10 @@ function DevTools.draw()
 		DevTools.camera:detach()
 	end
 	Slab.Draw()
+
+	if room_map.show then
+		DevTools.draw_room_map()
+	end
 end
 
 function DevTools.draw_stats()
@@ -775,6 +809,86 @@ function DevTools.draw_designer()
 	Slab.EndWindow()
 end
 
+function DevTools.build_room_map_layout()
+	room_map.graph = RoomMap.build_from_rooms(Data.Rooms)
+end
+
+function DevTools.room_map_wheel(mx, my, wy)
+	local ww, wh = love.graphics.getDimensions()
+	local old_zoom = room_map.zoom
+	local new_zoom = math.max(0.25, math.min(4, old_zoom + wy * 0.1))
+	local world_x = (mx - ww / 2 - room_map.pan_x) / old_zoom
+	local world_y = (my - wh / 2 - room_map.pan_y) / old_zoom
+	room_map.zoom = new_zoom
+	room_map.pan_x = mx - ww / 2 - world_x * new_zoom
+	room_map.pan_y = my - wh / 2 - world_y * new_zoom
+end
+
+function DevTools.save_room_map_png()
+	if not room_map.graph then
+		DevTools.build_room_map_layout()
+	end
+
+	local map_font = room_map.font or font
+	local filepath, err = RoomMap.export_png(room_map.graph, nil, {
+		font = map_font,
+		current_id = GameStates.current_id,
+	})
+	if not filepath then
+		Log.warn("Room map: failed to save", err)
+		return
+	end
+
+	local rel = filepath:match("/dev/(.+)$") or filepath
+	room_map.save_message = "dev/" .. rel
+	room_map.save_message_until = love.timer.getTime() + 3
+	Log.info("Room map saved:", filepath)
+end
+
+function DevTools.draw_room_map()
+	if not room_map.graph then
+		DevTools.build_room_map_layout()
+	end
+
+	local ww, wh = love.graphics.getDimensions()
+	local prev_font = love.graphics.getFont()
+	local prev_r, prev_g, prev_b, prev_a = love.graphics.getColor()
+	local prev_line_width = love.graphics.getLineWidth()
+
+	love.graphics.setColor(0, 0, 0, 0.75)
+	love.graphics.rectangle("fill", 0, 0, ww, wh)
+
+	love.graphics.push()
+	love.graphics.translate(ww / 2 + room_map.pan_x, wh / 2 + room_map.pan_y)
+	love.graphics.scale(room_map.zoom)
+
+	local map_font = room_map.font or font
+	love.graphics.setFont(map_font)
+	RoomMap.draw(room_map.graph, {
+		current_id = GameStates.current_id,
+		zoom = room_map.zoom,
+		font = map_font,
+	})
+
+	love.graphics.pop()
+
+	love.graphics.setFont(map_font)
+	love.graphics.setColor(1, 1, 1, 0.85)
+	love.graphics.print("Room Map — scroll: zoom, drag: pan, S: save PNG, M: toggle, Esc: close", 12, wh - 28)
+	local current_id = GameStates.current_id
+	if current_id then
+		love.graphics.print("Current: " .. tostring(current_id), 12, wh - 48)
+	end
+	if room_map.save_message and love.timer.getTime() < room_map.save_message_until then
+		love.graphics.setColor(0.5, 1, 0.6, 1)
+		love.graphics.print("Saved: " .. room_map.save_message, 12, wh - 68)
+	end
+
+	love.graphics.setFont(prev_font)
+	love.graphics.setColor(prev_r, prev_g, prev_b, prev_a)
+	love.graphics.setLineWidth(prev_line_width)
+end
+
 
 function DevTools.end_draw()
 	if stats.show then
@@ -807,6 +921,17 @@ function DevTools.keypressed(key)
 		return
 	end
 
+	if room_map.show then
+		if key == "escape" then
+			room_map.show = false
+		elseif key == "m" and DevTools.show then
+			room_map.show = false
+		elseif key == "s" then
+			DevTools.save_room_map_png()
+		end
+		return
+	end
+
 	if Slab.IsAnyInputFocused() then
 		return
 	end
@@ -830,6 +955,11 @@ function DevTools.keypressed(key)
 		DevTools.show_fps = not DevTools.show_fps
 	elseif key == "f" then
 		fade.show = not fade.show
+	elseif key == "m" and DevTools.show then
+		room_map.show = not room_map.show
+		if room_map.show then
+			DevTools.build_room_map_layout()
+		end
 	elseif key == "h" then
 		GameStates.world:emit("debug_hot_reload")
 	elseif key == "r" then
@@ -845,36 +975,29 @@ function DevTools.keypressed(key)
 	end
 end
 
-function DevTools.mousemoved(mx, my, dx, dy)
-	if not GameStates.world then
-		return
-	end
-	GameStates.world:emit("debug_mousemoved", mx, my, dx, dy)
-end
-
-function DevTools.mousepressed(mx, my, mb)
-	if not GameStates.world then
-		return
-	end
-	GameStates.world:emit("debug_mousepressed", mx, my, mb)
-end
-
-function DevTools.mousereleased(mx, my, mb)
-	if not GameStates.world then
-		return
-	end
-	GameStates.world:emit("debug_mousereleased", mx, my, mb)
-end
-
 function DevTools.wheelmoved(wx, wy)
 	if not GameStates.world then
 		return
 	end
+
+	if room_map.show then
+		local mx, my = love.mouse.getPosition()
+		DevTools.room_map_wheel(mx, my, wy)
+		return
+	end
+
 	GameStates.world:emit("debug_wheelmoved", wx, wy)
 end
 
 function DevTools.mousepressed(mx, my, mb)
 	if not GameStates.world then
+		return
+	end
+
+	if room_map.show then
+		if mb == 1 or mb == 2 then
+			room_map.dragging = true
+		end
 		return
 	end
 
@@ -902,6 +1025,13 @@ function DevTools.mousereleased(mx, my, mb)
 		return
 	end
 
+	if room_map.show then
+		if mb == 1 or mb == 2 then
+			room_map.dragging = false
+		end
+		return
+	end
+
 	if mb == 1 then
 		designer.dragging = false
 	end
@@ -911,6 +1041,14 @@ end
 
 function DevTools.mousemoved(mx, my, dx, dy)
 	if not GameStates.world then
+		return
+	end
+
+	if room_map.show then
+		if room_map.dragging then
+			room_map.pan_x = room_map.pan_x + dx
+			room_map.pan_y = room_map.pan_y + dy
+		end
 		return
 	end
 

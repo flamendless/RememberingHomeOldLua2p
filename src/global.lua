@@ -85,6 +85,7 @@ if not DEV and not TEST.mode then
 end
 
 Enums = require("enums")
+RoomMap = require("room_map")
 
 Data = {
 	AnimationData = require("data.animation_data"),

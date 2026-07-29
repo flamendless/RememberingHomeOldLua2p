@@ -39,3 +39,4 @@ src/modules/*
 *.DS_Store
 libs/love-build.app/
 libs/love-build.zip
+dev/
