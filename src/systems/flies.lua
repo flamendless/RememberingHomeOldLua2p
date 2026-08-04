@@ -35,18 +35,20 @@ function Flies:generate_flies_for_room_lights(scene)
 	assert:type(scene, "string")
 
 	local d = Data.Lights[scene]
-	for _, lp in ipairs(d.pl.pos) do
+	for i, lp in ipairs(d.pl.pos) do
+		local y = Data.Lights.get_light_y(scene, "pl", i)
 		self:generate_flies(
 			love.math.random(8, 16),
-			vec2(lp.x, lp.y),
+			vec2(lp.x, y),
 			love.math.random(8, 12)
 		)
 	end
 	if d.pl_mid then
-		for _, lp in ipairs(d.pl_mid.pos) do
+		for i, lp in ipairs(d.pl_mid.pos) do
+			local y = Data.Lights.get_light_y(scene, "pl_mid", i)
 			self:generate_flies(
 				love.math.random(8, 16),
-				vec2(lp.x, lp.y),
+				vec2(lp.x, y),
 				love.math.random(4, 8)
 			)
 		end

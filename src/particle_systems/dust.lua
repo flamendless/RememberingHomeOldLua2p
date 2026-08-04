@@ -89,6 +89,7 @@ function PSDust:create_system()
 end
 
 function PSDust:configure(config)
+	assert:type(config, "table")
 	self.system = self:create_system()
 	local ps = self.system
 	local strength = config.strength or 1
@@ -100,14 +101,18 @@ function PSDust:configure(config)
 	ps:setDirection(config.direction)
 	ps:setEmissionArea("ellipse", math.max(config.w / 2, 1), HP.emission_height, 0, false)
 	ps:setEmissionRate(HP.emission_rate * strength)
-	ps:setEmitterLifetime(HP.emitter_lifetime)
-	ps:setParticleLifetime(HP.particle_lifetime_min, HP.particle_lifetime_max)
+	ps:setEmitterLifetime(config.emitter_lifetime or HP.emitter_lifetime)
+	ps:setParticleLifetime(
+		config.particle_lifetime_min or HP.particle_lifetime_min,
+		config.particle_lifetime_max or HP.particle_lifetime_max
+	)
 	local sz = config.size
 	ps:setSizes(sz, sz * 0.7, sz * 0.35, 0)
 	ps:setSizeVariation(config.size_variation)
 	ps:setSpeed(HP.speed_min * strength, HP.speed_max * strength)
 
-	self.emit_count = math.max(1, math.floor(HP.emit_at_start * strength))
+	local emit_at_start = config.emit_at_start or HP.emit_at_start
+	self.emit_count = math.max(1, math.floor(emit_at_start * strength))
 end
 
 function PSDust:trigger()
@@ -116,6 +121,7 @@ function PSDust:trigger()
 end
 
 function PSDust:update(dt)
+	assert:type(dt, "number")
 	if not self.system or self.system:getCount() == 0 then
 		return
 	end
@@ -128,6 +134,8 @@ function PSDust:is_alive()
 end
 
 function PSDust:draw(x, y)
+	assert:type_or_nil(x, "number")
+	assert:type_or_nil(y, "number")
 	if not self:is_alive() then
 		return
 	end
@@ -158,6 +166,7 @@ function DustPool:acquire()
 end
 
 function DustPool:trigger(config)
+	assert:type(config, "table")
 	local burst = self:acquire()
 	burst:configure(config)
 	burst:trigger()
@@ -165,6 +174,7 @@ function DustPool:trigger(config)
 end
 
 function DustPool:update(dt)
+	assert:type(dt, "number")
 	for _, burst in ipairs(self.pool) do
 		burst:update(dt)
 	end

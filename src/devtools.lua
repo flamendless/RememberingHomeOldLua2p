@@ -135,6 +135,18 @@ local list = {
 	room_map,
 }
 
+local function dev_hang_enter(label)
+	if HANG_WATCH then
+		hang_watch("devtools:" .. label)
+	end
+end
+
+local function dev_hang_leave(label)
+	if HANG_WATCH then
+		hang_watch("devtools:" .. label .. " ok")
+	end
+end
+
 if DEV then
 	DevTools.cli.font = love.graphics.newFont(32)
 	room_map.font = love.graphics.newFont(14)
@@ -155,17 +167,26 @@ end
 
 function DevTools.update(dt)
 	if room_map.show then
+		dev_hang_enter("skip room_map")
+		dev_hang_leave("skip room_map")
 		return
 	end
 	if not DevTools.show then
+		dev_hang_enter("skip hidden")
+		dev_hang_leave("skip hidden")
 		return
 	end
 	if not GameStates.world then
+		dev_hang_enter("skip no world")
+		dev_hang_leave("skip no world")
 		return
 	end
 
+	dev_hang_enter("slab")
 	Slab.Update(dt)
+	dev_hang_leave("slab")
 
+	dev_hang_enter("list win")
 	Slab.BeginWindow("list", { Title = "DevTools" })
 	if DevTools.pp_effects then
 		for _, effect in ipairs(DevTools.pp_effects) do
@@ -173,8 +194,11 @@ function DevTools.update(dt)
 				effect.debug_show = not effect.debug_show
 				effect.is_active = not effect.is_active
 			end
-			if effect.debug_update then
+			if effect.debug_update and effect.debug_show then
+				local pp_label = "pp:" .. effect:type()
+				dev_hang_enter(pp_label)
 				effect:debug_update(dt)
+				dev_hang_leave(pp_label)
 			end
 		end
 	end
@@ -190,18 +214,51 @@ function DevTools.update(dt)
 		end
 	end
 	Slab.EndWindow()
+	dev_hang_leave("list win")
 
+	dev_hang_enter("stats")
 	DevTools.draw_stats()
+	dev_hang_leave("stats")
+
+	dev_hang_enter("mouse")
 	DevTools.draw_mouse()
+	dev_hang_leave("mouse")
+
+	dev_hang_enter("inputs")
 	DevTools.draw_inputs()
+	dev_hang_leave("inputs")
+
+	dev_hang_enter("entities")
 	DevTools.draw_entities_list()
+	dev_hang_leave("entities")
+
+	dev_hang_enter("systems")
 	DevTools.draw_system_list()
+	dev_hang_leave("systems")
+
+	dev_hang_enter("components")
 	DevTools.draw_component_list()
+	dev_hang_leave("components")
+
+	dev_hang_enter("debug list")
 	DevTools.draw_debug_list()
+	dev_hang_leave("debug list")
+
+	dev_hang_enter("fade")
 	DevTools.draw_fade()
+	dev_hang_leave("fade")
+
+	dev_hang_enter("image viewer")
 	DevTools.draw_image_viewer()
+	dev_hang_leave("image viewer")
+
+	dev_hang_enter("designer")
 	DevTools.draw_designer()
+	dev_hang_leave("designer")
+
+	dev_hang_enter("emit debug_update")
 	GameStates.world:emit("debug_update", dt)
+	dev_hang_leave("emit debug_update")
 end
 
 function DevTools.draw()

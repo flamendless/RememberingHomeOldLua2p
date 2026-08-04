@@ -35,6 +35,7 @@ function Player.base(e, x, y, speed_data, can)
 	local collider = Data.Colliders.player
 
 	e:give("id", "player")
+		:give("key", "player")
 		:give("player")
 		:give("pos", x, y)
 		:give("pos_vec2")

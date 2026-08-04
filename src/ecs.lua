@@ -152,6 +152,10 @@ state_systems[G.StorageRoom] = {
 	"lighter",
 	"wind",
 	"flame",
+	"event_scheduler",
+	"lightning",
+	"movement_dust",
+	"light_wind_pass",
 }
 
 state_systems[G.UtilityRoom] = {
@@ -167,7 +171,7 @@ state_systems[G.UtilityRoom] = {
 	"entity",
 	"gamestates",
 	"interactive",
-	"inventory",
+	-- "inventory",
 	"items",
 	"movement",
 	"outline",
@@ -193,6 +197,10 @@ state_systems[G.UtilityRoom] = {
 	"lighter",
 	"wind",
 	"flame",
+	"event_scheduler",
+	"lightning",
+	"movement_dust",
+	"light_wind_pass",
 }
 
 state_systems[G.Kitchen] = {
@@ -234,6 +242,10 @@ state_systems[G.Kitchen] = {
 	"lighter",
 	"wind",
 	"flame",
+	"event_scheduler",
+	"lightning",
+	"movement_dust",
+	"light_wind_pass",
 }
 
 state_systems[G.LivingRoom] = {
@@ -275,6 +287,10 @@ state_systems[G.LivingRoom] = {
 	"lighter",
 	"wind",
 	"flame",
+	"event_scheduler",
+	"lightning",
+	"movement_dust",
+	"light_wind_pass",
 }
 state_systems[G.TotallyDarkRoom] = state_systems[G.LivingRoom]
 
@@ -319,6 +335,10 @@ state_systems[G.Office1] = {
 	"path",
 	"flashlight",
 	"survival",
+	"event_scheduler",
+	"lightning",
+	"movement_dust",
+	"light_wind_pass",
 }
 
 state_systems[G.Office2] = tablex.copy(state_systems[G.Office1])
@@ -335,7 +355,7 @@ local unpausable_list = {
 	"list",
 }
 
-local hang_watch_methods = { "preupdate", "update", "state_update" }
+local hang_watch_methods = { "preupdate", "update", "state_update", "debug_update" }
 
 local function wrap_hang_watch(sys, name, method)
 	if sys.__hang_watch_wrapped and sys.__hang_watch_wrapped[method] then
@@ -348,7 +368,9 @@ local function wrap_hang_watch(sys, name, method)
 	local orig = sys[method]
 	sys[method] = function(self, ...)
 		if HANG_WATCH then
-			hang_watch(name .. ":" .. method)
+			if method ~= "debug_update" or self.debug_show then
+				hang_watch(name .. ":" .. method)
+			end
 		end
 		orig(self, ...)
 	end

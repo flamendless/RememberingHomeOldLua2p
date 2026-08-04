@@ -62,15 +62,16 @@ return {
 		"vec3",
 
 		-- Game globals
-		"Enums",
-		"Data",
-		"Renderers",
-		"ParticleSystems",
+		"Assemblages",
 		"Atlases",
-		"Ctor",
 		"Beehive",
 		"Behaviors",
-		"Assemblages",
+		"Ctor",
+		"Data",
+		"Enums",
+		"ParticleSystems",
+		"Renderers",
+		"RoomMap",
 
 		-- Core modules
 		"Animation",

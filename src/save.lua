@@ -3,6 +3,7 @@ local Save = {
 		splash_done = false,
 		intro_done = false,
 		outside_intro_done = false,
+		events = {},
 	},
 	checkpoints = {},
 	valid_checkpoints = false,
@@ -25,6 +26,9 @@ function Save.init()
 		if key == hashed then
 			local data = Utils.serial.de(content)
 			Save.data = data
+			if not Save.data.events then
+				Save.data.events = {}
+			end
 			validate_checkpoints(data)
 		else
 			local error_msg = string.format(

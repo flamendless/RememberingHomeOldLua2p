@@ -18,7 +18,7 @@ function Office1:state_setup()
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, rw, h)
 	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id, rw)
 
-	self.world:emit("create_room_bounds", rw, h, {sx = mult})
+	self.world:emit("create_room_bounds", rw, h, { scene_id = self.id, sx = mult })
 	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.ngrading("lut_dusk"),

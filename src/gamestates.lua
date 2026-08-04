@@ -133,7 +133,9 @@ function GameStates.update(dt)
 	if not GameStates.is_ready then return end
 	JPROF.push("gs state update")
 	if DEV and DevTools.cli.show then return end
+	if HANG_WATCH then hang_watch("emit state_update") end
 	GameStates.world:emit("state_update", dt)
+	if HANG_WATCH then hang_watch("emit state_update ok") end
 	JPROF.pop("gs state update")
 end
 

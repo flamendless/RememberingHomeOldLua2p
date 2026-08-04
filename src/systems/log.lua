@@ -64,8 +64,16 @@ function LogsSystem:debug_update(dt)
 		tablex.clear(self.logs[self.current])
 	end
 
-	for _, str in ipairs(self.logs[self.current]) do
-		Slab.Text(str)
+	local logs = self.logs[self.current]
+	local n_logs = #logs
+	local max_logs = 200
+	local start = 1
+	if n_logs > max_logs then
+		Slab.Text(string.format("Showing last %d of %d entries", max_logs, n_logs))
+		start = n_logs - max_logs + 1
+	end
+	for i = start, n_logs do
+		Slab.Text(logs[i])
 	end
 
 	Slab.EndWindow()

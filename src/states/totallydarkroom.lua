@@ -16,7 +16,7 @@ function TotallyDarkRoom:state_setup()
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
 	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id)
 
-	self.world:emit("create_room_bounds", w, h)
+	self.world:emit("create_room_bounds", w, h, { scene_id = self.id })
 	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.ngrading("lut_dusk"),

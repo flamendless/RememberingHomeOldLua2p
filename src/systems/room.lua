@@ -10,6 +10,7 @@ end
 function Room:parse_room_items(res)
 	assert:type(res, "string")
 	self.current_res = res
+	self.world:setResource("scene_id", res)
 
 	local data = require("atlases.atlas_" .. res)
 	local list = require("atlases." .. res .. "_items")
@@ -39,6 +40,8 @@ function Room:parse_room_items(res)
 	if has_group then
 		self:create_grouped_items(group, group_t, frames, list)
 	end
+
+	self.world:emit("setup_events", res)
 end
 
 function Room:create_room_item(frames, spr_res, t, g_id)

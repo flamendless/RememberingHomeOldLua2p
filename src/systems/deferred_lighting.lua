@@ -36,6 +36,7 @@ function DeferredLighting:init(world)
 	Log.debug("TODO: we can lower this to 16, but for Outside must be 64")
 	self.world = world
 	self.timer = Timer.new()
+	self.flicker_handles = {}
 
 	self.lighting_pass = love.graphics.newShader(Shaders.paths.df_lighting)
 	self.ambiance = { 1, 1, 1, 1 }
@@ -84,6 +85,41 @@ function DeferredLighting:init(world)
 	self.pool_flicker.onAdded = function(pool, e)
 		self:start_flicker(e)
 	end
+
+	self.pool_flicker.onRemoved = function(pool, e)
+		self:cancel_flicker_timer(e)
+	end
+end
+
+function DeferredLighting:cancel_flicker_timer(e)
+	local handle = self.flicker_handles[e]
+	if handle then
+		self.timer:cancel(handle)
+		self.flicker_handles[e] = nil
+	end
+end
+
+function DeferredLighting:stop_flicker(e)
+	self:cancel_flicker_timer(e)
+	if not e:has("d_light_flicker") then
+		return
+	end
+	e:remove("d_light_flicker")
+	if e:has("d_light_flicker_remove_after") then
+		e:remove("d_light_flicker_remove_after")
+	end
+	if e:has("d_light_flicker_repeat") then
+		e:remove("d_light_flicker_repeat")
+	end
+	if e:has("d_light_flicker_sure_on_after") then
+		e:remove("d_light_flicker_sure_on_after")
+	end
+	if e:has("on_d_light_flicker_during") then
+		e:remove("on_d_light_flicker_during")
+	end
+	if e:has("on_d_light_flicker_after") then
+		e:remove("on_d_light_flicker_after")
+	end
 end
 
 function DeferredLighting:start_flicker(e)
@@ -91,17 +127,23 @@ function DeferredLighting:start_flicker(e)
 	if not dlf then
 		return
 	end
+
+	self:cancel_flicker_timer(e)
+
 	local diff = e:get("diffuse")
-	local orig_diff = diff.orig_value
+	local on_diff = { unpack(diff.value) }
 	local signal_during = e:get("on_d_light_flicker_during")
 	local signal_after = e:get("on_d_light_flicker_after")
 
-	self.timer:during(dlf.during, function()
+	local handle = self.timer:during(dlf.during, function()
+		if not e:has("d_light_flicker") then
+			return
+		end
 		local c = Lume.weightedchoice({ on = dlf.on_chance, off = dlf.off_chance })
 		if c == "on" then
-			diff.value[1] = orig_diff[1]
-			diff.value[2] = orig_diff[2]
-			diff.value[3] = orig_diff[3]
+			diff.value[1] = on_diff[1]
+			diff.value[2] = on_diff[2]
+			diff.value[3] = on_diff[3]
 		elseif c == "off" then
 			diff.value[1] = 0
 			diff.value[2] = 0
@@ -112,11 +154,22 @@ function DeferredLighting:start_flicker(e)
 			self.world:emit(signal_during.signal, unpack(signal_during.args))
 		end
 	end, function()
+		self.flicker_handles[e] = nil
+		if not e:has("d_light_flicker") then
+			return
+		end
 		if signal_after then
 			self.world:emit(signal_after.signal, unpack(signal_after.args))
 		end
 		local on_repeat = e:get("d_light_flicker_repeat")
 		if e:has("d_light_flicker_remove_after") then
+			diff.value[1] = on_diff[1]
+			diff.value[2] = on_diff[2]
+			diff.value[3] = on_diff[3]
+			self:update_light_diffuse(e)
+			if signal_during then
+				self.world:emit(signal_during.signal, unpack(signal_during.args))
+			end
 			e:remove("d_light_flicker")
 				:remove("d_light_flicker_remove_after")
 				:remove("on_d_light_flicker_during")
@@ -124,9 +177,9 @@ function DeferredLighting:start_flicker(e)
 		elseif on_repeat then
 			on_repeat.count = on_repeat.count - 1
 			if e:has("d_light_flicker_sure_on_after") then
-				diff.value[1] = orig_diff[1]
-				diff.value[2] = orig_diff[2]
-				diff.value[3] = orig_diff[3]
+				diff.value[1] = on_diff[1]
+				diff.value[2] = on_diff[2]
+				diff.value[3] = on_diff[3]
 				self:update_light_diffuse(e)
 				if signal_during then
 					self.world:emit(signal_during.signal, unpack(signal_during.args))
@@ -145,6 +198,8 @@ function DeferredLighting:start_flicker(e)
 			end
 		end
 	end)
+
+	self.flicker_handles[e] = handle
 end
 
 function DeferredLighting:set_draw(id)
@@ -169,13 +224,25 @@ function DeferredLighting:apply_ambiance()
 	love.graphics.setColor(self.ambiance)
 end
 
-function DeferredLighting:shutdown_lights()
-	self.world:emit("play_sound_on_player", Enums.sfx.lights_shutdown)
-	for _, v in pairs(self.groups) do
-		for _, other in ipairs(v) do
-			other:give("light_disabled")
-		end
+function DeferredLighting:disable_all_lights(opts)
+	opts = opts or {}
+	for _, e in ipairs(self.pool) do
+		self:stop_flicker(e)
+		e:give("light_disabled")
 	end
+	if opts.play_sound then
+		self.world:emit("play_sound_on_player", Enums.sfx.lights_shutdown, opts.sound_opts)
+	end
+end
+
+function DeferredLighting:enable_all_lights()
+	for _, e in ipairs(self.pool_disabled) do
+		e:remove("light_disabled")
+	end
+end
+
+function DeferredLighting:shutdown_lights()
+	self:disable_all_lights({ play_sound = true })
 end
 
 function DeferredLighting:toggle_light_group(group_id, state)
@@ -436,6 +503,7 @@ function DeferredLighting:flicker_sync(main, others)
 end
 
 function DeferredLighting:cleanup()
+	self.flicker_handles = {}
 	self.timer:clear()
 end
 

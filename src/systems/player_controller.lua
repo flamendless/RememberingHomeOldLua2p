@@ -2,6 +2,11 @@ local PlayerController = Concord.system({
 	pool = { "player_controller", "body", "collider" },
 })
 
+local FOOT_DUST = {
+	interval = 0.35,
+	run_interval = 0.2,
+}
+
 local function stop_body_motion(e)
 	local body = e:get("body")
 	body.dx = 0
@@ -26,6 +31,7 @@ function PlayerController:init(world)
 		Log.debug("TODO: finalize value someday")
 	end
 	self.last_desired_dir = 0
+	self.foot_dust_timer = 0
 
 	-- self.pool.onAdded = function(_, e)
 	-- 	local e_player = self.world:getResource("e_player")
@@ -262,6 +268,36 @@ function PlayerController:player_stop()
 	self.world:emit("update_speed_data", self.player, anim_name)
 end
 
+function PlayerController:player_is_walking_or_running()
+	if self.player:has("hit_wall") then
+		return false
+	end
+	return self.player:get("body").dx ~= 0
+end
+
+function PlayerController:update_foot_dust(dt)
+	if not self:player_is_walking_or_running() then
+		self.foot_dust_timer = 0
+		return
+	end
+
+	local pause = self.world:getSystem(ECS.get_system_class("pause"))
+	if pause and pause.is_paused then
+		return
+	end
+	if self.player:has("hidden") then
+		return
+	end
+
+	local is_running = self.player:get("is_running")
+	local interval = is_running.value and FOOT_DUST.run_interval or FOOT_DUST.interval
+	self.foot_dust_timer = self.foot_dust_timer + dt
+	if self.foot_dust_timer >= interval then
+		self.foot_dust_timer = 0
+		self.world:emit("trigger_dust_burst", Enums.dust_kind.foot, "player")
+	end
+end
+
 function PlayerController:update(dt)
 	if not self.player then return end
 
@@ -284,9 +320,13 @@ function PlayerController:update(dt)
 
 	if self.player:has("override_animation") then
 		stop_body_motion(self.player)
+		self.foot_dust_timer = 0
 		return
 	end
-	if not self.player:has("can_move") then return end
+	if not self.player:has("can_move") then
+		self.foot_dust_timer = 0
+		return
+	end
 
 	local within_int = self.player:get("within_interactive")
 	local body = self.player:get("body")
@@ -373,6 +413,7 @@ function PlayerController:update(dt)
 		local anim_name = self:player_update_animation()
 		self.world:emit("update_speed_data", self.player, anim_name)
 	end
+	self:update_foot_dust(dt)
 	-- self.world:emit("lighter_update_pos", self.player)
 end
 

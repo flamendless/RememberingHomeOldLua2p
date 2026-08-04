@@ -213,6 +213,16 @@ Enums.game_state = Enum(
 	"Office2"
 )
 
+Enums.event = Enum(
+	"lightning",
+	"sound",
+	"dust_foot",
+	"dust_ceiling",
+	"light_wind_pass"
+)
+
+Enums.dust_kind = Enum("foot", "ceiling", "emitter")
+
 Enums.sfx = Enum(
 	"car_door_open",
 	"car_door_hit",

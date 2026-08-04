@@ -56,7 +56,7 @@ function Lighter:init(world)
 end
 
 function Lighter:spawn_lighter(e_player)
-	assert(e_player.__isEntity and e_player:has("player"))
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
 	self.e_player = e_player
 	self.e_lighter = Concord.entity(self.world)
 		:assemble(Assemblages.Lighter.lighter, e_player)
@@ -76,7 +76,7 @@ function Lighter:spawn_lighter(e_player)
 end
 
 function Lighter:lighter_update_pos(e_player)
-	assert(e_player.__isEntity and e_player:has("player"))
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
 	local dir = e_player:get("body").dir
 	self.e_lighter:get("anchor").padding_x = 16 * dir
 	self.e_lighter:get("transform").sx = -dir
@@ -115,6 +115,7 @@ function Lighter:should_show_flame()
 end
 
 function Lighter:wick_world_pos(e_player)
+	assert(e_player.__isEntity and e_player:has("player") and e_player:has("pos"), e_player)
 	local pos = e_player:get("pos")
 	local ox, oy = Helper.get_offset(e_player)
 	local sx, sy = 1, 1
@@ -363,6 +364,7 @@ function Lighter:update_instability(dt)
 end
 
 function Lighter:anim_open_lighter(e_player)
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
 	if e_player ~= self.e_player or not self.e_flame then
 		return
 	end
@@ -386,6 +388,7 @@ function Lighter:anim_open_lighter(e_player)
 end
 
 function Lighter:anim_close_lighter(e_player)
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
 	if e_player ~= self.e_player then
 		return
 	end

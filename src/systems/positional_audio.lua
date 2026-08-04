@@ -152,6 +152,33 @@ function PositionalAudio:play_sound_on_player(source, opts)
 	self:play_sound_on_entity(self.e_player, source, opts)
 end
 
+function PositionalAudio:resolve_event_source(source)
+	if type(source) == "string" and Enums.sfx[source] then
+		return Enums.sfx[source]
+	end
+	return source
+end
+
+function PositionalAudio:play_event_sound(opts)
+	opts = opts or {}
+	local source = self:resolve_event_source(opts.source)
+	if not source then
+		Log.warn("play_event_sound: no source", opts.source)
+		return
+	end
+
+	if opts.on_player then
+		self:play_sound_on_player(source, opts)
+	elseif opts.x and opts.y then
+		self:play_positional_sound(source, opts.x, opts.y, opts)
+	else
+		local e_player = self:get_player()
+		if e_player then
+			self:play_sound_on_entity(e_player, source, opts)
+		end
+	end
+end
+
 function PositionalAudio:stop_sound_on_entity(e)
 	assert(e.__isEntity, e)
 	if e:has("sound_emitter") then
