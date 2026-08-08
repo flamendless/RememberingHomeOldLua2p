@@ -98,6 +98,7 @@ Enums.survival_state = Enum(
 )
 
 Enums.tutorial_beat = Enum(
+	"tutorial",
 	"interact",
 	"move_left",
 	"interact_left",
@@ -106,6 +107,15 @@ Enums.tutorial_beat = Enum(
 	"lighter",
 	"explore",
 	"done"
+)
+
+Enums.tutorial_wait_kind = Enum(
+	"null",
+	"hold_interact",
+	"move_left",
+	"move_right",
+	"press_interact",
+	"lighter"
 )
 
 Enums.show_keys = Enum(

@@ -10,6 +10,7 @@ local function tutorial_reached_x(pos_x, target_x, dir)
 end
 
 local function action_label(action)
+	assert:type(action, "string")
 	if action == "interact" then
 		return string.upper(Inputs.rev_map.interact)
 	elseif action == "left" then
@@ -25,6 +26,7 @@ function Tutorial:init(world)
 	self.world = world
 
 	self.state = Settings.current.tutorial
+	self.wait_kind = Enums.tutorial_wait_kind.null
 
 	if self.state then
 		self.e_dialogue_car1 = Concord.entity(self.world)
@@ -35,7 +37,7 @@ end
 
 function Tutorial:set_beat(beat)
 	assert(Enums.tutorial_beat[beat], beat)
-	Log.info("Tutorial beat", beat)
+	self.world:emit("tle_log", "beat " .. beat)
 	self.beat = beat
 end
 
@@ -87,15 +89,14 @@ function Tutorial:kill_timeline()
 		self.timeline:Die()
 		self.timeline = nil
 	end
-	self.wait_kind = nil
+	self.wait_kind = Enums.tutorial_wait_kind.null
 	self.waiting_dialogue = false
 	self.waiting_hide_bars = false
 end
 
 function Tutorial:destroy_hand_key_label(duration)
-	if not self.e_hand_key_label then
-		return
-	end
+	assert:type(duration, "number")
+	if not self.e_hand_key_label then return end
 
 	local e = self.e_hand_key_label
 	self.e_hand_key_label = nil
@@ -108,6 +109,9 @@ function Tutorial:destroy_hand_key_label(duration)
 end
 
 function Tutorial:create_hand_key_label(hand, action)
+	assert(hand.__isEntity)
+	assert:type(action, "string")
+
 	self:destroy_hand_key_label(0)
 
 	local text = action_label(action)
@@ -143,26 +147,23 @@ function Tutorial:show_hands_trail(
 	targety,
 	startrot,
 	action,
-	is_instant,
-	on_complete
+	is_instant
 )
-	Log.debug(
-		"show_handsl_trail",
-		n,
-		startx,
-		starty,
-		targetx,
-		targety,
-		startrot,
-		action,
-		is_instant
-	)
+	assert:type(n, "number")
+	assert:type(startx, "number")
+	assert:type(starty, "number")
+	assert:type(targetx, "number")
+	assert:type(targety, "number")
+	assert:type(startrot, "number")
+	assert(Enums.input[action])
+	assert:type(is_instant, "boolean")
 
-	local beat_id = self.beat or "tutorial"
+	local beat_id = self.beat or Enums.tutorial_beat.tutorial
 	local gapx = (targetx - startx) / n
 	local gapy = (targety - starty) / n
 	local r = ((0 - startrot + 180) % 360) - 180
 	local scale = 0.4
+
 	for i = 1, n do
 		local x = startx + gapx * i
 		local y = starty + gapy * i + love.math.random(-3, 3)
@@ -177,11 +178,12 @@ function Tutorial:show_hands_trail(
 			distort = 0
 		end
 
+		local idk = beat_id .. "_hand_decal" .. i
 		local e_hand = Concord.entity(self.world):assemble(
 			Assemblages.HandDecal.create,
 			{
-				id = beat_id .. "_hand_decal" .. i,
-				key = beat_id .. "_hand_decal" .. i,
+				id = idk,
+				key = idk,
 				x = x,
 				y = y,
 				scale = scale,
@@ -197,6 +199,7 @@ function Tutorial:show_hands_trail(
 		end
 
 		scale = scale + love.math.random(2, 4) / 100
+		scale = mathx.min(scale, 0.5)
 		r = r - love.math.random(15, 30)
 
 		local target_opacity = love.math.random(6, 9) / 10
@@ -227,9 +230,7 @@ function Tutorial:show_hands_trail(
 						:give("glow_pulse", 6, 0.2)
 
 					self:create_hand_key_label(e_hand, action)
-					if on_complete then
-						on_complete()
-					end
+					self:resume_timeline()
 				else
 					Flux.to(e_hand:get("decals_shaders").data, dur * 0.9, { opacity = 0 })
 						:delay(delay * 0.3)
@@ -237,12 +238,7 @@ function Tutorial:show_hands_trail(
 				end
 			end)
 	end
-end
 
-function Tutorial:wait_hand_trail(n, startx, starty, targetx, targety, startrot, action, is_instant)
-	self:show_hands_trail(n, startx, starty, targetx, targety, startrot, action, is_instant, function()
-		self:resume_timeline()
-	end)
 	self:pause_timeline()
 end
 
@@ -274,32 +270,32 @@ function Tutorial:wait_hold_interact()
 	self.hold_interact_timer = 0
 	self.hit_n = 0
 	self.world:emit("prepare_screen_shake")
-	self.wait_kind = "hold_interact"
+	self.wait_kind = Enums.tutorial_wait_kind.hold_interact
 	self:pause_timeline()
 end
 
 function Tutorial:wait_move_left()
-	self.wait_kind = "move_left"
+	self.wait_kind = Enums.tutorial_wait_kind.move_left
 	self:pause_timeline()
 end
 
 function Tutorial:wait_move_right()
-	self.wait_kind = "move_right"
+	self.wait_kind = Enums.tutorial_wait_kind.move_right
 	self:pause_timeline()
 end
 
 function Tutorial:wait_press_interact()
-	self.wait_kind = "press_interact"
+	self.wait_kind = Enums.tutorial_wait_kind.press_interact
 	self:pause_timeline()
 end
 
 function Tutorial:wait_lighter_press()
-	self.wait_kind = "lighter"
+	self.wait_kind = Enums.tutorial_wait_kind.lighter
 	self:pause_timeline()
 end
 
 function Tutorial:finish_wait()
-	self.wait_kind = nil
+	self.wait_kind = Enums.tutorial_wait_kind.null
 	self:resume_timeline()
 end
 
@@ -308,7 +304,6 @@ function Tutorial:run_tutorial()
 	assert(self.e_player ~= nil)
 
 	-- Interact
-	self.world:emit("tle_log", "beat interact")
 	self:set_beat(Enums.tutorial_beat.interact)
 	self.world:emit("display_bars")
 
@@ -317,7 +312,7 @@ function Tutorial:run_tutorial()
 	local tx, ty = pos.x - col.w_h + 8, pos.y + col.h_h + 4
 	local bx = tx - 72
 	local by = ty + 8
-	self:wait_hand_trail(5, bx, by, tx, ty, 90, "interact", false)
+	self:show_hands_trail(5, bx, by, tx, ty, 90, Enums.input.interact, false)
 	self:wait_hold_interact()
 
 	self.world:emit("tle_log", "door open")
@@ -330,28 +325,26 @@ function Tutorial:run_tutorial()
 	self.e_player:remove("hidden")
 
 	-- Move left
-	self.world:emit("tle_log", "beat move left")
 	self:set_beat(Enums.tutorial_beat.move_left)
 	pos = self.e_player:get("pos")
 	col = self.e_player:get("collider")
 	tx, ty = pos.x - col.w_h - 60, pos.y + col.h_h
 	bx = self.prev_hx
 	by = self.prev_hy
-	self:wait_hand_trail(5, bx, by, tx, ty, 270, "left", false)
+	self:show_hands_trail(5, bx, by, tx, ty, 270, Enums.input.left, false)
 	self.left_start_x = pos.x
 	self.left_target_x = tx - 18
 	self.e_player:give(Enums.player_cap.can_move):give(Enums.player_cap.can_move_left_only)
 	self:wait_move_left()
 
 	-- Left interact
-	self.world:emit("tle_log", "beat interact left")
 	self:set_beat(Enums.tutorial_beat.interact_left)
 	self:wait_flux(function(resume)
 		self:fade_hand_and_glow(0.3, resume)
 	end)
 	self:wait_seconds(1)
 	tx, ty = self.prev_hx, self.prev_hy
-	self:wait_hand_trail(5, tx, ty, tx, ty, 0, "interact", true)
+	self:show_hands_trail(5, tx, ty, tx, ty, 0, Enums.input.interact, true)
 	self:wait_press_interact()
 
 	self.world:emit(
@@ -363,13 +356,12 @@ function Tutorial:run_tutorial()
 	self:wait_dialogue()
 
 	-- Move right
-	self.world:emit("tle_log", "beat move right")
 	self:set_beat(Enums.tutorial_beat.move_right)
 	local startx, starty = self.prev_hx, self.prev_hy
 	pos = self.e_player:get("pos")
 	col = self.e_player:get("collider")
 	tx, ty = pos.x - col.w_h + 144, pos.y + col.h_h + 4
-	self:wait_hand_trail(8, startx, starty, tx, ty, 0, "right", false)
+	self:show_hands_trail(8, startx, starty, tx, ty, 0, Enums.input.right, false)
 	self.right_start_x = pos.x
 	self.right_target_x = tx + 7
 	self.e_player:give(Enums.player_cap.can_move)
@@ -378,7 +370,6 @@ function Tutorial:run_tutorial()
 	self:wait_move_right()
 
 	-- Right interact + trunk
-	self.world:emit("tle_log", "beat interact right")
 	self:set_beat(Enums.tutorial_beat.interact_right)
 	self.world:emit("player_force_face_dir", -1)
 	self:wait_flux(function(resume)
@@ -386,7 +377,7 @@ function Tutorial:run_tutorial()
 	end)
 	self:wait_seconds(1)
 	tx, ty = self.prev_hx, self.prev_hy
-	self:wait_hand_trail(5, tx, ty, tx, ty, 0, "interact", true)
+	self:show_hands_trail(5, tx, ty, tx, ty, 0, Enums.input.interact, true)
 	self.world:emit("player_force_face_dir", -1)
 	self:wait_press_interact()
 
@@ -403,10 +394,9 @@ function Tutorial:run_tutorial()
 	self:wait_dialogue()
 
 	-- Lighter
-	self.world:emit("tle_log", "beat lighter")
 	self:set_beat(Enums.tutorial_beat.lighter)
 	tx, ty = self.prev_hx, self.prev_hy
-	self:wait_hand_trail(5, tx, ty, tx, ty, 0, "lighter", true)
+	self:show_hands_trail(5, tx, ty, tx, ty, 0, Enums.input.lighter, true)
 	self:wait_lighter_press()
 
 	Log.debug("TODO: show lighter / play animation")
@@ -422,7 +412,6 @@ function Tutorial:run_tutorial()
 	self.world:emit("on_close_lighter")
 
 	-- Explore
-	self.world:emit("tle_log", "beat explore")
 	self:set_beat(Enums.tutorial_beat.explore)
 	local cam = self.world:getResource("camera")
 	local dt_cam = {}
@@ -474,7 +463,8 @@ function Tutorial:complete_move_right()
 end
 
 function Tutorial:update_movement(dt)
-	if self.wait_kind == "move_left" then
+	assert(Enums.tutorial_wait_kind[self.wait_kind])
+	if self.wait_kind == Enums.tutorial_wait_kind.move_left then
 		local current = self.e_player:get("pos").x
 		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
 		progress = mathx.clamp(progress, 0, 1)
@@ -484,7 +474,7 @@ function Tutorial:update_movement(dt)
 			self:complete_move_left()
 		end
 
-	elseif self.wait_kind == "move_right" then
+	elseif self.wait_kind == Enums.tutorial_wait_kind.move_right then
 		local current = self.e_player:get("pos").x
 		local progress = (self.right_start_x - current) / (self.right_start_x - self.right_target_x)
 		progress = mathx.clamp(progress, 0, 1)
@@ -508,7 +498,7 @@ function Tutorial:state_update(dt)
 
 	self:sync_hand_key_label()
 
-	if self.wait_kind == "hold_interact" then
+	if self.wait_kind == Enums.tutorial_wait_kind.hold_interact then
 		if Inputs.pressed(Enums.input.interact) or Inputs.down(Enums.input.interact) then
 			self.hold_interact_timer = self.hold_interact_timer + dt * 0.3
 		end
@@ -559,9 +549,9 @@ function Tutorial:state_update(dt)
 			self:finish_wait()
 		end
 
-	elseif self.wait_kind == "press_interact" then
+	elseif self.wait_kind == Enums.tutorial_wait_kind.press_interact then
 		if Inputs.pressed(Enums.input.interact) then
-			self.wait_kind = nil
+			self.wait_kind = Enums.tutorial_wait_kind.null
 			local progress = { value = 0 }
 			Flux.to(progress, 2, { value = 1 }):onupdate(function()
 				Assemblages.HandDecal.set_progress(self.e_last_hand, progress.value, 0.9, self.e_hand_key_label)
@@ -572,9 +562,9 @@ function Tutorial:state_update(dt)
 			end)
 		end
 
-	elseif self.wait_kind == "lighter" then
+	elseif self.wait_kind == Enums.tutorial_wait_kind.lighter then
 		if Inputs.pressed(Enums.input.lighter) then
-			self.wait_kind = nil
+			self.wait_kind = Enums.tutorial_wait_kind.null
 			self.e_player:give("block_lighter_close")
 			self.world:emit("on_open_lighter")
 			Log.debug("TODO: instead of fading out, the decal should like explode/burn quickly because of the light?")
@@ -617,7 +607,7 @@ function Tutorial:ev_on_hide_bars_complete()
 	self:resume_timeline()
 end
 
-function Tutorial:kill_tutorial_timeline()
+function Tutorial:cleanup()
 	self:kill_timeline()
 end
 

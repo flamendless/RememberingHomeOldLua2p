@@ -421,7 +421,6 @@ function Outside:cleanup()
 	if self.timeline then
 		self.timeline:Die()
 	end
-	self.world:emit("kill_tutorial_timeline")
 end
 
 return Outside
