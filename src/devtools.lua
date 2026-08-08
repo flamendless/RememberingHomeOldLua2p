@@ -113,7 +113,7 @@ local room_map = {
 	title = "Room Map",
 	pan_x = 0,
 	pan_y = 0,
-	zoom = 1,
+	zoom = 0.75,
 	dragging = false,
 	graph = nil,
 	font = nil,
@@ -931,7 +931,7 @@ function DevTools.draw_room_map()
 
 	love.graphics.setFont(map_font)
 	love.graphics.setColor(1, 1, 1, 0.85)
-	love.graphics.print("Room Map — scroll: zoom, drag: pan, S: save PNG, M: toggle, Esc: close", 12, wh - 28)
+	love.graphics.print("scroll: zoom, drag: pan or wasd, P: save PNG, M: toggle, Esc: close", 12, wh - 28)
 	local current_id = GameStates.current_id
 	if current_id then
 		love.graphics.print("Current: " .. tostring(current_id), 12, wh - 48)
@@ -978,12 +978,23 @@ function DevTools.keypressed(key)
 		return
 	end
 
+	if key == "m" then
+		room_map.show = not room_map.show
+	end
+
 	if room_map.show then
-		if key == "escape" then
-			room_map.show = false
-		elseif key == "m" and DevTools.show then
-			room_map.show = false
+		local speed = 32
+		if key == "w" then
+			room_map.pan_y = room_map.pan_y + speed
 		elseif key == "s" then
+			room_map.pan_y = room_map.pan_y - speed
+		elseif key == "a" then
+			room_map.pan_x = room_map.pan_x + speed
+		elseif key == "d" then
+			room_map.pan_x = room_map.pan_x - speed
+		elseif key == "escape" then
+			room_map.show = false
+		elseif key == "p" then
 			DevTools.save_room_map_png()
 		end
 		return
@@ -1097,9 +1108,7 @@ function DevTools.mousereleased(mx, my, mb)
 end
 
 function DevTools.mousemoved(mx, my, dx, dy)
-	if not GameStates.world then
-		return
-	end
+	if not GameStates.world then return end
 
 	if room_map.show then
 		if room_map.dragging then
