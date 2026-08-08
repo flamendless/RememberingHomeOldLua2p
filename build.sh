@@ -204,21 +204,21 @@ function profile()
 
 function test()
 {
-	echo "Running autoplay test: boot_to_tutorial_end"
-	love "$dir_source" --test=boot_to_tutorial_end --speed=20 --seed=1
-	local code=$?
-	if [ $code -eq 0 ]; then
-		echo "TEST PASSED"
-	else
-		echo "TEST FAILED (exit $code)"
+	local scenario
+	scenario="$1"
+	if [ -z "$scenario" ]; then
+		echo "You must pass scenario"
+		exit;
 	fi
-	return $code
-}
 
-function testslow()
-{
-	echo "Running autoplay slow test: boot_to_tutorial_end"
-	love "$dir_source" --test=boot_to_tutorial_end --speed=2 --seed=1
+	local speed
+	speed="$2"
+	if [ -z "$speed" ]; then
+		speed="20"
+	fi
+
+	echo "Running autoplay test: ${scenario}"
+	love "$dir_source" --test="${scenario}" --speed="${speed}" --seed=1
 	local code=$?
 	if [ $code -eq 0 ]; then
 		echo "TEST PASSED"
@@ -264,7 +264,7 @@ function lovebuild() {
 
 if [ $# -eq 0 ]; then
 	echo "Must pass command:"
-	echo "  init, rebuild, clean, run, test, testslow"
+	echo "  init, rebuild, clean, run, test"
 	echo "  gen_atlas, copy_res, copy_modules, new_room, check"
 else
 	"$@"

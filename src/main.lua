@@ -56,8 +56,8 @@ function love.load()
 	TLE.Attach()
 
 	if TEST.mode then
-		TestRunner.init(TEST.scenario)
-		GameStates.switch(Enums.game_state.Splash)
+		local state = TestRunner.init(TEST.scenario)
+		GameStates.switch(state)
 	else
 		-- GameStates.switch(Enums.game_state.Splash)
 		-- GameStates.switch(Enums.game_state.Menu)

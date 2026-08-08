@@ -69,19 +69,14 @@ function Tutorial:wait_dialogue()
 	self:pause_timeline()
 end
 
-function Tutorial:start_timeline()
-	self.world:emit("tle_log", "tutorial timeline begin")
-	self.timeline = TLE.Do(function()
-		self:run_tutorial()
-	end)
-end
-
 function Tutorial:start_tutorial_timeline()
 	if not self.state or self.timeline then
 		return
 	end
 	self.world:emit("tle_log", "start tutorial timeline")
-	self:start_timeline()
+	self.timeline = TLE.Do(function()
+		self:run_tutorial()
+	end)
 end
 
 function Tutorial:kill_timeline()
@@ -462,8 +457,10 @@ function Tutorial:complete_move_right()
 	self:finish_wait()
 end
 
-function Tutorial:update_movement(dt)
+function Tutorial:update(dt)
+	if not self.state then return end
 	assert(Enums.tutorial_wait_kind[self.wait_kind])
+
 	if self.wait_kind == Enums.tutorial_wait_kind.move_left then
 		local current = self.e_player:get("pos").x
 		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
@@ -484,13 +481,6 @@ function Tutorial:update_movement(dt)
 			self:complete_move_right()
 		end
 	end
-end
-
-function Tutorial:update(dt)
-	if not self.state then
-		return
-	end
-	self:update_movement(dt)
 end
 
 function Tutorial:state_update(dt)
@@ -567,7 +557,6 @@ function Tutorial:state_update(dt)
 			self.wait_kind = Enums.tutorial_wait_kind.null
 			self.e_player:give("block_lighter_close")
 			self.world:emit("on_open_lighter")
-			Log.debug("TODO: instead of fading out, the decal should like explode/burn quickly because of the light?")
 			local progress = { value = 0 }
 			Flux.to(progress, 1, { value = 1 }):onupdate(function()
 				Assemblages.HandDecal.set_progress(self.e_last_hand, progress.value, 0.9, self.e_hand_key_label)
@@ -589,17 +578,13 @@ function Tutorial:state_draw_ex()
 end
 
 function Tutorial:ev_dialogue_fin()
-	if not self.waiting_dialogue then
-		return
-	end
+	if not self.waiting_dialogue then return end
 	self.waiting_dialogue = false
 	self:resume_timeline()
 end
 
 function Tutorial:ev_on_hide_bars_complete()
-	if not self.waiting_hide_bars then
-		return
-	end
+	if not self.waiting_hide_bars then return end
 	self.waiting_hide_bars = false
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_interact, true)
