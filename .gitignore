@@ -6,6 +6,7 @@ profiler_log_load.txt
 tags
 temp.lua
 test
+!src/test
 temp.glsl
 scripts/output
 scripts/final

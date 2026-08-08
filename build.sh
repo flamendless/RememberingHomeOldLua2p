@@ -207,13 +207,14 @@ function test()
 	local scenario
 	scenario="$1"
 	if [ -z "$scenario" ]; then
-		echo "You must pass scenario"
-		exit;
+		echo "You did not pass a scenario. Defaulting to 'all'"
+		scenario="all"
 	fi
 
 	local speed
 	speed="$2"
 	if [ -z "$speed" ]; then
+		echo "You did not pass a speed. Defaulting to '20'"
 		speed="20"
 	fi
 
