@@ -77,6 +77,7 @@ Enums.fade = Enum("none", "fade_in", "fade_out")
 
 Enums.shaders = Enum(
 	"blur",
+	"cell_grid",
 	"dissolve",
 	"dither_gradient",
 	"film_grain",

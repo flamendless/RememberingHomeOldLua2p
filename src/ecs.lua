@@ -123,7 +123,7 @@ state_systems[G.StorageRoom] = {
 	"entity",
 	"gamestates",
 	"interactive",
-	"inventory",
+	-- "inventory",
 	"items",
 	"movement",
 	"outline",

@@ -195,6 +195,12 @@ function run()
 	love "$dir_source" --dev --git="$(git rev-parse --verify HEAD)"
 }
 
+function gen_bg_assets()
+{
+	echo "Generating BG assets (_gen.png)..."
+	love "$dir_source" --dev --gen-bg-assets
+}
+
 function profile()
 {
 	data=prof
@@ -266,7 +272,7 @@ function lovebuild() {
 if [ $# -eq 0 ]; then
 	echo "Must pass command:"
 	echo "  init, rebuild, clean, run, test"
-	echo "  gen_atlas, copy_res, copy_modules, new_room, check"
+	echo "  gen_atlas, gen_bg_assets, copy_res, copy_modules, new_room, check"
 else
 	"$@"
 fi

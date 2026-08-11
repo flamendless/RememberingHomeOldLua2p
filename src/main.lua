@@ -55,6 +55,17 @@ function love.load()
 
 	TLE.Attach()
 
+	if GEN_BG_ASSETS then
+		BgAssetProcessor.init()
+		local ok_count, errors = BgAssetProcessor.export_all()
+		Log.info(string.format("Generated %d/%d BG assets", ok_count, #BgAssetProcessor.assets))
+		for _, entry in ipairs(errors) do
+			Log.warn("BG asset failed:", entry.key, entry.err)
+		end
+		love.event.quit(#errors > 0 and 1 or 0)
+		return
+	end
+
 	if TEST.mode then
 		local state = TestRunner.init(TEST.scenario)
 		GameStates.switch(state)

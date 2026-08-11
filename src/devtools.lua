@@ -121,6 +121,12 @@ local room_map = {
 	save_message_until = 0,
 }
 
+local bg_asset_processor = {
+	show = false,
+	title = "BG Asset Processor",
+	panel_width = 400,
+}
+
 local list = {
 	stats,
 	mouse,
@@ -133,6 +139,7 @@ local list = {
 	image_viewer,
 	designer,
 	room_map,
+	bg_asset_processor,
 }
 
 local function dev_hang_enter(label)
@@ -162,13 +169,22 @@ function DevTools.init()
 end
 
 function DevTools.blocks_input()
-	return room_map.show
+	return room_map.show or bg_asset_processor.show
 end
 
 function DevTools.update(dt)
 	if room_map.show then
 		dev_hang_enter("skip room_map")
 		dev_hang_leave("skip room_map")
+		return
+	end
+	if bg_asset_processor.show then
+		BgAssetProcessor.init()
+		if BgAssetProcessor.dirty then
+			BgAssetProcessor.render()
+		end
+		Slab.Update(dt)
+		DevTools.draw_bg_asset_processor_panel()
 		return
 	end
 	if not DevTools.show then
@@ -210,6 +226,10 @@ function DevTools.update(dt)
 			v.show = not v.show
 			if v == room_map and v.show then
 				DevTools.build_room_map_layout()
+			elseif v == bg_asset_processor and v.show then
+				BgAssetProcessor.init()
+				BgAssetProcessor.apply_asset_light_defaults()
+				BgAssetProcessor.mark_dirty()
 			end
 		end
 	end
@@ -257,7 +277,14 @@ function DevTools.update(dt)
 	dev_hang_leave("designer")
 
 	dev_hang_enter("emit debug_update")
-	GameStates.world:emit("debug_update", dt)
+	for _, sys in ipairs(GameStates.world:getSystems()) do
+		if sys.debug_update and sys.debug_show then
+			local name = sys.debug_title or "?"
+			dev_hang_enter("debug:" .. name)
+			sys:debug_update(dt)
+			dev_hang_leave("debug:" .. name)
+		end
+	end
 	dev_hang_leave("emit debug_update")
 end
 
@@ -286,6 +313,10 @@ function DevTools.draw()
 		if room_map.show and GameStates.world then
 			DevTools.draw_room_map()
 		end
+		if bg_asset_processor.show and GameStates.world then
+			DevTools.draw_bg_asset_processor()
+			Slab.Draw()
+		end
 		return
 	end
 	if not GameStates.world then return end
@@ -310,6 +341,11 @@ function DevTools.draw()
 	if DevTools.camera then
 		DevTools.camera:detach()
 	end
+
+	if bg_asset_processor.show then
+		DevTools.draw_bg_asset_processor()
+	end
+
 	Slab.Draw()
 
 	if room_map.show then
@@ -946,6 +982,179 @@ function DevTools.draw_room_map()
 	love.graphics.setLineWidth(prev_line_width)
 end
 
+function DevTools.draw_bg_asset_processor_panel()
+	local ww, wh = love.graphics.getDimensions()
+	local panel_w = bg_asset_processor.panel_width
+
+	bg_asset_processor.show = Slab.BeginWindow("bg_asset_processor", {
+		Title = bg_asset_processor.title,
+		IsOpen = bg_asset_processor.show,
+		X = 8,
+		Y = 8,
+		W = panel_w,
+		H = wh - 16,
+		AllowMove = true,
+		AllowResize = false,
+	})
+
+	local asset = BgAssetProcessor.get_current_asset()
+	local n = #BgAssetProcessor.assets
+	Slab.Text(string.format("%s (%d/%d)", asset.label, BgAssetProcessor.index, n))
+	Slab.Text(asset.rel_path)
+	Slab.Text("Export: " .. asset.gen_path)
+	Slab.Separator()
+
+	if Slab.Button("Prev") then
+		BgAssetProcessor.prev()
+	end
+	Slab.SameLine()
+	if Slab.Button("Next") then
+		BgAssetProcessor.next()
+	end
+	Slab.SameLine()
+	if Slab.Button("Generate Asset") then
+		BgAssetProcessor.export_current()
+	end
+	Slab.SameLine()
+	if Slab.Button("Generate All") then
+		BgAssetProcessor.export_all()
+	end
+
+	Slab.Separator()
+	Slab.Text("Runtime PP applies in-game on top of _gen assets.")
+	Slab.Text("Export is cell_grid only.")
+
+	if Slab.CheckBox(bg_asset_processor.show_original, "Show original") then
+		bg_asset_processor.show_original = not bg_asset_processor.show_original
+	end
+	Slab.SameLine()
+	if Slab.CheckBox(BgAssetProcessor.preview_runtime_pp, "Preview with runtime PP") then
+		BgAssetProcessor.preview_runtime_pp = not BgAssetProcessor.preview_runtime_pp
+		if BgAssetProcessor.preview_runtime_pp and not BgAssetProcessor.ensure_preview_effects() then
+			BgAssetProcessor.preview_runtime_pp = false
+			Slab.Text("LUT not loaded in current state")
+		end
+		BgAssetProcessor.mark_dirty()
+	end
+
+	local cell = BgAssetProcessor.cell_grid
+	local params = cell:get_params()
+
+	local _ = nil
+	params.cell_size, _ = UIWrapper.edit_range("cell_size", params.cell_size, 2, 32, true)
+	cell.cell_size = params.cell_size
+	params.levels, _ = UIWrapper.edit_range("levels", params.levels, 2, 32, true)
+	cell.levels = params.levels
+	params.dither_amount, _ = UIWrapper.edit_range("dither_amount", params.dither_amount, 0, 2, false)
+	cell.dither_amount = params.dither_amount
+	params.hue_preserve, _ = UIWrapper.edit_range("hue_preserve", params.hue_preserve, 0, 1, false)
+	cell.hue_preserve = params.hue_preserve
+	params.contrast, _ = UIWrapper.edit_range("contrast", params.contrast, 0, 4, false)
+	cell.contrast = params.contrast
+	params.offset, _ = UIWrapper.edit_range("offset", params.offset, -1, 1, false)
+	cell.offset = params.offset
+	params.grain, _ = UIWrapper.edit_range("grain", params.grain, 0, 1, false)
+	cell.grain = params.grain
+	params.seed, _ = UIWrapper.edit_range("seed", params.seed, 0, 100, true)
+	cell.seed = params.seed
+
+	if Slab.CheckBox(params.light_enabled, "light_enabled") then
+		params.light_enabled = not params.light_enabled
+		cell.light_enabled = params.light_enabled
+	end
+	params.light_pos[1], _ = UIWrapper.edit_range("light_x", params.light_pos[1], 0, 1, false)
+	cell.light_pos[1] = params.light_pos[1]
+	params.light_pos[2], _ = UIWrapper.edit_range("light_y", params.light_pos[2], 0, 1, false)
+	cell.light_pos[2] = params.light_pos[2]
+	params.light_radius, _ = UIWrapper.edit_range("light_radius", params.light_radius, 0.05, 1.5, false)
+	cell.light_radius = params.light_radius
+	params.light_falloff, _ = UIWrapper.edit_range("light_falloff", params.light_falloff, 0, 1, false)
+	cell.light_falloff = params.light_falloff
+
+	cell:send_values()
+	BgAssetProcessor.mark_dirty()
+
+	if Slab.Button("Reload shader") then
+		BgAssetProcessor.reload_shader()
+	end
+
+	if BgAssetProcessor.save_message and love.timer.getTime() < BgAssetProcessor.save_message_until then
+		Slab.Text("Saved: " .. BgAssetProcessor.save_message)
+	end
+
+	Slab.EndWindow()
+end
+
+function DevTools.draw_bg_asset_processor()
+	local ww, wh = love.graphics.getDimensions()
+	local prev_r, prev_g, prev_b, prev_a = love.graphics.getColor()
+	local panel_w = bg_asset_processor.panel_width
+	local preview_x = panel_w + 8
+	local preview_w = ww - preview_x - 8
+	local pad = 16
+
+	love.graphics.setColor(0.12, 0.12, 0.14, 0.35)
+	love.graphics.rectangle("fill", preview_x, 0, preview_w + 8, wh)
+	love.graphics.setColor(0.35, 0.35, 0.4, 0.6)
+	love.graphics.setLineWidth(1)
+	love.graphics.line(panel_w + 4, 0, panel_w + 4, wh)
+
+	local canvas = BgAssetProcessor.get_preview_canvas()
+	local asset = BgAssetProcessor.get_current_asset()
+	local cw, ch = canvas:getDimensions()
+	local max_w = preview_w - pad * 2
+	local max_h = wh - pad * 2 - 36
+
+	if bg_asset_processor.show_original then
+		local source = BgAssetProcessor.get_image_for_asset(asset)
+		local half_max_w = (max_w - pad) / 2
+		local scale = math.min(half_max_w / cw, max_h / ch)
+		local dw, dh = cw * scale, ch * scale
+		local y = (wh - dh) / 2
+		local left_x = preview_x + pad
+
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.draw(source, left_x + (half_max_w - dw) / 2, y, 0, scale, scale)
+		love.graphics.draw(
+			canvas,
+			left_x + half_max_w + pad + (half_max_w - dw) / 2,
+			y,
+			0,
+			scale,
+			scale
+		)
+
+		love.graphics.setColor(1, 1, 1, 0.9)
+		love.graphics.print("Original", left_x, y - 18)
+		love.graphics.print("Processed", left_x + half_max_w + pad, y - 18)
+	else
+		local scale = math.min(max_w / cw, max_h / ch)
+		local dw, dh = cw * scale, ch * scale
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.draw(
+			canvas,
+			preview_x + pad + (max_w - dw) / 2,
+			(wh - dh) / 2,
+			0,
+			scale,
+			scale
+		)
+	end
+
+	love.graphics.setColor(1, 1, 1, 0.85)
+	love.graphics.print(
+		"Preview (Left/Right: assets, G: generate, Shift+G: all, B/Esc: close)",
+		preview_x + pad,
+		wh - 24
+	)
+	if BgAssetProcessor.save_message and love.timer.getTime() < BgAssetProcessor.save_message_until then
+		love.graphics.setColor(0.5, 1, 0.6, 1)
+		love.graphics.print("Saved: " .. BgAssetProcessor.save_message, preview_x + pad, wh - 44)
+	end
+
+	love.graphics.setColor(prev_r, prev_g, prev_b, prev_a)
+	love.graphics.setLineWidth(1)
+end
 
 function DevTools.end_draw()
 	if stats.show then
@@ -980,6 +1189,23 @@ function DevTools.keypressed(key)
 
 	if key == "m" then
 		room_map.show = not room_map.show
+	end
+
+	if bg_asset_processor.show then
+		if key == "left" then
+			BgAssetProcessor.prev()
+		elseif key == "right" then
+			BgAssetProcessor.next()
+		elseif key == "g" then
+			if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
+				BgAssetProcessor.export_all()
+			else
+				BgAssetProcessor.export_current()
+			end
+		elseif key == "escape" or key == "b" then
+			bg_asset_processor.show = false
+		end
+		return
 	end
 
 	if room_map.show then
@@ -1027,6 +1253,13 @@ function DevTools.keypressed(key)
 		room_map.show = not room_map.show
 		if room_map.show then
 			DevTools.build_room_map_layout()
+		end
+	elseif key == "b" and DevTools.show then
+		bg_asset_processor.show = not bg_asset_processor.show
+		if bg_asset_processor.show then
+			BgAssetProcessor.init()
+			BgAssetProcessor.apply_asset_light_defaults()
+			BgAssetProcessor.mark_dirty()
 		end
 	elseif key == "h" then
 		GameStates.world:emit("debug_hot_reload")

@@ -100,6 +100,7 @@ Data = {
 	Rooms = require("data.rooms"),
 	RoomEvents = require("data.room_events"),
 	Vignette = require("data.vignette"),
+	BgAssets = require("data.bg_assets"),
 }
 
 Renderers = {
@@ -177,6 +178,10 @@ Shaders = require("shaders")
 UIWrapper = require("ui_wrapper")
 Utils = require("utils")
 WindowMode = require("window_mode")
+
+if DEV then
+	BgAssetProcessor = require("bg_asset_processor")
+end
 
 Assemblages = {
 	Common = require("assemblages.common"),

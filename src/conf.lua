@@ -1,5 +1,6 @@
 DEV = false
 PROF = false
+GEN_BG_ASSETS = false
 GIT_COMMIT = ""
 TEST = {
 	mode = false,
@@ -29,6 +30,9 @@ for _, v in pairs(args) do
 			TEST.seed = tonumber(arg[2])
 		elseif arg[1] == "--test-timeout" then
 			TEST.timeout = tonumber(arg[2]) or TEST.timeout
+		elseif arg[1] == "--gen-bg-assets" then
+			DEV = true
+			GEN_BG_ASSETS = true
 		end
 	end
 end
