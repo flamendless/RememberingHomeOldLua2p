@@ -6,13 +6,17 @@ local Sprite = {
 	debug_batched = {},
 }
 
+local function draw_with_blood_overlay(e, highlight, ...)
+	local highlighter = Sprite.overlay_highlighter
+	highlighter.data.time = highlight.time
+	highlighter.data.opacity = highlight.opacity
+	highlighter.data.overlay_strength = highlight.overlay_strength
+	highlighter:draw(...)
+end
+
 local function draw(e, ...)
-	local outline
-	if e:has("outline") then
-		outline = e:get("outline").outliner
-	end
-	if outline then
-		outline:draw(e:get("outline_val").value, ...)
+	if e:has("interactive_highlight") then
+		draw_with_blood_overlay(e, e:get("interactive_highlight"), ...)
 	else
 		love.graphics.draw(...)
 	end
@@ -22,6 +26,7 @@ function Sprite.init(main_renderer, world)
 	assert(main_renderer.__isSystem)
 	assert(world.__isWorld)
 	Sprite.world = world
+	Sprite.overlay_highlighter = BloodHighlight.new()
 
 	tablex.clear(Sprite.debug_batched)
 end

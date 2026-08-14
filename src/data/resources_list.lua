@@ -73,7 +73,8 @@ ResourcesList[G.Menu] = {
 
 ResourcesList[G.Intro] = {
 	images = {
-		{ "intro",             "res/images/intro/bg_gen.png" },
+		{ "intro",     "res/images/intro/bg.png" },
+		{ "intro_gen", "res/images/intro/bg_gen.png" },
 		{ "atlas_intro",       "res/images/atlases/intro.png" },
 		{ "sheet_car",         "res/images/intro/sheet_car.png" },
 		{ "sheet_car_reflect", "res/images/intro/sheet_car_reflect.png" },
@@ -114,8 +115,10 @@ ResourcesList[G.Outside] = {
 		unpack(textures),
 	},
 	array_images = {
-		{ "bg_sky",              "res/images/outside/bg_sky_gen.png" },
-		{ "bg_house",            "res/images/outside/bg_house_gen.png" },
+		{ "bg_sky",      "res/images/outside/bg_sky.png" },
+		{ "bg_sky_gen",  "res/images/outside/bg_sky_gen.png" },
+		{ "bg_house",    "res/images/outside/bg_house.png" },
+		{ "bg_house_gen", "res/images/outside/bg_house_gen.png" },
 		{ "atlas_outside_items", "res/images/atlases/outside.png" },
 		{ "firefly",             "res/images/outside/firefly.png" },
 		{ "splashes",            "res/images/outside/splashes.png" },
@@ -148,7 +151,8 @@ ResourcesList[G.StorageRoom] = {
 		unpack(textures),
 	},
 	array_images = {
-		{ "storage_room",             "res/images/storage_room/storage_room_gen.png" },
+		{ "storage_room",     "res/images/storage_room/storage_room.png" },
+		{ "storage_room_gen", "res/images/storage_room/storage_room_gen.png" },
 		{ "atlas_storage_room_items", "res/images/atlases/storage_room.png" },
 		unpack(player),
 	},
@@ -178,7 +182,8 @@ ResourcesList[G.UtilityRoom] = {
 		unpack(textures),
 	},
 	array_images = {
-		{ "utility_room",             "res/images/utility_room/utility_room_gen.png" },
+		{ "utility_room",     "res/images/utility_room/utility_room.png" },
+		{ "utility_room_gen", "res/images/utility_room/utility_room_gen.png" },
 		{ "atlas_utility_room_items", "res/images/atlases/utility_room.png" },
 		unpack(player),
 	},
@@ -209,7 +214,8 @@ ResourcesList[G.Kitchen] = {
 		unpack(textures),
 	},
 	array_images = {
-		{ "kitchen",             "res/images/kitchen/kitchen_gen.png" },
+		{ "kitchen",     "res/images/kitchen/kitchen.png" },
+		{ "kitchen_gen", "res/images/kitchen/kitchen_gen.png" },
 		{ "atlas_kitchen_items", "res/images/atlases/kitchen.png" },
 		unpack(player),
 	},
@@ -239,7 +245,8 @@ ResourcesList[G.LivingRoom] = {
 		unpack(textures),
 	},
 	array_images = {
-		{ "living_room",             "res/images/living_room/living_room_gen.png" },
+		{ "living_room",     "res/images/living_room/living_room.png" },
+		{ "living_room_gen", "res/images/living_room/living_room_gen.png" },
 		{ "atlas_living_room_items", "res/images/atlases/living_room.png" },
 	},
 	image_data = {
@@ -267,7 +274,8 @@ ResourcesList[G.Office1] = {
 		{ "pal_hollow",       "res/textures/pal_hollow.png" },
 	},
 	array_images = {
-		{ "office1",             "res/images/office1/office1_gen.png" },
+		{ "office1",     "res/images/office1/office1.png" },
+		{ "office1_gen", "res/images/office1/office1_gen.png" },
 		{ "atlas_office1_items", "res/images/atlases/office1.png" },
 		unpack(player),
 	},
@@ -295,7 +303,8 @@ ResourcesList[G.Office2] = {
 		{ "vignette_part",    "res/textures/vignette_part.png" },
 	},
 	array_images = {
-		{ "office2",             "res/images/office2/office2_gen.png" },
+		{ "office2",     "res/images/office2/office2.png" },
+		{ "office2_gen", "res/images/office2/office2_gen.png" },
 		{ "atlas_office2_items", "res/images/atlases/office2.png" },
 		unpack(player),
 	},

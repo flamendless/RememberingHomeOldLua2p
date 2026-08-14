@@ -13,6 +13,7 @@ Shaders.paths = {
 	vignette_ex = "shaders/vignette_ex.glsl",
 	hand = "shaders/hand.glsl",
 	blood_bar = "shaders/blood_bar.glsl",
+	interactive_blood = "shaders/interactive_blood.glsl",
 
 	ngrading = true,
 	ngrading_old = "shaders/ngrading_old.glsl",

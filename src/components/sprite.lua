@@ -3,6 +3,11 @@
 Concord.component("bg")
 Concord.component("array_image")
 
+Concord.component("room_bg", function(c, key)
+	assert:type(key, "string")
+	c.key = key
+end)
+
 local c_sprite = Concord.component("sprite", function(c, resource_id, container)
 	assert:type(resource_id, "string")
 	assert:type_or_nil(container, "string")

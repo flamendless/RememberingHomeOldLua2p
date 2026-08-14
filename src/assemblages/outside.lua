@@ -16,8 +16,11 @@ local bounds_w, bounds_h = 52, 72
 local bounds_l_w = 28
 
 function Outside.bg_house(e, x, y, quad)
+	local use_gen = Data.BgAssets.get_use_gen(e.world)
+	local resource_id = Data.BgAssets.get_resource_id("bg_house", use_gen)
 	e:give("id", "bg_house")
-		:give("sprite", "bg_house")
+		:give("room_bg", "bg_house")
+		:give("sprite", resource_id, "images")
 		:give("pos", x, y)
 		:give("quad", quad)
 		:give("z_index", z_index.bg_house, false)

@@ -556,10 +556,26 @@ if DEV then
 				self:set_ambiance(self.orig_ambiance or ac)
 			end
 		end
-		ac[1] = UIWrapper.edit_range("ar", ac[1], 0, 1)
-		ac[2] = UIWrapper.edit_range("ag", ac[2], 0, 1)
-		ac[3] = UIWrapper.edit_range("ab", ac[3], 0, 1)
-		ac[4] = UIWrapper.edit_range("aa", ac[4], 0, 1)
+		local ar, ar_changed = UIWrapper.edit_range("ar", ac[1], 0, 1)
+		ac[1] = ar
+		if ar_changed then
+			Flux.remove_by_object(ac)
+		end
+		local ag, ag_changed = UIWrapper.edit_range("ag", ac[2], 0, 1)
+		ac[2] = ag
+		if ag_changed then
+			Flux.remove_by_object(ac)
+		end
+		local ab, ab_changed = UIWrapper.edit_range("ab", ac[3], 0, 1)
+		ac[3] = ab
+		if ab_changed then
+			Flux.remove_by_object(ac)
+		end
+		local aa, aa_changed = UIWrapper.edit_range("aa", ac[4], 0, 1)
+		ac[4] = aa
+		if aa_changed then
+			Flux.remove_by_object(ac)
+		end
 
 		if Slab.Button("Disable All") then
 			for _, e in ipairs(self.pool) do
@@ -649,6 +665,10 @@ if DEV then
 				diffuse[1], b_r = UIWrapper.edit_range("r", diffuse[1], 0, 100)
 				diffuse[2], b_g = UIWrapper.edit_range("g", diffuse[2], 0, 100)
 				diffuse[3], b_b = UIWrapper.edit_range("b", diffuse[3], 0, 100)
+
+				if b_r or b_g or b_b then
+					Flux.remove_by_object(diffuse)
+				end
 
 				if flags.group then
 					local prop_pos = (b_x and "x") or (b_y and "y") or (b_z and "z")

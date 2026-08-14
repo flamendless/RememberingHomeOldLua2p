@@ -44,7 +44,8 @@ local DevTools = {
 	},
 	debug_anim = {
 		tag = nil,
-	}
+	},
+	debug_bump_drag = false,
 }
 
 local slab_components
@@ -1024,6 +1025,13 @@ function DevTools.draw_bg_asset_processor_panel()
 	Slab.Text("Runtime PP applies in-game on top of _gen assets.")
 	Slab.Text("Export is cell_grid only.")
 
+	if Slab.CheckBox(Data.BgAssets.get_use_gen(GameStates.world), "Use _gen assets in game") then
+		local use_gen = not Data.BgAssets.get_use_gen(GameStates.world)
+		if GameStates.world then
+			GameStates.world:emit("set_bg_gen", use_gen)
+		end
+	end
+
 	if Slab.CheckBox(bg_asset_processor.show_original, "Show original") then
 		bg_asset_processor.show_original = not bg_asset_processor.show_original
 	end
@@ -1269,6 +1277,8 @@ function DevTools.keypressed(key)
 		GameStates.world:emit("debug_on_toggle", "camera")
 	elseif key == "l" then
 		GameStates.world:emit("dev_deffered_lighting_full_light")
+	elseif key == "y" and GameStates.world then
+		GameStates.world:emit("toggle_bg_gen")
 	elseif key == "escape" and DevTools.show then
 		love.event.quit()
 	else
@@ -1363,7 +1373,9 @@ function DevTools.mousemoved(mx, my, dx, dy)
 		pos.y = world_y - designer.drag_offset_y
 	end
 
-	GameStates.world:emit("debug_mousemoved", mx, my, dx, dy)
+	if DevTools.debug_bump_drag or (designer.show and designer.dragging) then
+		GameStates.world:emit("debug_mousemoved", mx, my, dx, dy)
+	end
 end
 
 function DevTools.clear()

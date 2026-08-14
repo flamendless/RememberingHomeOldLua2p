@@ -1,10 +1,37 @@
 local Room = Concord.system({
-	pool = { "id", "room_item" }
+	pool = { "id", "room_item" },
+	pool_room_bg = { "room_bg" },
 })
 
 function Room:init(world)
 	self.world = world
 	self.current_res = nil
+	self.use_gen = true
+end
+
+function Room:apply_bg_gen()
+	for _, e in ipairs(self.pool_room_bg) do
+		local key = e:get("room_bg").key
+		local sprite = e:get("sprite")
+		local resource_id = Data.BgAssets.get_resource_id(key, self.use_gen)
+		local image = Data.BgAssets.get_image(key, self.use_gen)
+
+		sprite.resource_id = resource_id
+		sprite.container = "images"
+		sprite.image = image
+		sprite.iw, sprite.ih = image:getDimensions()
+	end
+end
+
+function Room:set_bg_gen(use_gen)
+	assert:type(use_gen, "boolean")
+	self.use_gen = use_gen
+	self:apply_bg_gen()
+	Log.info("BG assets use_gen:", self.use_gen)
+end
+
+function Room:toggle_bg_gen()
+	self:set_bg_gen(not self.use_gen)
 end
 
 function Room:parse_room_items(res)
@@ -73,7 +100,6 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 		:give("atlas", item)
 		:give("quad_transform", 0, sx, sy, ox, oy)
 		:give("z_index", t.z or 4, false)
-		:give("outline_val", t.outline_val or 1)
 		:give("cullable")
 		:give("color", t.tint or Palette.colors.white)
 

@@ -54,7 +54,7 @@ local libs = {
 	"LoveInk",
 	"Lume",
 	"ngrading",
-	"Outliner",
+	"BloodHighlight",
 	"Semver",
 	"Slab",
 	"Splashes",

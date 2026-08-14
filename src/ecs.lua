@@ -63,6 +63,7 @@ state_systems[G.Intro] = {
 	"tree",
 	"tween",
 	"timeline",
+	"room",
 }
 
 state_systems[G.Outside] = {
@@ -396,8 +397,14 @@ function ECS.load_systems(id, world, prev_id)
 
 	for _, v in ipairs(state_systems[id]) do
 		assert(systems[v], string.format("id = %s, i = %d", v, _))
-		world:addSystem(systems[v])
-		local sys = systems[v]
+		local sys_class = systems[v]
+		for _, method in ipairs(hang_watch_methods) do
+			if sys_class[method] then
+				wrap_hang_watch(sys_class, v, method)
+			end
+		end
+		world:addSystem(sys_class)
+		local sys = world:getSystem(sys_class)
 		for _, u in ipairs(unpausable_list) do
 			if u == v then
 				sys.__unpausable = true
@@ -407,11 +414,6 @@ function ECS.load_systems(id, world, prev_id)
 		sys.debug_show = DevTools.flags[v]
 		sys.debug_enabled = true
 		sys.debug_title = v
-		for _, method in ipairs(hang_watch_methods) do
-			if sys[method] then
-				wrap_hang_watch(sys, v, method)
-			end
-		end
 	end
 
 	local main_sys = states[l_id]

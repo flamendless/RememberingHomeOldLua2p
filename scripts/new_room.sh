@@ -177,6 +177,7 @@ ResourcesList.${pascal} = {
 	},
 	array_images = {
 		{ "${snake}",             "res/images/${snake}/${snake}.png" },
+		{ "${snake}_gen",         "res/images/${snake}/${snake}_gen.png" },
 		{ "atlas_${snake}_items", "res/images/atlases/${snake}.png" },
 		unpack(player),
 	},

@@ -1,105 +1,179 @@
 local Outline = Concord.system({
-	pool = { "id", "outline", "outline_val", "sprite", "pos" },
 	pool_grouped = { "grouped" },
 })
 
+local HIGHLIGHT_CFG = {
+	overlay_strength = 0.72,
+	speed = 4.0,
+	fade_in = 0.18,
+	fade_out = 0.26,
+}
+
 function Outline:init(world)
 	self.world = world
+	self.highlighted = {}
+	self.fading_out = false
+	self.fade_seq = 0
+end
 
-	local col_outline = Palette.colors.outline
-	self.pool.onAdded = function(pool, e)
-		local outline = e:get("outline")
-		local outliner = Outliner(true)
-		outliner:outline(unpack(col_outline))
-		outline.outliner = outliner
+function Outline:cancel_highlight_tweens()
+	for e in pairs(self.highlighted) do
+		if e:has("interactive_highlight") then
+			Flux.remove_by_object(e:get("interactive_highlight"))
+		end
 	end
 end
 
-function Outline:create_outline(e)
-	assert((e.__isEntity and e:has("id") and e:has("pos")), e)
-	local sprite = e:get("sprite")
-	if not sprite then
+function Outline:fade_in_highlight(e)
+	local highlight = e:get("interactive_highlight")
+	if not highlight then
+		return
+	end
+	Flux.remove_by_object(highlight)
+	Flux.to(highlight, HIGHLIGHT_CFG.fade_in, { opacity = 1 })
+end
+
+function Outline:tag_highlight(e)
+	if not e:has("interactive_highlight") then
+		e:give("interactive_highlight", {
+			overlay_strength = HIGHLIGHT_CFG.overlay_strength,
+			opacity = 0,
+			speed = HIGHLIGHT_CFG.speed,
+		})
+		self.highlighted[e] = true
+	end
+
+	if self.fading_out then
+		self.fading_out = false
+		self.fade_seq = self.fade_seq + 1
+		self:fade_in_highlight(e)
 		return
 	end
 
-	local grouped = e:get("grouped")
-	local id
-	if grouped then
-		id = "outline_" .. grouped.value
-	else
-		id = "outline_" .. e:get("id").value
-	end
-	local cached_e = Cache.get_entity(id)
-	if cached_e then
-		cached_e:remove("hidden")
+	local highlight = e:get("interactive_highlight")
+	if highlight.opacity > 0.99 then
 		return
 	end
 
-	local pos = e:get("pos")
-	local x, y = pos.x - "4", pos.y - "4"
-	local outline_e = Concord.entity(self.world)
-		:give("id", id)
-		:give("pos", x, y)
-		:give("sprite", sprite.resource_id)
-		:give("outline")
-		:give("outline_val", e:get("outline_val").value)
-		:give("z_index", e:get("z_index").value - 1, false)
+	self:cancel_highlight_tweens()
+	self.fade_seq = self.fade_seq + 1
+	self:fade_in_highlight(e)
+end
 
-	local quad = e:get("quad")
-	if quad then
-		local qx, qy, qw, qh = quad.quad:getViewport()
-		local qsw, qsh = quad.quad:getTextureDimensions()
-		local qt = e:get("quad_transform")
-		if qt then
-			outline_e:give("quad_transform", 0, qt.sx, qt.sy)
-		end
-
-		qx = qx - "4"
-		qy = qy - "4"
-		qw = qw + "4" * 2
-		qh = qh + "4" * 2
-		local nq = love.graphics.newQuad(qx, qy, qw, qh, qsw, qsh)
-		outline_e:give("quad", nq)
+function Outline:untag_highlight(e)
+	if not e:has("interactive_highlight") then
+		return
 	end
+	local highlight = e:get("interactive_highlight")
+	Flux.remove_by_object(highlight)
+	e:remove("interactive_highlight")
+	self.highlighted[e] = nil
+end
+
+function Outline:clear_highlights()
+	for e in pairs(self.highlighted) do
+		self:untag_highlight(e)
+	end
+end
+
+function Outline:highlight_entity(e)
+	if not (e.__isEntity and e.sprite) then
+		return
+	end
+	self:tag_highlight(e)
 end
 
 function Outline:on_change_interactive(e, other)
-	self:remove_outlines()
+	self:cancel_highlight_tweens()
+	self.fade_seq = self.fade_seq + 1
+	self.fading_out = false
+	for highlighted_e in pairs(self.highlighted) do
+		if highlighted_e ~= other then
+			self:untag_highlight(highlighted_e)
+		end
+	end
 	self:on_collide_interactive(e, other)
 end
 
 function Outline:on_collide_interactive(_, other)
-	local other_grouped = other:get("grouped")
-	if other_grouped then
+	if other.grouped then
 		for _, e in ipairs(self.pool_grouped) do
-			if e:get("grouped").value == other_grouped.value then
-				self:create_outline(e)
+			if e.grouped.value == other.grouped.value then
+				self:highlight_entity(e)
 			end
 		end
 	else
-		self:create_outline(other)
+		self:highlight_entity(other)
 	end
 end
 
-function Outline:on_leave_interactive(_, other)
+function Outline:on_leave_interactive()
 	self:remove_outlines()
 end
 
 function Outline:remove_outlines()
-	for _, e in ipairs(self.pool) do
-		e:give("hidden")
-		if not Cache.has_entity(e) then
-			Cache.add_entity(e)
+	if self.fading_out then
+		return
+	end
+
+	self:cancel_highlight_tweens()
+
+	local to_fade = {}
+	for e in pairs(self.highlighted) do
+		if e:has("interactive_highlight") then
+			local highlight = e:get("interactive_highlight")
+			if highlight.opacity > 0.001 then
+				to_fade[#to_fade + 1] = e
+			end
+		end
+	end
+
+	if #to_fade == 0 then
+		if next(self.highlighted) then
+			self.fade_seq = self.fade_seq + 1
+			self.fading_out = false
+			self:clear_highlights()
+		end
+		return
+	end
+
+	self.fading_out = true
+	self.fade_seq = self.fade_seq + 1
+	local fade_seq = self.fade_seq
+
+	local remaining = #to_fade
+
+	local function on_fade_done(e)
+		if self.fade_seq ~= fade_seq then
+			return
+		end
+		self:untag_highlight(e)
+		remaining = remaining - 1
+		if remaining <= 0 then
+			self.fading_out = false
+		end
+	end
+
+	for _, e in ipairs(to_fade) do
+		local highlight = e:get("interactive_highlight")
+		Flux.to(highlight, HIGHLIGHT_CFG.fade_out, { opacity = 0 }):oncomplete(function()
+			on_fade_done(e)
+		end)
+	end
+end
+
+function Outline:update(dt)
+	for e in pairs(self.highlighted) do
+		if e:has("interactive_highlight") then
+			local highlight = e:get("interactive_highlight")
+			highlight.time = highlight.time + dt * highlight.speed
 		end
 	end
 end
 
 function Outline:cleanup()
-	for _, e in ipairs(self.pool) do
-		Cache.remove_entity(e)
-		e:destroy()
-	end
-	Log.info("cleaned cache by system/outline")
+	self.fading_out = false
+	self:clear_highlights()
 end
 
 return Outline
