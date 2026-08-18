@@ -124,6 +124,9 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 		if t.is_door then
 			e:give("is_door")
 		end
+		if t.is_door_ev then
+			e:give("is_door_ev", t.is_door_ev)
+		end
 		if t.req_col_dir then
 			e:give("req_col_dir", t.req_col_dir)
 		end

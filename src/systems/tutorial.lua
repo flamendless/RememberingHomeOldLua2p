@@ -10,16 +10,18 @@ local function tutorial_reached_x(pos_x, target_x, dir)
 end
 
 local function action_label(action)
-	assert:type(action, "string")
-	if action == "interact" then
-		return string.upper(Inputs.rev_map.interact)
-	elseif action == "left" then
-		return string.upper(Inputs.rev_map.left)
-	elseif action == "right" then
-		return string.upper(Inputs.rev_map.right)
-	elseif action == "lighter" then
-		return string.upper(Inputs.rev_map.lighter)
+	assert(Enums.input[action])
+	local res = ""
+	if action == Enums.input.interact then
+		res = Inputs.rev_map.interact
+	elseif action == Enums.input.left then
+		res = Inputs.rev_map.left
+	elseif action == Enums.input.right then
+		res = Inputs.rev_map.right
+	elseif action == Enums.input.lighter then
+		res = Inputs.rev_map.lighter
 	end
+	return string.upper(res)
 end
 
 function Tutorial:init(world)
@@ -105,7 +107,7 @@ end
 
 function Tutorial:create_hand_key_label(hand, action)
 	assert(hand.__isEntity)
-	assert:type(action, "string")
+	assert(Enums.input[action])
 
 	self:destroy_hand_key_label(0)
 
@@ -309,6 +311,7 @@ function Tutorial:run_tutorial()
 	local by = ty + 8
 	self:show_hands_trail(5, bx, by, tx, ty, 90, Enums.input.interact, false)
 	self:wait_hold_interact()
+	self.world:emit("ev_car_lights_off")
 
 	self.world:emit("tle_log", "door open")
 	self.world:emit("force_end_dialogue")
@@ -423,6 +426,19 @@ function Tutorial:run_tutorial()
 		end)
 	self:pause_timeline()
 
+	self:set_beat(Enums.tutorial_beat.far_left)
+	pos = self.e_player:get("pos")
+	self.far_left_start_x = pos.x
+	self.far_left_target_x = 32
+	self.wait_kind = Enums.tutorial_wait_kind.reach_far_left
+	self.e_player:give(Enums.player_cap.can_move)
+		:give(Enums.player_cap.can_interact)
+		:remove(Enums.player_cap.can_move_left_only)
+		:remove(Enums.player_cap.can_move_right_only)
+	self.world:emit("camera_follow", self.e_player, 0.25)
+	self:pause_timeline()
+
+	-- Done
 	self:set_beat(Enums.tutorial_beat.done)
 	self.world:emit("tle_log", "tutorial timeline done")
 	self:kill_timeline()
@@ -457,28 +473,47 @@ function Tutorial:complete_move_right()
 	self:finish_wait()
 end
 
+function Tutorial:complete_far_left()
+	local e = self.e_player
+	e:get("pos").x = self.far_left_target_x
+	self:sync_player_bump(e)
+	e:remove(Enums.player_cap.can_move)
+	self.world:__flush()
+	self.world:emit("player_stop")
+	self.world:emit("player_force_face_dir", 1)
+	self:finish_wait()
+end
+
 function Tutorial:update(dt)
 	if not self.state then return end
 	assert(Enums.tutorial_wait_kind[self.wait_kind])
 
 	if self.wait_kind == Enums.tutorial_wait_kind.move_left then
-		local current = self.e_player:get("pos").x
-		local progress = (self.left_start_x - current) / (self.left_start_x - self.left_target_x)
+		local player_pos = self.e_player:get("pos")
+		local progress = (self.left_start_x - player_pos.x) / (self.left_start_x - self.left_target_x)
 		progress = mathx.clamp(progress, 0, 1)
 		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
 
-		if tutorial_reached_x(current, self.left_target_x, -1) then
+		if tutorial_reached_x(player_pos.x, self.left_target_x, -1) then
 			self:complete_move_left()
 		end
-
 	elseif self.wait_kind == Enums.tutorial_wait_kind.move_right then
-		local current = self.e_player:get("pos").x
-		local progress = (self.right_start_x - current) / (self.right_start_x - self.right_target_x)
+		local player_pos = self.e_player:get("pos")
+		local progress = (self.right_start_x - player_pos.x) / (self.right_start_x - self.right_target_x)
 		progress = mathx.clamp(progress, 0, 1)
 		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
 
-		if tutorial_reached_x(current, self.right_target_x, 1) then
+		if tutorial_reached_x(player_pos.x, self.right_target_x, 1) then
 			self:complete_move_right()
+		end
+	elseif self.wait_kind == Enums.tutorial_wait_kind.reach_far_left then
+		local player_pos = self.e_player:get("pos")
+		local progress = (self.far_left_start_x - player_pos.x) / (self.far_left_start_x - self.far_left_target_x)
+		progress = mathx.clamp(progress, 0, 1)
+		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
+
+		if tutorial_reached_x(player_pos.x, self.far_left_target_x, -1) then
+			self:complete_far_left()
 		end
 	end
 end
@@ -538,7 +573,6 @@ function Tutorial:state_update(dt)
 			self.world:emit("finalize_screen_shake", true)
 			self:finish_wait()
 		end
-
 	elseif self.wait_kind == Enums.tutorial_wait_kind.press_interact then
 		if Inputs.pressed(Enums.input.interact) then
 			self.wait_kind = Enums.tutorial_wait_kind.null
@@ -551,7 +585,6 @@ function Tutorial:state_update(dt)
 				end)
 			end)
 		end
-
 	elseif self.wait_kind == Enums.tutorial_wait_kind.lighter then
 		if Inputs.pressed(Enums.input.lighter) then
 			self.wait_kind = Enums.tutorial_wait_kind.null

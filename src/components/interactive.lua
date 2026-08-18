@@ -2,6 +2,11 @@ Concord.component("interactive")
 Concord.component("locked")
 Concord.component("is_door")
 
+Concord.component("is_door_ev", function(c, event)
+	assert:type(event, "string")
+	c.event = event
+end)
+
 Concord.component("target_interactive", function(c, interactive_e)
 	assert(interactive_e.__isEntity, interactive_e)
 	assert(interactive_e:has("interactive"), interactive_e)

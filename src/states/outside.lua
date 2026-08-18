@@ -204,7 +204,7 @@ function Outside:state_init()
 			:give("d_light_flicker_remove_after")
 		self.timeline:Pause()
 
-		self.world:emit("tle_log", "show player")
+		-- self.world:emit("tle_log", "show player")
 		-- local dur_camera_follow = 1.5
 		local e_player
 		self.world:emit("spawn_player", function(e)
@@ -332,8 +332,13 @@ function Outside:on_car_light_flicker_after()
 	end
 
 	-- Assemblages.Outside.glows.car(self.world)
-
 	self.timeline:Unpause()
+end
+
+function Outside:ev_car_lights_off()
+	for _, e in ipairs(self.pool_car_lights) do
+		e:give("light_disabled")
+	end
 end
 
 function Outside:get_flashlight(e, dialogues_t)
@@ -415,6 +420,15 @@ function Outside:check_backdoor(e, dialogues_t)
 		self.world:emit("anim_open_door", e)
 		self.world:emit("switch_state", Enums.game_state.StorageRoom, 3, 2)
 	end
+end
+
+function Outside:ev_interact_frontdoor(e_player, e_door)
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert(e_door.__isEntity, e_door)
+	local door_id = e_door.id.value
+	assert(door_id == "frontdoor", door_id)
+
+	self.world:emit("anim_open_locked_door", e_player)
 end
 
 function Outside:cleanup()

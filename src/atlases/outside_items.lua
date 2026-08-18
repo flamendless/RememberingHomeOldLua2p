@@ -21,8 +21,10 @@ local Data = {
 		x = 299,
 		y = 221,
 		z = 4,
-		dialogue = { "outside", "frontdoor_locked" },
-		usable_with_item = true,
+		-- dialogue = { "outside", "frontdoor_locked" },
+		-- usable_with_item = true,
+		-- is_door = true,
+		is_door_ev = "ev_interact_frontdoor",
 	},
 }
 

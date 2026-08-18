@@ -152,8 +152,7 @@ Dialogues.outside = {
 		LoveInk.Helpers.divert("car_flashlight"),
 	},
 	car_run_to_house = {
-		LoveInk.Helpers.text("It might rain again soon..."),
-		LoveInk.Helpers.text("I better get going..."),
+		LoveInk.Helpers.text("I better check out the area..."),
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	fin = {},

@@ -121,6 +121,35 @@ function PlayerController:anim_open_door(e)
 	e:give("override_animation")
 end
 
+function PlayerController:anim_open_locked_door(e_player)
+	TODO("play door locked sound")
+	local animation = e_player:get("animation")
+	assert(e_player.__isEntity and e_player:has("player") and animation, e_player)
+	stop_body_motion(e_player)
+
+	local tag
+	if e_player:get("body").dir == -1 then
+		tag = Enums.anim_state.open_locked_door_left
+	else
+		tag = Enums.anim_state.open_locked_door
+	end
+
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, false)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, false)
+	self.world:__flush()
+
+	local obj = animation.obj
+	obj:play(tag)
+	obj:on("loop", function() obj:pause_at_end() end)
+	obj:once("finish", function()
+		e_player:remove("override_animation")
+		self.world:emit("anim_idle", e_player, true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+		self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+	end)
+	e_player:give("override_animation")
+end
+
 function PlayerController:anim_open_lighter(e)
 	if not e then return end
 	local animation = e:get("animation")
@@ -418,10 +447,18 @@ function PlayerController:update(dt)
 		if proceed then
 			if other:has("dialogue_key") then
 				self:on_player_interact(self.player, other)
+
+			elseif other:has("is_door_ev") then
+				self.world:emit(other:get("is_door_ev").event, self.player, other)
+
 			elseif other:has("is_door") then
 				self.world:emit("on_interact_door", self.player, other)
+
 			elseif other:has("candle") then
 				self.world:emit("on_interact_candle", self.player, other)
+
+			else
+				Log.warn("interacted with unhandled component", other.id.value)
 			end
 		end
 	end

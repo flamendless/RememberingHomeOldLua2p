@@ -7,8 +7,9 @@ function Door:init(world)
 end
 
 function Door:on_interact_door(e_player, e_door)
-	assert((e_player.__isEntity and e_player:has("player")), e_player)
-	assert((e_door.__isEntity and e_door:has("is_door")), e_door)
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert(e_door.__isEntity and e_door:has("is_door"), e_door)
+
 	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, false)
 	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, false)
 	self.world:emit("anim_open_door", e_player)

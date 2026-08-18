@@ -107,6 +107,7 @@ Enums.tutorial_beat = Enum(
 	"interact_right",
 	"lighter",
 	"explore",
+	"far_left",
 	"done"
 )
 
@@ -116,7 +117,8 @@ Enums.tutorial_wait_kind = Enum(
 	"move_left",
 	"move_right",
 	"press_interact",
-	"lighter"
+	"lighter",
+	"reach_far_left"
 )
 
 Enums.show_keys = Enum(
