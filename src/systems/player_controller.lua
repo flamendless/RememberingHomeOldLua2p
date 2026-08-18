@@ -268,8 +268,26 @@ function PlayerController:player_stop()
 	self.world:emit("update_speed_data", self.player, anim_name)
 end
 
-function PlayerController:player_is_walking_or_running()
+function PlayerController:is_pressed_into_wall()
+	if not self.player then
+		return false
+	end
 	if self.player:has("hit_wall") then
+		return true
+	end
+	local body = self.player:get("body")
+	if body.dx == 0 then
+		return false
+	end
+	local bump = self.world:getSystem(ECS.get_system_class("bump_collision"))
+	if not bump then
+		return false
+	end
+	return bump:is_move_blocked_by_wall(self.player, body.dx)
+end
+
+function PlayerController:player_is_walking_or_running()
+	if self:is_pressed_into_wall() then
 		return false
 	end
 	return self.player:get("body").dx ~= 0
@@ -324,6 +342,7 @@ function PlayerController:update(dt)
 		return
 	end
 	if not self.player:has("can_move") then
+		stop_body_motion(self.player)
 		self.foot_dust_timer = 0
 		return
 	end
@@ -431,7 +450,7 @@ function PlayerController:player_update_animation(override_name, override_varian
 	local body = self.player:get("body")
 
 	if not anim_name then
-		if body.dx ~= 0 and not self.player:has("hit_wall") then
+		if body.dx ~= 0 and not self:is_pressed_into_wall() then
 			local is_running = self.player:get("is_running")
 			if is_running.value then
 				anim_name = Enums.anim_state.run
@@ -518,6 +537,17 @@ if DEV then
 		end
 	end
 
+	local function capability_checkbox(player, cap, label)
+		local has = player:has(cap)
+		if Slab.CheckBox(has, label) then
+			if has then
+				player:remove(cap)
+			else
+				player:give(cap)
+			end
+		end
+	end
+
 	function PlayerController:debug_update(dt)
 		if not self.debug_show then
 			return
@@ -592,17 +622,17 @@ if DEV then
 		view_number("vel_y", body.vel_y, false)
 		Slab.Unindent()
 
-		Slab.CheckBox(self.player:get("can_move"), "move")
+		capability_checkbox(self.player, "can_move", "move")
 		Slab.SameLine()
-		Slab.CheckBox(self.player:get("can_move_left_only"), "left only")
+		capability_checkbox(self.player, "can_move_left_only", "left only")
 		Slab.SameLine()
-		Slab.CheckBox(self.player:get("can_move_right_only"), "right only")
+		capability_checkbox(self.player, "can_move_right_only", "right only")
 		Slab.SameLine()
-		Slab.CheckBox(self.player:get("can_run"), "run")
+		capability_checkbox(self.player, "can_run", "run")
 		Slab.SameLine()
-		Slab.CheckBox(self.player:get("can_interact"), "interact")
+		capability_checkbox(self.player, "can_interact", "interact")
 		Slab.SameLine()
-		Slab.CheckBox(self.player:get("can_open_door"), "open_door")
+		capability_checkbox(self.player, "can_open_door", "open_door")
 
 		Slab.EndWindow()
 	end

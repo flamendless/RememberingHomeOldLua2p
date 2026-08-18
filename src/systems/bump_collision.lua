@@ -2,6 +2,10 @@ local BumpCollision = Concord.system({
 	pool = { constructor = Ctor.BumpStorage },
 })
 
+local INTERACT_REACH = 0.58
+local INTERACT_LEAVE_REACH = 0.48
+local WALL_PROBE = 2
+
 local function get_query_rect(self)
 	local camera = self.world:getResource("camera")
 	local x, y, w, h
@@ -53,9 +57,97 @@ local function filter(item, other)
 	return filter_val
 end
 
+local function is_blocked_by_wall(pool, e, dir)
+	local rx, ry, rw, rh = pool:getRect(e)
+	local qx, qy, qw, qh
+	if dir > 0 then
+		qx = rx + rw
+		qy = ry
+		qw = WALL_PROBE
+		qh = rh
+	else
+		qx = rx - WALL_PROBE
+		qy = ry
+		qw = WALL_PROBE
+		qh = rh
+	end
+
+	local items, len = pool:queryRect(qx, qy, qw, qh)
+	for i = 1, len do
+		local other = items[i]
+		if other ~= e and other:has("wall") then
+			pool.freeTable(items)
+			return true
+		end
+	end
+	pool.freeTable(items)
+
+	local goal_x = rx + dir * WALL_PROBE
+	local cols, plen = pool:project(e, rx, ry, rw, rh, goal_x, ry, filter)
+	for i = 1, plen do
+		if cols[i].other:has("wall") then
+			pool.freeCollisions(cols)
+			return true
+		end
+	end
+	pool.freeCollisions(cols)
+	return false
+end
+
+local function apply_wall_hit_from_dx(pool, e, body)
+	assert(pool, pool)
+	assert((e.__isEntity and e:has("body")), e)
+	assert(body.dx == -1 or body.dx == 0 or body.dx == 1, body.dx)
+	if body.dx ~= 0 and not e:has("hit_wall")
+		and is_blocked_by_wall(pool, e, body.dx) then
+		e:give("hit_wall")
+	end
+end
+
 local function overlaps_query_rect(pool, e, x, y, w, h)
 	local rx, ry, rw, rh = pool:getRect(e)
 	return rx < x + w and rx + rw > x and ry < y + h and ry + rh > y
+end
+
+local function can_proceed_interact(e, e_other)
+	local req = e_other:get("req_col_dir")
+	if not req then
+		return true
+	end
+	local body = e:get("body")
+	return body.dir == req.value
+end
+
+local function is_in_interact_range(e, e_other, pool, reach_scale)
+	if not (e:has("collider") and e_other:has("collider")) then
+		return false
+	end
+
+	reach_scale = reach_scale or INTERACT_REACH
+	local ax, ay, aw, ah = pool:getRect(e)
+	local bx, by, bw, bh = pool:getRect(e_other)
+	local px, py = ax + aw * 0.5, ay + ah * 0.5
+	local cx, cy = bx + bw * 0.5, by + bh * 0.5
+	local reach = (aw + bw) * reach_scale + (ah + bh) * 0.2
+	local dx = px - cx
+	local dy = py - cy
+	return dx * dx + dy * dy <= reach * reach
+end
+
+local function can_interact_with(e, e_other, pool, reach_scale)
+	if not (e:has("can_interact") and e_other:has("interactive")) then
+		return false
+	end
+	if not can_proceed_interact(e, e_other) then
+		return false
+	end
+	return is_in_interact_range(e, e_other, pool, reach_scale)
+end
+
+function BumpCollision:is_move_blocked_by_wall(e, dir)
+	assert((e.__isEntity and e:has("body")), e)
+	assert(dir == 1 or dir == -1, dir)
+	return is_blocked_by_wall(self.pool, e, dir)
 end
 
 function BumpCollision:init(world)
@@ -91,15 +183,29 @@ end
 function BumpCollision:update_body(e)
 	local body = e:get("body")
 	local pos = e:get("pos")
+	local pool = self.pool
 
 	if body.vel_x == 0 and body.vel_y == 0 then
+		apply_wall_hit_from_dx(pool, e, body)
 		return
 	end
 
+	if body.vel_x == 0 and body.vel_y > 0 then
+		local rx, ry, rw, rh = pool:getRect(e)
+		local _, py, cols, len = pool:projectMove(e, rx, ry, rw, rh, rx, ry + body.vel_y, filter)
+		pool.freeCollisions(cols)
+		if py <= ry + 1e-6 then
+			body.vel_y = 0
+			apply_wall_hit_from_dx(pool, e, body)
+			return
+		end
+	end
+
+	local goal_x = pos.x + body.vel_x
 	local cols, len
-	pos.x, pos.y, cols, len = self.pool:move(
+	pos.x, pos.y, cols, len = pool:move(
 		e,
-		pos.x + body.vel_x,
+		goal_x,
 		pos.y + body.vel_y,
 		filter
 	)
@@ -116,15 +222,24 @@ function BumpCollision:update_body(e)
 			e:give("hit_wall")
 		end
 	end
-	self.pool.freeCollisions(cols)
+	pool.freeCollisions(cols)
+
+	if body.vel_x ~= 0 and not e:has("hit_wall") then
+		local dir = body.vel_x > 0 and 1 or -1
+		if is_blocked_by_wall(pool, e, dir) then
+			e:give("hit_wall")
+		end
+	end
+
+	apply_wall_hit_from_dx(pool, e, body)
 end
 
 function BumpCollision:check_col(e)
 	local cols, len = self:overlap_at(e)
+	local pool = self.pool
 	local has_collide_with = false
-	local has_collide_interactive = false
+	local active_interact = nil
 
-	local int_len = 0
 	local within_int = e:get("within_interactive")
 	for i = 1, len do
 		local c = cols[i]
@@ -133,30 +248,13 @@ function BumpCollision:check_col(e)
 		other_col.normal.x = c.normalX
 		other_col.normal.y = c.normalY
 
-		if e_other:has("interactive") then
-			int_len = int_len + 1
-		end
-
-		if e:has("can_interact") and e_other:has("interactive") then
-			local proceed = true
-			local req = e_other:get("req_col_dir")
-
-			if req then
-				local body = e:get("body")
-				if body.dir ~= req.value then
-					proceed = false
-				end
+		if can_interact_with(e, e_other, pool, INTERACT_REACH) then
+			if not within_int then
+				self.world:emit("on_collide_interactive", e, e_other)
+			elseif within_int.entity ~= e_other then
+				self.world:emit("on_change_interactive", e, e_other)
 			end
-
-			if proceed then
-				if not within_int and e_other:has("interactive") then
-					self.world:emit("on_collide_interactive", e, e_other)
-				elseif within_int.entity ~= e_other and e_other:has("interactive") then
-					self.world:emit("on_change_interactive", e, e_other)
-				end
-			end
-
-			has_collide_interactive = true
+			active_interact = e_other
 		end
 
 		if e_other:has("controller") then
@@ -168,16 +266,20 @@ function BumpCollision:check_col(e)
 			has_collide_with = true
 		end
 
-		if has_collide_interactive then break end
+		if active_interact then
+			break
+		end
 	end
 
-	if not has_collide_interactive then
+	if within_int and not active_interact then
+		local target = within_int.entity
+		if not can_interact_with(e, target, pool, INTERACT_LEAVE_REACH) then
+			self.world:emit("on_leave_interactive", e, target)
+		end
+	end
+
+	if e:has("can_interact") and not active_interact and not e:has("within_interactive") then
 		self.world:emit("remove_outlines")
-	end
-
-	local col = e:get("collider")
-	if not col.is_hit and within_int and int_len == 0 then
-		self.world:emit("on_leave_interactive", e, within_int.entity)
 	end
 
 	if not has_collide_with then
@@ -326,6 +428,7 @@ if DEV then
 		Slab.SameLine()
 		if Slab.CheckBox(flags.drag, "Drag") then
 			flags.drag = not flags.drag
+			DevTools.debug_bump_drag = flags.drag
 			self.world:emit("debug_on_drag", flags.drag)
 		end
 		if Slab.CheckBox(flags.visible_only, "Visible Only") then
