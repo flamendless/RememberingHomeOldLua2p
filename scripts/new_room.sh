@@ -1,8 +1,8 @@
 #!/bin/bash
 # Scaffold a new playable room. See NOTES.md for the full workflow.
 #
-# Usage: ./build.sh new_room PascalCaseName [snake_case_name]
-# Example: ./build.sh new_room DiningRoom dining_room
+# Usage: ./run.sh new_room PascalCaseName [snake_case_name]
+# Example: ./run.sh new_room DiningRoom dining_room
 
 set -euo pipefail
 
@@ -11,8 +11,8 @@ pascal="${1:-}"
 snake="${2:-}"
 
 if [ -z "$pascal" ]; then
-	echo "Usage: ./build.sh new_room PascalCaseName [snake_case_name]"
-	echo "Example: ./build.sh new_room DiningRoom dining_room"
+	echo "Usage: ./run.sh new_room PascalCaseName [snake_case_name]"
+	echo "Example: ./run.sh new_room DiningRoom dining_room"
 	exit 1
 fi
 
@@ -220,7 +220,7 @@ echo "  src/data/lights.lua"
 echo ""
 echo "Manual steps remaining:"
 echo "  1. Add art to res/images/${snake}/ and export layers to res/exported/${snake}/"
-echo "  2. Run: ./build.sh gen_atlas ${snake} && ./build.sh copy_res"
+echo "  2. Run: ./run.sh gen_atlas ${snake} && ./run.sh copy_res"
 echo "  3. Fill in src/atlases/${snake}_items.lua item placements"
 echo "  4. Wire door edges and spawn points in src/data/rooms.lua"
 echo "  5. Add Palette entries for ambiance_${snake} and ${snake}_side if needed"

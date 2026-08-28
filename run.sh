@@ -27,6 +27,15 @@ for e in "${meta_exclude_modules[@]}"; do
 	exclude_modules+=("--exclude=$e")
 done
 
+meta_exclude_res=(
+	'*.ase'
+	'*.aseprite'
+)
+exclude_res=()
+for e in "${meta_exclude_res[@]}"; do
+	exclude_res+=("--exclude=$e")
+done
+
 function create_output_dir()
 {
 	if [ ! -d "$dir_output" ]; then
@@ -129,9 +138,10 @@ function copy_modules()
 function copy_res()
 {
 	echo "copying resources..."
-	rsync -a "$dir_res" "$dir_output" && echo "copied resources to ${dir_output}"
-	rsync -a "$dir_res" "$dir_source" && echo "copied resources to ${dir_source}"
+	rsync -a "$dir_res" "$dir_output" "${exclude_res[@]}" && echo "copied resources to ${dir_output}"
+	rsync -a "$dir_res" "$dir_source" "${exclude_res[@]}" && echo "copied resources to ${dir_source}"
 	rsync -a "slab.style" "$dir_output" && echo "copied slab.style"
+	find "$dir_output/res" "$dir_source/res" \( -name '*.ase' -o -name '*.aseprite' \) -type f -delete 2>/dev/null
 }
 
 function clean()
@@ -178,7 +188,7 @@ function rebuild()
 
 function run2p()
 {
-	echo "Running build.sh"
+	echo "Running run.sh"
 	process_src "$dir_source"
 	if [ $(uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/ip') ]; then
 		echo "This is Windows WSL!"
@@ -187,7 +197,7 @@ function run2p()
 		echo "This is Linux"
 		love "$dir_output"
 	fi
-	echo "Completed build.sh"
+	echo "Completed run.sh"
 }
 
 function run()

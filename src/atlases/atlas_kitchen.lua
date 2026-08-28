@@ -1,5 +1,5 @@
 -- https://github.com/EngineerSmith/Export-TextureAtlas
--- check build.sh create_atlas
+-- check run.sh create_atlas
 local Data = {
 	frames = {
 		["utility_door"] = {

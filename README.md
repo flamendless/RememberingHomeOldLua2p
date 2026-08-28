@@ -9,14 +9,14 @@ Made with [LOVE](https://love2d.org)
 
 ## Building:
 
-1. Run `./build init` to setup the directories and copy the assets to the output directory.
-2. Then `./build run` to preprocess and run the game.
+1. Run `./run.sh init` to setup the directories and copy the assets to the output directory.
+2. Then `./run.sh run` to preprocess and run the game.
 
-When modifying files in the `res/` or in the `modules/` directory, you should update with `./build rebuild` before running again.
+When modifying files in the `res/` or in the `modules/` directory, you should update with `./run.sh rebuild` before running again.
 
-For cleaning files and logs `./build clean && ./build clean_logs`
+For cleaning files and logs `./run.sh clean && ./run.sh clean_logs`
 
-(see [buid.sh](build.sh) for more info)
+(see [run.sh](run.sh) for more info)
 
 ## Libraries:
 
@@ -65,8 +65,8 @@ For cleaning files and logs `./build clean && ./build clean_logs`
 * `git clone <this_repo>`
 * `git submodule init` then `git submodule update`
 * `cd libs/ExportTextureAtlas`, `git submodule init` then `git submodule update`
-* `./build.sh init`
-* `./build.sh get_love_build`
+* `./run.sh init`
+* `./run.sh get_love_build`
 
 ## Coding Style Guide
 

@@ -1,7 +1,7 @@
 local Data = {
 	{
 		id = "car",
-		x = 729,
+		x = 781,
 		y = 273,
 		z = 4,
 		dialogue = { "outside", "car" },
@@ -10,7 +10,7 @@ local Data = {
 	},
 	{
 		id = "backdoor",
-		x = 433,
+		x = 485,
 		y = 254,
 		z = 4,
 		req_col_dir = -1,
@@ -18,13 +18,22 @@ local Data = {
 	},
 	{
 		id = "frontdoor",
-		x = 299,
+		key = "frontdoor",
+		x = 351,
 		y = 221,
 		z = 4,
 		-- dialogue = { "outside", "frontdoor_locked" },
 		-- usable_with_item = true,
 		-- is_door = true,
 		is_door_ev = "ev_interact_frontdoor",
+	},
+	{
+		id = "shed",
+		key = "shed",
+		x = 32,
+		y = 230,
+		z = 4,
+		interact_box = { x = 72, y = 263, w = 28, h = 62 },
 	},
 }
 
