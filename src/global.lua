@@ -99,6 +99,7 @@ Data = {
 	ResourcesList = require("data.resources_list"),
 	Rooms = require("data.rooms"),
 	RoomEvents = require("data.room_events"),
+	AtmosphericSpecs = require("data.atmospheric_specs"),
 	Vignette = require("data.vignette"),
 	BgAssets = require("data.bg_assets"),
 }
@@ -119,6 +120,7 @@ ParticleSystems = {
 	RainOutside = require("particle_systems.rain_outside"),
 	LighterSpark = require("particle_systems.lighter_spark"),
 	Dust = require("particle_systems.dust"),
+	AtmosphericSpecs = require("particle_systems.atmospheric_specs"),
 }
 
 Atlases = {

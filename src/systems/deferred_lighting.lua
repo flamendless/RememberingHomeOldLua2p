@@ -31,6 +31,7 @@ local lvft = { { "u_ldir", "float", 4 } }    -- dir.xyz, angle
 local lvfd = { { "u_diffuse", "float", 3 } } -- color
 local RA = { 0.9951847266722, 0.098017140329561 }
 local MAX_LIGHTS = 64 -- TODO: we can lower this to 16, but for Outside must be 64
+local OMNI_LIGHT_DIR = { 0, 0, -1, -1 }
 
 function DeferredLighting:init(world)
 	Log.debug("TODO: we can lower this to 16, but for Outside must be 64")
@@ -386,6 +387,7 @@ function DeferredLighting:begin_deferred_lighting(camera, canvas)
 	love.graphics.setBlendMode("alpha")
 	self.world:emit("draw_lighter_sparks")
 	self.world:emit("draw_dust")
+	self.world:emit("draw_atmospheric_specs")
 	camera:detach()
 end
 
@@ -444,9 +446,7 @@ function DeferredLighting:cull_and_draw_lights(camera)
 		local ld = e:get("light_dir")
 		self.mesh.pos:setVertex(i, { pos.x, pos.y, pos.z, pl.value })
 		self.mesh.diffuse:setVertex(i, diff.value)
-		if ld then
-			self.mesh.dir:setVertex(i, ld.value)
-		end
+		self.mesh.dir:setVertex(i, ld and ld.value or OMNI_LIGHT_DIR)
 	end
 
 	love.graphics.drawInstanced(self.mesh.light, #visible)
@@ -530,7 +530,7 @@ if DEV then
 
 	function DeferredLighting:debug_update(dt)
 		if not self.debug_show then return end
-		self.debug_show = Slab.BeginWindow("light", {
+		self.debug_show = Slab.BeginWindow("deferred_lighting", {
 			Title = "DeferredLighting",
 			IsOpen = self.debug_show,
 		})

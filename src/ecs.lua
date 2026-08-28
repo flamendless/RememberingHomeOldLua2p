@@ -135,6 +135,7 @@ state_systems[G.StorageRoom] = {
 	"systems",
 	"transform",
 	"dust",
+	"atmospheric_specs",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -183,6 +184,7 @@ state_systems[G.UtilityRoom] = {
 	"systems",
 	"transform",
 	"dust",
+	"atmospheric_specs",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -228,6 +230,7 @@ state_systems[G.Kitchen] = {
 	"systems",
 	"transform",
 	"dust",
+	"atmospheric_specs",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -273,6 +276,7 @@ state_systems[G.LivingRoom] = {
 	"systems",
 	"transform",
 	"dust",
+	"atmospheric_specs",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -322,6 +326,7 @@ state_systems[G.Office1] = {
 	"systems",
 	"transform",
 	"dust",
+	"atmospheric_specs",
 	"positional_audio",
 	"typewriter",
 	"door",
@@ -356,7 +361,19 @@ local unpausable_list = {
 	"list",
 }
 
-local hang_watch_methods = { "preupdate", "update", "state_update", "debug_update" }
+local hang_watch_methods = {
+	"preupdate",
+	"update",
+	"state_update",
+	"debug_update",
+	"debug_draw",
+	"debug_draw_ui",
+	"draw",
+	"draw_ui",
+	"draw_bg",
+	"state_draw",
+	"state_draw_ex",
+}
 
 local function wrap_hang_watch(sys, name, method)
 	if sys.__hang_watch_wrapped and sys.__hang_watch_wrapped[method] then
@@ -369,7 +386,10 @@ local function wrap_hang_watch(sys, name, method)
 	local orig = sys[method]
 	sys[method] = function(self, ...)
 		if HANG_WATCH then
-			if method ~= "debug_update" or self.debug_show then
+			local debug_method = method == "debug_update"
+				or method == "debug_draw"
+				or method == "debug_draw_ui"
+			if not debug_method or self.debug_show then
 				hang_watch(name .. ":" .. method)
 			end
 		end
@@ -411,7 +431,7 @@ function ECS.load_systems(id, world, prev_id)
 			end
 		end
 
-		sys.debug_show = DevTools.flags[v]
+		sys.debug_show = DevTools.flags[v] or false
 		sys.debug_enabled = true
 		sys.debug_title = v
 	end
