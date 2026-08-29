@@ -20,6 +20,21 @@ function Decals.init(main_renderer, world)
 	Decals.tex_hand = Resources.data.images.tex_hand
 	Decals.tex_hand:setFilter("nearest", "nearest")
 	Decals.tex_hand:setWrap("clampzero", "clampzero")
+
+	local sheet_w, sheet_h = Decals.tex_hand:getDimensions()
+	local hand_tex = Assemblages.HandDecal.HAND_TEX
+	local frame_count = Assemblages.HandDecal.FRAME_COUNT
+	Decals.hand_quads = {}
+	for i = 1, frame_count do
+		Decals.hand_quads[i] = love.graphics.newQuad(
+			(i - 1) * hand_tex,
+			0,
+			hand_tex,
+			hand_tex,
+			sheet_w,
+			sheet_h
+		)
+	end
 end
 
 function Decals.setup(e)
@@ -77,6 +92,11 @@ function Decals.send_uniforms(e)
 	local uv_scale = data.uv_scale or data.scale[1]
 	c_decals_shaders.shader:send("scale", { uv_scale, uv_scale })
 	c_decals_shaders.shader:send("rotation", math.rad(data.rotation))
+	local frame = data.frame or 1
+	local frame_count = Assemblages.HandDecal.FRAME_COUNT
+	local fw = 1 / frame_count
+	c_decals_shaders.shader:send("uv_offset", { (frame - 1) * fw, 0 })
+	c_decals_shaders.shader:send("uv_frame_scale", { fw, 1 })
 end
 
 function Decals.update(dt, e)
@@ -100,17 +120,20 @@ function Decals.render_hand(e)
 	local c_decals_shaders = e:get("decals_shaders")
 	local rot = c_decals_shaders.data.rotation
 	local sx, sy = unpack(c_decals_shaders.data.scale)
-	local w, h = Decals.tex_hand:getDimensions()
+	local frame = c_decals_shaders.data.frame or 1
+	local hand_tex = Assemblages.HandDecal.HAND_TEX
+	local quad = Decals.hand_quads[frame] or Decals.hand_quads[1]
 	local pos = e:get("pos")
 	love.graphics.draw(
 		Decals.tex_hand,
+		quad,
 		pos.x,
 		pos.y,
 		rot,
 		sx,
 		sy,
-		w / 2,
-		h / 2
+		hand_tex / 2,
+		hand_tex / 2
 	)
 end
 
@@ -174,6 +197,13 @@ if DEV then
 					local data = c_decals_shaders.data
 					local _ = nil
 					data.opacity, _ = UIWrapper.edit_range("opacity", data.opacity, 0, 1, false)
+					data.frame, _ = UIWrapper.edit_range(
+						"frame",
+						data.frame or 1,
+						1,
+						Assemblages.HandDecal.FRAME_COUNT,
+						true
+					)
 					data.blood_amount, _ = UIWrapper.edit_range("blood_amount", data.blood_amount, 0, 1, false)
 					data.damage_amount, _ = UIWrapper.edit_range("damage_amount", data.damage_amount, 0, 1, false)
 					data.distort_amount, _ = UIWrapper.edit_range("distort_amount", data.distort_amount, 0, 1, false)
@@ -203,14 +233,14 @@ if DEV then
 			if c_decals.kind == Enums.decals.hand then
 				local c_decals_shaders = e:get("decals_shaders")
 				local sx, sy = unpack(c_decals_shaders.data.scale)
-				local w, h = Decals.tex_hand:getDimensions()
+				local hand_tex = Assemblages.HandDecal.HAND_TEX
 				local pos = e:get("pos")
 				love.graphics.rectangle(
 					"line",
-					pos.x - w * sx/2,
-					pos.y - h * sy/2,
-					w * sx,
-					h * sy
+					pos.x - hand_tex * sx/2,
+					pos.y - hand_tex * sy/2,
+					hand_tex * sx,
+					hand_tex * sy
 				)
 			end
 		end

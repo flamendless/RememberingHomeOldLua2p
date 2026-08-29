@@ -56,6 +56,28 @@ function Helper.get_offset(e)
 	return ox, oy
 end
 
+function Helper.get_animation_draw_params(e)
+	assert(e.__isEntity, e)
+	local rot, sx, sy, ox, oy = 0, 1, 1, 0, 0
+
+	if e:has("transform") then
+		local transform = e:get("transform")
+		rot = transform.rotation
+		sx, sy = transform.sx, transform.sy
+		ox, oy = Helper.get_offset(e)
+	end
+
+	if e:has("animation") then
+		local obj = e:get("animation").obj
+		if obj and obj.anim8 then
+			local _, _, _, _, sx2, sy2, ox2, oy2 = obj.anim8:getFrameInfo(0, 0, rot, sx, sy, ox, oy)
+			sx, sy, ox, oy = sx2, sy2, ox2, oy2
+		end
+	end
+
+	return sx, sy, ox, oy
+end
+
 function Helper.get_real_pos_box(e)
 	assert(e.__isEntity, e)
 	local box = e:get("bounding_box")
@@ -131,6 +153,19 @@ function Helper.get_ltwh(e)
 	h = h * sy
 
 	return x, y, w, h
+end
+
+function Helper.get_collider_rect(e)
+	assert(e.__isEntity and e:has("collider"), e)
+	local pos = e:get("pos")
+	local collider = e:get("collider")
+	local x, y = pos.x, pos.y
+	local col_offset = e:get("collider_offset")
+	if col_offset then
+		x = x + col_offset.ox
+		y = y + col_offset.oy
+	end
+	return x, y, collider.w, collider.h
 end
 
 return Helper

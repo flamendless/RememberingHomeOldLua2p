@@ -1,6 +1,19 @@
 local Tutorial = Concord.system({})
 
+local PRESS_HAND_PROGRESS_OPTS = {
+	animate_frame = false,
+	fade_opacity = true,
+}
+
 local MAX_HOLD_INTERACT_TIMER = 3
+
+local function shed_interact_anchor(e_shed)
+	local x, y, w, h = Helper.get_collider_rect(e_shed)
+	local door_center_x = x + w * 0.5
+	local door_right_x = x + w
+	local hand_y = y + h + 4
+	return door_center_x, hand_y, door_right_x
+end
 
 local function tutorial_reached_x(pos_x, target_x, dir)
 	if dir < 0 then
@@ -291,6 +304,11 @@ function Tutorial:wait_lighter_press()
 	self:pause_timeline()
 end
 
+function Tutorial:wait_shed_interact()
+	self.wait_kind = Enums.tutorial_wait_kind.shed_interact
+	self:pause_timeline()
+end
+
 function Tutorial:finish_wait()
 	self.wait_kind = Enums.tutorial_wait_kind.null
 	self:resume_timeline()
@@ -426,16 +444,38 @@ function Tutorial:run_tutorial()
 		end)
 	self:pause_timeline()
 
-	self:set_beat(Enums.tutorial_beat.far_left)
+	self:set_beat(Enums.tutorial_beat.reach_shed)
 	pos = self.e_player:get("pos")
-	self.far_left_start_x = pos.x
-	self.far_left_target_x = 32
-	self.wait_kind = Enums.tutorial_wait_kind.reach_far_left
+	self.reach_shed_start_x = pos.x
+	self.shed_hand_shown = false
+	self.e_shed = self.world:getEntityByKey("shed")
+	assert(self.e_shed)
+	local _, _, shed_hand_trigger_x = shed_interact_anchor(self.e_shed)
+	self.shed_hand_trigger_x = shed_hand_trigger_x
+	self.wait_kind = Enums.tutorial_wait_kind.reach_shed
 	self.e_player:give(Enums.player_cap.can_move)
 		:give(Enums.player_cap.can_interact)
 		:remove(Enums.player_cap.can_move_left_only)
 		:remove(Enums.player_cap.can_move_right_only)
 	self.world:emit("camera_follow", self.e_player, 0.25)
+	self:pause_timeline()
+
+	self.e_frontdoor = self.world:getEntityByKey("frontdoor")
+	assert(self.e_shed ~= nil and self.e_frontdoor ~= nil)
+	tx, ty = shed_interact_anchor(self.e_shed)
+	self:show_hands_trail(5, tx, ty, tx, ty, 90, Enums.input.interact, true)
+	self.e_shed:give("is_door_ev", "ev_tutorial_shed_interact")
+	self:wait_shed_interact()
+	self.world:emit("start_dialogue", self.e_player, self.e_shed, "shed")
+	self:wait_dialogue()
+	self.world:emit("play_sound_on_entity", self.e_frontdoor, Enums.sfx.car_door_hit)
+	self:wait_seconds(1)
+	self.world:emit("start_dialogue", self.e_player, self.e_shed, "shed2")
+	self:wait_dialogue()
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_interact, true)
+	self.e_shed:remove("is_door_ev")
+	self:set_beat(Enums.tutorial_beat.outside_frontdoor)
 	self:pause_timeline()
 
 	-- Done
@@ -446,9 +486,7 @@ end
 
 function Tutorial:sync_player_bump(e)
 	local bump_sys = self.world:getSystem(ECS.get_system_class("bump_collision"))
-	local pos = e:get("pos")
-	local col = e:get("collider")
-	bump_sys.pool:update(e, pos.x, pos.y, col.w, col.h)
+	bump_sys.pool:update(e)
 end
 
 function Tutorial:complete_move_left()
@@ -470,17 +508,6 @@ function Tutorial:complete_move_right()
 	self.world:__flush()
 	self.world:emit("player_stop")
 	self.world:emit("player_force_face_dir", -1)
-	self:finish_wait()
-end
-
-function Tutorial:complete_far_left()
-	local e = self.e_player
-	e:get("pos").x = self.far_left_target_x
-	self:sync_player_bump(e)
-	e:remove(Enums.player_cap.can_move)
-	self.world:__flush()
-	self.world:emit("player_stop")
-	self.world:emit("player_force_face_dir", 1)
 	self:finish_wait()
 end
 
@@ -506,14 +533,12 @@ function Tutorial:update(dt)
 		if tutorial_reached_x(player_pos.x, self.right_target_x, 1) then
 			self:complete_move_right()
 		end
-	elseif self.wait_kind == Enums.tutorial_wait_kind.reach_far_left then
+	elseif self.wait_kind == Enums.tutorial_wait_kind.reach_shed then
 		local player_pos = self.e_player:get("pos")
-		local progress = (self.far_left_start_x - player_pos.x) / (self.far_left_start_x - self.far_left_target_x)
-		progress = mathx.clamp(progress, 0, 1)
-		Assemblages.HandDecal.set_progress(self.e_last_hand, progress, 0.9, self.e_hand_key_label)
-
-		if tutorial_reached_x(player_pos.x, self.far_left_target_x, -1) then
-			self:complete_far_left()
+		if not self.shed_hand_shown
+			and tutorial_reached_x(player_pos.x, self.shed_hand_trigger_x, -1) then
+			self.shed_hand_shown = true
+			self:finish_wait()
 		end
 	end
 end
@@ -578,7 +603,13 @@ function Tutorial:state_update(dt)
 			self.wait_kind = Enums.tutorial_wait_kind.null
 			local progress = { value = 0 }
 			Flux.to(progress, 2, { value = 1 }):onupdate(function()
-				Assemblages.HandDecal.set_progress(self.e_last_hand, progress.value, 0.9, self.e_hand_key_label)
+				Assemblages.HandDecal.set_progress(
+					self.e_last_hand,
+					progress.value,
+					0.9,
+					self.e_hand_key_label,
+					PRESS_HAND_PROGRESS_OPTS
+				)
 			end):oncomplete(function()
 				self:fade_hand_and_glow(0.3, function()
 					self:resume_timeline()
@@ -592,7 +623,13 @@ function Tutorial:state_update(dt)
 			self.world:emit("on_open_lighter")
 			local progress = { value = 0 }
 			Flux.to(progress, 1, { value = 1 }):onupdate(function()
-				Assemblages.HandDecal.set_progress(self.e_last_hand, progress.value, 0.9, self.e_hand_key_label)
+				Assemblages.HandDecal.set_progress(
+					self.e_last_hand,
+					progress.value,
+					0.9,
+					self.e_hand_key_label,
+					PRESS_HAND_PROGRESS_OPTS
+				)
 			end):oncomplete(function()
 				self:fade_hand_and_glow(0.3, function()
 					self:resume_timeline()
@@ -608,6 +645,31 @@ function Tutorial:state_draw_ex()
 		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.print("IN TUTORIAL: " .. self.beat, 0, 38)
 	end
+end
+
+function Tutorial:ev_tutorial_shed_interact(e_player, e_shed)
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert(e_shed.__isEntity, e_shed)
+	if self.wait_kind ~= Enums.tutorial_wait_kind.shed_interact then
+		return
+	end
+	self.wait_kind = Enums.tutorial_wait_kind.null
+	self.world:emit("player_force_face_dir", -1)
+	self.world:emit("anim_open_locked_door", e_player, { hold_caps = true })
+	local progress = { value = 0 }
+	Flux.to(progress, 2, { value = 1 }):onupdate(function()
+		Assemblages.HandDecal.set_progress(
+			self.e_last_hand,
+			progress.value,
+			0.9,
+			self.e_hand_key_label,
+			PRESS_HAND_PROGRESS_OPTS
+		)
+	end):oncomplete(function()
+		self:fade_hand_and_glow(0.3, function()
+			self:resume_timeline()
+		end)
+	end)
 end
 
 function Tutorial:ev_dialogue_fin()

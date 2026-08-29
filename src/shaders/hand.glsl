@@ -5,6 +5,8 @@ extern number damage_amount;
 extern number distort_amount;
 extern vec2 scale;
 extern number rotation;
+extern vec2 uv_offset;
+extern vec2 uv_frame_scale;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123);
@@ -40,7 +42,8 @@ vec4 effect(
 	vec2 texCoord,
 	vec2 screenCoord
 ) {
-	vec2 uv = texCoord;
+	// Quad texCoords are in full-sheet space; work in per-frame 0..1 UVs.
+	vec2 uv = (texCoord - uv_offset) / uv_frame_scale;
 	uv -= 0.5;
 	uv /= scale;
 	uv += 0.5;
@@ -48,8 +51,10 @@ vec4 effect(
 
 	float dNoise = noise(uv * 8.0 + time*0.1);
 	uv += (dNoise - 0.5) * distort_amount * 0.03;
+	uv = clamp(uv, 0.0, 1.0);
 
-	vec4 hand = Texel(tex, uv);
+	vec2 sheet_uv = uv * uv_frame_scale + uv_offset;
+	vec4 hand = Texel(tex, sheet_uv);
 	if (hand.a < 0.01)
 		discard;
 

@@ -271,8 +271,8 @@ function Animation:get_quad()
 	return self.anim8:getFrameInfo()
 end
 
-function Animation:get_frame_info()
-	return self.anim8:getFrameInfo()
+function Animation:get_frame_info(x, y, r, sx, sy, ox, oy, kx, ky)
+	return self.anim8:getFrameInfo(x, y, r, sx, sy, ox, oy, kx, ky)
 end
 
 return Animation

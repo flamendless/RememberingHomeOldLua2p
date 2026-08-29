@@ -99,7 +99,6 @@ function ShowKeys:show_skip()
 			skip = true,
 		}
 	)
-	Assemblages.HandDecal.fade_in(self.skip_hand, 1, 0.5)
 	Assemblages.HandDecal.pulse_opacity(self.skip_hand, 1, 0, 0, 1)
 
 	self.skip_key_label = Assemblages.HandDecal.create_key_label(

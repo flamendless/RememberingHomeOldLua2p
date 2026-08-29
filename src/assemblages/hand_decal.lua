@@ -1,6 +1,7 @@
 local HandDecal = {}
 
 HandDecal.HAND_TEX = 64
+HandDecal.FRAME_COUNT = 6
 HandDecal.SKIP_HAND_SCALE = 0.85
 HandDecal.SPLASH_HAND_SCALE = 1.05
 HandDecal.SPLASH_HAND_UV_SCALE = 1.0
@@ -40,6 +41,7 @@ function HandDecal.create(e, opts)
 		:give("decals", Enums.decals.hand)
 		:give("decals_shaders", Enums.shaders.hand, {
 			time = 0,
+			frame = 1,
 			opacity = opts.opacity or DEFAULTS.opacity,
 			blood_amount = opts.blood_amount or DEFAULTS.blood_amount,
 			damage_amount = opts.damage_amount or DEFAULTS.damage_amount,
@@ -62,13 +64,17 @@ end
 function HandDecal.fade_in(e, target_opacity, duration, delay)
 	assert(e.__isEntity and e:has("decals_shaders"))
 	local decals_shaders = e:get("decals_shaders")
-	return Flux.to(decals_shaders.data, duration, { opacity = target_opacity }):delay(delay or 0)
+	local data = decals_shaders.data
+	Flux.remove_by_object(data)
+	return Flux.to(data, duration, { opacity = target_opacity }):delay(delay or 0)
 end
 
 function HandDecal.fade_out(e, duration, on_complete)
 	assert(e.__isEntity and e:has("decals_shaders"))
 	local decals_shaders = e:get("decals_shaders")
-	return Flux.to(decals_shaders.data, duration, { opacity = 0 }):oncomplete(function()
+	local data = decals_shaders.data
+	Flux.remove_by_object(data)
+	return Flux.to(data, duration, { opacity = 0 }):oncomplete(function()
 		e:destroy()
 		if on_complete then
 			on_complete()
@@ -84,13 +90,16 @@ function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
 
 	local decals_shaders = e:get("decals_shaders")
 	local data = decals_shaders.data
+	Flux.remove_by_object(data)
 	local cycles = 0
 	local fade_in, fade_out
+
+	local infinite = not count or count <= 0
 
 	fade_out = function()
 		Flux.to(data, duration, { opacity = min_opacity }):oncomplete(function()
 			cycles = cycles + 1
-			if count > 0 and cycles >= count * 2 then
+			if not infinite and cycles >= count * 2 then
 				return
 			end
 			fade_in()
@@ -100,7 +109,7 @@ function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
 	fade_in = function()
 		Flux.to(data, duration, { opacity = max_opacity }):oncomplete(function()
 			cycles = cycles + 1
-			if count > 0 and cycles >= count * 2 then
+			if not infinite and cycles >= count * 2 then
 				return
 			end
 			fade_out()
@@ -114,22 +123,33 @@ function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
 	end
 end
 
-function HandDecal.set_progress(e, progress, base_opacity, label)
+function HandDecal.set_progress(e, progress, base_opacity, label, opts)
 	if not e or not e:has("decals_shaders") then
 		return
 	end
+	opts = opts or {}
 	progress = mathx.clamp(progress, 0, 1)
 	base_opacity = base_opacity or 0.9
 	local decals_shaders = e:get("decals_shaders")
 	local data = decals_shaders.data
-	data.opacity = base_opacity * (1 - progress)
+	if opts.animate_frame ~= false then
+		data.frame = math.min(
+			HandDecal.FRAME_COUNT,
+			math.max(1, 1 + math.floor(progress * HandDecal.FRAME_COUNT))
+		)
+	end
+	local opacity = base_opacity
+	if opts.fade_opacity then
+		opacity = base_opacity * (1 - progress)
+	end
+	data.opacity = opacity
 	data.blood_amount = progress
 	data.damage_amount = progress
 	data.distort_amount = progress
 
 	if label and label:has("color") then
 		local label_color = label:get("color")
-		label_color.value[4] = data.opacity
+		label_color.value[4] = opacity
 	end
 end
 

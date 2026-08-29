@@ -32,7 +32,7 @@ local textures = {
 	{ "pause_bg",         "res/textures/pause_bg.png" },
 	{ "bayer16",          "res/textures/bayer16.png" },
 	{ "pal_hollow",       "res/textures/pal_hollow.png" },
-	{ "tex_hand",         "res/textures/hand.png" },
+	{ "tex_hand",         "res/textures/sheet_hand.png" },
 }
 
 ResourcesList[G.Splash] = {
@@ -41,7 +41,7 @@ ResourcesList[G.Splash] = {
 		{ "sheet_wits",       "res/images/splash/sheet_wits.png" },
 		{ "tex_displacement", "res/textures/displacement.png" },
 		{ "atlas_keys",       "res/ui/atlas_keys.png" },
-		{ "tex_hand",         "res/textures/hand.png" },
+		{ "tex_hand",         "res/textures/sheet_hand.png" },
 	},
 	fonts = {
 		{ "ui",         "res/fonts/Jamboree.ttf",   32,  "default" },
@@ -84,7 +84,7 @@ ResourcesList[G.Intro] = {
 		{ "dummy",             "res/textures/dummy.png" },
 		{ "atlas_keys",        "res/ui/atlas_keys.png" },
 		{ "sheet_title",       "res/images/intro/sheet_title.png" },
-		{ "tex_hand",          "res/textures/hand.png" },
+		{ "tex_hand",          "res/textures/sheet_hand.png" },
 	},
 	image_data = {
 		{ "lut_afternoon_16", "res/lut/lut_afternoon_16.png" },
