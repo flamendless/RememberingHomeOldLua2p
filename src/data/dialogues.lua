@@ -15,14 +15,16 @@ Dialogues.items = {
 	},
 }
 
-Dialogues.common = {
-	start = {},
-	fin = {},
-	item_without = {
-		"there is nothing to use this item with",
-	},
-	cant_search_yet = {
-		"I don't need any of these for now",
+local common = {
+	-- item_without = {
+	-- 	"there is nothing to use this item with",
+	-- },
+	-- cant_search_yet = {
+	-- 	"I don't need any of these for now",
+	-- },
+	locked_door = {
+		LoveInk.Helpers.text("It's locked..."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 }
 
@@ -130,13 +132,13 @@ Dialogues.outside = {
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_trunk_pre = {
-		LoveInk.Helpers.text("It's too dark to see...", nil, {Enums.dialogue_tags.important}),
+		LoveInk.Helpers.text("It's too dark to see...", nil, { Enums.dialogue_tags.important }),
 		LoveInk.Helpers.text("Good thing I brought my pal..."),
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	car_trunk = {
-		LoveInk.Helpers.text("I can't move while using it though...", nil, {Enums.dialogue_tags.important}),
-		LoveInk.Helpers.text("the flame goes out right away...", nil, {Enums.dialogue_tags.important}),
+		LoveInk.Helpers.text("I can't move while using it though...", nil, { Enums.dialogue_tags.important }),
+		LoveInk.Helpers.text("the flame goes out right away...", nil, { Enums.dialogue_tags.important }),
 		LoveInk.Helpers.text("There's a few items here..."),
 		LoveInk.Helpers.divert("car_flashlight"),
 	},
@@ -155,6 +157,16 @@ Dialogues.outside = {
 		LoveInk.Helpers.text("I better check out the area..."),
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
+	shed = {
+		LoveInk.Helpers.text("Worn down..."),
+		LoveInk.Helpers.text("Odd..."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
+	shed2 = {
+		LoveInk.Helpers.text("Something came from the house..."),
+		LoveInk.Helpers.text("I should check it..."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
 	fin = {},
 }
 
@@ -170,6 +182,12 @@ Dialogues.office2 = {
 	},
 	fin = {},
 }
+
+for k, _ in pairs(Dialogues) do
+	for k2, v2 in pairs(common) do
+		Dialogues[k][k2] = v2
+	end
+end
 
 if DEV then
 	for k, v in pairs(Dialogues) do

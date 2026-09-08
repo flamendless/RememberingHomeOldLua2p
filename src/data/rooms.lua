@@ -9,7 +9,7 @@ local R = Enums.face_dir.right
 Rooms.nodes = {}
 
 Rooms.nodes[G.Outside] = {
-	default = { 800, 258 },
+	default = { 852, 258 },
 	entries = { [G.Menu] = { 800, 258 } },
 	doors = {
 		backdoor = { to = G.StorageRoom, spawn = { 312, 48 } },

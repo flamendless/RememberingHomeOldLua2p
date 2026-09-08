@@ -29,7 +29,9 @@ function Runner.pass()
 	Runner.done = true
 	local elapsed = love.timer.getTime() - Runner.start_time
 	log(string.format("PASS %s (%.1fs wall)", Runner.scenario_name, elapsed))
-	love.event.quit(0)
+	if not Runner.keep_running then
+		love.event.quit(0)
+	end
 end
 
 function Runner.init(scenario_name)
@@ -46,6 +48,7 @@ function Runner.init(scenario_name)
 		error("unknown test scenario: " .. tostring(scenario_name) .. " (" .. tostring(scenario) .. ")")
 	end
 	Runner.steps = scenario.steps
+	Runner.keep_running = scenario.keep_running == true
 	log("scenario: " .. scenario_name)
 	return scenario.state
 end
@@ -62,7 +65,7 @@ local function apply_step_input(step)
 		pump_dialogue = true
 	end
 
-	local dialogue_active = pump_dialogue and TestHooks.dialogue_active()
+	local dialogue_active = pump_dialogue and TestHooks.dialogue_should_pump()
 	local skip_hold = dialogue_active and step.hold == "interact"
 
 	if step.hold and not skip_hold then

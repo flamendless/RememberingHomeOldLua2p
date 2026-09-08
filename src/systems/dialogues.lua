@@ -1,5 +1,38 @@
 local DialoguesSystem = Concord.system()
 
+local function build_dialogue_cfg(cam)
+	local font = Resources.data.fonts.dialogue
+	local ww, wh = love.graphics.getDimensions()
+	local _, _, _, h = cam:getWindow()
+	local barh = h * CAM_BAR_RATIO
+	local basey = wh - barh + 12
+	local offx = 32
+
+	return {
+		textbox = {
+			x = offx,
+			y = basey,
+			width = ww - offx * 2,
+			height = font:getHeight(),
+			typewriter_speed = 40,
+			font = font,
+			padding = 0,
+			background_color = Palette.colors.black,
+			border_color = Palette.colors.black,
+		},
+		choicelist = {
+			x = offx,
+			y = basey,
+			width = ww - offx * 2,
+			button_height = font:getHeight(),
+			font = font,
+			padding = 48,
+			background_color = Palette.colors.black,
+			border_color = Palette.colors.black,
+		},
+	}
+end
+
 local function create_choice_bloodbar_mid(cfg)
 	Log.info("created new choice bloodbar mid")
 	return {
@@ -22,6 +55,29 @@ function DialoguesSystem:init(world)
 	self.world = world
 end
 
+function DialoguesSystem:setup_dialogue_ui(cam)
+	assert:type(cam, "table")
+
+	self.cfg = build_dialogue_cfg(cam)
+
+	self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
+	self.blood_bars = {
+		BloodBar({speed = 1, opacity = 0, enabled = true}),
+		BloodBar({speed = 1, opacity = 0, enabled = true}),
+	}
+
+	self.ui = LoveInk.DialogueUI.new(self.cfg)
+	self.ui.on_choice_made = function(index)
+		self.current_content = self.dialogue:choose(index)
+		self.ui:showContent(self.current_content)
+		self:check_if_fin()
+	end
+
+	if not self.e_simple_dialogue then
+		self.e_simple_dialogue = Concord.entity(self.world):give("id", "simple_dialogue")
+	end
+end
+
 function DialoguesSystem:state_setup()
 	local current_id = string.lower(GameStates.current_id)
 	Log.info("Loading dialogues data", current_id)
@@ -34,72 +90,39 @@ function DialoguesSystem:state_setup()
 
 	self.dialogue = LoveInk.Dialogue.new(data, Enums.dialogue_knot.start)
 	self.choices_history = {}
+	self.bars_shown_for_dialogue = false
+	self.await_interact_release = false
+	self.dialogue_advance_pending = false
 end
 
 function DialoguesSystem:ev_main_camera_setup(cam)
-	assert:type(cam, "table")
-
-	local font = Resources.data.fonts.dialogue
-	local ww, wh = love.graphics.getDimensions()
-	local _, _, _, h = cam:getWindow()
-	local barh = h * CAM_BAR_RATIO
-	local basey = wh - barh + 12
-	local offx = 32
-
-	self.cfg = {
-		textbox = {
-			x = offx,
-			y = basey,
-			width = ww - offx * 2,
-			height = font:getHeight(),
-			typewriter_speed = 40,
-			font = font,
-			padding = 0,
-			background_color = Palette.colors.black,
-			border_color = Palette.colors.black,
-		},
-		choicelist = {
-			x = offx,
-			y = basey,
-			width = ww - offx * 2,
-			button_height = font:getHeight(),
-			font = font,
-			padding = 48,
-			background_color = Palette.colors.black,
-			border_color = Palette.colors.black,
-		}
-
-	}
-
-	self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
-	self.blood_bars = {
-		BloodBar({speed = 1, opacity = 0, enabled = true}),
-		BloodBar({speed = 1, opacity = 0, enabled = true}),
-	}
-
-	self.ui = LoveInk.DialogueUI.new(self.cfg)
-
-	self.ui.on_choice_made = function(index)
-		self.current_content = self.dialogue:choose(index)
-		self.ui:showContent(self.current_content)
-		self:check_if_fin()
-	end
+	self:setup_dialogue_ui(cam)
 end
 
 function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert(e.__isEntity)
 	assert(e_other.__isEntity)
 	assert:type_or_nil(override_dialogue_key, "string")
+	assert(self.ui, "dialogue ui not ready")
 	local dialogue_key = override_dialogue_key or e_other:get("dialogue_key").value
 	assert:type(dialogue_key, "string")
 
-	if self.dialogue:getCurrentKnot() ~= dialogue_key then
+	local restart = e_other == self.e_simple_dialogue
+	if restart or self.dialogue:getCurrentKnot() ~= dialogue_key then
 		self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
 
 		self.e_dialogue = e_other
 		self.dialogue:divertTo(dialogue_key)
 		self.current_content = self.dialogue:getNext()
 		self.ui:showContent(self.current_content)
+		self.await_interact_release = Inputs.down(Enums.input.interact)
+		self.dialogue_advance_pending = false
+
+		local cam = self.world:getSystem(ECS.get_system_class("camera"))
+		if cam and not cam.bars then
+			self.world:emit("display_bars")
+			self.bars_shown_for_dialogue = true
+		end
 
 		--TODO: Implement pause (b)
 		Log.debug("TODO: Implement pause (b)")
@@ -116,6 +139,14 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	end
 end
 
+function DialoguesSystem:start_dialogue_simple(dialogue_key)
+	assert:type(dialogue_key, "string")
+	assert(self.e_simple_dialogue, "simple dialogue entity not ready")
+	local e_player = self.world:getResource("e_player")
+	assert(e_player ~= nil, "player entity must be alive at this point")
+	self:start_dialogue(e_player, self.e_simple_dialogue, dialogue_key)
+end
+
 function DialoguesSystem:force_end_dialogue()
 	self.dialogue:divertTo(Enums.dialogue_knot.fin)
 	self:check_if_fin()
@@ -127,6 +158,11 @@ function DialoguesSystem:check_if_fin()
 		self.current_content = nil
 		self.e_dialogue = nil
 		self.ui:showContent({ type = "end" })
+
+		if self.bars_shown_for_dialogue then
+			self.world:emit("hide_bars")
+			self.bars_shown_for_dialogue = false
+		end
 	end
 end
 
@@ -154,8 +190,17 @@ function DialoguesSystem:state_update(dt)
 	-- 	self.current_content = nil
 	-- end
 
-	if Inputs.released(Enums.input.interact) then
-		self:ev_advance()
+	if self.await_interact_release then
+		if not Inputs.down(Enums.input.interact) then
+			self.await_interact_release = false
+		end
+	elseif self.current_content and self.current_content.type == "text" then
+		if Inputs.pressed(Enums.input.interact) then
+			self.dialogue_advance_pending = true
+		elseif self.dialogue_advance_pending and Inputs.released(Enums.input.interact) then
+			self.dialogue_advance_pending = false
+			self:ev_advance()
+		end
 	end
 
 	local hovered_index

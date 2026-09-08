@@ -20,6 +20,16 @@ AtmosphericSpecs.defaults = {
 	blend_mode = "alpha",
 }
 
+AtmosphericSpecs.outside = {
+	zone_y_start = 0.6,
+	emission_mode = "uniform",
+	emission_rate = 96,
+	size_min = 0.8,
+	size_max = 3,
+	color = { 0.88, 0.88, 0.88, 0.9 },
+	lifetime = { min = 8, max = 20 },
+}
+
 function AtmosphericSpecs.get(room_id)
 	local config = tablex.copy(AtmosphericSpecs.defaults)
 	if not room_id or not AtmosphericSpecs[room_id] then

@@ -118,7 +118,6 @@ function Decals.render_hand(e)
 	assert(c_decals.kind == Enums.decals.hand, c_decals.kind)
 
 	local c_decals_shaders = e:get("decals_shaders")
-	local rot = c_decals_shaders.data.rotation
 	local sx, sy = unpack(c_decals_shaders.data.scale)
 	local frame = c_decals_shaders.data.frame or 1
 	local hand_tex = Assemblages.HandDecal.HAND_TEX
@@ -129,7 +128,7 @@ function Decals.render_hand(e)
 		quad,
 		pos.x,
 		pos.y,
-		rot,
+		0,
 		sx,
 		sy,
 		hand_tex / 2,

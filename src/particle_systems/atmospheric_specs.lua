@@ -82,20 +82,24 @@ function PSAtmosphericSpecs:configure(config)
 	local linear_accel_min_y = zone.linear_accel_min_y or gravity_min
 	local linear_accel_max_y = zone.linear_accel_max_y or gravity_max
 
+	local emission_mode = zone.emission_mode or config.emission_mode or "borderrectangle"
 	local w = zone.w or config.width or 1
 	local h = zone.h or emission_height
 	local x = zone.x or 0
 	local y = zone.y or 0
 
+	self.emission_mode = emission_mode
+	self.emission_w = w
+	self.emission_h = h
 	self.x = x + w / 2
-	self.y = y
+	self.y = y + h / 2
 
 	local ps = lg.newParticleSystem(shared_image, BUFFER)
 
 	ps:setInsertMode("random")
 	ps:setColors(colors_from_base(color))
 	ps:setDirection(direction)
-	ps:setEmissionArea("borderrectangle", w, h, 0, false)
+	ps:setEmissionArea(emission_mode, w, h, 0, false)
 	ps:setEmissionRate(emission_rate)
 	ps:setEmitterLifetime(-1)
 	ps:setLinearAcceleration(
@@ -123,6 +127,12 @@ function PSAtmosphericSpecs:configure(config)
 
 	self.system = ps
 	ps:emit(math.min(BUFFER, math.floor(emission_rate * 6)))
+end
+
+function PSAtmosphericSpecs:get_emission_rect(draw_x, draw_y)
+	local cx = draw_x or self.x
+	local cy = draw_y or self.y
+	return cx - self.emission_w * 0.5, cy - self.emission_h * 0.5, self.emission_w, self.emission_h
 end
 
 function PSAtmosphericSpecs:update(dt)

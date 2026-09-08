@@ -109,6 +109,7 @@ state_systems[G.Outside] = {
 	"lighter",
 	"wind",
 	"flame",
+	"atmospheric_specs",
 }
 
 state_systems[G.StorageRoom] = {

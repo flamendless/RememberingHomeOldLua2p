@@ -275,7 +275,7 @@ if TEST.mode then
 	end
 
 	function Inputs.pump_dialogue()
-		if not TestHooks.dialogue_active() then
+		if not TestHooks.dialogue_should_pump() then
 			dialogue_pump_phase = 0
 			return
 		end
@@ -295,9 +295,15 @@ if TEST.mode then
 				dialogue_pump_phase = 0
 			end
 		else
-			dialogue_pump_phase = 0
-			Inputs.previous["interact"] = true
-			Inputs.current["interact"] = false
+			if dialogue_pump_phase == 0 then
+				Inputs.previous["interact"] = false
+				Inputs.current["interact"] = true
+				dialogue_pump_phase = 1
+			else
+				Inputs.previous["interact"] = true
+				Inputs.current["interact"] = false
+				dialogue_pump_phase = 0
+			end
 		end
 	end
 

@@ -71,6 +71,15 @@ function Room:parse_room_items(res)
 	self.world:emit("setup_events", res)
 end
 
+local function apply_interact_box(e, pos_x, pos_y, interact_box)
+	assert:type(interact_box.x, "number")
+	assert:type(interact_box.y, "number")
+	assert:type(interact_box.w, "number")
+	assert:type(interact_box.h, "number")
+	e:give("collider", interact_box.w, interact_box.h, Enums.bump_filter.cross)
+	e:give("collider_offset", interact_box.x - pos_x, interact_box.y - pos_y)
+end
+
 function Room:create_room_item(frames, spr_res, t, g_id)
 	assert:type(frames, "table")
 	assert:type(spr_res, "string")
@@ -93,9 +102,12 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 		ox = w
 	end
 
-	local e = Concord.entity(self.world)
-		:give("id", t.name or id)
-		:give("sprite", spr_res)
+	local e = Concord.entity(self.world):give("id", t.name or id)
+	if t.key then
+		assert:type(t.key, "string")
+		e:give("key", t.key)
+	end
+	e:give("sprite", spr_res)
 		:give("pos", t.x, t.y)
 		:give("atlas", item)
 		:give("quad_transform", 0, sx, sy, ox, oy)
@@ -104,7 +116,12 @@ function Room:create_room_item(frames, spr_res, t, g_id)
 		:give("color", t.tint or Palette.colors.white)
 
 	if not g_id and not t.no_col then
-		e:give("collider", w, h, Enums.bump_filter.cross):give("bump")
+		if t.interact_box then
+			apply_interact_box(e, t.x, t.y, t.interact_box)
+		else
+			e:give("collider", w, h, Enums.bump_filter.cross)
+		end
+		e:give("bump")
 
 		if not t.not_interactive then
 			e:give("interactive")
@@ -163,11 +180,15 @@ function Room:create_grouped_items(group, group_t, frames, list)
 			:give("id", "col_" .. id)
 			:give("pos", x, y)
 			:give("bump")
-			:give("collider", w - x, h - y, Enums.bump_filter.cross)
 			:give("interactive")
 			:give("grouped", id)
 
 		local gt = group_t[id]
+		if gt.interact_box then
+			apply_interact_box(e_g, x, y, gt.interact_box)
+		else
+			e_g:give("collider", w - x, h - y, Enums.bump_filter.cross)
+		end
 		if gt.dialogue then
 			e_g:give("dialogue_meta", unpack(gt.dialogue))
 		end

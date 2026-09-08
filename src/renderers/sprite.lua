@@ -7,11 +7,13 @@ local Sprite = {
 }
 
 local function draw_with_blood_overlay(e, highlight, ...)
+	local prev_shader = love.graphics.getShader()
 	local highlighter = Sprite.overlay_highlighter
 	highlighter.data.time = highlight.time
 	highlighter.data.opacity = highlight.opacity
 	highlighter.data.overlay_strength = highlight.overlay_strength
 	highlighter:draw(...)
+	love.graphics.setShader(prev_shader)
 end
 
 local function draw(e, ...)
@@ -56,8 +58,22 @@ function Sprite.set_bg(e)
 end
 
 function Sprite.render_bg()
-	if not Sprite.e_bg then return end
+	if HANG_WATCH then
+		hang_watch("sprite:render_bg")
+	end
+	if not Sprite.e_bg then
+		if HANG_WATCH then
+			hang_watch("sprite:render_bg skip")
+		end
+		return
+	end
+	if HANG_WATCH then
+		hang_watch("sprite:render_bg draw")
+	end
 	Sprite.render(Sprite.e_bg)
+	if HANG_WATCH then
+		hang_watch("sprite:render_bg ok")
+	end
 end
 
 function Sprite.render(e)

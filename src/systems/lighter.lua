@@ -117,22 +117,7 @@ end
 function Lighter:wick_world_pos(e_player)
 	assert(e_player.__isEntity and e_player:has("player") and e_player:has("pos"), e_player)
 	local pos = e_player:get("pos")
-	local ox, oy = Helper.get_offset(e_player)
-	local sx, sy = 1, 1
-	local qt = e_player:get("quad_transform")
-	if qt then
-		sx = qt.sx
-		sy = qt.sy
-		ox = qt.ox
-		oy = qt.oy
-	else
-		local transform = e_player:get("transform")
-		if transform then
-			sx = transform.sx
-			sy = transform.sy
-		end
-	end
-
+	local sx, sy, ox, oy = Helper.get_animation_draw_params(e_player)
 	return pos.x + (WICK_X - ox) * sx, pos.y + (WICK_Y - oy) * sy
 end
 

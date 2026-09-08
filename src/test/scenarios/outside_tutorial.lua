@@ -14,6 +14,7 @@ end
 return {
 	name = "Outside Tutorial",
 	state = Enums.game_state.Outside,
+	keep_running = true,
 	steps = {
 		{
 			label = "Outside cutscene",
@@ -106,11 +107,44 @@ return {
 		},
 		{
 			label = "explore complete",
-			until_fn = TestHooks.tutorial_explore_ready,
+			until_fn = function()
+				return TestHooks.tutorial_beat_is("reach_shed")
+					or TestHooks.tutorial_wait_is("reach_shed")
+			end,
+		},
+		{
+			label = "reach shed",
+			hold = "left",
+			until_fn = function()
+				return TestHooks.tutorial_wait_is("shed_interact")
+			end,
+		},
+		{
+			label = "interact (shed)",
+			do_fn = tap_interact,
+			until_fn = function()
+				return TestHooks.dialogue_active()
+					or TestHooks.tutorial_waiting_dialogue()
+			end,
+		},
+		{
+			label = "dialogue (shed)",
+			until_fn = function()
+				return not TestHooks.dialogue_active()
+					and not TestHooks.tutorial_waiting_dialogue()
+			end,
+		},
+		{
+			label = "dialogue (shed2)",
+			until_fn = function()
+				return TestHooks.tutorial_beat_is("outside_frontdoor")
+			end,
 		},
 		{
 			label = "tutorial_complete",
-			pass = true,
+			do_fn = function()
+				GAME_SPEED_MULT = 1
+			end,
 		},
 	},
 }

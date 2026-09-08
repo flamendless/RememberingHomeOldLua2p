@@ -24,7 +24,10 @@ function Outside:state_setup()
 	self.camera = Gamera.new(0, 0, w, h)
 	self.camera:setWindow(0, 0, ww, wh)
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
-	Concord.entity(self.world):assemble(Assemblages.Common.bg, "bg_sky")
+
+	self.world:setResource("room_size", { width = w, height = h })
+	self.world:emit("setup_for_scene", w, h, { scene_id = self.id })
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, "bg_sky", ww, wh)
 
 	local _, _, cw, _ = self.camera:getVisible()
 	self.ps1 = ParticleSystems.RainOutside(Resources.data.images.rain_drop, 128, cw)
@@ -429,6 +432,7 @@ function Outside:ev_interact_frontdoor(e_player, e_door)
 	assert(door_id == "frontdoor", door_id)
 
 	self.world:emit("anim_open_locked_door", e_player)
+	self.world:emit("start_dialogue_simple", Enums.dialogue_knot.locked_door)
 end
 
 function Outside:cleanup()

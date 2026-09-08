@@ -4,6 +4,7 @@ local DevTools = {
 	pause = false,
 	flags = {
 		animation = false,
+		atmospheric_specs = false,
 		deferred_lighting = false,
 		billboard_glow = false,
 		bounding_box = false,
@@ -31,6 +32,7 @@ local DevTools = {
 		behavior_tree = false,
 		survival = true,
 		timeline = false,
+		positional_audio = false,
 	},
 	metrics = {
 		give = {},
@@ -46,6 +48,7 @@ local DevTools = {
 		tag = nil,
 	},
 	debug_bump_drag = false,
+	slab_warmup = 0,
 }
 
 local slab_components
@@ -109,6 +112,20 @@ local designer = {
 	show_outline = true,
 }
 
+local rect_selector = {
+	show = false,
+	title = "Rect Selector",
+	boxes = {},
+	awaiting_press = false,
+	press_pending = false,
+	dragging = false,
+	drag_start_x = 0,
+	drag_start_y = 0,
+	drag_end_x = 0,
+	drag_end_y = 0,
+	next_id = 1,
+}
+
 local room_map = {
 	show = false,
 	title = "Room Map",
@@ -139,9 +156,44 @@ local list = {
 	fade,
 	image_viewer,
 	designer,
+	rect_selector,
 	room_map,
 	bg_asset_processor,
 }
+
+local function rect_selector_world(mx, my)
+	local camera = DevTools.camera
+	if camera then
+		return camera:toWorld(mx, my)
+	end
+	return mx, my
+end
+
+local function normalize_rect(x1, y1, x2, y2)
+	local x = math.min(x1, x2)
+	local y = math.min(y1, y2)
+	return x, y, math.abs(x2 - x1), math.abs(y2 - y1)
+end
+
+local function rect_selector_finalize_press()
+	if not rect_selector.awaiting_press then
+		return
+	end
+	rect_selector.awaiting_press = false
+
+	if not rect_selector.show or not DevTools.show or not love.mouse.isDown(1)
+		or Slab.IsAnyInputFocused() or not Slab.IsVoidHovered() then
+		return
+	end
+
+	local mx, my = love.mouse.getPosition()
+	local world_x, world_y = rect_selector_world(mx, my)
+	rect_selector.press_pending = true
+	rect_selector.drag_start_x = world_x
+	rect_selector.drag_start_y = world_y
+	rect_selector.drag_end_x = world_x
+	rect_selector.drag_end_y = world_y
+end
 
 local function dev_hang_enter(label)
 	if HANG_WATCH then
@@ -204,26 +256,31 @@ function DevTools.update(dt)
 	dev_hang_leave("slab")
 
 	dev_hang_enter("list win")
+	dev_hang_enter("list win:begin")
 	Slab.BeginWindow("list", { Title = "DevTools" })
+	dev_hang_leave("list win:begin")
+
 	if DevTools.pp_effects then
+		dev_hang_enter("list win:pp")
 		for _, effect in ipairs(DevTools.pp_effects) do
-			if Slab.CheckBox(effect.is_active, effect:type()) then
+			local pp_id = effect.get_type and effect:get_type() or effect:type()
+			if Slab.CheckBox(effect.is_active, pp_id, { Id = "devtools.pp." .. pp_id }) then
 				effect.debug_show = not effect.debug_show
 				effect.is_active = not effect.is_active
 			end
-			if effect.debug_update and effect.debug_show then
-				local pp_label = "pp:" .. effect:type()
-				dev_hang_enter(pp_label)
-				effect:debug_update(dt)
-				dev_hang_leave(pp_label)
-			end
 		end
+		dev_hang_leave("list win:pp")
 	end
-	if Slab.CheckBox(DevTools.flags.fog, "Fog") then
+
+	dev_hang_enter("list win:fog")
+	if Slab.CheckBox(DevTools.flags.fog, "Fog", { Id = "devtools.panel.fog" }) then
 		DevTools.flags.fog = not DevTools.flags.fog
 	end
+	dev_hang_leave("list win:fog")
+
+	dev_hang_enter("list win:panels")
 	for _, v in ipairs(list) do
-		if Slab.CheckBox(v.show, v.title) then
+		if Slab.CheckBox(v.show, v.title, { Id = "devtools.panel." .. v.title }) then
 			v.show = not v.show
 			if v == room_map and v.show then
 				DevTools.build_room_map_layout()
@@ -234,8 +291,23 @@ function DevTools.update(dt)
 			end
 		end
 	end
+	dev_hang_leave("list win:panels")
+
 	Slab.EndWindow()
 	dev_hang_leave("list win")
+
+	if DevTools.pp_effects then
+		dev_hang_enter("pp debug")
+		for _, effect in ipairs(DevTools.pp_effects) do
+			if effect.debug_update and effect.debug_show then
+				local pp_id = effect.get_type and effect:get_type() or effect:type()
+				dev_hang_enter("pp:" .. pp_id)
+				effect:debug_update(dt)
+				dev_hang_leave("pp:" .. pp_id)
+			end
+		end
+		dev_hang_leave("pp debug")
+	end
 
 	dev_hang_enter("stats")
 	DevTools.draw_stats()
@@ -277,6 +349,10 @@ function DevTools.update(dt)
 	DevTools.draw_designer()
 	dev_hang_leave("designer")
 
+	dev_hang_enter("rect selector")
+	DevTools.draw_rect_selector()
+	dev_hang_leave("rect selector")
+
 	dev_hang_enter("emit debug_update")
 	for _, sys in ipairs(GameStates.world:getSystems()) do
 		if sys.debug_update and sys.debug_show then
@@ -287,9 +363,16 @@ function DevTools.update(dt)
 		end
 	end
 	dev_hang_leave("emit debug_update")
+
+	rect_selector_finalize_press()
+
+	if DevTools.slab_warmup > 0 then
+		DevTools.slab_warmup = DevTools.slab_warmup - 1
+	end
 end
 
 function DevTools.draw()
+	dev_hang_enter("draw")
 	if DevTools.cli.show then
 		local ww, wh = love.graphics.getDimensions()
 		love.graphics.setColor(0.2, 0.2, 0.2, 0.6)
@@ -312,23 +395,37 @@ function DevTools.draw()
 
 	if not DevTools.show then
 		if room_map.show and GameStates.world then
+			dev_hang_enter("room map")
 			DevTools.draw_room_map()
+			dev_hang_leave("room map")
 		end
 		if bg_asset_processor.show and GameStates.world then
+			dev_hang_enter("bg asset")
 			DevTools.draw_bg_asset_processor()
+			dev_hang_enter("slab draw")
 			Slab.Draw()
+			dev_hang_leave("slab draw")
+			dev_hang_leave("bg asset")
 		end
+		dev_hang_leave("draw")
 		return
 	end
-	if not GameStates.world then return end
+	if not GameStates.world then
+		dev_hang_leave("draw")
+		return
+	end
 
 	love.graphics.setFont(font)
 	if DevTools.camera then
 		DevTools.camera:attach()
 	end
 
+	dev_hang_enter("debug_draw")
 	GameStates.world:emit("debug_draw")
+	dev_hang_leave("debug_draw")
+	dev_hang_enter("debug_draw_ui")
 	GameStates.world:emit("debug_draw_ui")
+	dev_hang_leave("debug_draw_ui")
 
 	if designer.show_outline and #DevTools.debug_pos > 0 then
 		for _, e in ipairs(DevTools.debug_pos) do
@@ -339,46 +436,121 @@ function DevTools.draw()
 		end
 	end
 
+	if rect_selector.show then
+		for _, box in ipairs(rect_selector.boxes) do
+			love.graphics.setColor(0, 1, 0, 0.15)
+			love.graphics.rectangle("fill", box.x, box.y, box.w, box.h)
+			love.graphics.setColor(0, 1, 0, 1)
+			love.graphics.rectangle("line", box.x, box.y, box.w, box.h)
+		end
+		if rect_selector.dragging then
+			local x, y, w, h = normalize_rect(
+				rect_selector.drag_start_x,
+				rect_selector.drag_start_y,
+				rect_selector.drag_end_x,
+				rect_selector.drag_end_y
+			)
+			love.graphics.setColor(0, 1, 1, 0.15)
+			love.graphics.rectangle("fill", x, y, w, h)
+			love.graphics.setColor(0, 1, 1, 1)
+			love.graphics.rectangle("line", x, y, w, h)
+		end
+		love.graphics.setColor(1, 1, 1, 1)
+	end
+
 	if DevTools.camera then
 		DevTools.camera:detach()
 	end
 
 	if bg_asset_processor.show then
+		dev_hang_enter("bg asset")
 		DevTools.draw_bg_asset_processor()
+		dev_hang_leave("bg asset")
 	end
 
+	dev_hang_enter("slab draw")
 	Slab.Draw()
+	dev_hang_leave("slab draw")
 
 	if room_map.show then
+		dev_hang_enter("room map")
 		DevTools.draw_room_map()
+		dev_hang_leave("room map")
 	end
+	dev_hang_leave("draw")
 end
+
+local gfx_stat_keys = {
+	"drawcalls",
+	"canvases",
+	"textures",
+	"fonts",
+	"shaderactivations",
+	"canvasswitches",
+	"texturememory",
+	"drawnimages",
+	"drawcallsbatched",
+	"graphicsmemory",
+}
 
 function DevTools.draw_stats()
 	if not stats.show then
 		return
 	end
-	stats.show = Slab.BeginWindow("stats", {
+
+	local slab_disabled = DevTools.slab_warmup > 0
+
+	dev_hang_enter("stats:begin")
+	stats.show = Slab.BeginWindow("devtools.stats", {
 		Title = stats.title,
 		IsOpen = stats.show,
 	})
-	if Slab.CheckBox(stats.exclude_slab, "Exclude Slab") then
+	dev_hang_leave("stats:begin")
+
+	dev_hang_enter("stats:exclude")
+	if Slab.CheckBox(stats.exclude_slab, "Exclude Slab", {
+		Id = "devtools.stats.exclude_slab",
+		Disabled = slab_disabled,
+	}) then
 		stats.exclude_slab = not stats.exclude_slab
 	end
-	Slab.Text("FPS: " .. getFPS())
+	dev_hang_leave("stats:exclude")
 
+	dev_hang_enter("stats:fps")
+	Slab.Text("FPS: " .. getFPS())
+	dev_hang_leave("stats:fps")
+
+	dev_hang_enter("stats:mem")
 	local mem = collectgarbage("count")
 	Slab.Text("Mem (KB): " .. math.floor(mem * 10) / 10)
+	dev_hang_leave("stats:mem")
 
+	dev_hang_enter("stats:speed")
 	local _ = nil
-	GAME_SPEED_MULT, _ = UIWrapper.edit_range("Global Speed", GAME_SPEED_MULT, 1, 20, true)
+	GAME_SPEED_MULT, _ = UIWrapper.edit_range(
+		"Global Speed",
+		GAME_SPEED_MULT,
+		1,
+		20,
+		true,
+		slab_disabled
+	)
+	dev_hang_leave("stats:speed")
 
-	for k, v in pairs(stats.stats) do
-		Slab.Text(k .. ": " .. v)
+	dev_hang_enter("stats:gfx")
+	for _, k in ipairs(gfx_stat_keys) do
+		local v = stats.stats[k]
+		if v ~= nil then
+			Slab.Text(k .. ": " .. v)
+		end
 	end
+	dev_hang_leave("stats:gfx")
+
 	Slab.Separator()
-	if Slab.BeginTree("Give") then
-		Slab.BeginLayout("layout_give", {Columns = 2})
+
+	dev_hang_enter("stats:give")
+	if Slab.BeginTree("devtools.stats.give", { Label = "Give" }) then
+		Slab.BeginLayout("devtools.stats.layout_give", { Columns = 2 })
 		for k, v in pairs(DevTools.metrics.give) do
 			Slab.SetLayoutColumn(1)
 			Slab.Text(k)
@@ -388,9 +560,11 @@ function DevTools.draw_stats()
 		Slab.EndLayout()
 		Slab.EndTree()
 	end
+	dev_hang_leave("stats:give")
 
-	if Slab.BeginTree("Remove") then
-		Slab.BeginLayout("layout_remove", {Columns = 2})
+	dev_hang_enter("stats:remove")
+	if Slab.BeginTree("devtools.stats.remove", { Label = "Remove" }) then
+		Slab.BeginLayout("devtools.stats.layout_remove", { Columns = 2 })
 		for k, v in pairs(DevTools.metrics.remove) do
 			Slab.SetLayoutColumn(1)
 			Slab.Text(k)
@@ -400,8 +574,11 @@ function DevTools.draw_stats()
 		Slab.EndLayout()
 		Slab.EndTree()
 	end
+	dev_hang_leave("stats:remove")
 
+	dev_hang_enter("stats:end")
 	Slab.EndWindow()
+	dev_hang_leave("stats:end")
 end
 
 function DevTools.draw_mouse()
@@ -564,7 +741,7 @@ function DevTools.draw_entities_list()
 			if id then
 				Slab.SetLayoutColumn(i)
 				local hidden = e:has("hidden")
-				if Slab.CheckBox(not hidden, id) then
+				if Slab.CheckBox(not hidden, id, { Id = "devtools.ent_hide." .. id }) then
 					hidden = not hidden
 					if hidden then
 						e:give("hidden")
@@ -595,7 +772,10 @@ function DevTools.draw_system_list()
 	local col = 1
 	for _, v in ipairs(GameStates.world:getSystems()) do
 		Slab.SetLayoutColumn(col)
-		if Slab.CheckBox(v.debug_enabled, v.debug_title) then
+		local title = v.debug_title or "?"
+		if Slab.CheckBox(v.debug_enabled == true, title, {
+			Id = "devtools.sys_en." .. title,
+		}) then
 			v.debug_enabled = not v.debug_enabled
 			v:setEnabled(v.debug_enabled)
 		end
@@ -658,15 +838,27 @@ function DevTools.draw_debug_list()
 	Slab.BeginLayout("layout_debug", { Columns = 2 })
 	local states = GameStates.world:getSystems()
 	local i = 1
+	local slab_disabled = DevTools.slab_warmup > 0
 	for _, v in ipairs(states) do
 		if v.debug_update or v.debug_draw then
+			local title = v.debug_title or "?"
+			dev_hang_enter("debug list:" .. title)
 			Slab.SetLayoutColumn(i)
-			if Slab.CheckBox(v.debug_show, v.debug_title) then
-				v.debug_show = not v.debug_show
+			local shown = v.debug_show == true
+			if Slab.CheckBox(shown, title, {
+				Id = "devtools.debug_sys." .. title,
+				Disabled = slab_disabled,
+			}) then
 				if v.debug_on_toggle then
-					v:debug_on_toggle()
+					v:debug_on_toggle(title)
+				else
+					v.debug_show = not shown
+				end
+				if DevTools.flags[title] ~= nil then
+					DevTools.flags[title] = v.debug_show == true
 				end
 			end
+			dev_hang_leave("debug list:" .. title)
 			i = i + 1
 			if i > 2 then
 				i = 1
@@ -898,6 +1090,56 @@ function DevTools.draw_designer()
 		end
 	else
 		Slab.Text("No entity selected")
+	end
+
+	Slab.EndWindow()
+end
+
+function DevTools.draw_rect_selector()
+	if not rect_selector.show then
+		return
+	end
+
+	rect_selector.show = Slab.BeginWindow("rect_selector", {
+		Title = rect_selector.title,
+		IsOpen = rect_selector.show,
+	})
+
+	Slab.Text("LMB drag in world to add rect")
+	if Slab.Button("Clear All") then
+		tablex.clear(rect_selector.boxes)
+	end
+
+	for i = #rect_selector.boxes, 1, -1 do
+		local box = rect_selector.boxes[i]
+		Slab.Separator()
+		Slab.Text(string.format(
+			"x: %d  y: %d  w: %d  h: %d",
+			math.floor(box.x),
+			math.floor(box.y),
+			math.floor(box.w),
+			math.floor(box.h)
+		))
+		Slab.Text("id:")
+		Slab.SameLine()
+		if Slab.Input("rect_sel_id_" .. i, {
+			Text = box.id,
+			ReturnOnText = false,
+		}) then
+			box.id = Slab.GetInputText()
+		end
+		Slab.SameLine()
+		if Slab.Button("Print##rect_" .. i) then
+			print("id", box.id)
+			print("x", box.x)
+			print("y", box.y)
+			print("w", box.w)
+			print("h", box.h)
+		end
+		Slab.SameLine()
+		if Slab.Button("Clear##rect_" .. i) then
+			table.remove(rect_selector.boxes, i)
+		end
 	end
 
 	Slab.EndWindow()
@@ -1244,6 +1486,9 @@ function DevTools.keypressed(key)
 		else
 			DevTools.show = not DevTools.show
 			Slab.EnableStats(DevTools.show)
+			if DevTools.show then
+				DevTools.slab_warmup = 2
+			end
 		end
 	-- elseif key == "m" then
 	-- 	GameStates.world:emit("save_game")
@@ -1312,6 +1557,10 @@ function DevTools.mousepressed(mx, my, mb)
 		return
 	end
 
+	if rect_selector.show and mb == 1 and not Slab.IsAnyInputFocused() and not bg_asset_processor.show then
+		rect_selector.awaiting_press = true
+	end
+
 	if designer.show and designer.selected_e and mb == 1 then
 		local camera = DevTools.camera
 		local world_x, world_y = mx, my
@@ -1344,6 +1593,37 @@ function DevTools.mousereleased(mx, my, mb)
 	end
 
 	if mb == 1 then
+		rect_selector.awaiting_press = false
+	end
+
+	if (rect_selector.dragging or rect_selector.press_pending) and mb == 1 then
+		if rect_selector.dragging then
+			local world_x, world_y = rect_selector_world(mx, my)
+			rect_selector.drag_end_x = world_x
+			rect_selector.drag_end_y = world_y
+			local x, y, w, h = normalize_rect(
+				rect_selector.drag_start_x,
+				rect_selector.drag_start_y,
+				rect_selector.drag_end_x,
+				rect_selector.drag_end_y
+			)
+			if w >= 1 and h >= 1 then
+				table.insert(rect_selector.boxes, {
+					id = "rect_" .. rect_selector.next_id,
+					x = x,
+					y = y,
+					w = w,
+					h = h,
+				})
+				rect_selector.next_id = rect_selector.next_id + 1
+			end
+		end
+		rect_selector.dragging = false
+		rect_selector.press_pending = false
+		return
+	end
+
+	if mb == 1 then
 		designer.dragging = false
 	end
 
@@ -1357,6 +1637,32 @@ function DevTools.mousemoved(mx, my, dx, dy)
 		if room_map.dragging then
 			room_map.pan_x = room_map.pan_x + dx
 			room_map.pan_y = room_map.pan_y + dy
+		end
+		return
+	end
+
+	if rect_selector.press_pending or rect_selector.dragging then
+		if not love.mouse.isDown(1) then
+			rect_selector.press_pending = false
+			rect_selector.dragging = false
+			return
+		end
+
+		local world_x, world_y = rect_selector_world(mx, my)
+		if rect_selector.press_pending and not rect_selector.dragging then
+			if not Slab.IsVoidHovered() then
+				rect_selector.press_pending = false
+				return
+			end
+			local dx = world_x - rect_selector.drag_start_x
+			local dy = world_y - rect_selector.drag_start_y
+			if math.abs(dx) >= 1 or math.abs(dy) >= 1 then
+				rect_selector.dragging = true
+			end
+		end
+		if rect_selector.dragging then
+			rect_selector.drag_end_x = world_x
+			rect_selector.drag_end_y = world_y
 		end
 		return
 	end

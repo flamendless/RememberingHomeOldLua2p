@@ -12,6 +12,8 @@ return {
 			"src2p",
 			"output_dev",
 			"libs",
+			".ase",
+			".aseprite",
 		},
 		icon = "res/icon.png",
 		use32bit = false,

@@ -107,7 +107,8 @@ Enums.tutorial_beat = Enum(
 	"interact_right",
 	"lighter",
 	"explore",
-	"far_left",
+	"reach_shed",
+	"outside_frontdoor",
 	"done"
 )
 
@@ -118,7 +119,8 @@ Enums.tutorial_wait_kind = Enum(
 	"move_right",
 	"press_interact",
 	"lighter",
-	"reach_far_left"
+	"reach_shed",
+	"shed_interact"
 )
 
 Enums.show_keys = Enum(
@@ -134,6 +136,7 @@ Enums.dialogue_knot = Enum(
 	"start",
 	"fin",
 	"car_doors",
+	"locked_door",
 	"test"
 )
 

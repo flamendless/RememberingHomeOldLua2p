@@ -11,7 +11,7 @@ local function shed_interact_anchor(e_shed)
 	local x, y, w, h = Helper.get_collider_rect(e_shed)
 	local door_center_x = x + w * 0.5
 	local door_right_x = x + w
-	local hand_y = y + h + 4
+	local hand_y = y + h * 0.5
 	return door_center_x, hand_y, door_right_x
 end
 
@@ -149,13 +149,30 @@ function Tutorial:sync_hand_key_label()
 	end
 end
 
+local function hand_trail_rotation(startx, targetx, step, count, settle_rot)
+	local t = step / count
+	local dx = targetx - startx
+	if dx > 0 then
+		local rad = (math.pi / 2) * (1 - t)
+		return math.deg(rad)
+	elseif dx < 0 then
+		local rad = (-math.pi / 2) * (1 - t)
+		return math.deg(rad)
+	end
+	settle_rot = settle_rot or 0
+	if settle_rot == 0 then
+		return 0
+	end
+	return math.deg(math.rad(settle_rot) * (count - step) / count)
+end
+
 function Tutorial:show_hands_trail(
 	n,
 	startx,
 	starty,
 	targetx,
 	targety,
-	startrot,
+	settle_rot,
 	action,
 	is_instant
 )
@@ -164,25 +181,26 @@ function Tutorial:show_hands_trail(
 	assert:type(starty, "number")
 	assert:type(targetx, "number")
 	assert:type(targety, "number")
-	assert:type(startrot, "number")
+	if settle_rot ~= nil then
+		assert:type(settle_rot, "number")
+	end
 	assert(Enums.input[action])
 	assert:type(is_instant, "boolean")
 
 	local beat_id = self.beat or Enums.tutorial_beat.tutorial
 	local gapx = (targetx - startx) / n
 	local gapy = (targety - starty) / n
-	local r = ((0 - startrot + 180) % 360) - 180
 	local scale = 0.4
 
 	for i = 1, n do
 		local x = startx + gapx * i
 		local y = starty + gapy * i + love.math.random(-3, 3)
+		local rotation = hand_trail_rotation(startx, targetx, i, n, settle_rot)
 		local blood = love.math.random(3, 9) / 10
 		local dmg = love.math.random(1, 7) / 10
 		local distort = love.math.random(4, 9) / 10
 
 		if i == n then
-			r = 0
 			blood = 0
 			dmg = 0
 			distort = 0
@@ -197,7 +215,7 @@ function Tutorial:show_hands_trail(
 				x = x,
 				y = y,
 				scale = scale,
-				rotation = r,
+				rotation = rotation,
 				blood_amount = blood,
 				damage_amount = dmg,
 				distort_amount = distort,
@@ -210,7 +228,6 @@ function Tutorial:show_hands_trail(
 
 		scale = scale + love.math.random(2, 4) / 100
 		scale = mathx.min(scale, 0.5)
-		r = r - love.math.random(15, 30)
 
 		local target_opacity = love.math.random(6, 9) / 10
 		if i == n then target_opacity = 0.9 end
@@ -327,7 +344,7 @@ function Tutorial:run_tutorial()
 	local tx, ty = pos.x - col.w_h + 8, pos.y + col.h_h + 4
 	local bx = tx - 72
 	local by = ty + 8
-	self:show_hands_trail(5, bx, by, tx, ty, 90, Enums.input.interact, false)
+	self:show_hands_trail(5, bx, by, tx, ty, nil, Enums.input.interact, false)
 	self:wait_hold_interact()
 	self.world:emit("ev_car_lights_off")
 
@@ -347,7 +364,7 @@ function Tutorial:run_tutorial()
 	tx, ty = pos.x - col.w_h - 60, pos.y + col.h_h
 	bx = self.prev_hx
 	by = self.prev_hy
-	self:show_hands_trail(5, bx, by, tx, ty, 270, Enums.input.left, false)
+	self:show_hands_trail(5, bx, by, tx, ty, nil, Enums.input.left, false)
 	self.left_start_x = pos.x
 	self.left_target_x = tx - 18
 	self.e_player:give(Enums.player_cap.can_move):give(Enums.player_cap.can_move_left_only)
@@ -377,7 +394,7 @@ function Tutorial:run_tutorial()
 	pos = self.e_player:get("pos")
 	col = self.e_player:get("collider")
 	tx, ty = pos.x - col.w_h + 144, pos.y + col.h_h + 4
-	self:show_hands_trail(8, startx, starty, tx, ty, 0, Enums.input.right, false)
+	self:show_hands_trail(8, startx, starty, tx, ty, nil, Enums.input.right, false)
 	self.right_start_x = pos.x
 	self.right_target_x = tx + 7
 	self.e_player:give(Enums.player_cap.can_move)
@@ -470,6 +487,7 @@ function Tutorial:run_tutorial()
 	self:wait_dialogue()
 	self.world:emit("play_sound_on_entity", self.e_frontdoor, Enums.sfx.car_door_hit)
 	self:wait_seconds(1)
+	self.world:emit("player_force_face_dir", 1)
 	self.world:emit("start_dialogue", self.e_player, self.e_shed, "shed2")
 	self:wait_dialogue()
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)

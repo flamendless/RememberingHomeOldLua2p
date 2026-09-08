@@ -134,6 +134,12 @@ function love.draw()
 			love.graphics.setFont(font)
 			love.graphics.printf("DEV PAUSED", 0, wh/2, ww, "center")
 		end
+
+		if GameStates.is_ready and GameStates.world then
+			GameStates.world:emit("draw_debug_overlay")
+		end
+
+		hang_watch("draw:devtools end")
 		DevTools.end_draw()
 		JPROF.pop("dev draw")
 	end

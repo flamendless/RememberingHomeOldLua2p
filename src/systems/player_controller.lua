@@ -121,7 +121,8 @@ function PlayerController:anim_open_door(e)
 	e:give("override_animation")
 end
 
-function PlayerController:anim_open_locked_door(e_player)
+function PlayerController:anim_open_locked_door(e_player, opts)
+	opts = opts or {}
 	TODO("play door locked sound")
 	local animation = e_player:get("animation")
 	assert(e_player.__isEntity and e_player:has("player") and animation, e_player)
@@ -144,8 +145,10 @@ function PlayerController:anim_open_locked_door(e_player)
 	obj:once("finish", function()
 		e_player:remove("override_animation")
 		self.world:emit("anim_idle", e_player, true)
-		self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
-		self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+		if not opts.hold_caps then
+			self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+			self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+		end
 	end)
 	e_player:give("override_animation")
 end
@@ -168,6 +171,7 @@ function PlayerController:anim_open_lighter(e)
 		obj:goto_frame(9)
 	end)
 	e:give("override_animation")
+	self.world:getSystem(ECS.get_system_class("animation")):refresh_render(e)
 end
 
 function PlayerController:anim_close_lighter(e)
@@ -192,6 +196,7 @@ function PlayerController:anim_close_lighter(e)
 		world:emit("on_anim_close_lighter_done")
 	end)
 	e:give("override_animation")
+	self.world:getSystem(ECS.get_system_class("animation")):refresh_render(e)
 end
 
 function PlayerController:on_close_lighter()
@@ -436,29 +441,32 @@ function PlayerController:update(dt)
 	end
 
 	if within_int and self.player:has("can_interact") and Inputs.pressed(Enums.input.interact) then
-		local other = within_int.entity
-		local req = other:get("req_col_dir")
-		local proceed = true
+		local dialogues = self.world:getSystem(ECS.get_system_class("dialogues"))
+		if not dialogues or not dialogues.current_content then
+			local other = within_int.entity
+			local req = other:get("req_col_dir")
+			local proceed = true
 
-		if req and (body.dir ~= req.value) then
-			proceed = false
-		end
+			if req and (body.dir ~= req.value) then
+				proceed = false
+			end
 
-		if proceed then
-			if other:has("dialogue_key") then
-				self:on_player_interact(self.player, other)
+			if proceed then
+				if other:has("dialogue_key") then
+					self:on_player_interact(self.player, other)
 
-			elseif other:has("is_door_ev") then
-				self.world:emit(other:get("is_door_ev").event, self.player, other)
+				elseif other:has("is_door_ev") then
+					self.world:emit(other:get("is_door_ev").event, self.player, other)
 
-			elseif other:has("is_door") then
-				self.world:emit("on_interact_door", self.player, other)
+				elseif other:has("is_door") then
+					self.world:emit("on_interact_door", self.player, other)
 
-			elseif other:has("candle") then
-				self.world:emit("on_interact_candle", self.player, other)
+				elseif other:has("candle") then
+					self.world:emit("on_interact_candle", self.player, other)
 
-			else
-				Log.warn("interacted with unhandled component", other.id.value)
+				else
+					Log.warn("interacted with unhandled component", other.id.value)
+				end
 			end
 		end
 	end

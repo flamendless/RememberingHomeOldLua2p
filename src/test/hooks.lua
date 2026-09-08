@@ -111,6 +111,17 @@ function TestHooks.dialogue_active()
 	return dialogues ~= nil and dialogues.current_content ~= nil
 end
 
+function TestHooks.dialogue_should_pump()
+	local dialogues = TestHooks.get_dialogues()
+	if not dialogues or not dialogues.current_content then
+		return false
+	end
+	if dialogues.e_dialogue == dialogues.e_simple_dialogue then
+		return false
+	end
+	return true
+end
+
 function TestHooks.dialogue_is_choice()
 	local dialogues = TestHooks.get_dialogues()
 	if not dialogues or not dialogues.current_content then
