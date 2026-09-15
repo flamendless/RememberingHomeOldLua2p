@@ -170,6 +170,9 @@ Dialogues.shed = {
 		LoveInk.Helpers.text("It's too dark in here..."),
 		LoveInk.Helpers.text("Good thing I brought my pal..."),
 		LoveInk.Helpers.text("..."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
+	shed_interior_lit = {
 		LoveInk.Helpers.text("I can't move while it's lighted..."),
 		LoveInk.Helpers.text("..."),
 		LoveInk.Helpers.text("I should find the light switch..."),

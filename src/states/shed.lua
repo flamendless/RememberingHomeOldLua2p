@@ -16,7 +16,7 @@ function Shed:state_setup()
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
 	Concord.entity(self.world):assemble(Assemblages.Common.bg, "storage_room")
 
-	self.world:emit("create_room_bounds", w, h, { scene_id = self.id })
+	self.world:emit("create_room_bounds", w, h, { room_id = Enums.game_state.Shed })
 	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.ngrading("lut_dusk"),
@@ -25,7 +25,16 @@ function Shed:state_setup()
 		Shaders.glitch(),
 	})
 
-	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_totally_dark_room"))
+	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_shed"))
+
+	Concord.entity(self.world):assemble(
+		Assemblages.Light.point,
+		w * 0.5,
+		h * 0.32,
+		2,
+		math.max(w, h) * 0.85,
+		Palette.get_diffuse("shed_ambient_light")
+	):give("id", "shed_ambient")
 	self.world:emit("set_draw", "ev_draw_ex")
 end
 

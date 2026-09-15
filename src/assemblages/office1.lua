@@ -3,10 +3,10 @@ local Office1 = {
 	glows = {},
 }
 
-local pl = Data.Lights.office1.pl
+local pl = Data.Lights[Enums.game_state.Office1].pl
 for i, pos in ipairs(pl.pos) do
 	Office1.lights["pl" .. i] = function(e)
-		local y = Data.Lights.get_light_y("office1", "pl", i)
+		local y = Data.Lights.get_light_y(Enums.game_state.Office1, "pl", i)
 		e:assemble(Assemblages.Light.point, pos.x, y, pl.lz, pl.ls, Palette.get_diffuse("office1_sides"))
 			:give("id", "pl" .. i)
 			:give("light_group", Enums.light_group.side_pl)
@@ -15,7 +15,7 @@ for i, pos in ipairs(pl.pos) do
 	end
 end
 
-local pc_light = Data.Lights.office1.pc_light
+local pc_light = Data.Lights[Enums.game_state.Office1].pc_light
 Office1.glows.pc_glow = function(world)
 	local grid_center_x = pc_light.x + pc_light.w * 0.5
 	local grid_center_y = pc_light.y + pc_light.h * 0.5

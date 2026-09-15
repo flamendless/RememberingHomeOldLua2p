@@ -108,6 +108,7 @@ Enums.tutorial_beat = Enum(
 	"explore",
 	"reach_shed",
 	"open_lighter",
+	"close_lighter",
 	"outside_frontdoor",
 	"done"
 )
@@ -120,7 +121,8 @@ Enums.tutorial_wait_kind = Enum(
 	"press_interact",
 	"reach_shed",
 	"enter_shed",
-	"open_lighter"
+	"open_lighter",
+	"close_lighter"
 )
 
 Enums.show_keys = Enum(

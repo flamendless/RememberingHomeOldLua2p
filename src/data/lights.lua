@@ -1,6 +1,6 @@
 local Lights = {}
 
-Lights.storage_room = {
+Lights[Enums.game_state.StorageRoom] = {
 	pl = {
 		lz = 26,
 		ls = 106,
@@ -13,7 +13,7 @@ Lights.storage_room = {
 	},
 }
 
-Lights.utility_room = {
+Lights[Enums.game_state.UtilityRoom] = {
 	pl = {
 		lz = 26,
 		ls = 106,
@@ -26,7 +26,7 @@ Lights.utility_room = {
 	},
 }
 
-Lights.kitchen = {
+Lights[Enums.game_state.Kitchen] = {
 	pl = {
 		lz = 48,
 		ls = 128,
@@ -51,7 +51,7 @@ Lights.kitchen = {
 	},
 }
 
-Lights.living_room = {
+Lights[Enums.game_state.LivingRoom] = {
 	pl = {
 		lz = 90,
 		ls = 128,
@@ -76,7 +76,7 @@ Lights.living_room = {
 	},
 }
 
-Lights.office1 = {
+Lights[Enums.game_state.Office1] = {
 	pl = {
 		lz = 60,
 		ls = 156,
@@ -101,7 +101,7 @@ Lights.office1 = {
 	},
 }
 
-Lights.office2 = {
+Lights[Enums.game_state.Office2] = {
 	pl = {
 		lz = 60,
 		ls = 156,
@@ -124,7 +124,7 @@ function Lights.get_light_y(room_id, group_key, index)
 		return pos.y
 	end
 	local drop = pos.fixture_drop or group.fixture_drop or 0
-	return Data.RoomBounds.get_ceiling_bottom_y(room_id, group.zone) + drop
+	return Data.Rooms.get_ceiling_bottom_y(room_id, group.zone) + drop
 end
 
 return Lights

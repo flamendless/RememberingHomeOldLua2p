@@ -92,9 +92,10 @@ function Lighter:is_flame_frame_lit()
 	local tag = obj.base_tag
 	local frame = math.floor(obj.anim8.position)
 
-	if tag == Enums.anim_state.open_lighter then
+	if tag == Enums.anim_state.open_lighter or tag == Enums.anim_state.open_lighter_left then
 		return frame >= FLAME_FRAME
-	elseif tag == Enums.anim_state.close_lighter then
+	end
+	if tag == Enums.anim_state.close_lighter or tag == Enums.anim_state.close_lighter_left then
 		return frame < FLAME_FRAME
 	end
 

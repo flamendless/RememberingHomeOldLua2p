@@ -224,9 +224,9 @@ end
 function Dust:entity_ceiling_region(e)
 	assert(e.__isEntity and e:has("pos"), e)
 
-	local scene_id = self:current_scene_id()
-	local room = scene_id and Data.RoomBounds[scene_id]
-	assert(room, "dust: no room bounds for scene: " .. tostring(scene_id))
+	local room_id = GameStates.current_id
+	local room = room_id and Data.Rooms.get_bounds(room_id)
+	assert(room, "dust: no room bounds for room: " .. tostring(room_id))
 
 	local ceiling = room.ceiling
 	local h = ceiling.emitter_h

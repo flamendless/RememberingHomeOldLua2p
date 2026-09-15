@@ -98,7 +98,10 @@ return {
 		},
 		{
 			label = "interact (shed)",
-			do_fn = tap_interact,
+			do_fn = function()
+				GAME_SPEED_MULT = 1
+				tap_interact()
+			end,
 			until_fn = function()
 				return TestHooks.state_is(Enums.game_state.Shed)
 			end,
@@ -113,7 +116,22 @@ return {
 			label = "open lighter",
 			do_fn = tap_lighter,
 			until_fn = function()
-				return TestHooks.tutorial_beat_is("open_lighter")
+				return TestHooks.dialogue_active()
+					or TestHooks.tutorial_waiting_dialogue()
+					or TestHooks.tutorial_wait_is("close_lighter")
+			end,
+		},
+		{
+			label = "dialogue (shed lit)",
+			until_fn = function()
+				return TestHooks.tutorial_wait_is("close_lighter")
+			end,
+		},
+		{
+			label = "close lighter",
+			do_fn = tap_lighter,
+			until_fn = function()
+				return TestHooks.tutorial_beat_is("close_lighter")
 					and TestHooks.tutorial_wait_is("null")
 			end,
 		},

@@ -6,6 +6,17 @@ local PRESS_HAND_PROGRESS_OPTS = {
 }
 
 local MAX_HOLD_INTERACT_TIMER = 3
+local OPEN_LIGHTER_FLAME_FRAME = 8
+
+local OPEN_LIGHTER_TAGS = {
+	[Enums.anim_state.open_lighter] = true,
+	[Enums.anim_state.open_lighter_left] = true,
+}
+
+local CLOSE_LIGHTER_TAGS = {
+	[Enums.anim_state.close_lighter] = true,
+	[Enums.anim_state.close_lighter_left] = true,
+}
 
 local function shed_interact_anchor(e_shed)
 	local x, y, w, h = Helper.get_collider_rect(e_shed)
@@ -20,6 +31,39 @@ local function tutorial_reached_x(pos_x, target_x, dir)
 		return pos_x <= target_x
 	end
 	return pos_x >= target_x
+end
+
+local function open_lighter_anim_progress(e_player)
+	local animation = e_player:get("animation")
+	if not animation then
+		return 0
+	end
+
+	local tag = animation.obj.base_tag
+	if not OPEN_LIGHTER_TAGS[tag] then
+		return 0
+	end
+
+	return mathx.clamp(
+		(animation.obj.anim8.position - 1) / math.max(OPEN_LIGHTER_FLAME_FRAME - 1, 1),
+		0,
+		1
+	)
+end
+
+local function close_lighter_anim_progress(e_player)
+	local animation = e_player:get("animation")
+	if not animation then
+		return 0
+	end
+
+	local obj = animation.obj
+	if not CLOSE_LIGHTER_TAGS[obj.base_tag] then
+		return 0
+	end
+
+	local n = obj.anim8 and #obj.anim8.frames or 1
+	return mathx.clamp((obj.anim8.position - 1) / math.max(n - 1, 1), 0, 1)
 end
 
 local function action_label(action)
@@ -44,6 +88,8 @@ function Tutorial:init(world)
 	self.wait_kind = Enums.tutorial_wait_kind.null
 	self.phase = nil
 	self.shed_lighter_done = false
+	self.opening_lighter_hand = false
+	self.closing_lighter_hand = false
 
 	if self.state then
 		self.e_dialogue_car1 = Concord.entity(self.world)
@@ -387,6 +433,12 @@ end
 
 function Tutorial:wait_open_lighter()
 	self.wait_kind = Enums.tutorial_wait_kind.open_lighter
+	self:pause_timeline()
+end
+
+function Tutorial:wait_close_lighter()
+	self.wait_kind = Enums.tutorial_wait_kind.close_lighter
+	self:pause_timeline()
 end
 
 function Tutorial:finish_wait()
@@ -551,16 +603,27 @@ function Tutorial:begin_shed_open_lighter(e_player)
 		self.world:emit("start_dialogue", self.e_player, self.e_dialogue_shed, "shed_interior")
 		self:wait_dialogue()
 		self:prompt_shed_open_lighter()
+
+		self:wait_seconds(1)
+		self.world:emit("start_dialogue", self.e_player, self.e_dialogue_shed, "shed_interior_lit")
+		self:wait_dialogue()
+		self:prompt_shed_close_lighter()
+
+		self:complete_shed_open_lighter()
 	end)
 end
 
-function Tutorial:prompt_shed_open_lighter()
+function Tutorial:prompt_shed_hand_lighter(action, glow_opts)
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_lighter, true)
 
 	local pos = self.e_player:get("pos")
 	local col = self.e_player:get("collider")
-	local tx, ty = pos.x - col.w_h + 8, pos.y + col.h_h + 4
-	self:show_hands_trail(5, tx, ty, tx, ty, 0, Enums.input.lighter, true, {
+	local tx, ty = pos.x - col.w_h + 8, pos.y + 12
+	self:show_hands_trail(5, tx, ty, tx, ty, 0, action, true, glow_opts)
+end
+
+function Tutorial:prompt_shed_open_lighter()
+	self:prompt_shed_hand_lighter(Enums.input.lighter, {
 		intensity = 1.2,
 		size = 3.5,
 		pulse_speed = 5,
@@ -570,9 +633,23 @@ function Tutorial:prompt_shed_open_lighter()
 	self:wait_open_lighter()
 end
 
+function Tutorial:prompt_shed_close_lighter()
+	self:set_beat(Enums.tutorial_beat.close_lighter)
+	self.e_player:remove("block_lighter_close")
+	self:prompt_shed_hand_lighter(Enums.input.lighter, {
+		intensity = 1.2,
+		size = 3.5,
+		pulse_speed = 5,
+		pulse_amplitude = 0.35,
+		hand_light = true,
+	})
+	self:wait_close_lighter()
+end
+
 function Tutorial:complete_shed_open_lighter()
 	self.shed_lighter_done = true
 	self.phase = "outside_resume"
+	self.e_player:remove("block_lighter_close")
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_interact, true)
 end
@@ -662,6 +739,29 @@ function Tutorial:state_update(dt)
 
 	self:sync_hand_key_label()
 
+	if self.opening_lighter_hand and self.e_player then
+		local progress = open_lighter_anim_progress(self.e_player)
+		Assemblages.HandDecal.set_progress(
+			self.e_last_hand,
+			progress,
+			0.9,
+			self.e_hand_key_label,
+			PRESS_HAND_PROGRESS_OPTS
+		)
+		if progress >= 1 then
+			self:finish_opening_lighter_hand()
+		end
+	elseif self.closing_lighter_hand and self.e_player then
+		local progress = close_lighter_anim_progress(self.e_player)
+		Assemblages.HandDecal.set_progress(
+			self.e_last_hand,
+			progress,
+			0.9,
+			self.e_hand_key_label,
+			PRESS_HAND_PROGRESS_OPTS
+		)
+	end
+
 	if self.wait_kind == Enums.tutorial_wait_kind.hold_interact then
 		if Inputs.pressed(Enums.input.interact) or Inputs.down(Enums.input.interact) then
 			self.hold_interact_timer = self.hold_interact_timer + dt * 0.3
@@ -733,20 +833,17 @@ function Tutorial:state_update(dt)
 	elseif self.wait_kind == Enums.tutorial_wait_kind.open_lighter then
 		if Inputs.pressed(Enums.input.lighter) then
 			self.wait_kind = Enums.tutorial_wait_kind.null
-			local progress = { value = 0 }
-			Flux.to(progress, 2, { value = 1 }):onupdate(function()
-				Assemblages.HandDecal.set_progress(
-					self.e_last_hand,
-					progress.value,
-					0.9,
-					self.e_hand_key_label,
-					PRESS_HAND_PROGRESS_OPTS
-				)
-			end):oncomplete(function()
-				self:fade_hand_and_glow(0.3, function()
-					self:complete_shed_open_lighter()
-				end)
-			end)
+			self.e_player:give("block_lighter_close")
+			self.opening_lighter_hand = true
+		end
+	elseif self.wait_kind == Enums.tutorial_wait_kind.close_lighter then
+		if Inputs.pressed(Enums.input.lighter) then
+			local player_controller = self.world:getSystem(ECS.get_system_class("player_controller"))
+			if not player_controller.on_lighter then
+				return
+			end
+			self.wait_kind = Enums.tutorial_wait_kind.null
+			self.closing_lighter_hand = true
 		end
 	end
 end
@@ -773,6 +870,42 @@ function Tutorial:ev_tutorial_enter_shed(e_player, e_shed)
 	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, false)
 	self.world:emit("anim_open_door", e_player)
 	self.world:emit("switch_state", Enums.game_state.Shed, 1.5, 0.5)
+end
+
+function Tutorial:finish_opening_lighter_hand()
+	if not self.opening_lighter_hand then
+		return
+	end
+
+	self.opening_lighter_hand = false
+	Assemblages.HandDecal.set_progress(
+		self.e_last_hand,
+		1,
+		0.9,
+		self.e_hand_key_label,
+		PRESS_HAND_PROGRESS_OPTS
+	)
+	self:fade_hand_and_glow(0, function()
+		self:resume_timeline()
+	end)
+end
+
+function Tutorial:on_anim_close_lighter_done()
+	if not self.closing_lighter_hand then
+		return
+	end
+
+	self.closing_lighter_hand = false
+	Assemblages.HandDecal.set_progress(
+		self.e_last_hand,
+		1,
+		0.9,
+		self.e_hand_key_label,
+		PRESS_HAND_PROGRESS_OPTS
+	)
+	self:fade_hand_and_glow(0, function()
+		self:resume_timeline()
+	end)
 end
 
 function Tutorial:ev_dialogue_fin()

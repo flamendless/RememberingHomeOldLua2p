@@ -2,10 +2,10 @@ local StorageRoom = {
 	lights = {},
 }
 
-local pl = Data.Lights.storage_room.pl
+local pl = Data.Lights[Enums.game_state.StorageRoom].pl
 for i, pos in ipairs(pl.pos) do
 	StorageRoom.lights["pl" .. i] = function(e)
-		local y = Data.Lights.get_light_y("storage_room", "pl", i)
+		local y = Data.Lights.get_light_y(Enums.game_state.StorageRoom, "pl", i)
 		e:assemble(Assemblages.Light.point, pos.x, y, pl.lz, pl.ls, Palette.get_diffuse("storage_room_bulb_light"))
 			:give("id", "pl" .. i)
 			:give("light_group", Enums.light_group.side_pl)

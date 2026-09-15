@@ -64,7 +64,7 @@ if DEV then
 			return
 		end
 		if e_right_clicked then
-			flags.right_clicked = Slab.BeginWindow("components", {
+			flags.right_clicked = Slab.BeginWindow("id_components", {
 				Title = "Components",
 				IsOpen = flags.right_clicked,
 			})

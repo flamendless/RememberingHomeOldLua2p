@@ -2,11 +2,11 @@ local Room = {}
 
 function Room.ground(e, w, h, opt)
 	assert:type_or_nil(opt, "table")
-	assert(opt and opt.scene_id, "scene_id required")
+	assert(opt and opt.room_id, "room_id required")
 
-	local b = Data.RoomBounds[opt.scene_id]
-	local left_w = Data.RoomBounds.left_width(opt.scene_id, opt)
-	local right_w = Data.RoomBounds.right_width(opt.scene_id, opt)
+	local b = Data.Rooms.get_bounds(opt.room_id)
+	local left_w = Data.Rooms.left_width(opt.room_id, opt)
+	local right_w = Data.Rooms.right_width(opt.room_id, opt)
 	local ground_h = b.ground.height
 
 	e:give("id", "col_ground")
@@ -18,9 +18,9 @@ end
 
 function Room.left_bound(e, w, h, opt)
 	assert:type_or_nil(opt, "table")
-	assert(opt and opt.scene_id, "scene_id required")
+	assert(opt and opt.room_id, "room_id required")
 
-	local s = Data.RoomBounds.left_width(opt.scene_id, opt)
+	local s = Data.Rooms.left_width(opt.room_id, opt)
 
 	e:give("id", "col_left_bound")
 		:give("pos", 0, 0):
@@ -31,9 +31,9 @@ end
 
 function Room.right_bound(e, w, h, opt)
 	assert:type_or_nil(opt, "table")
-	assert(opt and opt.scene_id, "scene_id required")
+	assert(opt and opt.room_id, "room_id required")
 
-	local s = Data.RoomBounds.right_width(opt.scene_id, opt)
+	local s = Data.Rooms.right_width(opt.room_id, opt)
 
 	e:give("id", "col_right_bound")
 		:give("pos", w - s, 0)

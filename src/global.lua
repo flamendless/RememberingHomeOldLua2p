@@ -93,7 +93,6 @@ Data = {
 	Colliders = require("data.colliders"),
 	Dialogues = require("data.dialogues"),
 	Items = require("data.items"),
-	RoomBounds = require("data.room_bounds"),
 	Lights = require("data.lights"),
 	Notes = require("data.notes"),
 	ResourcesList = require("data.resources_list"),

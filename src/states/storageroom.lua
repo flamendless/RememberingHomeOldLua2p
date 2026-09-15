@@ -16,7 +16,7 @@ function StorageRoom:state_setup()
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
 	Concord.entity(self.world):assemble(Assemblages.Common.bg, self.id)
 
-	self.world:emit("create_room_bounds", w, h, { scene_id = self.id })
+	self.world:emit("create_room_bounds", w, h, { room_id = Enums.game_state.StorageRoom })
 	self.world:emit("parse_room_items", self.id)
 	self.world:emit("setup_post_process", {
 		Shaders.ngrading("lut_dusk"),
@@ -53,7 +53,7 @@ function StorageRoom:state_init()
 		}
 		self.world:emit("generate_ants", 64, vec2(64, 32), vec2(56, 4), true, 32, opts)
 		self.world:emit("generate_ants", 64, vec2(88, 102), vec2(108, 4), true, 32, opts)
-		self.world:emit("generate_flies_for_room_lights", self.id)
+		self.world:emit("generate_flies_for_room_lights", Enums.game_state.StorageRoom)
 
 		self.world:__flush()
 		self.world:emit("move_ants")

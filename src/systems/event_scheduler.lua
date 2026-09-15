@@ -79,7 +79,7 @@ function EventScheduler:setup_events(scene_id)
 		local room_w = room_size and room_size.width
 		local emitter_meta = {}
 		for _, t in ipairs(emitters) do
-			local defaults = Data.RoomBounds.emitter_rect(scene_id, room_w, {
+			local defaults = Data.Rooms.emitter_rect(GameStates.current_id, room_w, {
 				h = t.h,
 				w = t.w,
 				x = t.x,

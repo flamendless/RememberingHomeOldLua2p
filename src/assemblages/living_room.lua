@@ -2,10 +2,10 @@ local LivingRoom = {
 	lights = {},
 }
 
-local pl = Data.Lights.living_room.pl
+local pl = Data.Lights[Enums.game_state.LivingRoom].pl
 for i, pos in ipairs(pl.pos) do
 	LivingRoom.lights["pl" .. i] = function(e)
-		local y = Data.Lights.get_light_y("living_room", "pl", i)
+		local y = Data.Lights.get_light_y(Enums.game_state.LivingRoom, "pl", i)
 		e:assemble(Assemblages.Light.point, pos.x, y, pl.lz, pl.ls, Palette.get_diffuse("living_room_side"))
 			:give("id", "pl" .. i)
 			:give("light_group", Enums.light_group.side_pl)
@@ -14,10 +14,10 @@ for i, pos in ipairs(pl.pos) do
 	end
 end
 
-local pl_mid = Data.Lights.living_room.pl_mid
+local pl_mid = Data.Lights[Enums.game_state.LivingRoom].pl_mid
 for i, pos in ipairs(pl_mid.pos) do
 	LivingRoom.lights["pl_mid" .. i] = function(e)
-		local y = Data.Lights.get_light_y("living_room", "pl_mid", i)
+		local y = Data.Lights.get_light_y(Enums.game_state.LivingRoom, "pl_mid", i)
 		e:assemble(Assemblages.Light.point, pos.x, y, pl_mid.lz, pl_mid.ls, Palette.get_diffuse("living_room_mid_pl"))
 			:give("id", "pl_mid" .. i)
 			:give("light_group", Enums.light_group.pl_mid)
