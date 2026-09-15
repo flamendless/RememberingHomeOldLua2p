@@ -1,4 +1,5 @@
 Concord.component("light_disabled")
+Concord.component("player_ambient_light")
 
 Concord.component("light_id", function(c, n)
 	assert:type(n, "number")

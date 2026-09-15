@@ -154,6 +154,7 @@ state_systems[G.Shed] = {
 	"flame",
 	"tutorial",
 	"billboard_glow",
+	"visibility",
 }
 
 state_systems[G.StorageRoom] = {
@@ -341,6 +342,7 @@ state_systems[G.LivingRoom] = {
 	"lightning",
 	"movement_dust",
 	"light_wind_pass",
+	"visibility",
 }
 state_systems[G.TotallyDarkRoom] = state_systems[G.LivingRoom]
 

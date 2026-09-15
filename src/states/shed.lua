@@ -25,16 +25,7 @@ function Shed:state_setup()
 		Shaders.glitch(),
 	})
 
-	self.world:emit("set_ambiance", Palette.get_diffuse("ambiance_shed"))
-
-	Concord.entity(self.world):assemble(
-		Assemblages.Light.point,
-		w * 0.5,
-		h * 0.32,
-		2,
-		math.max(w, h) * 0.85,
-		Palette.get_diffuse("shed_ambient_light")
-	):give("id", "shed_ambient")
+	self.world:emit("set_visibility", true, Data.Visibility.shed)
 	self.world:emit("set_draw", "ev_draw_ex")
 end
 

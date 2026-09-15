@@ -122,6 +122,16 @@ function Light.lighter_flame(e, power)
 		})
 end
 
+function Light.player_ambient(e, power, diffuse_key)
+	assert(e.__isEntity, e)
+	assert:type(power, "number")
+	assert:type(diffuse_key, "string")
+
+	Light.point(e, 0, 0, 9, power, Palette.get_diffuse(diffuse_key))
+	e:give("id", "player_ambient_pl")
+		:give("player_ambient_light")
+end
+
 function Light.candle_flame(e, x, y, power)
 	assert(e.__isEntity, e)
 	assert:type(x, "number")

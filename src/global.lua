@@ -101,6 +101,7 @@ Data = {
 	RoomEvents = require("data.room_events"),
 	AtmosphericSpecs = require("data.atmospheric_specs"),
 	Vignette = require("data.vignette"),
+	Visibility = require("data.visibility"),
 	BgAssets = require("data.bg_assets"),
 }
 

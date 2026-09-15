@@ -54,6 +54,8 @@ for k, v in pairs(Palette.colors) do
 end
 
 Palette.diffuse = {
+	player_ambient_light = { 0.36, 0.36, 0.36 },
+
 	--intro
 	ambiance_intro = { 1, 1, 1, 1 },
 	car = { 1, 1, 1 },

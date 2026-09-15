@@ -31,6 +31,7 @@ local DevTools = {
 		randomize_uv = false,
 		behavior_tree = false,
 		survival = true,
+		visibility = false,
 		timeline = false,
 		positional_audio = false,
 	},
