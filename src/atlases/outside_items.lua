@@ -35,7 +35,7 @@ local Data = {
 		y = 230,
 		z = 4,
 		req_col_dir = -1,
-		interact_box = { x = 72, y = 263, w = 28, h = 62 },
+		interact_box = { x = 79, y = 263, w = 18, h = 62 },
 	},
 }
 

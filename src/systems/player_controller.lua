@@ -454,14 +454,13 @@ function PlayerController:update(dt)
 		local dialogues = self.world:getSystem(ECS.get_system_class("dialogues"))
 		if not dialogues or not dialogues.current_content then
 			local other = within_int.entity
-			local req = other:get("req_col_dir")
-			local proceed = true
 
-			if req and (body.dir ~= req.value) then
-				proceed = false
-			end
+			if Helper.can_proceed_interact(self.player, other) then
+				local face_dir = Helper.interact_face_dir(self.player, other)
+				if face_dir then
+					self:player_force_face_dir(face_dir)
+				end
 
-			if proceed then
 				if other:has("dialogue_key") then
 					self:on_player_interact(self.player, other)
 

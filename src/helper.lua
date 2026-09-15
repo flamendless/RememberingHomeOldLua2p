@@ -4,6 +4,29 @@ function Helper.check_point_rect(px, py, x, y, w, h)
 	return px > x and px < x + w and py > y and py < y + h
 end
 
+function Helper.horizontal_rect_gap(ax, aw, bx, bw)
+	if ax + aw < bx then
+		return bx - (ax + aw)
+	end
+	if bx + bw < ax then
+		return ax - (bx + bw)
+	end
+	return 0
+end
+
+function Helper.interact_range_margin(aw, _, bw, _, reach_scale)
+	reach_scale = reach_scale or 0.58
+	return math.max(2, math.min(aw, bw) * reach_scale * 0.5)
+end
+
+function Helper.is_in_interact_range(ax, ay, aw, ah, bx, by, bw, bh, reach_scale)
+	if ay >= by + bh or ay + ah <= by then
+		return false
+	end
+	local margin = Helper.interact_range_margin(aw, ah, bw, bh, reach_scale)
+	return Helper.horizontal_rect_gap(ax, aw, bx, bw) <= margin
+end
+
 function Helper.get_real_size(e)
 	assert(e.__isEntity, e)
 	local box = e:get("bounding_box")
@@ -166,6 +189,36 @@ function Helper.get_collider_rect(e)
 		y = y + col_offset.oy
 	end
 	return x, y, collider.w, collider.h
+end
+
+function Helper.interact_face_dir(e_player, e_target)
+	assert(e_player.__isEntity and e_player:has("collider"), e_player)
+	assert(e_target.__isEntity and e_target:has("collider"), e_target)
+
+	local px, _, pw = Helper.get_collider_rect(e_player)
+	local cx, _, cw = Helper.get_collider_rect(e_target)
+	local player_cx = px + pw * 0.5
+	local target_cx = cx + cw * 0.5
+
+	if player_cx > target_cx then
+		return -1
+	end
+	if player_cx < target_cx then
+		return 1
+	end
+	return nil
+end
+
+function Helper.can_proceed_interact(e_player, e_target)
+	local req = e_target:get("req_col_dir")
+	if not req then
+		return true
+	end
+	local face_dir = Helper.interact_face_dir(e_player, e_target)
+	if not face_dir then
+		return false
+	end
+	return face_dir == req.value
 end
 
 return Helper
