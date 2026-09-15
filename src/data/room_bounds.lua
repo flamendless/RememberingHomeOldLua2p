@@ -22,6 +22,18 @@ local interior = {
 	},
 }
 
+RoomBounds.shed = {
+	left = { width = def.left.width },
+	right = { width = def.right.width },
+	ground = { height = def.ground.height },
+	ceiling = {
+		bottom_y = 16,
+		emitter_h = def.ceiling.emitter_h,
+		emitter_margin_x = def.ceiling.emitter_margin_x,
+		zones = {},
+	},
+}
+
 RoomBounds.storage_room = {
 	left = { width = def.left.width },
 	right = { width = def.right.width },

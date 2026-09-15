@@ -16,6 +16,8 @@ function Light.point(e, x, y, z, size, diffuse, dir)
 
 	if dir then
 		e:give("light_dir", dir)
+	else
+		e:give("light_dir", { 0, 0, -1, -1 })
 	end
 end
 

@@ -112,6 +112,50 @@ state_systems[G.Outside] = {
 	"atmospheric_specs",
 }
 
+state_systems[G.Shed] = {
+	"animation",
+	"animation_sync",
+	"atlas",
+	"bump_collision",
+	"camera",
+	"color",
+	"show_keys",
+	"deferred_lighting",
+	"dialogues",
+	"entity",
+	"gamestates",
+	"interactive",
+	"items",
+	"movement",
+	"outline",
+	"pause",
+	"player_controller",
+	"renderer",
+	"room",
+	"systems",
+	"transform",
+	"dust",
+	"atmospheric_specs",
+	"positional_audio",
+	"typewriter",
+	"door",
+	"light_switch",
+	"notes",
+	"list",
+	"post_processing",
+	"randomize_uv",
+	"timeline",
+	"behavior_tree",
+	"enemy_controller",
+	"path",
+	"candle",
+	"lighter",
+	"wind",
+	"flame",
+	"tutorial",
+	"billboard_glow",
+}
+
 state_systems[G.StorageRoom] = {
 	"animation",
 	"animation_sync",
@@ -386,15 +430,24 @@ local function wrap_hang_watch(sys, name, method)
 	sys.__hang_watch_wrapped[method] = true
 	local orig = sys[method]
 	sys[method] = function(self, ...)
+		local label = name .. ":" .. method
 		if HANG_WATCH then
 			local debug_method = method == "debug_update"
 				or method == "debug_draw"
 				or method == "debug_draw_ui"
 			if not debug_method or self.debug_show then
-				hang_watch(name .. ":" .. method)
+				hang_watch(label)
 			end
 		end
 		orig(self, ...)
+		if HANG_WATCH then
+			local debug_method = method == "debug_update"
+				or method == "debug_draw"
+				or method == "debug_draw_ui"
+			if not debug_method or self.debug_show then
+				hang_watch(label .. " ok")
+			end
+		end
 	end
 end
 
@@ -440,6 +493,7 @@ function ECS.load_systems(id, world, prev_id)
 	local main_sys = states[l_id]
 	main_sys.__unpausable = true
 	main_sys.prev_id = prev_id
+	main_sys.debug_title = l_id
 	for _, method in ipairs(hang_watch_methods) do
 		if main_sys[method] then
 			wrap_hang_watch(main_sys, l_id, method)

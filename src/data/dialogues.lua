@@ -131,14 +131,7 @@ Dialogues.outside = {
 		LoveInk.Helpers.text("Doe might have gutted out the trunk..."),
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
-	car_trunk_pre = {
-		LoveInk.Helpers.text("It's too dark to see...", nil, { Enums.dialogue_tags.important }),
-		LoveInk.Helpers.text("Good thing I brought my pal..."),
-		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
-	},
 	car_trunk = {
-		LoveInk.Helpers.text("I can't move while using it though...", nil, { Enums.dialogue_tags.important }),
-		LoveInk.Helpers.text("the flame goes out right away...", nil, { Enums.dialogue_tags.important }),
 		LoveInk.Helpers.text("There's a few items here..."),
 		LoveInk.Helpers.divert("car_flashlight"),
 	},
@@ -168,6 +161,20 @@ Dialogues.outside = {
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	fin = {},
+}
+
+Dialogues.shed = {
+	start = {},
+	fin = {},
+	shed_interior = {
+		LoveInk.Helpers.text("It's too dark in here..."),
+		LoveInk.Helpers.text("Good thing I brought my pal..."),
+		LoveInk.Helpers.text("..."),
+		LoveInk.Helpers.text("I can't move while it's lighted..."),
+		LoveInk.Helpers.text("..."),
+		LoveInk.Helpers.text("I should find the light switch..."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
 }
 
 Dialogues.office2 = {

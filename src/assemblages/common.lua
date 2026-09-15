@@ -1,21 +1,22 @@
 local Common = {}
 
-function Common.bg(e, bg_id, w)
+function Common.bg(e, bg_id, w, h)
 	assert:type(bg_id, "string")
 	assert:type_or_nil(w, "number")
+	assert:type_or_nil(h, "number")
 	local use_gen = Data.BgAssets.get_use_gen(e.world)
 	local resource_id = Data.BgAssets.get_resource_id(bg_id, use_gen)
-	e:give("id", "bg")
+	e:give("id", bg_id)
 		:give("pos", 0, 0)
 		:give("room_bg", bg_id)
 		:give("sprite", resource_id, "images")
 		:give("bg")
 
-	if w then
+	if w and h then
 		local sprite = e:get("sprite")
-		local iw = sprite.iw
-		local sx = w / iw
-		e:give("transform", 0, sx, 1)
+		local sx = w / sprite.iw
+		local sy = h / sprite.ih
+		e:give("transform", 0, sx, sy)
 	end
 end
 

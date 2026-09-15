@@ -140,16 +140,26 @@ function PlayerController:anim_open_locked_door(e_player, opts)
 	self.world:__flush()
 
 	local obj = animation.obj
-	obj:play(tag)
-	obj:on("loop", function() obj:pause_at_end() end)
-	obj:once("finish", function()
+	local restored = false
+	local function restore_after_locked_door()
+		if restored then
+			return
+		end
+		restored = true
 		e_player:remove("override_animation")
 		self.world:emit("anim_idle", e_player, true)
 		if not opts.hold_caps then
 			self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
 			self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
 		end
+	end
+
+	obj:play(tag)
+	obj:on("loop", function()
+		obj:pause_at_end()
+		restore_after_locked_door()
 	end)
+	obj:once("finish", restore_after_locked_door)
 	e_player:give("override_animation")
 end
 

@@ -72,29 +72,6 @@ return {
 					and tutorial.wait_kind ~= "press_interact" then
 					return true
 				end
-				return TestHooks.tutorial_beat_is("lighter")
-					or TestHooks.tutorial_waiting_dialogue()
-			end,
-		},
-		{
-			label = "dialogue (trunk pre)",
-			until_fn = function()
-				return TestHooks.tutorial_beat_is("lighter")
-					and TestHooks.tutorial_wait_is("lighter")
-			end,
-		},
-		{
-			label = "lighter",
-			do_fn = tap_lighter,
-			until_fn = function()
-				local tutorial = TestHooks.get_tutorial()
-				if not tutorial then
-					return false
-				end
-				if tutorial.beat == Enums.tutorial_beat.lighter
-					and tutorial.wait_kind ~= "lighter" then
-					return true
-				end
 				return TestHooks.tutorial_beat_is("explore")
 					or TestHooks.tutorial_waiting_dialogue()
 			end,
@@ -116,32 +93,106 @@ return {
 			label = "reach shed",
 			hold = "left",
 			until_fn = function()
-				return TestHooks.tutorial_wait_is("shed_interact")
+				return TestHooks.tutorial_wait_is("enter_shed")
 			end,
 		},
 		{
 			label = "interact (shed)",
 			do_fn = tap_interact,
 			until_fn = function()
-				return TestHooks.dialogue_active()
-					or TestHooks.tutorial_waiting_dialogue()
+				return TestHooks.state_is(Enums.game_state.Shed)
 			end,
 		},
 		{
-			label = "dialogue (shed)",
+			label = "dialogue (shed interior)",
 			until_fn = function()
-				return not TestHooks.dialogue_active()
-					and not TestHooks.tutorial_waiting_dialogue()
+				return TestHooks.tutorial_wait_is("open_lighter")
+			end,
+		},
+		{
+			label = "open lighter",
+			do_fn = tap_lighter,
+			until_fn = function()
+				return TestHooks.tutorial_beat_is("open_lighter")
+					and TestHooks.tutorial_wait_is("null")
+			end,
+		},
+		{
+			label = "move to shed exit",
+			hold = "right",
+			until_fn = function()
+				return TestHooks.player_near_x(332, 48)
+			end,
+		},
+		{
+			label = "face shed exit",
+			hold = "right",
+			min_frames = 3,
+			until_fn = function()
+				return TestHooks.player_faces_dir(1)
+			end,
+		},
+		{
+			label = "exit shed",
+			do_fn = tap_interact,
+			until_fn = function()
+				return TestHooks.state_is(Enums.game_state.Outside)
 			end,
 		},
 		{
 			label = "dialogue (shed2)",
 			until_fn = function()
-				return TestHooks.tutorial_beat_is("outside_frontdoor")
+				return TestHooks.tutorial_beat_is("done")
+					and TestHooks.door_is_open("backdoor")
+			end,
+		},
+		{
+			label = "move to frontdoor",
+			hold = "right",
+			until_fn = function()
+				return TestHooks.player_near_x(351, 48)
+			end,
+		},
+		{
+			label = "interact frontdoor (locked)",
+			do_fn = tap_interact,
+			until_fn = function()
+				return TestHooks.dialogue_active()
+			end,
+		},
+		{
+			label = "frontdoor locked",
+			until_fn = function()
+				return TestHooks.door_is_locked("frontdoor")
+					and TestHooks.door_is_open("backdoor")
+					and not TestHooks.dialogue_active()
+			end,
+		},
+		{
+			label = "move to backdoor",
+			hold = "right",
+			until_fn = function()
+				return TestHooks.player_near_x(485, 48)
+			end,
+		},
+		{
+			label = "face backdoor",
+			hold = "left",
+			min_frames = 3,
+			until_fn = function()
+				return TestHooks.player_faces_dir(-1)
+			end,
+		},
+		{
+			label = "interact backdoor",
+			do_fn = tap_interact,
+			until_fn = function()
+				return TestHooks.state_is(Enums.game_state.StorageRoom)
 			end,
 		},
 		{
 			label = "tutorial_complete",
+			pass = true,
 			do_fn = function()
 				GAME_SPEED_MULT = 1
 			end,

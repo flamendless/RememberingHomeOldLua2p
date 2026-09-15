@@ -42,8 +42,49 @@ function Tutorial:init(world)
 
 	self.state = Settings.current.tutorial
 	self.wait_kind = Enums.tutorial_wait_kind.null
+	self.phase = nil
+	self.shed_lighter_done = false
 
 	if self.state then
+		self.e_dialogue_car1 = Concord.entity(self.world)
+			:give("id", "dialogue_car1")
+			:give("dialogue_key", Enums.dialogue_knot.car_doors)
+	end
+end
+
+function Tutorial:export_session(overrides)
+	if not self.state then
+		return nil
+	end
+
+	local bag = {}
+	for _, field in ipairs(Data.SessionSchemas.tutorial) do
+		bag[field] = self[field]
+	end
+	bag.active = self.state
+
+	if overrides then
+		for k, v in pairs(overrides) do
+			bag[k] = v
+		end
+	end
+
+	return bag
+end
+
+function Tutorial:import_session(bag)
+	if not bag then
+		return
+	end
+
+	for k, v in pairs(bag) do
+		self[k] = v
+	end
+
+	self.state = Settings.current.tutorial and bag.active
+	self.e_player = self.world:getResource("e_player")
+
+	if self.state and not self.e_dialogue_car1 then
 		self.e_dialogue_car1 = Concord.entity(self.world)
 			:give("id", "dialogue_car1")
 			:give("dialogue_key", Enums.dialogue_knot.car_doors)
@@ -174,7 +215,8 @@ function Tutorial:show_hands_trail(
 	targety,
 	settle_rot,
 	action,
-	is_instant
+	is_instant,
+	glow_opts
 )
 	assert:type(n, "number")
 	assert:type(startx, "number")
@@ -186,6 +228,13 @@ function Tutorial:show_hands_trail(
 	end
 	assert(Enums.input[action])
 	assert:type(is_instant, "boolean")
+	assert:type_or_nil(glow_opts, "table")
+
+	local glow_intensity = glow_opts and glow_opts.intensity or 0.4
+	local glow_size = glow_opts and glow_opts.size or 1.5
+	local glow_pulse_speed = glow_opts and glow_opts.pulse_speed or 6
+	local glow_pulse_amplitude = glow_opts and glow_opts.pulse_amplitude or 0.2
+	local glow_hand_light = glow_opts and glow_opts.hand_light
 
 	local beat_id = self.beat or Enums.tutorial_beat.tutorial
 	local gapx = (targetx - startx) / n
@@ -250,11 +299,22 @@ function Tutorial:show_hands_trail(
 							Assemblages.BillboardGlow.create,
 							hx, hy,
 							9,
-							0.4,
+							glow_intensity,
 							Palette.diffuse.glow_hand_decals,
-							1.5
+							glow_size
 						)
-						:give("glow_pulse", 6, 0.2)
+						:give("glow_pulse", glow_pulse_speed, glow_pulse_amplitude)
+
+					if glow_hand_light then
+						self.e_hand_light = Concord.entity(self.world):assemble(
+							Assemblages.Light.point,
+							e_hand_pos.x,
+							e_hand_pos.y,
+							9,
+							56,
+							Palette.get_diffuse("glow_hand_decals")
+						)
+					end
 
 					self:create_hand_key_label(e_hand, action)
 					self:resume_timeline()
@@ -290,6 +350,10 @@ function Tutorial:fade_hand_and_glow(duration, on_complete)
 		self.e_glow:destroy()
 		self.e_glow = nil
 	end
+	if self.e_hand_light then
+		self.e_hand_light:destroy()
+		self.e_hand_light = nil
+	end
 end
 
 function Tutorial:wait_hold_interact()
@@ -316,14 +380,13 @@ function Tutorial:wait_press_interact()
 	self:pause_timeline()
 end
 
-function Tutorial:wait_lighter_press()
-	self.wait_kind = Enums.tutorial_wait_kind.lighter
+function Tutorial:wait_enter_shed()
+	self.wait_kind = Enums.tutorial_wait_kind.enter_shed
 	self:pause_timeline()
 end
 
-function Tutorial:wait_shed_interact()
-	self.wait_kind = Enums.tutorial_wait_kind.shed_interact
-	self:pause_timeline()
+function Tutorial:wait_open_lighter()
+	self.wait_kind = Enums.tutorial_wait_kind.open_lighter
 end
 
 function Tutorial:finish_wait()
@@ -422,27 +485,9 @@ function Tutorial:run_tutorial()
 		"start_dialogue",
 		self.e_player,
 		self.e_dialogue_car1,
-		"car_trunk_pre"
-	)
-	self:wait_dialogue()
-
-	-- Lighter
-	self:set_beat(Enums.tutorial_beat.lighter)
-	tx, ty = self.prev_hx, self.prev_hy
-	self:show_hands_trail(5, tx, ty, tx, ty, 0, Enums.input.lighter, true)
-	self:wait_lighter_press()
-
-	Log.debug("TODO: show lighter / play animation")
-	self:wait_seconds(1)
-	self.world:emit(
-		"start_dialogue",
-		self.e_player,
-		self.e_dialogue_car1,
 		"car_trunk"
 	)
 	self:wait_dialogue()
-	self.e_player:remove("block_lighter_close")
-	self.world:emit("on_close_lighter")
 
 	-- Explore
 	self:set_beat(Enums.tutorial_beat.explore)
@@ -481,25 +526,76 @@ function Tutorial:run_tutorial()
 	assert(self.e_shed ~= nil and self.e_frontdoor ~= nil)
 	tx, ty = shed_interact_anchor(self.e_shed)
 	self:show_hands_trail(5, tx, ty, tx, ty, 90, Enums.input.interact, true)
-	self.e_shed:give("is_door_ev", "ev_tutorial_shed_interact")
-	self:wait_shed_interact()
-	self.world:emit("start_dialogue", self.e_player, self.e_shed, "shed")
-	self:wait_dialogue()
-	self.world:emit("play_sound_on_entity", self.e_frontdoor, Enums.sfx.car_door_hit)
-	self:wait_seconds(1)
-	self.world:emit("player_force_face_dir", 1)
-	self.world:emit("start_dialogue", self.e_player, self.e_shed, "shed2")
-	self:wait_dialogue()
+	if self.e_shed:has("is_door") then
+		self.e_shed:remove("is_door")
+	end
+	self.e_shed:give("is_door_ev", "ev_tutorial_enter_shed")
+	self:wait_enter_shed()
+end
+
+function Tutorial:begin_shed_open_lighter(e_player)
+	self.e_player = e_player
+	self.phase = "shed"
+	self:set_beat(Enums.tutorial_beat.open_lighter)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, false)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, false)
+
+	if not self.e_dialogue_shed then
+		self.e_dialogue_shed = Concord.entity(self.world)
+			:give("id", "dialogue_shed")
+			:give("dialogue_key", "shed_interior")
+	end
+
+	self.timeline = TLE.Do(function()
+		self:wait_seconds(2)
+		self.world:emit("start_dialogue", self.e_player, self.e_dialogue_shed, "shed_interior")
+		self:wait_dialogue()
+		self:prompt_shed_open_lighter()
+	end)
+end
+
+function Tutorial:prompt_shed_open_lighter()
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_lighter, true)
+
+	local pos = self.e_player:get("pos")
+	local col = self.e_player:get("collider")
+	local tx, ty = pos.x - col.w_h + 8, pos.y + col.h_h + 4
+	self:show_hands_trail(5, tx, ty, tx, ty, 0, Enums.input.lighter, true, {
+		intensity = 1.2,
+		size = 3.5,
+		pulse_speed = 5,
+		pulse_amplitude = 0.35,
+		hand_light = true,
+	})
+	self:wait_open_lighter()
+end
+
+function Tutorial:complete_shed_open_lighter()
+	self.shed_lighter_done = true
+	self.phase = "outside_resume"
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_interact, true)
-	self.e_shed:remove("is_door_ev")
-	self:set_beat(Enums.tutorial_beat.outside_frontdoor)
-	self:pause_timeline()
+end
 
-	-- Done
-	self:set_beat(Enums.tutorial_beat.done)
-	self.world:emit("tle_log", "tutorial timeline done")
-	self:kill_timeline()
+function Tutorial:resume_outside_after_shed(e_player)
+	self.e_player = e_player
+	self.e_frontdoor = self.world:getEntityByKey("frontdoor")
+	self.e_shed = self.world:getEntityByKey("shed")
+	self.world:emit("open_shed_door")
+
+	self.timeline = TLE.Do(function()
+		self:set_beat(Enums.tutorial_beat.outside_frontdoor)
+		self.world:emit("play_sound_on_entity", self.e_frontdoor, Enums.sfx.house_scream)
+		self.world:emit("player_force_face_dir", 1)
+		self:wait_seconds(1)
+		self.world:emit("start_dialogue", self.e_player, self.e_shed, "shed2")
+		self:wait_dialogue()
+		self:set_beat(Enums.tutorial_beat.done)
+		Save.set_flag("outside_intro_done", true, true)
+		self.world:emit("open_backdoor")
+		self.world:emit("tle_log", "tutorial timeline done")
+		self:kill_timeline()
+	end)
 end
 
 function Tutorial:sync_player_bump(e)
@@ -634,13 +730,11 @@ function Tutorial:state_update(dt)
 				end)
 			end)
 		end
-	elseif self.wait_kind == Enums.tutorial_wait_kind.lighter then
+	elseif self.wait_kind == Enums.tutorial_wait_kind.open_lighter then
 		if Inputs.pressed(Enums.input.lighter) then
 			self.wait_kind = Enums.tutorial_wait_kind.null
-			self.e_player:give("block_lighter_close")
-			self.world:emit("on_open_lighter")
 			local progress = { value = 0 }
-			Flux.to(progress, 1, { value = 1 }):onupdate(function()
+			Flux.to(progress, 2, { value = 1 }):onupdate(function()
 				Assemblages.HandDecal.set_progress(
 					self.e_last_hand,
 					progress.value,
@@ -650,9 +744,9 @@ function Tutorial:state_update(dt)
 				)
 			end):oncomplete(function()
 				self:fade_hand_and_glow(0.3, function()
-					self:resume_timeline()
+					self:complete_shed_open_lighter()
 				end)
-			end):ease("backinout")
+			end)
 		end
 	end
 end
@@ -665,29 +759,20 @@ function Tutorial:state_draw_ex()
 	end
 end
 
-function Tutorial:ev_tutorial_shed_interact(e_player, e_shed)
+function Tutorial:ev_tutorial_enter_shed(e_player, e_shed)
 	assert(e_player.__isEntity and e_player:has("player"), e_player)
 	assert(e_shed.__isEntity, e_shed)
-	if self.wait_kind ~= Enums.tutorial_wait_kind.shed_interact then
+	if self.wait_kind ~= Enums.tutorial_wait_kind.enter_shed then
 		return
 	end
+
 	self.wait_kind = Enums.tutorial_wait_kind.null
-	self.world:emit("player_force_face_dir", -1)
-	self.world:emit("anim_open_locked_door", e_player, { hold_caps = true })
-	local progress = { value = 0 }
-	Flux.to(progress, 2, { value = 1 }):onupdate(function()
-		Assemblages.HandDecal.set_progress(
-			self.e_last_hand,
-			progress.value,
-			0.9,
-			self.e_hand_key_label,
-			PRESS_HAND_PROGRESS_OPTS
-		)
-	end):oncomplete(function()
-		self:fade_hand_and_glow(0.3, function()
-			self:resume_timeline()
-		end)
-	end)
+	self.phase = "shed"
+	self:fade_hand_and_glow(0.3)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, false)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, false)
+	self.world:emit("anim_open_door", e_player)
+	self.world:emit("switch_state", Enums.game_state.Shed, 1.5, 0.5)
 end
 
 function Tutorial:ev_dialogue_fin()
@@ -706,6 +791,12 @@ function Tutorial:ev_on_hide_bars_complete()
 end
 
 function Tutorial:cleanup()
+	if self.state and self.beat and self.beat ~= Enums.tutorial_beat.done and self.phase then
+		local bag = self:export_session()
+		if bag then
+			Session.put("tutorial", bag)
+		end
+	end
 	self:kill_timeline()
 end
 

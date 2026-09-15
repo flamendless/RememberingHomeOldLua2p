@@ -138,6 +138,38 @@ ResourcesList[G.Outside] = {
 	},
 }
 
+--TODO: update
+ResourcesList[G.Shed] = {
+	images = {
+		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
+		{ "bg_desc",          "res/images/inventory_notes/bg_desc.png" },
+		{ "flashlight",       "res/images/inventory_notes/flashlight.png" },
+		{ "inventory_border", "res/images/inventory_notes/border.png" },
+		{ "bg_notes",         "res/images/inventory_notes/bg_notes.png" },
+		{ "note_cursor",      "res/images/inventory_notes/note_cursor.png" },
+
+		{ "atlas_keys",       "res/ui/atlas_keys.png" },
+		unpack(textures),
+	},
+	array_images = {
+		{ "storage_room",     "res/images/storage_room/storage_room.png" },
+		{ "storage_room_gen", "res/images/storage_room/storage_room_gen.png" },
+		{ "atlas_shed_items", "res/images/atlases/storage_room.png" },
+		unpack(player),
+	},
+	image_data = {
+		{ "lut_dusk_16", "res/lut/lut_dusk_16.png" },
+		{ "lut_dusk_64", "res/lut/lut_dusk_64.png" },
+	},
+	fonts = {
+		{ "item_name",        "res/fonts/DigitalDisco.ttf", 20, "default" },
+		{ "item_desc",        "res/fonts/DigitalDisco.ttf", 16, "default" },
+		{ "note_list",        "res/fonts/DigitalDisco.ttf", 16, "default" },
+		{ "inventory_choice", "res/fonts/DigitalDisco.ttf", 24, "default" },
+		unpack(fnt_common),
+	},
+}
+
 ResourcesList[G.StorageRoom] = {
 	images = {
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },

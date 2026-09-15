@@ -105,9 +105,9 @@ Enums.tutorial_beat = Enum(
 	"interact_left",
 	"move_right",
 	"interact_right",
-	"lighter",
 	"explore",
 	"reach_shed",
+	"open_lighter",
 	"outside_frontdoor",
 	"done"
 )
@@ -118,9 +118,9 @@ Enums.tutorial_wait_kind = Enum(
 	"move_left",
 	"move_right",
 	"press_interact",
-	"lighter",
 	"reach_shed",
-	"shed_interact"
+	"enter_shed",
+	"open_lighter"
 )
 
 Enums.show_keys = Enum(
@@ -220,6 +220,7 @@ Enums.game_state = Enum(
 	"Menu",
 	"Intro",
 	"Outside",
+	"Shed",
 	"StorageRoom",
 	"UtilityRoom",
 	"Kitchen",
@@ -253,7 +254,8 @@ Enums.sfx = Enum(
 	"lighter_spark",
 	"lighter_on",
 	"static",
-	"motion_blur"
+	"motion_blur",
+	"house_scream"
 )
 
 Enums.lighter_spark_intensity = Enum("subtle", "strong")
@@ -266,6 +268,7 @@ if DEV then
 		Enums.game_state.Menu,
 		Enums.game_state.Intro,
 		Enums.game_state.Outside,
+		Enums.game_state.Shed,
 		Enums.game_state.StorageRoom,
 		Enums.game_state.UtilityRoom,
 		Enums.game_state.Kitchen,

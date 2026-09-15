@@ -10,11 +10,12 @@ local Data = {
 	},
 	{
 		id = "backdoor",
+		key = "backdoor",
 		x = 485,
 		y = 254,
 		z = 4,
 		req_col_dir = -1,
-		dialogue = { "outside", "backdoor" },
+		is_door_ev = "ev_interact_backdoor",
 	},
 	{
 		id = "frontdoor",
@@ -33,6 +34,7 @@ local Data = {
 		x = 32,
 		y = 230,
 		z = 4,
+		req_col_dir = -1,
 		interact_box = { x = 72, y = 263, w = 28, h = 62 },
 	},
 }

@@ -113,19 +113,48 @@ function Outside:state_init()
 			self.e_player = e_player
 		end)
 		Fade.set_alpha(0)
-
-		for _, e in ipairs(self.pool_bump) do
-			local id = e:get("id").value
-			if id == "backdoor" then
-				e:remove("dialogue_meta"):give("is_door")
-			end
-		end
+		self:open_backdoor()
 		return
 	end
 
-	-- if Save.data.outside_intro_done then
-	-- 	return
-	-- end
+	if self.prev_id == Enums.game_state.Shed then
+		local resume_bag = Session.peek("tutorial")
+		if resume_bag and resume_bag.phase == "outside_resume" then
+			self.world:emit("spawn_player", function(e_player)
+				self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+				self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+				self.world:emit("camera_follow", e_player, 0.25)
+				self.camera:setScale(3)
+				local player_pos = e_player:get("pos")
+				self.camera:setPosition(player_pos.x, player_pos.y)
+				self.e_player = e_player
+
+				local bag = Session.take("tutorial")
+				local tutorial = self.world:getSystem(ECS.get_system_class("tutorial"))
+				tutorial:import_session(bag)
+				tutorial:resume_outside_after_shed(e_player)
+			end)
+			Fade.set_alpha(0)
+			return
+		end
+
+		self.world:emit("spawn_player", function(e_player)
+			self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+			self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+			self.world:emit("camera_follow", e_player, 0.25)
+			self.camera:setScale(3)
+			local player_pos = e_player:get("pos")
+			self.camera:setPosition(player_pos.x, player_pos.y)
+			self.e_player = e_player
+		end)
+		Fade.set_alpha(0)
+		return
+	end
+
+	if Save.data.outside_intro_done or not Settings.current.tutorial then
+		self:open_backdoor()
+		self:open_shed_door()
+	end
 
 	--TEST
 	-- if DEV then
@@ -389,13 +418,23 @@ function Outside:toggle_car_power_after(ent, flag)
 	self.world:emit("on_dialogue_reached_end")
 end
 
-function Outside:check_frontdoor(e, dialogues_t)
-	assert((e.__isEntity and e:has("dialogue_meta")), e)
-	assert:type(dialogues_t, "table")
-	self.world:emit("remove_choices")
-	if not Items.has(Enums.item_id.frontdoor_key) then
-		local t = tablex.copy(dialogues_t.door_locked)
-		self.world:emit("spawn_dialogue_ex", t)
+function Outside:open_backdoor()
+	local e = self.world:getEntityByKey("backdoor")
+	if e and e:has("is_door_ev") then
+		e:remove("is_door_ev"):give("is_door")
+	end
+end
+
+function Outside:open_shed_door()
+	local e = self.world:getEntityByKey("shed")
+	if not e then
+		return
+	end
+	if e:has("is_door_ev") then
+		e:remove("is_door_ev")
+	end
+	if not e:has("is_door") then
+		e:give("is_door")
 	end
 end
 
@@ -408,28 +447,21 @@ function Outside:make_car_interactive()
 	end
 end
 
-function Outside:check_backdoor(e, dialogues_t)
-	assert((e.__isEntity and e:has("dialogue_meta")), e)
-	assert((e.__isEntity and self.e_player), e)
-	assert:type(dialogues_t, "table")
-	local has_flashlight = Items.has(Enums.item_id.flashlight)
-	if not has_flashlight then
-		local t = tablex.copy(dialogues_t.no_flashlight_yet)
-		self.world:emit("spawn_dialogue_ex", t)
-	else
-		self.world:emit("wait_dialogue", true)
-		self.world:emit("toggle_component", e, Enums.player_cap.can_move, true)
-		self.world:emit("toggle_component", e, Enums.player_cap.can_interact, true)
-		self.world:emit("anim_open_door", e)
-		self.world:emit("switch_state", Enums.game_state.StorageRoom, 3, 2)
-	end
-end
-
 function Outside:ev_interact_frontdoor(e_player, e_door)
 	assert(e_player.__isEntity and e_player:has("player"), e_player)
 	assert(e_door.__isEntity, e_door)
 	local door_id = e_door.id.value
 	assert(door_id == "frontdoor", door_id)
+
+	self.world:emit("anim_open_locked_door", e_player)
+	self.world:emit("start_dialogue_simple", Enums.dialogue_knot.locked_door)
+end
+
+function Outside:ev_interact_backdoor(e_player, e_door)
+	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert(e_door.__isEntity, e_door)
+	local door_id = e_door.id.value
+	assert(door_id == "backdoor", door_id)
 
 	self.world:emit("anim_open_locked_door", e_player)
 	self.world:emit("start_dialogue_simple", Enums.dialogue_knot.locked_door)

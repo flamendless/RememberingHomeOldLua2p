@@ -36,7 +36,7 @@ function Outside.splashes(e)
 	end
 	e:give("id", "splashes")
 		:give("splashes")
-		:give("pos", 0, 4)
+		:give("pos", 52, 4)
 		:give("z_index", z_index.splashes)
 		:give("color", { 1, 1, 1, 1 })
 		:give("animation", Animation.new_single(Animation.get("outside_" .. resource_id), false))
@@ -75,25 +75,25 @@ function Outside.colliders.right_bound(e, w, h)
 end
 
 function Outside.lights.pl_car_headlight(e, id)
-	e:assemble(Assemblages.Light.point, 733, 296, 4, 24, Palette.get_diffuse("car_headlight_pl"))
+	e:assemble(Assemblages.Light.point, 785, 296, 4, 24, Palette.get_diffuse("car_headlight_pl"))
 		:give("id", id)
 		:give("car_lights")
 end
 
 function Outside.lights.sl_car_headlight(e, id)
-	e:assemble(Assemblages.Light.spot, 751, 290, 6, { -1, 0.25, 0, 0.95 }, 256, Palette.get_diffuse("car_headlight_sl"))
+	e:assemble(Assemblages.Light.spot, 803, 290, 6, { -1, 0.25, 0, 0.95 }, 256, Palette.get_diffuse("car_headlight_sl"))
 		:give("id", id)
 		:give("car_lights")
 end
 
 function Outside.lights.pl_backdoor(e, id)
-	e:assemble(Assemblages.Light.point, 446, 292, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
+	e:assemble(Assemblages.Light.point, 498, 292, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
 end
 
 function Outside.lights.sl_backdoor(e, id)
 	e:assemble(
 		Assemblages.Light.spot,
-		446,
+		498,
 		241,
 		4,
 		{ 0, 1, -0.8, 0.77 },
@@ -104,11 +104,11 @@ function Outside.lights.sl_backdoor(e, id)
 end
 
 function Outside.lights.pl_frontdoor(e, id)
-	e:assemble(Assemblages.Light.point, 316, 262, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
+	e:assemble(Assemblages.Light.point, 368, 262, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
 end
 
 function Outside.lights.sl_frontdoor(e, id)
-	e:assemble(Assemblages.Light.spot, 316, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
+	e:assemble(Assemblages.Light.spot, 368, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
 end
 
 Outside.glows.car = function(world)

@@ -13,6 +13,14 @@ Rooms.nodes[G.Outside] = {
 	entries = { [G.Menu] = { 800, 258 } },
 	doors = {
 		backdoor = { to = G.StorageRoom, spawn = { 312, 48 } },
+		shed = { to = G.Shed, spawn = { 312, 48 } },
+	},
+}
+
+Rooms.nodes[G.Shed] = {
+	default = { 312, 48 },
+	doors = {
+		right_door = { to = G.Outside, spawn = { 100, 263 } },
 	},
 }
 

@@ -68,7 +68,7 @@ function TestHooks.menu_list_cursor(expected)
 end
 
 function TestHooks.get_tutorial()
-	if not TestHooks.state_is("Outside") then
+	if not (TestHooks.state_is("Outside") or TestHooks.state_is("Shed")) then
 		return nil
 	end
 	return GameStates.world:getSystem(ECS.get_system_class("tutorial"))
@@ -113,13 +113,7 @@ end
 
 function TestHooks.dialogue_should_pump()
 	local dialogues = TestHooks.get_dialogues()
-	if not dialogues or not dialogues.current_content then
-		return false
-	end
-	if dialogues.e_dialogue == dialogues.e_simple_dialogue then
-		return false
-	end
-	return true
+	return dialogues ~= nil and dialogues.current_content ~= nil
 end
 
 function TestHooks.dialogue_is_choice()
@@ -144,6 +138,39 @@ end
 
 function TestHooks.tutorial_explore_ready()
 	return TestHooks.tutorial_beat_is("explore") and TestHooks.player_can_move()
+end
+
+function TestHooks.door_is_locked(key)
+	if not GameStates.is_ready or not GameStates.world then
+		return false
+	end
+	local e = GameStates.world:getEntityByKey(key)
+	return e ~= nil and e:has("is_door_ev")
+end
+
+function TestHooks.door_is_open(key)
+	if not GameStates.is_ready or not GameStates.world then
+		return false
+	end
+	local e = GameStates.world:getEntityByKey(key)
+	return e ~= nil and e:has("is_door")
+end
+
+function TestHooks.player_near_x(x, tolerance)
+	local player = TestHooks.get_player()
+	if not player then
+		return false
+	end
+	tolerance = tolerance or 24
+	return math.abs(player:get("pos").x - x) <= tolerance
+end
+
+function TestHooks.player_faces_dir(dir)
+	local player = TestHooks.get_player()
+	if not player then
+		return false
+	end
+	return player:get("body").dir == dir
 end
 
 return TestHooks
