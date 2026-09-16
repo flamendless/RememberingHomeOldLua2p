@@ -14,7 +14,7 @@ function Outside:init(world)
 end
 
 function Outside:state_setup()
-	local bg_house = Resources.data.images.bg_house
+	local bg_house = Data.BgAssets.get_image("bg_house", Data.BgAssets.get_use_gen(self.world))
 	local w, h = bg_house:getDimensions()
 	local ww, wh = love.graphics.getDimensions()
 

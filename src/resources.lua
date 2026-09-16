@@ -19,14 +19,12 @@ Resources.meta = Data.ResourcesList
 
 function Resources.get_meta(key)
 	assert:type(key, "string")
-	assert(Resources.meta[key], key .. " is invalid")
-	local t = tablex.copy(Resources.meta[key])
+	local src = Resources.meta[key]
+	assert(src, key .. " is invalid")
+	local t = tablex.copy(src)
 
-	t.images = tablex.append({}, t.images, t.array_images)
-	if t.array_images then
-		tablex.clear(t.array_images)
-		t.array_images = nil
-	end
+	t.images = tablex.append({}, src.images, src.array_images)
+	t.array_images = nil
 
 	return t
 end

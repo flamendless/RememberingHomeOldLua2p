@@ -244,11 +244,16 @@ if DEV then
 
 		return old_remove(self, ...)
 	end
+end
 
+function NOOP() end
+if DEV or TEST.mode then
 	function TODO(msg)
 		msg = msg or "(flam)"
 		print("TODO", msg)
 	end
+else
+	TODO = NOOP
 end
 
 require("modules.strict")

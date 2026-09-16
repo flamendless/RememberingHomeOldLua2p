@@ -58,14 +58,21 @@ function Cache.manage_resources(resources, list, prev_res)
 	assert:type(prev_res, "table")
 	for kind, t in pairs(list) do
 		local res = prev_res[kind]
-		if res then
-			setmetatable(res, nil)
+		local array_res = (kind == "images") and prev_res.array_images or nil
+		if res or array_res then
+			if res then
+				setmetatable(res, nil)
+			end
+			if array_res then
+				setmetatable(array_res, nil)
+			end
 
 			for i = #t, 1, -1 do
 				local id = t[i][1]
-				if res[id] then
-					Cache.resources[id] = res[id]
-					resources[kind][id] = res[id]
+				local cached = (res and res[id]) or (array_res and array_res[id])
+				if cached then
+					Cache.resources[id] = cached
+					resources[kind][id] = cached
 					table.remove(list[kind], i)
 				end
 			end
