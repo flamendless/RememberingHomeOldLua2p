@@ -1,3 +1,5 @@
+local DialogueHandlers = require("dialogue_handlers")
+
 local DialoguesSystem = Concord.system()
 
 local function build_dialogue_cfg(cam)
@@ -106,6 +108,7 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert(self.ui, "dialogue ui not ready")
 	local dialogue_key = override_dialogue_key or e_other:get("dialogue_key").value
 	assert:type(dialogue_key, "string")
+	dialogue_key = DialogueHandlers.resolve_interact_dialogue_key(self.world, dialogue_key)
 
 	local restart = e_other == self.e_simple_dialogue
 	if restart or self.dialogue:getCurrentKnot() ~= dialogue_key then

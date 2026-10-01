@@ -208,6 +208,7 @@ Assemblages = {
 	Player = require("assemblages.player"),
 	Room = require("assemblages.room"),
 	StorageRoom = require("assemblages.storage_room"),
+	Shed = require("assemblages.shed"),
 	UI = require("assemblages.ui"),
 	UtilityRoom = require("assemblages.utility_room"),
 	BillboardGlow = require("assemblages.billboard_glow"),

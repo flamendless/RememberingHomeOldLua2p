@@ -61,16 +61,22 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
 
 	local sx, sy = start_p:unpack()
 	local ex, ey = end_p:unpack()
-	local np = love.math.random(2, 5) * 3
-	local points = Generator.path_points_ants(sx, sy, ex, ey, np)
+	local np = opts and opts.path_segment_count or love.math.random(2, 5) * 3
+	local path_sway = opts and opts.path_sway
+	local points = Generator.path_points_ants(sx, sy, ex, ey, np, path_sway)
+
+	local ant_id_prefix = opts and opts.ant_id_prefix
+	local uniform_path_speed = opts and opts.uniform_path_speed
 
 	for i = 1, n do
 		local idx = love.math.random(1, #points)
 		local cp = points[idx]
 		local px, py = cp.x, cp.y
 
+		local ant_id = ant_id_prefix and (ant_id_prefix .. i) or ("ant" .. i)
+
 		local e = Concord.entity(self.world)
-			:give("id", "ant" .. i)
+			:give("id", ant_id)
 			:give("ant")
 			:give("bug")
 			:give("color", { 0, 0, 0, love.math.random(0.5, 1) })
@@ -78,7 +84,7 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
 			:give("pos", px, py)
 			:give("pos_vec2")
 			:give("path", points, nil, idx)
-			:give("path_speed", ms - (i - 1))
+			:give("path_speed", uniform_path_speed and ms or (ms - (i - 1)))
 			:give("z_index", 1, false)
 
 		if path_repeat then
@@ -89,7 +95,12 @@ function Ants:generate_ants(n, start_p, end_p, path_repeat, ms, opts)
 
 		if opts then
 			for k, v in pairs(opts) do
-				if type(v) == "table" then
+				if k == "ant_id_prefix"
+					or k == "path_segment_count"
+					or k == "path_sway"
+					or k == "uniform_path_speed" then
+					-- generate_ants layout flags only
+				elseif type(v) == "table" then
 					e:give(k, unpack(v))
 				else
 					e:give(k, v)
@@ -124,37 +135,39 @@ end
 function Ants:update(dt)
 	for _, e in ipairs(self.pool) do
 		local saf = e:get("scatter_away_from")
-		if not saf.is_overlap then
-			local e_target = self.world:getEntityByKey(saf.key)
-			local px, py, iw, ih = Helper.get_ltwh(e_target)
-			local iwh, ihh = iw / 2, ih / 2
+		if saf then
+			if not saf.is_overlap then
+				local e_target = self.world:getEntityByKey(saf.key)
+				local px, py, iw, ih = Helper.get_ltwh(e_target)
+				local iwh, ihh = iw / 2, ih / 2
 
-			if not self.cache_center[saf.key] then
-				self.cache_center[saf.key] = vec2(px + iwh, py + ihh)
-				self.cache_size[saf.key] = vec2(iwh, ihh)
-			end
+				if not self.cache_center[saf.key] then
+					self.cache_center[saf.key] = vec2(px + iwh, py + ihh)
+					self.cache_size[saf.key] = vec2(iwh, ihh)
+				end
 
-			local player_center = self.cache_center[saf.key]
-			player_center.x = px + iwh
-			player_center.y = py + ihh
+				local player_center = self.cache_center[saf.key]
+				player_center.x = px + iwh
+				player_center.y = py + ihh
 
-			local player_size = self.cache_size[saf.key]
-			saf.is_overlap =
-				intersect.circle_aabb_overlap(e:get("pos_vec2").value, saf.distance, player_center, player_size)
-		else
-			local pos = e:get("pos")
-			local dx = e.escape_target.x - pos.x
-			local dy = e.escape_target.y - pos.y
-			local dist = math.sqrt(dx * dx + dy * dy)
-
-			local step = saf.speed * dt
-			if dist <= step then
-				e:destroy()
+				local player_size = self.cache_size[saf.key]
+				saf.is_overlap =
+					intersect.circle_aabb_overlap(e:get("pos_vec2").value, saf.distance, player_center, player_size)
 			else
-				pos.x = pos.x + (dx / dist) * step
-				pos.y = pos.y + (dy / dist) * step
-				pos.x = pos.x + (love.math.random() - 0.5) * 0.4
-				pos.y = pos.y + (love.math.random() - 0.5) * 0.4
+				local pos = e:get("pos")
+				local dx = e.escape_target.x - pos.x
+				local dy = e.escape_target.y - pos.y
+				local dist = math.sqrt(dx * dx + dy * dy)
+
+				local step = saf.speed * dt
+				if dist <= step then
+					e:destroy()
+				else
+					pos.x = pos.x + (dx / dist) * step
+					pos.y = pos.y + (dy / dist) * step
+					pos.x = pos.x + (love.math.random() - 0.5) * 0.4
+					pos.y = pos.y + (love.math.random() - 0.5) * 0.4
+				end
 			end
 		end
 	end

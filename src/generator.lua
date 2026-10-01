@@ -21,28 +21,28 @@ function Generator.path_points_fireflies(x, y, n)
 	return points
 end
 
-function Generator.path_points_ants(x, y, ex, ey, n)
+function Generator.path_points_ants(x, y, ex, ey, n, max_sway)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	assert:type(ex, "number")
 	assert:type(ey, "number")
 	assert:type(n, "number")
+	assert:type_or_nil(max_sway, "number")
+
+	max_sway = max_sway or 2
 	local points = {}
-	local dx = 1
-	local dy = (y <= ey) and -1 or 1
-	local offset = 2
+	local ax, ay = ex - x, ey - y
+	local len = math.max(math.sqrt(ax * ax + ay * ay), 1)
+	local nx, ny = -ay / len, ax / len
+	local along_jitter = math.max(1, math.floor(max_sway * 0.15))
 
 	for i = 0, n - 1 do
-		local t = i / n
-		local ox = love.math.random(-offset, offset)
-		local oy = love.math.random(-offset, offset)
+		local t = (n <= 1) and 0 or (i / (n - 1))
 		local px = mathx.lerp(x, ex, t)
 		local py = mathx.lerp(y, ey, t)
-
-		px = px + ox * dx
-		py = py + oy * dy
-		dx = dx * -1
-		dy = dy * -1
+		local sway = love.math.random(-max_sway, max_sway)
+		px = px + nx * sway + love.math.random(-along_jitter, along_jitter)
+		py = py + ny * sway + love.math.random(-along_jitter, along_jitter)
 		table.insert(points, { x = px, y = py })
 	end
 	Log.info("Generated # of points for ants", #points)

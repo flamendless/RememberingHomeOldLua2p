@@ -6,10 +6,11 @@ function Flies:init(world)
 	self.world = world
 end
 
-function Flies:generate_flies(n, start_p, min_dist)
+function Flies:generate_flies(n, start_p, min_dist, motion)
 	assert(type(n) == "number" and n > 0, n)
 	assert(start_p:type() == "vec2", start_p)
 	assert(type(min_dist) == "number" and min_dist > 0, min_dist)
+	assert:type(motion, "table")
 
 	local sx, sy = start_p:unpack()
 
@@ -21,7 +22,7 @@ function Flies:generate_flies(n, start_p, min_dist)
 		local radius = love.math.random(min_dist, min_dist * 1.5)
 		Concord.entity(self.world)
 			:give("id", "fly" .. i)
-			:give("fly", radius)
+			:give("fly", radius, motion)
 			:give("bug")
 			:give("color", { 0, 0, 0, 1 })
 			:give("point", 4)
@@ -31,25 +32,28 @@ function Flies:generate_flies(n, start_p, min_dist)
 	end
 end
 
-function Flies:generate_flies_for_room_lights(room_id)
+function Flies:generate_flies_for_room_lights(room_id, motion)
 	assert:type(room_id, "string")
+	assert:type(motion, "table")
 
 	local d = Data.Lights[room_id]
 	for i, lp in ipairs(d.pl.pos) do
-		local y = Data.Lights.get_light_y(room_id, "pl", i)
+		local x, y = Helper.get_fly_ref_xy(room_id, "pl", i)
 		self:generate_flies(
 			love.math.random(8, 16),
-			vec2(lp.x, y),
-			love.math.random(8, 12)
+			vec2(x, y),
+			love.math.random(8, 12),
+			motion
 		)
 	end
 	if d.pl_mid then
 		for i, lp in ipairs(d.pl_mid.pos) do
-			local y = Data.Lights.get_light_y(room_id, "pl_mid", i)
+			local x, y = Helper.get_fly_ref_xy(room_id, "pl_mid", i)
 			self:generate_flies(
 				love.math.random(8, 16),
-				vec2(lp.x, y),
-				love.math.random(4, 8)
+				vec2(x, y),
+				love.math.random(4, 8),
+				motion
 			)
 		end
 	end
@@ -78,8 +82,8 @@ function Flies:update(dt)
 
 		fly.sharp_timer = fly.sharp_timer - dt
 		if fly.sharp_timer <= 0 then
-			fly.vel_x = fly.vel_x + (love.math.random() - 0.5) * 300
-			fly.vel_y = fly.vel_y + (love.math.random() - 0.5) * 300
+			fly.vel_x = fly.vel_x + (love.math.random() - 0.5) * fly.sharp_impulse
+			fly.vel_y = fly.vel_y + (love.math.random() - 0.5) * fly.sharp_impulse
 			fly.sharp_timer = 0.1 + love.math.random() * 0.3
 		end
 
@@ -94,7 +98,7 @@ function Flies:update(dt)
 		end
 
 		local speed = math.sqrt(fly.vel_x * fly.vel_x + fly.vel_y * fly.vel_y)
-		local max_speed = 200 + love.math.random(-50, 50)
+		local max_speed = fly.max_speed + love.math.random(-fly.max_speed_var, fly.max_speed_var)
 
 		if speed > max_speed then
 			fly.vel_x = fly.vel_x / speed * max_speed

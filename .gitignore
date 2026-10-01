@@ -41,3 +41,4 @@ src/modules/*
 libs/love-build.app/
 libs/love-build.zip
 dev/
+hang_watch.log

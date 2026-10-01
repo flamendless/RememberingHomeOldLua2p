@@ -1,5 +1,22 @@
 local Lights = {}
 
+Lights[Enums.game_state.Shed] = {
+	pl = {
+		lz = 26,
+		ls = 106,
+		fade = 12,
+		fixture_drop = 17,
+		pos = {
+			{
+				x = 116,
+				y = 20,
+				bulb_quad_w = 5,
+				bulb_quad_h = 18,
+			},
+		},
+	},
+}
+
 Lights[Enums.game_state.StorageRoom] = {
 	pl = {
 		lz = 26,

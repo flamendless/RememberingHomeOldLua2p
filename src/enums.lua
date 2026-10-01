@@ -140,7 +140,10 @@ Enums.dialogue_knot = Enum(
 	"fin",
 	"car_doors",
 	"locked_door",
-	"test"
+	"test",
+	"__light_switch__",
+	"__light_switch_on__",
+	"__light_switch_off__"
 )
 
 Enums.input = Enum(

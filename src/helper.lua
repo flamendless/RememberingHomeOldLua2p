@@ -226,4 +226,22 @@ function Helper.can_proceed_interact(e_player, e_target)
 	return face_dir == req.value
 end
 
+function Helper.get_fly_ref_xy(room_id, group_key, index)
+	assert:type(room_id, "string")
+	assert:type(group_key, "string")
+	assert:type(index, "number")
+
+	local pos = Data.Lights[room_id][group_key].pos[index]
+	local x = pos.x
+	local y = Data.Lights.get_light_y(room_id, group_key, index)
+	if pos.bulb_quad_h then
+		assert:type(pos.y, "number")
+		y = pos.y + pos.bulb_quad_h - 8
+	end
+	if pos.bulb_quad_w then
+		x = pos.x + pos.bulb_quad_w * 0.5
+	end
+	return x, y
+end
+
 return Helper

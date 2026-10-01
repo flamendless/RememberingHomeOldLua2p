@@ -26,14 +26,19 @@ local common = {
 		LoveInk.Helpers.text("It's locked..."),
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
+	[Enums.dialogue_knot.__light_switch_on__] = {
+		LoveInk.Helpers.text("There. That's better."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
+	[Enums.dialogue_knot.__light_switch_off__] = {
+		LoveInk.Helpers.text("Lights out."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
 }
 
 Dialogues.utility_room = {
 	start = {},
 	fin = {},
-	light_switch = {
-		"_toggle_light_switch",
-	},
 	washing_machine = {
 		"a washing machine",
 		"it's too late to do the laundry",
@@ -54,9 +59,6 @@ Dialogues.utility_room = {
 Dialogues.storage_room = {
 	start = {},
 	fin = {},
-	light_switch = {
-		"_toggle_light_switch",
-	},
 
 	shelf = {
 		"A shelf for storage",
@@ -166,9 +168,6 @@ Dialogues.outside = {
 Dialogues.shed = {
 	start = {},
 	fin = {},
-	light_switch = {
-		"_toggle_light_switch",
-	},
 	shed_interior = {
 		LoveInk.Helpers.text("It's too dark in here..."),
 		LoveInk.Helpers.text("Good thing I brought my pal..."),

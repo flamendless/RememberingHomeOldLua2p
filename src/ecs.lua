@@ -148,6 +148,8 @@ state_systems[G.Shed] = {
 	"behavior_tree",
 	"enemy_controller",
 	"path",
+	"ants",
+	"flies",
 	"candle",
 	"lighter",
 	"wind",

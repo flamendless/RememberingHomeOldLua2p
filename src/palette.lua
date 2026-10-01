@@ -99,6 +99,7 @@ Palette.diffuse = {
 	ambiance_totally_dark_room = { 0.7, 0.7, 0.7, 0.0 },
 	ambiance_shed = { 0.58, 0.6, 0.64, 0.25 },
 	shed_ambient_light = { 0.14, 0.16, 0.2 },
+	shed_bulb_light = { 1.44, 1.64, 0.2 },
 
 	lighter_flame = { 3, 2, 0.5 },
 	candle_flame = { 2.5, 1.6, 0.4 },

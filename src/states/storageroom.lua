@@ -44,6 +44,14 @@ function StorageRoom:state_init()
 	if DEV then
 		-- TODO: (Brandon) set ants start and end pos based on room?
 		Log.debug("TODO: (Brandon) set ants start and end pos based on room?")
+		local storage_fly_motion = {
+			max_speed = 200,
+			max_speed_var = 50,
+			sharp_impulse = 300,
+			initial_vel = 7,
+			pull_radius_min = 2,
+			pull_radius_max = 4,
+		}
 		local opts = {
 			scatter_away_from = {
 				self.e_player,
@@ -53,7 +61,7 @@ function StorageRoom:state_init()
 		}
 		self.world:emit("generate_ants", 64, vec2(64, 32), vec2(56, 4), true, 32, opts)
 		self.world:emit("generate_ants", 64, vec2(88, 102), vec2(108, 4), true, 32, opts)
-		self.world:emit("generate_flies_for_room_lights", Enums.game_state.StorageRoom)
+		self.world:emit("generate_flies_for_room_lights", Enums.game_state.StorageRoom, storage_fly_motion)
 
 		self.world:__flush()
 		self.world:emit("move_ants")

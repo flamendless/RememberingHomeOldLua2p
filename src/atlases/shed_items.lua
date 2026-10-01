@@ -11,7 +11,7 @@ local Data = {
 		x = 10,
 		y = 50,
 		z = 4,
-		dialogue = { "shed", "light_switch" },
+		dialogue_key = Enums.dialogue_knot.__light_switch__,
 	},
 	{
 		id = "cabinet",
