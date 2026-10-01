@@ -390,7 +390,7 @@ end
 
 function Tutorial:fade_hand_and_glow(duration, on_complete)
 	assert:type(duration, "number")
-	assert:type(on_complete, "function")
+	assert:type_or_nil(on_complete, "function")
 	if self.e_last_hand then
 		local last_hand_pos = self.e_last_hand:get("pos")
 		self.prev_hx, self.prev_hy = last_hand_pos.x, last_hand_pos.y

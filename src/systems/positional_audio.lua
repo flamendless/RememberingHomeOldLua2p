@@ -162,7 +162,8 @@ function PositionalAudio:play_sound_on_entity(e, source, opts)
 end
 
 function PositionalAudio:play_sound_on_player(source, opts)
-	assert:type(opts, "table")
+	assert:type_or_nil(opts, "table")
+	opts = opts or {}
 	local e_player = self:get_player()
 	if not e_player then
 		return
@@ -226,8 +227,7 @@ if DEV or TEST.mode then
 	end
 
 	function PositionalAudio:track_debug_sound(source, active, opts)
-	assert:type(active, "boolean")
-	assert:type_or_nil(opts, "table")
+		assert:type_or_nil(opts, "table")
 		opts = opts or {}
 		if opts.relative then
 			return

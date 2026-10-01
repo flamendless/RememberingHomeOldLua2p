@@ -289,7 +289,7 @@ function DialoguesSystem:draw_ui()
 end
 
 function DialoguesSystem:custom_textbox_ui_draw(component)
-	assert:type(component, "string")
+	assert:type(component, "table")
 	if not component.visible then return end
 	local fh = component.font:getHeight()
 
@@ -333,7 +333,7 @@ function DialoguesSystem:custom_textbox_ui_draw(component)
 end
 
 function DialoguesSystem:custom_choicelist_ui_draw(component)
-	assert:type(component, "string")
+	assert:type(component, "table")
 	if not component.visible or #component.choices == 0 then return end
 	local fh = component.font:getHeight()
 	local draw_y = component.y

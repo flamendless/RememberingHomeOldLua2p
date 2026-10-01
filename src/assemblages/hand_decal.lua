@@ -75,8 +75,8 @@ end
 function HandDecal.fade_out(e, duration, on_complete)
 	assert:entity(e)
 	assert:type(duration, "number")
-	assert:type(on_complete, "function")
-	assert(e.__isEntity and e:has("decals_shaders"))
+	assert:type_or_nil(on_complete, "function")
+	assert(e:has("decals_shaders"), e)
 	local decals_shaders = e:get("decals_shaders")
 	local data = decals_shaders.data
 	Flux.remove_by_object(data)
@@ -134,8 +134,12 @@ end
 
 function HandDecal.set_progress(e, progress, base_opacity, label, opts)
 	assert:entity(e)
-	assert:type(label, "string")
-	assert:type(opts, "table")
+	assert:type(progress, "number")
+	assert:type_or_nil(base_opacity, "number")
+	if label ~= nil then
+		assert:entity(label)
+	end
+	assert:type_or_nil(opts, "table")
 	if not e or not e:has("decals_shaders") then
 		return
 	end
@@ -199,11 +203,11 @@ end
 
 function HandDecal.sync_key_label(hand, label, camera, ox, oy)
 	assert:entity(hand)
-	assert:type(label, "string")
-	assert:type(ox, "number")
-	assert:type(oy, "number")
-	assert(hand.__isEntity and hand:has("decals_shaders"))
-	assert(label.__isEntity and label:has("pos") and label:has("color"))
+	assert:entity(label)
+	assert(hand:has("decals_shaders"), hand)
+	assert(label:has("pos") and label:has("color"), label)
+	assert:type_or_nil(ox, "number")
+	assert:type_or_nil(oy, "number")
 
 	ox = ox or HandDecal.KEY_LABEL_OFFSET.x
 	oy = oy or HandDecal.KEY_LABEL_OFFSET.y
@@ -226,8 +230,8 @@ end
 function HandDecal.fade_key_label(e, duration, on_complete)
 	assert:entity(e)
 	assert:type(duration, "number")
-	assert:type(on_complete, "function")
-	assert(e.__isEntity and e:has("color"))
+	assert:type_or_nil(on_complete, "function")
+	assert(e:has("color"), e)
 	local color = e:get("color")
 	Flux.to(color.value, duration, { [4] = 0 }):oncomplete(function()
 		e:destroy()
