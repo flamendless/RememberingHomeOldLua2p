@@ -83,7 +83,21 @@ function GameStates.start(resources)
 			draw_atmospheric_specs = true,
 		}
 
+		local function is_draw_emit(event)
+			return stringx.starts_with(event, "draw")
+				or stringx.starts_with(event, "debug_draw")
+				or event == "begin_deferred_lighting"
+				or event == "end_deferred_lighting"
+				or event == "apply_post_process"
+				or event == "apply_ambiance"
+				or event == "state_draw"
+				or event == "state_draw_ex"
+		end
+
 		GameStates.world.beforeEmit = function(world, event, ...)
+			if HANG_WATCH and is_draw_emit(event) then
+				hang_watch("emit " .. event)
+			end
 			if
 				blacklisted[event]
 				or stringx.starts_with(event, "debug_")
@@ -93,6 +107,12 @@ function GameStates.start(resources)
 				return
 			end
 			Log.trace("Emitted", event, ...)
+		end
+
+		GameStates.world.afterEmit = function(world, event, ...)
+			if HANG_WATCH and is_draw_emit(event) then
+				hang_watch("emit " .. event .. " ok")
+			end
 		end
 	end
 
@@ -143,9 +163,13 @@ end
 function GameStates.draw()
 	if not GameStates.is_ready then return end
 	JPROF.push("gs state draw")
+	if HANG_WATCH then hang_watch("emit state_draw") end
 	GameStates.world:emit("state_draw")
+	if HANG_WATCH then hang_watch("emit state_draw ok") end
 	if DEV then
+		if HANG_WATCH then hang_watch("emit state_draw_ex") end
 		GameStates.world:emit("state_draw_ex")
+		if HANG_WATCH then hang_watch("emit state_draw_ex ok") end
 	end
 	JPROF.pop("gs state draw")
 end

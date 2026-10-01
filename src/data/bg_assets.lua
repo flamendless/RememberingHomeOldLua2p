@@ -26,6 +26,7 @@ BgAssets.list = {
 		light_enabled = false,
 	}, "array_images"),
 	make_entry("bg_house", "Outside House", "res/images/outside/bg_house.png", interior_light, "array_images"),
+	make_entry("bg_shed", "Shed", "res/images/shed/bg_shed.png", interior_light, "array_images"),
 	make_entry("intro", "Intro", "res/images/intro/bg.png", interior_light, "images"),
 }
 

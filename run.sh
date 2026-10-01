@@ -166,6 +166,7 @@ function init()
 		kitchen
 		living_room
 		outside
+		shed
 		storage_room
 		utility_room
 		office1

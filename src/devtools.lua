@@ -50,6 +50,8 @@ local DevTools = {
 	},
 	debug_bump_drag = false,
 	slab_warmup = 0,
+	slab_minimize_backup = nil,
+	slab_main_list_hidden = false,
 }
 
 local slab_components
@@ -256,46 +258,48 @@ function DevTools.update(dt)
 	Slab.Update(dt)
 	dev_hang_leave("slab")
 
-	dev_hang_enter("list win")
-	dev_hang_enter("list win:begin")
-	Slab.BeginWindow("list", { Title = "DevTools" })
-	dev_hang_leave("list win:begin")
+	if not DevTools.slab_main_list_hidden then
+		dev_hang_enter("list win")
+		dev_hang_enter("list win:begin")
+		Slab.BeginWindow("list", { Title = "DevTools" })
+		dev_hang_leave("list win:begin")
 
-	if DevTools.pp_effects then
-		dev_hang_enter("list win:pp")
-		for _, effect in ipairs(DevTools.pp_effects) do
-			local pp_id = effect.get_type and effect:get_type() or effect:type()
-			if Slab.CheckBox(effect.is_active, pp_id, { Id = "devtools.pp." .. pp_id }) then
-				effect.debug_show = not effect.debug_show
-				effect.is_active = not effect.is_active
+		if DevTools.pp_effects then
+			dev_hang_enter("list win:pp")
+			for _, effect in ipairs(DevTools.pp_effects) do
+				local pp_id = effect.get_type and effect:get_type() or effect:type()
+				if Slab.CheckBox(effect.is_active, pp_id, { Id = "devtools.pp." .. pp_id }) then
+					effect.debug_show = not effect.debug_show
+					effect.is_active = not effect.is_active
+				end
+			end
+			dev_hang_leave("list win:pp")
+		end
+
+		dev_hang_enter("list win:fog")
+		if Slab.CheckBox(DevTools.flags.fog, "Fog", { Id = "devtools.panel.fog" }) then
+			DevTools.flags.fog = not DevTools.flags.fog
+		end
+		dev_hang_leave("list win:fog")
+
+		dev_hang_enter("list win:panels")
+		for _, v in ipairs(list) do
+			if Slab.CheckBox(v.show, v.title, { Id = "devtools.panel." .. v.title }) then
+				v.show = not v.show
+				if v == room_map and v.show then
+					DevTools.build_room_map_layout()
+				elseif v == bg_asset_processor and v.show then
+					BgAssetProcessor.init()
+					BgAssetProcessor.apply_asset_light_defaults()
+					BgAssetProcessor.mark_dirty()
+				end
 			end
 		end
-		dev_hang_leave("list win:pp")
-	end
+		dev_hang_leave("list win:panels")
 
-	dev_hang_enter("list win:fog")
-	if Slab.CheckBox(DevTools.flags.fog, "Fog", { Id = "devtools.panel.fog" }) then
-		DevTools.flags.fog = not DevTools.flags.fog
+		Slab.EndWindow()
+		dev_hang_leave("list win")
 	end
-	dev_hang_leave("list win:fog")
-
-	dev_hang_enter("list win:panels")
-	for _, v in ipairs(list) do
-		if Slab.CheckBox(v.show, v.title, { Id = "devtools.panel." .. v.title }) then
-			v.show = not v.show
-			if v == room_map and v.show then
-				DevTools.build_room_map_layout()
-			elseif v == bg_asset_processor and v.show then
-				BgAssetProcessor.init()
-				BgAssetProcessor.apply_asset_light_defaults()
-				BgAssetProcessor.mark_dirty()
-			end
-		end
-	end
-	dev_hang_leave("list win:panels")
-
-	Slab.EndWindow()
-	dev_hang_leave("list win")
 
 	if DevTools.pp_effects then
 		dev_hang_enter("pp debug")
@@ -1407,6 +1411,53 @@ function DevTools.draw_bg_asset_processor()
 	love.graphics.setLineWidth(1)
 end
 
+function DevTools.toggle_slab_minimize()
+	if DevTools.slab_minimize_backup then
+		local backup = DevTools.slab_minimize_backup
+		for panel, was_open in pairs(backup.panels) do
+			panel.show = was_open
+		end
+		for sys, was_open in pairs(backup.systems) do
+			sys.debug_show = was_open
+		end
+		for effect, was_open in pairs(backup.pp_effects) do
+			effect.debug_show = was_open
+		end
+		DevTools.slab_main_list_hidden = backup.main_list_hidden
+		DevTools.slab_minimize_backup = nil
+		return
+	end
+
+	local backup = {
+		panels = {},
+		systems = {},
+		pp_effects = {},
+		main_list_hidden = DevTools.slab_main_list_hidden,
+	}
+	for _, panel in ipairs(list) do
+		backup.panels[panel] = panel.show
+		panel.show = false
+	end
+	if GameStates.world then
+		for _, sys in ipairs(GameStates.world:getSystems()) do
+			if sys.debug_update or sys.debug_draw then
+				backup.systems[sys] = sys.debug_show == true
+				sys.debug_show = false
+			end
+		end
+	end
+	if DevTools.pp_effects then
+		for _, effect in ipairs(DevTools.pp_effects) do
+			if effect.debug_update then
+				backup.pp_effects[effect] = effect.debug_show == true
+				effect.debug_show = false
+			end
+		end
+	end
+	DevTools.slab_main_list_hidden = true
+	DevTools.slab_minimize_backup = backup
+end
+
 function DevTools.end_draw()
 	if stats.show then
 		stats.stats = love.graphics.getStats(stats.stats)
@@ -1503,6 +1554,8 @@ function DevTools.keypressed(key)
 		DevTools.show_fps = not DevTools.show_fps
 	elseif key == "f" then
 		fade.show = not fade.show
+	elseif key == "u" and DevTools.show then
+		DevTools.toggle_slab_minimize()
 	elseif key == "m" and DevTools.show then
 		room_map.show = not room_map.show
 		if room_map.show then

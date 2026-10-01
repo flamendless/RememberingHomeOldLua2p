@@ -6,7 +6,7 @@ function Shed:init(world)
 end
 
 function Shed:state_setup()
-	local w, h = Resources.data.images.storage_room:getDimensions()
+	local w, h = Resources.data.images.bg_shed:getDimensions()
 	local ww, wh = love.graphics.getDimensions()
 
 	self.canvas = Canvas.create_main()
@@ -14,7 +14,7 @@ function Shed:state_setup()
 	self.camera = Gamera.new(0, 0, w, h)
 	self.camera:setWindow(0, 0, ww, wh)
 	Concord.entity(self.world):assemble(Assemblages.Common.camera, self.camera, self.scale, w, h)
-	Concord.entity(self.world):assemble(Assemblages.Common.bg, "storage_room")
+	Concord.entity(self.world):assemble(Assemblages.Common.bg, "bg_shed")
 
 	self.world:emit("create_room_bounds", w, h, { room_id = Enums.game_state.Shed })
 	self.world:emit("parse_room_items", self.id)

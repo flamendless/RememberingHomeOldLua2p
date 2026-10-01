@@ -165,6 +165,69 @@ function TestHooks.player_near_x(x, tolerance)
 	return math.abs(player:get("pos").x - x) <= tolerance
 end
 
+function TestHooks.player_ready_to_interact_door(key)
+	if not TestHooks.state_is("Outside") then
+		return false
+	end
+	local player = TestHooks.get_player()
+	local world = GameStates.world
+	if not player or not world then
+		return false
+	end
+	local door = world:getEntityByKey(key)
+	if not door then
+		return false
+	end
+	local px, py, pw, ph = Helper.get_collider_rect(player)
+	local dx, dy, dw, dh = Helper.get_collider_rect(door)
+	if not Helper.is_in_interact_range(px, py, pw, ph, dx, dy, dw, dh) then
+		return false
+	end
+	return Helper.can_proceed_interact(player, door)
+end
+
+function TestHooks.player_ready_to_interact_shed()
+	if not TestHooks.state_is("Outside") then
+		return false
+	end
+	local player = TestHooks.get_player()
+	local world = GameStates.world
+	if not player or not world then
+		return false
+	end
+	local shed = world:getEntityByKey("shed")
+	if not shed then
+		return false
+	end
+	local px, py, pw, ph = Helper.get_collider_rect(player)
+	local sx, sy, sw, sh = Helper.get_collider_rect(shed)
+	if not Helper.is_in_interact_range(px, py, pw, ph, sx, sy, sw, sh) then
+		return false
+	end
+	return Helper.can_proceed_interact(player, shed)
+end
+
+function TestHooks.player_west_of_shed_door()
+	local player = TestHooks.get_player()
+	local world = GameStates.world
+	if not player or not world then
+		return false
+	end
+	local shed = world:getEntityByKey("shed")
+	if not shed then
+		return false
+	end
+	local px, _, pw = Helper.get_collider_rect(player)
+	local sx, _, sw = Helper.get_collider_rect(shed)
+	local player_cx = px + pw * 0.5
+	local door_cx = sx + sw * 0.5
+	return player_cx < door_cx
+end
+
+function TestHooks.player_in_shed_interact_range()
+	return TestHooks.player_ready_to_interact_shed()
+end
+
 function TestHooks.player_faces_dir(dir)
 	local player = TestHooks.get_player()
 	if not player then

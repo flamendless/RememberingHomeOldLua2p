@@ -122,7 +122,8 @@ Enums.tutorial_wait_kind = Enum(
 	"reach_shed",
 	"enter_shed",
 	"open_lighter",
-	"close_lighter"
+	"close_lighter",
+	"reach_shed_center"
 )
 
 Enums.show_keys = Enum(

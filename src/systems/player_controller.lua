@@ -289,6 +289,11 @@ function PlayerController:spawn_player(fn)
 	assert:equal(self.player, nil, "Player already exists")
 
 	local x, y, face = Data.Rooms.get_spawn(GameStates.current_id, GameStates.prev_id)
+	local room_size = self.world:getResource("room_size")
+	local room_node = Data.Rooms.nodes[GameStates.current_id]
+	if room_size and room_size.height and room_node and room_node.bounds and room_node.bounds.ground then
+		y = Data.Rooms.player_foot_y(GameStates.current_id, room_size.height)
+	end
 	self.player = Concord.entity(self.world):assemble(Assemblages.Player.room, x, y)
 	self.world:__flush()
 	if face == Enums.face_dir.left then
@@ -308,6 +313,9 @@ function PlayerController:player_stop()
 	-- INFO: must remove can_move component first, then flush, before emitting this
 	self.last_desired_dir = 0
 	stop_body_motion(self.player)
+	if self.player:has("override_animation") then
+		return
+	end
 	local anim_name = self:player_update_animation()
 	self.world:emit("update_speed_data", self.player, anim_name)
 end

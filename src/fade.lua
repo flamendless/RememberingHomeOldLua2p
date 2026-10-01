@@ -26,6 +26,7 @@ function Fade.fade_out(on_complete, duration, delay)
 	assert:type_or_nil(on_complete, "function")
 	assert:type_or_nil(duration, "number")
 	assert:type_or_nil(delay, "number")
+	Flux.remove_by_object(f_color)
 	local f = Flux.to(f_color, duration or f_duration, { [4] = 1 }):delay(delay or f_delay)
 
 	if on_complete then
@@ -41,6 +42,7 @@ function Fade.fade_in(on_complete, duration, delay)
 	assert:type_or_nil(on_complete, "function")
 	assert:type_or_nil(duration, "number")
 	assert:type_or_nil(delay, "number")
+	Flux.remove_by_object(f_color)
 	local f = Flux.to(
 		f_color,
 		duration or f_duration,

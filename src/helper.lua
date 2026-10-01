@@ -210,11 +210,16 @@ function Helper.interact_face_dir(e_player, e_target)
 end
 
 function Helper.can_proceed_interact(e_player, e_target)
+	local face_dir = Helper.interact_face_dir(e_player, e_target)
+	if face_dir and e_player:has("body") then
+		if e_player:get("body").dir ~= face_dir then
+			return false
+		end
+	end
 	local req = e_target:get("req_col_dir")
 	if not req then
 		return true
 	end
-	local face_dir = Helper.interact_face_dir(e_player, e_target)
 	if not face_dir then
 		return false
 	end

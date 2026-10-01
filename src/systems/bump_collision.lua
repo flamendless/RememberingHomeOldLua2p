@@ -5,6 +5,34 @@ local BumpCollision = Concord.system({
 local INTERACT_REACH = 0.58
 local INTERACT_LEAVE_REACH = 0.48
 local WALL_PROBE = 2
+local MAX_COLLIDER = 4096
+local MIN_COORD = -1e6
+local MAX_COORD = 1e6
+
+local function is_sane_number(n)
+	return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
+end
+
+local function is_sane_rect(x, y, w, h)
+	return is_sane_number(x)
+		and is_sane_number(y)
+		and is_sane_number(w)
+		and is_sane_number(h)
+		and w > 0
+		and h > 0
+		and w <= MAX_COLLIDER
+		and h <= MAX_COLLIDER
+		and x >= MIN_COORD
+		and x <= MAX_COORD
+		and y >= MIN_COORD
+		and y <= MAX_COORD
+end
+
+local function bump_entity_label(e)
+	local id = e:get("id")
+	if id then return id.value end
+	return tostring(e)
+end
 
 local function get_query_rect(self)
 	local camera = self.world:getResource("camera")
@@ -104,19 +132,6 @@ local function apply_wall_hit_from_dx(pool, e, body)
 	end
 end
 
-local function overlaps_query_rect(pool, e, x, y, w, h)
-	local rx, ry, rw, rh = pool:getRect(e)
-	return rx < x + w and rx + rw > x and ry < y + h and ry + rh > y
-end
-
-local function can_proceed_interact(e, e_other)
-	local req = e_other:get("req_col_dir")
-	if not req then
-		return true
-	end
-	local body = e:get("body")
-	return body.dir == req.value
-end
 
 local function is_in_interact_range(e, e_other, pool, reach_scale)
 	if not (e:has("collider") and e_other:has("collider")) then
@@ -126,19 +141,14 @@ local function is_in_interact_range(e, e_other, pool, reach_scale)
 	reach_scale = reach_scale or INTERACT_REACH
 	local ax, ay, aw, ah = pool:getRect(e)
 	local bx, by, bw, bh = pool:getRect(e_other)
-	local px, py = ax + aw * 0.5, ay + ah * 0.5
-	local cx, cy = bx + bw * 0.5, by + bh * 0.5
-	local reach = (aw + bw) * reach_scale + (ah + bh) * 0.2
-	local dx = px - cx
-	local dy = py - cy
-	return dx * dx + dy * dy <= reach * reach
+	return Helper.is_in_interact_range(ax, ay, aw, ah, bx, by, bw, bh, reach_scale)
 end
 
 local function can_interact_with(e, e_other, pool, reach_scale)
 	if not (e:has("can_interact") and e_other:has("interactive")) then
 		return false
 	end
-	if not can_proceed_interact(e, e_other) then
+	if not Helper.can_proceed_interact(e, e_other) then
 		return false
 	end
 	return is_in_interact_range(e, e_other, pool, reach_scale)
@@ -167,17 +177,31 @@ end
 
 function BumpCollision:update(dt)
 	local x, y, w, h = get_query_rect(self)
-	local pool = self.pool
-	local all, all_len = pool:getItems()
 
-	for i = 1, all_len do
-		local e = all[i]
-		-- Skip dragged debug bodies; do not abort the whole update.
-		if e:has("body") and not e:get("bump").debug_clicked and overlaps_query_rect(pool, e, x, y, w, h) then
-			self:update_body(e)
-			self:check_col(e)
+	local pool = self.pool
+	local items, len = pool:queryRect(x, y, w, h)
+
+	for i = 1, len do
+		local e = items[i]
+		if e:has("body") and not e:get("bump").debug_clicked then
+			local rx, ry, rw, rh = pool:getRect(e)
+			if is_sane_rect(rx, ry, rw, rh) then
+				self:update_body(e)
+				self:check_col(e)
+			else
+				Log.warn(
+					"BumpCollision: skipping insane rect for %s (%.2f, %.2f, %.2f, %.2f)",
+					bump_entity_label(e),
+					rx,
+					ry,
+					rw,
+					rh
+				)
+			end
 		end
 	end
+
+	pool.freeTable(items)
 end
 
 function BumpCollision:update_body(e)
@@ -249,6 +273,7 @@ function BumpCollision:check_col(e)
 		other_col.normal.y = c.normalY
 
 		if can_interact_with(e, e_other, pool, INTERACT_REACH) then
+			other_col.is_hit = true
 			if not within_int then
 				self.world:emit("on_collide_interactive", e, e_other)
 			elseif within_int.entity ~= e_other then
@@ -269,6 +294,27 @@ function BumpCollision:check_col(e)
 		if active_interact then
 			break
 		end
+	end
+
+	if e:has("can_interact") and not active_interact then
+		local ax, ay, aw, ah = pool:getRect(e)
+		local pad = (aw + ah) * INTERACT_REACH + 80
+		local nearby, nlen = pool:queryRect(ax - pad, ay - pad, aw + 2 * pad, ah + 2 * pad)
+		for i = 1, nlen do
+			local e_other = nearby[i]
+			if e_other:has("interactive")
+				and can_interact_with(e, e_other, pool, INTERACT_REACH) then
+				e_other:get("collider").is_hit = true
+				if not within_int then
+					self.world:emit("on_collide_interactive", e, e_other)
+				elseif within_int.entity ~= e_other then
+					self.world:emit("on_change_interactive", e, e_other)
+				end
+				active_interact = e_other
+				break
+			end
+		end
+		pool.freeTable(nearby)
 	end
 
 	if within_int and not active_interact then
@@ -338,7 +384,6 @@ function BumpCollision:update_collider(e)
 	end
 
 	local collider = e:get("collider")
-	local pos = e:get("pos")
 	local w = new_collider.w
 	if not w then
 		w = collider.w
@@ -346,11 +391,6 @@ function BumpCollision:update_collider(e)
 	local h = new_collider.h
 	if not h then
 		h = collider.h
-	end
-	local col_offset = e:get("collider_offset")
-	if col_offset then
-		pos.x = pos.x + col_offset.ox
-		pos.y = pos.y + col_offset.oy
 	end
 
 	collider.w, collider.h = w, h
@@ -377,7 +417,7 @@ function BumpCollision:update_collider(e)
 		end
 	end
 
-	self.pool:update(e, pos.x, pos.y, w, h)
+	self.pool:update(e)
 end
 
 if DEV then
@@ -454,12 +494,13 @@ if DEV then
 				local id = e:get("id").value
 				if Slab.BeginTree(id, { Title = id, IsOpen = e:get("bump").debug_selected }) then
 					Slab.Indent()
-					local x, y, w, h = self.pool:getRect(e)
-					x = edit("x", x, e:get("pos"))
-					y = edit("y", y, e:get("pos"))
-					w = edit("w", w, e:get("collider"))
-					h = edit("h", h, e:get("collider"))
-					self.pool:update(e, x, y, w, h)
+					local pos = e:get("pos")
+					local collider = e:get("collider")
+					edit("x", pos.x, pos)
+					edit("y", pos.y, pos)
+					edit("w", collider.w, collider)
+					edit("h", collider.h, collider)
+					self.pool:update(e)
 					Slab.EndTree()
 				end
 			end
@@ -524,10 +565,9 @@ if DEV then
 				local bump = e:get("bump")
 				if bump.debug_clicked then
 					local pos = e:get("pos")
-					local _, _, rw, rh = self.pool:getRect(e)
 					pos.x = math.floor(mx)
 					pos.y = math.floor(my)
-					self.pool:update(e, pos.x, pos.y, rw, rh)
+					self.pool:update(e)
 				end
 			end
 		end
@@ -561,11 +601,10 @@ if DEV then
 				local bump = e:get("bump")
 				if bump.debug_clicked then
 					local pos = e:get("pos")
-					local _, _, rw, rh = self.pool:getRect(e)
 					pos.x = math.floor(mx)
 					pos.y = math.floor(my)
 					bump.debug_clicked = false
-					self.pool:update(e, pos.x, pos.y, rw, rh)
+					self.pool:update(e)
 				end
 			end
 		end

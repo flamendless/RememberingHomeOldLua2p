@@ -9,8 +9,48 @@ local Runner = {
 	wait_logged = false,
 }
 
+local TEST_LABEL_MARGIN = 8
+
 local function log(msg)
 	print("[test] " .. msg)
+end
+
+function Runner.current_step_label()
+	if Runner.done then
+		return "done"
+	end
+	if not Runner.steps then
+		return nil
+	end
+	local step = Runner.steps[Runner.step_index]
+	if not step then
+		return "complete"
+	end
+	return step.label
+end
+
+function Runner.draw_overlay(font)
+	local label = Runner.current_step_label()
+	if not label then
+		return
+	end
+
+	font = font or love.graphics.getFont()
+	local ww = love.graphics.getDimensions()
+	local text = label
+	if Runner.scenario_name then
+		text = Runner.scenario_name .. " · " .. label
+	end
+	local text_w = font:getWidth(text)
+	local _, _, _, a = love.graphics.getColor()
+
+	love.graphics.push()
+	love.graphics.origin()
+	love.graphics.setFont(font)
+	love.graphics.setColor(1, 0.85, 0.35, 1)
+	love.graphics.print(text, ww - text_w - TEST_LABEL_MARGIN, TEST_LABEL_MARGIN)
+	love.graphics.setColor(1, 1, 1, a)
+	love.graphics.pop()
 end
 
 function Runner.fail(msg)
@@ -49,6 +89,10 @@ function Runner.init(scenario_name)
 	end
 	Runner.steps = scenario.steps
 	Runner.keep_running = scenario.keep_running == true
+	Runner.on_tick = scenario.on_tick
+	if scenario_name == "outside_tutorial" then
+		Save.data.outside_intro_done = false
+	end
 	log("scenario: " .. scenario_name)
 	return scenario.state
 end
@@ -86,6 +130,10 @@ end
 function Runner.update(_dt)
 	if Runner.done then
 		return
+	end
+
+	if Runner.on_tick then
+		Runner.on_tick()
 	end
 
 	local elapsed = love.timer.getTime() - Runner.start_time

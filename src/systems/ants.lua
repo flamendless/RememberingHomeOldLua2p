@@ -211,6 +211,7 @@ if DEV then
 			for _, e in ipairs(self.pool) do
 				e:destroy()
 			end
+			self.world:__flush()
 			self.world:emit("debug_toggle_path", flags.path, "bug")
 			self:generate_ants(data.n, data.start_p, data.end_p, data.path_repeat, data.speed)
 		end

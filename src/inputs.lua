@@ -197,7 +197,7 @@ function Inputs.keyreleased(_, scancode)
 	Inputs.current[map[scancode]] = false
 end
 
-function Inputs.update(dt)
+local function inputs_update_core(dt)
 	for k, v in pairs(Inputs.current) do
 		Inputs.previous[k] = v
 		if v then
@@ -206,6 +206,10 @@ function Inputs.update(dt)
 			Inputs.hold_timers[k] = 0
 		end
 	end
+end
+
+function Inputs.update(dt)
+	inputs_update_core(dt)
 end
 
 function Inputs.flush()
@@ -229,13 +233,101 @@ function Inputs.get_current_map_name()
 end
 
 if TEST.mode then
+	local DEBUG_INPUT_PRUNE = 1
+	local DEBUG_INPUT_LINE_H = 16
+	local DEBUG_INPUT_MARGIN = 8
+	local DEBUG_INPUT_ICON = 8
+
 	local pending_releases = {}
 	local held_actions = {}
 	local dialogue_pump_phase = 0
+	local debug_entries = {}
+
+	local function track_debug_input(action)
+		debug_entries[#debug_entries + 1] = {
+			action = action,
+			stopped = false,
+			stopped_age = 0,
+		}
+	end
+
+	local function mark_debug_input_released(action)
+		for i = #debug_entries, 1, -1 do
+			local entry = debug_entries[i]
+			if entry.action == action and not entry.stopped then
+				entry.stopped = true
+				entry.stopped_age = 0
+				return
+			end
+		end
+	end
+
+	local function update_debug_entries(dt)
+		for i = #debug_entries, 1, -1 do
+			local entry = debug_entries[i]
+			if Inputs.current[entry.action] and not entry.stopped then
+				entry.stopped_age = 0
+			elseif not entry.stopped then
+				entry.stopped = true
+				entry.stopped_age = 0
+			else
+				entry.stopped_age = entry.stopped_age + dt
+				if entry.stopped_age >= DEBUG_INPUT_PRUNE then
+					table.remove(debug_entries, i)
+				end
+			end
+		end
+	end
+
+	function Inputs.draw_test_input_overlay()
+		if #debug_entries == 0 then
+			return
+		end
+
+		local font = love.graphics.getFont()
+		local line_h = math.max(DEBUG_INPUT_LINE_H, font:getHeight())
+		local ww, wh = love.graphics.getDimensions()
+		local y = wh - DEBUG_INPUT_MARGIN - line_h
+		local icon_gap = 4
+		local r, g, b, a = love.graphics.getColor()
+
+		love.graphics.push()
+		love.graphics.origin()
+		love.graphics.setColor(1, 0, 0, 1)
+
+		for i = #debug_entries, 1, -1 do
+			local entry = debug_entries[i]
+			local label = entry.action
+			local text_w = font:getWidth(label)
+			local row_w = DEBUG_INPUT_ICON + icon_gap + text_w
+			local row_right = ww - DEBUG_INPUT_MARGIN
+			local icon_x = row_right - row_w
+			local text_x = icon_x + DEBUG_INPUT_ICON + icon_gap
+			local icon_y = y + (line_h - DEBUG_INPUT_ICON) * 0.5
+
+			if entry.stopped then
+				love.graphics.rectangle("fill", icon_x, icon_y, DEBUG_INPUT_ICON, DEBUG_INPUT_ICON)
+			else
+				local half = DEBUG_INPUT_ICON * 0.5
+				love.graphics.polygon("fill",
+					icon_x + DEBUG_INPUT_ICON, icon_y + half,
+					icon_x, icon_y,
+					icon_x, icon_y + DEBUG_INPUT_ICON
+				)
+			end
+
+			love.graphics.print(label, text_x, y)
+			y = y - line_h
+		end
+
+		love.graphics.setColor(r, g, b, a)
+		love.graphics.pop()
+	end
 
 	function Inputs.apply_pending_releases()
 		for action in pairs(pending_releases) do
 			Inputs.current[action] = false
+			mark_debug_input_released(action)
 			pending_releases[action] = nil
 		end
 	end
@@ -243,7 +335,11 @@ if TEST.mode then
 	function Inputs.tap(action)
 		assert:type(action, "string")
 		assert(Inputs.current[action] ~= nil, action)
+		local was_down = Inputs.current[action]
 		Inputs.current[action] = true
+		if not was_down then
+			track_debug_input(action)
+		end
 	end
 
 	function Inputs.release(action)
@@ -255,9 +351,13 @@ if TEST.mode then
 	function Inputs.hold(action)
 		assert:type(action, "string")
 		assert(Inputs.current[action] ~= nil, action)
+		local was_down = Inputs.current[action]
 		Inputs.current[action] = true
 		held_actions[action] = true
 		pending_releases[action] = nil
+		if not was_down then
+			track_debug_input(action)
+		end
 	end
 
 	function Inputs.unhold(action)
@@ -288,20 +388,26 @@ if TEST.mode then
 			if dialogue_pump_phase == 0 then
 				Inputs.previous["left"] = true
 				Inputs.current["left"] = false
+				mark_debug_input_released("left")
 				dialogue_pump_phase = 1
 			else
 				Inputs.previous["interact"] = true
 				Inputs.current["interact"] = false
+				mark_debug_input_released("interact")
 				dialogue_pump_phase = 0
 			end
 		else
 			if dialogue_pump_phase == 0 then
 				Inputs.previous["interact"] = false
+				if not Inputs.current["interact"] then
+					track_debug_input("interact")
+				end
 				Inputs.current["interact"] = true
 				dialogue_pump_phase = 1
 			else
 				Inputs.previous["interact"] = true
 				Inputs.current["interact"] = false
+				mark_debug_input_released("interact")
 				dialogue_pump_phase = 0
 			end
 		end
@@ -314,6 +420,11 @@ if TEST.mode then
 		if action then
 			Inputs.release(action)
 		end
+	end
+
+	function Inputs.update(dt)
+		inputs_update_core(dt)
+		update_debug_entries(dt)
 	end
 end
 

@@ -5,8 +5,11 @@ BumpStorage.__mt = {
 	__index = BumpStorage,
 }
 
+local MAX_PROJECT_MOVE_ITERS = 64
+local BUMP_CELL_SIZE = 128
+
 local ctor = function(def)
-	local self = setmetatable(Bump.newWorld(), BumpStorage.__mt)
+	local self = setmetatable(Bump.newWorld(BUMP_CELL_SIZE), BumpStorage.__mt)
 	table.insert(def, "collider")
 	table.insert(def, "pos")
 	table.insert(def, "bump")
@@ -15,16 +18,14 @@ end
 
 function BumpStorage:add(e)
 	assert(e.__isEntity, e)
-	local pos = e:get("pos")
-	local collider = e:get("collider")
-	local x, y = pos.x, pos.y
-	local w, h = collider.w, collider.h
-	local col_offset = e:get("collider_offset")
-	if col_offset then
-		x = x + col_offset.ox
-		y = y + col_offset.oy
-	end
+	local x, y, w, h = Helper.get_collider_rect(e)
 	self.super.add(self, e, x, y, w, h)
+end
+
+function BumpStorage:update(e)
+	assert(e.__isEntity, e)
+	local x, y, w, h = Helper.get_collider_rect(e)
+	self.super.update(self, e, x, y, w, h)
 end
 
 function BumpStorage:has(e)
@@ -36,6 +37,57 @@ function BumpStorage:clear()
 	for _, e in ipairs(self:getItems()) do
 		self:remove(e)
 	end
+end
+
+function BumpStorage:projectMove(item, x, y, w, h, goalX, goalY, filter)
+	filter = filter or function(_, _)
+		return "slide"
+	end
+
+	local projected_cols, projected_len = self:project(item, x, y, w, h, goalX, goalY, filter)
+
+	local cols, len = self.fetchTable(), 0
+	local visited = self.fetchTable()
+	visited[item] = true
+
+	local iters = 0
+	while projected_len > 0 do
+		iters = iters + 1
+		if iters > MAX_PROJECT_MOVE_ITERS then
+			Log.warn("BumpStorage: projectMove iteration cap", item, iters)
+			break
+		end
+
+		local col = projected_cols[1]
+		len = len + 1
+		cols[len] = col
+
+		for i = 2, projected_len do
+			self.freeTable(projected_cols[i])
+		end
+		self.freeTable(projected_cols)
+
+		visited[col.other] = true
+
+		local response = self.responses[col.type]
+		goalX, goalY, projected_cols, projected_len = response(
+			self,
+			col,
+			x,
+			y,
+			w,
+			h,
+			goalX,
+			goalY,
+			filter,
+			visited
+		)
+	end
+
+	self.freeTable(visited)
+	self.freeCollisions(projected_cols)
+
+	return goalX, goalY, cols, len
 end
 
 return ctor

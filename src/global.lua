@@ -29,7 +29,7 @@ Bitser = require("modules.bitser.bitser")
 Bump = require("modules.bump.bump-niji")
 Concord = require("modules.concord.concord")
 Enum = require("modules.enum.enum")
-Flux = require("modules.flux.flux")
+Flux = require("flux_ext")
 Gamera = require("modules.gamera.gamera")
 Lily = require("modules.lily.lily")
 if TEST.mode then

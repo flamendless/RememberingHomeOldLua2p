@@ -15,6 +15,7 @@ local Data = {
 		y = 254,
 		z = 4,
 		req_col_dir = -1,
+		interact_box = { x = 485, y = 260, w = 10, h = 62 },
 		is_door_ev = "ev_interact_backdoor",
 	},
 	{
@@ -34,7 +35,7 @@ local Data = {
 		x = 32,
 		y = 230,
 		z = 4,
-		req_col_dir = -1,
+		req_col_dir = 1,
 		interact_box = { x = 79, y = 263, w = 18, h = 62 },
 	},
 }

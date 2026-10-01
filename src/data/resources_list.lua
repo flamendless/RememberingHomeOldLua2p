@@ -138,7 +138,6 @@ ResourcesList[G.Outside] = {
 	},
 }
 
---TODO: update
 ResourcesList[G.Shed] = {
 	images = {
 		{ "bg_inventory",     "res/images/inventory_notes/bg_inventory.png" },
@@ -152,9 +151,9 @@ ResourcesList[G.Shed] = {
 		unpack(textures),
 	},
 	array_images = {
-		{ "storage_room",     "res/images/storage_room/storage_room.png" },
-		{ "storage_room_gen", "res/images/storage_room/storage_room_gen.png" },
-		{ "atlas_shed_items", "res/images/atlases/storage_room.png" },
+		{ "bg_shed",          "res/images/shed/bg_shed.png" },
+		{ "bg_shed_gen",      "res/images/shed/bg_shed_gen.png" },
+		{ "atlas_shed_items", "res/images/atlases/shed.png" },
 		unpack(player),
 	},
 	image_data = {

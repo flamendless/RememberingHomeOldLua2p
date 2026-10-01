@@ -166,6 +166,9 @@ Dialogues.outside = {
 Dialogues.shed = {
 	start = {},
 	fin = {},
+	light_switch = {
+		"_toggle_light_switch",
+	},
 	shed_interior = {
 		LoveInk.Helpers.text("It's too dark in here..."),
 		LoveInk.Helpers.text("Good thing I brought my pal..."),

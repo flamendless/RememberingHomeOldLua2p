@@ -13,15 +13,15 @@ Rooms.nodes[G.Outside] = {
 	entries = { [G.Menu] = { 800, 258 } },
 	doors = {
 		backdoor = { to = G.StorageRoom, spawn = { 312, 48 } },
-		shed = { to = G.Shed, spawn = { 312, 48 } },
+		shed = { to = G.Shed, spawn = { 197, 48 } },
 	},
 }
 
 Rooms.nodes[G.Shed] = {
 	bounds = {
-		left = { width = 16 },
+		left = { width = 16, x = -6 },
 		right = { width = 16 },
-		ground = { height = 16 },
+		ground = { height = 16, y = 118, width = 400, x = 0 },
 		ceiling = {
 			bottom_y = 16,
 			emitter_h = 10,
@@ -29,9 +29,9 @@ Rooms.nodes[G.Shed] = {
 			zones = {},
 		},
 	},
-	default = { 312, 48 },
+	default = { 197, 48 },
 	doors = {
-		right_door = { to = G.Outside, spawn = { 100, 263 } },
+		door_right = { to = G.Outside, spawn = { 197, 48 } },
 	},
 }
 
@@ -188,7 +188,15 @@ function Rooms.get_ceiling_bottom_y(room_id, zone_key)
 end
 
 function Rooms.ground_top_y(room_id, room_h)
-	return room_h - Rooms.get_bounds(room_id).ground.height
+	local ground = Rooms.get_bounds(room_id).ground
+	if ground.y then
+		return ground.y
+	end
+	return room_h - ground.height
+end
+
+function Rooms.player_foot_y(room_id, room_h)
+	return Rooms.ground_top_y(room_id, room_h) - Data.Colliders.player.h
 end
 
 function Rooms.left_width(room_id, opt)
@@ -197,6 +205,22 @@ end
 
 function Rooms.right_width(room_id, opt)
 	return Rooms.get_bounds(room_id).right.width * (opt and opt.sx or 1)
+end
+
+function Rooms.ground_x(room_id, opt)
+	local ground = Rooms.get_bounds(room_id).ground
+	if ground.x ~= nil then
+		return ground.x
+	end
+	return Rooms.left_width(room_id, opt)
+end
+
+function Rooms.ground_width(room_id, room_w, opt)
+	local ground = Rooms.get_bounds(room_id).ground
+	if ground.width then
+		return ground.width * (opt and opt.sx or 1)
+	end
+	return room_w - Rooms.left_width(room_id, opt) - Rooms.right_width(room_id, opt)
 end
 
 function Rooms.emitter_rect(room_id, room_w, opts)

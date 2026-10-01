@@ -134,6 +134,7 @@ function Camera:tween_camera(dir)
 	self.target_scale = dir == 1 and cs + 0.25 or cs - 0.25
 	self.target_state = dir == 1 and Enums.camera_state.zoomed_in or Enums.camera_state.zoomed_out
 
+	Flux.remove_by_object(self)
 	self.flux = Flux.to(self, DUR_TRANSITION, { scale = self.target_scale })
 		:ease("circout")
 		:onupdate(function()
@@ -172,6 +173,9 @@ function Camera:on_leave_interact_or_inventory()
 end
 
 function Camera:display_bars()
+	if self.bars then
+		return
+	end
 	local l, t, w, h = self.main_camera:getWindow()
 	self.bars = true
 	self.bar_top = { x = l, y = t, w = w, h = 0 }
@@ -278,6 +282,7 @@ if DEV then
 				})
 			then
 				self.follow = false
+				Flux.remove_by_object(self)
 				x = Slab.GetInputNumber()
 				self.main_camera:setPosition(x, y)
 			end
@@ -291,6 +296,7 @@ if DEV then
 				})
 			then
 				self.follow = false
+				Flux.remove_by_object(self)
 				y = Slab.GetInputNumber()
 				self.main_camera:setPosition(x, y)
 			end
@@ -305,7 +311,13 @@ if DEV then
 					Precision = 2,
 				})
 			then
+				Flux.remove_by_object(self)
+				if self.flux then
+					self.flux:stop()
+					self.flux = nil
+				end
 				scale = Slab.GetInputNumber()
+				self.scale = scale
 				self.main_camera:setScale(scale)
 			end
 

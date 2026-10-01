@@ -33,6 +33,10 @@ local function tutorial_reached_x(pos_x, target_x, dir)
 	return pos_x >= target_x
 end
 
+local function shed_test_requires_center()
+	return TEST.mode and TEST.scenario == "outside_tutorial"
+end
+
 local function open_lighter_anim_progress(e_player)
 	local animation = e_player:get("animation")
 	if not animation then
@@ -585,12 +589,29 @@ function Tutorial:run_tutorial()
 	self:wait_enter_shed()
 end
 
+function Tutorial:block_shed_exit_door()
+	local door = self.world:getEntityByKey("door_right")
+	if door and door:has("is_door") then
+		door:remove("is_door")
+	end
+	self.e_shed_exit_door = door
+end
+
+function Tutorial:unblock_shed_exit_door()
+	local door = self.e_shed_exit_door or self.world:getEntityByKey("door_right")
+	if door and not door:has("is_door") then
+		door:give("is_door")
+	end
+end
+
 function Tutorial:begin_shed_open_lighter(e_player)
 	self.e_player = e_player
 	self.phase = "shed"
 	self:set_beat(Enums.tutorial_beat.open_lighter)
+	self:block_shed_exit_door()
 	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, false)
 	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, false)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_run, false)
 
 	if not self.e_dialogue_shed then
 		self.e_dialogue_shed = Concord.entity(self.world)
@@ -607,10 +628,54 @@ function Tutorial:begin_shed_open_lighter(e_player)
 		self:wait_seconds(1)
 		self.world:emit("start_dialogue", self.e_player, self.e_dialogue_shed, "shed_interior_lit")
 		self:wait_dialogue()
+		self:after_shed_lit_dialogue()
 		self:prompt_shed_close_lighter()
 
 		self:complete_shed_open_lighter()
 	end)
+end
+
+function Tutorial:shed_room_center_x()
+	local room_size = self.world:getResource("room_size")
+	assert(room_size and room_size.width, "room_size missing for shed center")
+	return room_size.width * 0.5
+end
+
+function Tutorial:player_at_shed_center()
+	if not self.e_player then
+		return false
+	end
+	local player_pos = self.e_player:get("pos")
+	local center_x = self:shed_room_center_x()
+	local col = self.e_player:get("collider")
+	local tolerance = col and col.w_h or 16
+	-- Enter from the door on the right; allow overshoot at high test speed.
+	return player_pos.x <= center_x + tolerance
+end
+
+function Tutorial:wait_reach_shed_center()
+	self.wait_kind = Enums.tutorial_wait_kind.reach_shed_center
+	self:pause_timeline()
+end
+
+function Tutorial:begin_shed_walk_to_center()
+	self:restore_player_controls(self.e_player, {
+		keep_lighter_close_blocked = true,
+	})
+	self:wait_reach_shed_center()
+end
+
+function Tutorial:after_shed_lit_dialogue()
+	self:fade_hand_and_glow(0.2)
+	if shed_test_requires_center() then
+		self:begin_shed_walk_to_center()
+	else
+		self:restore_player_controls(self.e_player, {
+			keep_lighter_close_blocked = true,
+			keep_override_animation = true,
+			skip_player_stop = true,
+		})
+	end
 end
 
 function Tutorial:prompt_shed_hand_lighter(action, glow_opts)
@@ -635,7 +700,6 @@ end
 
 function Tutorial:prompt_shed_close_lighter()
 	self:set_beat(Enums.tutorial_beat.close_lighter)
-	self.e_player:remove("block_lighter_close")
 	self:prompt_shed_hand_lighter(Enums.input.lighter, {
 		intensity = 1.2,
 		size = 3.5,
@@ -646,12 +710,48 @@ function Tutorial:prompt_shed_close_lighter()
 	self:wait_close_lighter()
 end
 
+function Tutorial:shed_tutorial_active()
+	return self.phase == "shed" and not self.shed_lighter_done
+end
+
+function Tutorial:restore_player_controls(e_player, opts)
+	opts = opts or {}
+	e_player = e_player or self.e_player
+	if not e_player or not e_player.__isEntity then
+		return
+	end
+	if not opts.keep_override_animation then
+		e_player:remove("override_animation")
+	end
+	e_player:remove("can_move_left_only")
+	e_player:remove("can_move_right_only")
+	if not opts.keep_lighter_close_blocked then
+		e_player:remove("block_lighter_close")
+	end
+	e_player:remove("hidden")
+	if not opts.skip_player_stop then
+		self.world:emit("player_stop")
+	end
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, true)
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_interact, true)
+	local allow_run = opts.allow_run
+	if allow_run == nil then
+		allow_run = not self:shed_tutorial_active()
+	end
+	self.world:emit("toggle_component", e_player, Enums.player_cap.can_run, allow_run)
+	if not allow_run and e_player:has("is_running") then
+		e_player:get("is_running").value = false
+	end
+	self.world:__flush()
+end
+
 function Tutorial:complete_shed_open_lighter()
 	self.shed_lighter_done = true
 	self.phase = "outside_resume"
 	self.e_player:remove("block_lighter_close")
-	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_move, true)
-	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_interact, true)
+	self:unblock_shed_exit_door()
+	self:restore_player_controls(self.e_player)
+	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_lighter, true)
 end
 
 function Tutorial:resume_outside_after_shed(e_player)
@@ -672,6 +772,7 @@ function Tutorial:resume_outside_after_shed(e_player)
 		self.world:emit("open_backdoor")
 		self.world:emit("tle_log", "tutorial timeline done")
 		self:kill_timeline()
+		self:restore_player_controls(e_player)
 	end)
 end
 
@@ -832,9 +933,13 @@ function Tutorial:state_update(dt)
 		end
 	elseif self.wait_kind == Enums.tutorial_wait_kind.open_lighter then
 		if Inputs.pressed(Enums.input.lighter) then
+			local player_controller = self.world:getSystem(ECS.get_system_class("player_controller"))
 			self.wait_kind = Enums.tutorial_wait_kind.null
 			self.e_player:give("block_lighter_close")
 			self.opening_lighter_hand = true
+			if player_controller and not player_controller.on_lighter then
+				player_controller:on_toggle_equip_lighter()
+			end
 		end
 	elseif self.wait_kind == Enums.tutorial_wait_kind.close_lighter then
 		if Inputs.pressed(Enums.input.lighter) then
@@ -842,8 +947,14 @@ function Tutorial:state_update(dt)
 			if not player_controller.on_lighter then
 				return
 			end
+			self.e_player:remove("block_lighter_close")
 			self.wait_kind = Enums.tutorial_wait_kind.null
 			self.closing_lighter_hand = true
+			player_controller:on_toggle_equip_lighter()
+		end
+	elseif self.wait_kind == Enums.tutorial_wait_kind.reach_shed_center then
+		if self:player_at_shed_center() then
+			self:finish_wait()
 		end
 	end
 end
