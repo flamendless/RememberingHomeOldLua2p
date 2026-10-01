@@ -3,6 +3,7 @@ local Circle = {
 }
 
 function Circle.render(e)
+	assert:entity(e)
 	local pos = e:get("pos")
 	local circle = e:get("circle")
 	local mode = e:get("draw_mode").value

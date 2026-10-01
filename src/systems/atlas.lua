@@ -3,6 +3,7 @@ local Atlas = Concord.system({
 })
 
 local function create_quad(e)
+	assert:entity(e)
 	local sprite = e:get("sprite")
 	local atlas = e:get("atlas")
 	return love.graphics.newQuad(atlas.value.x, atlas.value.y, atlas.value.w, atlas.value.h, sprite.iw, sprite.ih)

@@ -62,6 +62,9 @@ function HandDecal.create(e, opts)
 end
 
 function HandDecal.fade_in(e, target_opacity, duration, delay)
+	assert:entity(e)
+	assert:type(duration, "number")
+	assert:type(delay, "number")
 	assert(e.__isEntity and e:has("decals_shaders"))
 	local decals_shaders = e:get("decals_shaders")
 	local data = decals_shaders.data
@@ -70,6 +73,9 @@ function HandDecal.fade_in(e, target_opacity, duration, delay)
 end
 
 function HandDecal.fade_out(e, duration, on_complete)
+	assert:entity(e)
+	assert:type(duration, "number")
+	assert:type(on_complete, "function")
 	assert(e.__isEntity and e:has("decals_shaders"))
 	local decals_shaders = e:get("decals_shaders")
 	local data = decals_shaders.data
@@ -83,6 +89,9 @@ function HandDecal.fade_out(e, duration, on_complete)
 end
 
 function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
+	assert:entity(e)
+	assert:type(duration, "number")
+	assert:type(count, "number")
 	assert(e.__isEntity and e:has("decals_shaders"))
 	min_opacity = min_opacity or 0
 	max_opacity = max_opacity or 1
@@ -124,6 +133,9 @@ function HandDecal.pulse_opacity(e, duration, count, min_opacity, max_opacity)
 end
 
 function HandDecal.set_progress(e, progress, base_opacity, label, opts)
+	assert:entity(e)
+	assert:type(label, "string")
+	assert:type(opts, "table")
 	if not e or not e:has("decals_shaders") then
 		return
 	end
@@ -186,6 +198,10 @@ function HandDecal.create_key_label(world, text, opts)
 end
 
 function HandDecal.sync_key_label(hand, label, camera, ox, oy)
+	assert:entity(hand)
+	assert:type(label, "string")
+	assert:type(ox, "number")
+	assert:type(oy, "number")
 	assert(hand.__isEntity and hand:has("decals_shaders"))
 	assert(label.__isEntity and label:has("pos") and label:has("color"))
 
@@ -208,6 +224,9 @@ function HandDecal.sync_key_label(hand, label, camera, ox, oy)
 end
 
 function HandDecal.fade_key_label(e, duration, on_complete)
+	assert:entity(e)
+	assert:type(duration, "number")
+	assert:type(on_complete, "function")
 	assert(e.__isEntity and e:has("color"))
 	local color = e:get("color")
 	Flux.to(color.value, duration, { [4] = 0 }):oncomplete(function()

@@ -1,6 +1,7 @@
 local Tween = Concord.system()
 
 function Tween:init(world)
+	assert:world(world)
 	self.world = world
 end
 

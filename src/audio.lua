@@ -27,10 +27,15 @@ function Audio.init_spatial()
 end
 
 function Audio.to_audio_pos(x, y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	return x, 0, y
 end
 
 function Audio.set_listener(x, y, dir)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(dir, "number")
 	local ax, ay, az = Audio.to_audio_pos(x, y)
 	love.audio.setPosition(ax, ay, az)
 	local fx = dir or 1
@@ -38,6 +43,7 @@ function Audio.set_listener(x, y, dir)
 end
 
 function Audio.resolve_source(source_or_id)
+	assert:type(source_or_id, "string")
 	if type(source_or_id) == "userdata" and source_or_id:type() == "Source" then
 		return source_or_id
 	end
@@ -48,6 +54,9 @@ function Audio.resolve_source(source_or_id)
 end
 
 function Audio.play_positional(template, x, y, opts)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	if not template then
 		return nil

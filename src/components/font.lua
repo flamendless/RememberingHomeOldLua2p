@@ -11,5 +11,6 @@ function c_font:serialize()
 end
 
 function c_font:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.resource_id)
 end

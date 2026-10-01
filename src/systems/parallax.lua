@@ -10,6 +10,7 @@ local Parallax = Concord.system({
 })
 
 function Parallax:init(world)
+	assert:world(world)
 	self.world = world
 	self.tags = {}
 
@@ -35,6 +36,8 @@ function Parallax:init(world)
 end
 
 function Parallax:push_to_end(e, t)
+	assert:entity(e)
+	assert:type(t, "number")
 	local last_e = t[#t]
 	local pos = e:get("pos")
 	local gap = 0
@@ -71,6 +74,7 @@ function Parallax:stop_parallax()
 end
 
 function Parallax:slow_parallax(amount)
+	assert:type(amount, "number")
 	for _, e in ipairs(self.pool) do
 		local parallax = e:get("parallax")
 		local dx = parallax.vx * amount
@@ -79,6 +83,8 @@ function Parallax:slow_parallax(amount)
 end
 
 function Parallax:parallax_move_x(dt, dir)
+	assert:type(dt, "number")
+	assert:type(dir, "number")
 	for _, e in ipairs(self.pool) do
 		if not e:has("parallax_stop") then
 			local parallax = e:get("parallax")
@@ -113,6 +119,7 @@ end
 local is_running = true
 
 function Parallax:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

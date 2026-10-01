@@ -10,7 +10,7 @@ function CustomList.new()
 end
 
 function CustomList:add(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local index = self.size + 1
 	self[index] = e
 	self[e] = index
@@ -23,7 +23,7 @@ function CustomList:add(e)
 end
 
 function CustomList:remove(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	if not self[e] then
 		return
 	end
@@ -44,7 +44,7 @@ function CustomList:remove(e)
 end
 
 function CustomList:has(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	return self[e] and true or false
 end
 

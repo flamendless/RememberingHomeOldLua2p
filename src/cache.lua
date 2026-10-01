@@ -5,13 +5,14 @@ local Cache = {
 }
 
 function Cache.add_entity(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local id = e:get("id").value
 	Cache.entities[id] = e
 	Log.info(id, "added to cache")
 end
 
 function Cache.has_entity(e)
+	assert:entity(e)
 	return Cache.get_entity(e:get("id").value) ~= nil
 end
 
@@ -21,7 +22,7 @@ function Cache.get_entity(id)
 end
 
 function Cache.remove_entity(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local id = e:get("id").value
 	if Cache.entities[id] then
 		Cache.entities[id] = nil
@@ -44,6 +45,7 @@ function Cache.store(t_id, id, v)
 end
 
 function Cache.has_resource(id)
+	assert:type(id, "string")
 	return Cache.resources[id] ~= nil
 end
 

@@ -35,5 +35,6 @@ function c_static_text:serialize()
 end
 
 function c_static_text:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.value)
 end

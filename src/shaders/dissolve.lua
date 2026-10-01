@@ -24,6 +24,7 @@ function Dissolve:set_kind(kind)
 end
 
 function Dissolve:update(dt)
+	assert:type(dt, "number")
 	if not self.shader_code or not self.flag_process then
 		return
 	end
@@ -54,7 +55,7 @@ function Dissolve:draw(fn)
 end
 
 function Dissolve:draw_emit(world, ev_name)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert((type(ev_name) == "string" and ev_name ~= ""), ev_name)
 	if self.flag_process then
 		love.graphics.setShader(self.shader_code)

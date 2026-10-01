@@ -3,6 +3,8 @@ local font, p
 local pos_x, pos_y = 0, 24
 
 local function error_printer(msg, layer)
+	assert:type(msg, "string")
+	assert:type(layer, "number")
 	local err_msg = (debug.traceback("Error: " .. tostring(msg), 1 + (layer or 1)):gsub("\n[^\n]+$", ""))
 	print(err_msg)
 end
@@ -26,6 +28,7 @@ local function copy_to_clipboard(arg)
 end
 
 function ErrorHandler.callback(msg)
+	assert:type(msg, "string")
 	msg = tostring(msg)
 	error_printer(msg, 2)
 

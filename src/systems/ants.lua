@@ -3,6 +3,8 @@ local Ants = Concord.system({
 })
 
 local function find_nearest_exit(world, e)
+	assert:world(world)
+	assert:entity(e)
 	local room_size = world:getResource("room_size")
 	local rx, ry = 0, 0
 	local rw, rh = room_size.width, room_size.height
@@ -39,6 +41,7 @@ local function find_nearest_exit(world, e)
 end
 
 function Ants:init(world)
+	assert:world(world)
 	self.world = world
 	self.cache_center = {}
 	self.cache_size = {}
@@ -133,6 +136,7 @@ function Ants:move_ants()
 end
 
 function Ants:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local saf = e:get("scatter_away_from")
 		if saf then
@@ -194,6 +198,7 @@ if DEV then
 	}
 
 	function Ants:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

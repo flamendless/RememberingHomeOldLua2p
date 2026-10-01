@@ -4,6 +4,7 @@ local Intro = Concord.system({
 })
 
 function Intro:init(world)
+	assert:world(world)
 	self.id = "intro"
 	self.world = world
 	self.is_raining = false
@@ -227,6 +228,7 @@ function Intro:state_init()
 end
 
 function Intro:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 
 	if DEV and Inputs.pressed(Enums.input.play) then
@@ -270,6 +272,7 @@ function Intro:ev_draw_ex()
 end
 
 function Intro:state_keypressed(key)
+	assert:type(key, "string")
 	if key == "space" then
 		self.world:emit("start_trees")
 	end

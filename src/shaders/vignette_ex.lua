@@ -32,6 +32,7 @@ function VignetteEx:update_effects(values)
 end
 
 function VignetteEx:update(dt)
+	assert:type(dt, "number")
 	if not self.is_active then return end
 	self.effects.time = self.effects.time + dt
 	for k, v in pairs(self.effects) do
@@ -41,6 +42,7 @@ end
 
 if DEV then
 	function VignetteEx:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then return end
 		if not self.is_active then return end
 

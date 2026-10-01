@@ -25,6 +25,7 @@ function c_cam:serialize()
 end
 
 function c_cam:deserialize(data)
+	assert:type(data, "table")
 	self.camera = Gamera.new(unpack(data.data))
 	self.is_main = data.is_main
 end

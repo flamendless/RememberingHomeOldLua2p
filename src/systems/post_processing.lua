@@ -1,6 +1,7 @@
 local PostProcessing = Concord.system()
 
 function PostProcessing:init(world)
+	assert:world(world)
 	self.world = world
 	self.buffer1 = Canvas.create_main()
 	self.buffer2 = Canvas.create_main()
@@ -48,6 +49,7 @@ function PostProcessing:ev_pp_invoke(id, str_fn, ...)
 end
 
 function PostProcessing:update(dt)
+	assert:type(dt, "number")
 	for _, effect in ipairs(self.effects) do
 		if DEV then
 			effect.debug_show = effect.is_active
@@ -83,6 +85,7 @@ function PostProcessing:apply_post_process(canvas)
 end
 
 function PostProcessing:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

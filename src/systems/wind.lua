@@ -8,6 +8,7 @@ local WIND_FLICKER_BASE = 0.25
 local DEFAULT_BLOW_RADIUS = 300
 
 function Wind:init(world)
+	assert:world(world)
 	self.world = world
 	if DEV then
 		self.debug_wind_strength = 5
@@ -16,6 +17,7 @@ function Wind:init(world)
 end
 
 function Wind:is_blow_out_candidate(e)
+	assert:entity(e)
 	local windable = e:get("flame_windable")
 	if windable.extinguished then
 		return false
@@ -31,6 +33,7 @@ function Wind:is_blow_out_candidate(e)
 end
 
 function Wind:apply_gust(e, strength)
+	assert:entity(e)
 	local windable = e:get("flame_windable")
 	local anchor = e:get("flame_anchor")
 	local dir = 1
@@ -68,6 +71,7 @@ function Wind:on_blow_wind(strength, x, y, radius)
 end
 
 function Wind:update(dt)
+	assert:type(dt, "number")
 	local blend = math.min(1, dt * 8)
 	for _, e in ipairs(self.pool) do
 		local windable = e:get("flame_windable")
@@ -79,6 +83,7 @@ end
 
 if DEV then
 	function Wind:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

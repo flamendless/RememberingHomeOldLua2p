@@ -31,6 +31,7 @@ function AnimationSync:init(world)
 end
 
 function AnimationSync:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local anim_sync_with = e:get("anim_sync_with")
 		local e_target = self.world:getEntityByKey(anim_sync_with.key)

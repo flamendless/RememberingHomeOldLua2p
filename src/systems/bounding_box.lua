@@ -3,10 +3,12 @@ local BoundingBox = Concord.system({
 })
 
 function BoundingBox:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function BoundingBox:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local box = e:get("bounding_box")
 		local x, y = Helper.get_real_pos_box(e)
@@ -40,6 +42,7 @@ function BoundingBox:on_camera_move(camera)
 end
 
 function BoundingBox:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

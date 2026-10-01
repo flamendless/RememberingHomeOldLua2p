@@ -23,6 +23,7 @@ function FilmGrain:new()
 end
 
 function FilmGrain:update(dt)
+	assert:type(dt, "number")
 	if not self.is_active then
 		return
 	end

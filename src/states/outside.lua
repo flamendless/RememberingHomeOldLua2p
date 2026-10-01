@@ -5,6 +5,7 @@ local Outside = Concord.system({
 })
 
 function Outside:init(world)
+	assert:world(world)
 	self.id = "outside"
 	self.world = world
 	self.is_raining = false
@@ -268,6 +269,7 @@ function Outside:state_init()
 end
 
 function Outside:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 
 	if DEV and Inputs.pressed(Enums.input.play) then
@@ -407,6 +409,7 @@ function Outside:toggle_car_power(ent)
 end
 
 function Outside:toggle_car_power_after(ent, flag)
+	assert:type(flag, "string")
 	for _, e in ipairs(self.pool_car_lights) do
 		if flag then
 			e:remove("light_disabled")
@@ -448,8 +451,9 @@ function Outside:make_car_interactive()
 end
 
 function Outside:ev_interact_frontdoor(e_player, e_door)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
-	assert(e_door.__isEntity, e_door)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
+	assert:entity(e_door)
 	local door_id = e_door.id.value
 	assert(door_id == "frontdoor", door_id)
 
@@ -458,8 +462,9 @@ function Outside:ev_interact_frontdoor(e_player, e_door)
 end
 
 function Outside:ev_interact_backdoor(e_player, e_door)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
-	assert(e_door.__isEntity, e_door)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
+	assert:entity(e_door)
 	local door_id = e_door.id.value
 	assert(door_id == "backdoor", door_id)
 

@@ -36,5 +36,6 @@ function c_anim_data:serialize()
 end
 
 function c_anim_data:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.data)
 end

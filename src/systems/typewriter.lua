@@ -3,10 +3,12 @@ local Typewriter = Concord.system({
 })
 
 function Typewriter:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Typewriter:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		if not e:has("text_can_proceed") and not e:has("text_skipped") then
 			local text = e:get("text")

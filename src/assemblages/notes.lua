@@ -1,6 +1,9 @@
 local Notes = {}
 
 function Notes.bg(e, x, y, scale)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "notes_bg")
 		:give("pos", x, y)
 		:give("sprite", "bg_notes")
@@ -10,6 +13,11 @@ function Notes.bg(e, x, y, scale)
 end
 
 function Notes.text(e, i, title, x, y, ox)
+	assert:entity(e)
+	assert:type(i, "number")
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(ox, "number")
 	e:give("id", "note_" .. i)
 		:give("font", "note_list")
 		:give("static_text", title)
@@ -22,6 +30,7 @@ function Notes.text(e, i, title, x, y, ox)
 end
 
 function Notes.cursor(e)
+	assert:entity(e)
 	e:give("id", "note_cursor")
 		:give("color", { 1, 1, 1, 1 })
 		:give("sprite", "note_cursor")

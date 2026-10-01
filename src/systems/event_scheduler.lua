@@ -19,6 +19,7 @@ local function pick_weighted(events)
 end
 
 function EventScheduler:init(world)
+	assert:world(world)
 	self.world = world
 	self.scene_id = nil
 	self.config = nil
@@ -34,6 +35,7 @@ function EventScheduler:clear_state()
 end
 
 function EventScheduler:sequence_done(key)
+	assert:type(key, "string")
 	if not Save.data.events then
 		Save.data.events = {}
 	end
@@ -148,6 +150,7 @@ function EventScheduler:fire_event(def)
 end
 
 function EventScheduler:update_ambient(dt)
+	assert:type(dt, "number")
 	local ambient = self.config and self.config.ambient
 	if not ambient or not ambient.enabled or not ambient.events then
 		return
@@ -168,6 +171,7 @@ function EventScheduler:update_ambient(dt)
 end
 
 function EventScheduler:update_sequence(dt)
+	assert:type(dt, "number")
 	if not self.sequence then
 		return
 	end
@@ -197,6 +201,7 @@ function EventScheduler:update_sequence(dt)
 end
 
 function EventScheduler:update(dt)
+	assert:type(dt, "number")
 	if not self.config then
 		return
 	end
@@ -221,6 +226,7 @@ if DEV then
 	}
 
 	function EventScheduler:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

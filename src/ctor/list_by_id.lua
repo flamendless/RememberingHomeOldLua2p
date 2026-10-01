@@ -11,6 +11,7 @@ local function ctor(def)
 end
 
 function ListByID:add(entity)
+	assert:entity(entity)
 	if entity:get("list_group").value == self.id then
 		table.insert(self, entity)
 		return true
@@ -19,6 +20,7 @@ function ListByID:add(entity)
 end
 
 function ListByID:remove(entity)
+	assert:entity(entity)
 	for i, e in ipairs(self) do
 		if e == entity then
 			table.remove(self, i)
@@ -28,6 +30,7 @@ function ListByID:remove(entity)
 end
 
 function ListByID:has(entity)
+	assert:entity(entity)
 	for _, e in ipairs(self) do
 		if e == entity then
 			return true

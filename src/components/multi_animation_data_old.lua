@@ -55,5 +55,6 @@ function c:serialize()
 end
 
 function c:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.first, data.data, data.modifier)
 end

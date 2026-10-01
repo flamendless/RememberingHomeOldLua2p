@@ -1,6 +1,11 @@
 local UI = {}
 
 function UI.ui_text(e, text, resource_id, x, y)
+	assert:entity(e)
+	assert:type(text, "string")
+	assert:type(resource_id, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "ui_text")
 		:give("static_text", text)
 		:give("font", resource_id)
@@ -12,10 +17,19 @@ function UI.ui_text(e, text, resource_id, x, y)
 end
 
 function UI.ui_text_paint(e, text, font, x, y)
+	assert:entity(e)
+	assert:type(text, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:assemble(UI.ui_text, text, font, x, y):give("text_with_paint"):give("transform", 0, 1, 1, 0.5, 0.5)
 end
 
 function UI.choice(e, id, text, text_t, x, y)
+	assert:entity(e)
+	assert:type(id, "string")
+	assert:type(text, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", id)
 		:give("text", text)
 		:give("text_t", text_t)
@@ -29,6 +43,10 @@ function UI.choice(e, id, text, text_t, x, y)
 end
 
 function UI.speech_bubble(e, player, x, y)
+	assert:entity(e)
+	assert:entity(player)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	local sx = 0.5
 	if player:get("body").dir == -1 then
 		sx = -sx

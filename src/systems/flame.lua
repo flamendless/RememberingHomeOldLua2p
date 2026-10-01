@@ -11,10 +11,12 @@ local SPARK_BRIGHTNESS = 2.5
 local SHRINK_STRENGTH_MULT = 0.4
 
 function Flame:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Flame:is_lit(e)
+	assert:entity(e)
 	if e:has("flame_suppressed") then
 		return false
 	end
@@ -51,6 +53,7 @@ function Flame:resolve_fuel_tier(fuel_tiers, ratio)
 end
 
 function Flame:trigger_health_flicker(e)
+	assert:entity(e)
 	local flicker = e:get("flame_flicker")
 	if not flicker then
 		return
@@ -61,6 +64,7 @@ function Flame:trigger_health_flicker(e)
 end
 
 function Flame:consume_health_flicker(e, health_lost)
+	assert:entity(e)
 	if health_lost <= 0 or not e:has("flame_flicker") then
 		return
 	end
@@ -74,6 +78,7 @@ function Flame:consume_health_flicker(e, health_lost)
 end
 
 function Flame:update_frame_flicker(e)
+	assert:entity(e)
 	local ff = e:get("flame_frame_flicker")
 	if not ff then
 		return
@@ -91,6 +96,7 @@ function Flame:update_frame_flicker(e)
 end
 
 function Flame:update_flame_strength(e)
+	assert:entity(e)
 	local pl = e:get("point_light")
 	local diffuse = e:get("diffuse")
 	local color_ratio = 1
@@ -168,6 +174,7 @@ function Flame:update_flame_strength(e)
 end
 
 function Flame:update_flame_pos(e)
+	assert:entity(e)
 	local anchor = e:get("flame_anchor")
 	local windable = e:get("flame_windable")
 	local pos = e:get("pos")
@@ -192,6 +199,7 @@ function Flame:update_flame_pos(e)
 end
 
 function Flame:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local lit = self:is_lit(e)
 		local health = e:get("flame_health")
@@ -235,6 +243,7 @@ if DEV then
 	}
 
 	function Flame:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

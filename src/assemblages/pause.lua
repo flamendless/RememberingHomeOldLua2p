@@ -1,6 +1,9 @@
 local Pause = {}
 
 function Pause.bg(e, x, y)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "pause_bg")
 		:give("pos", x, y)
 		:give("transform", 0, 4, 3, 0.5, 0.5)
@@ -10,6 +13,9 @@ function Pause.bg(e, x, y)
 end
 
 function Pause.text(e, x, y)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "pause")
 		:give("font", "ui")
 		:give("static_text", "PAUSED")
@@ -20,6 +26,10 @@ function Pause.text(e, x, y)
 end
 
 function Pause.choice(e, str, x, y, scale)
+	assert:entity(e)
+	assert:type(str, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "pause_choice_" .. string.lower(str))
 		:give("font", "ui")
 		:give("static_text", str)

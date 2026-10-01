@@ -7,6 +7,7 @@ local Sprite = {
 }
 
 local function draw_with_blood_overlay(e, highlight, ...)
+	assert:entity(e)
 	local prev_shader = love.graphics.getShader()
 	local highlighter = Sprite.overlay_highlighter
 	highlighter.data.time = highlight.time
@@ -17,6 +18,7 @@ local function draw_with_blood_overlay(e, highlight, ...)
 end
 
 local function draw(e, ...)
+	assert:entity(e)
 	if e:has("interactive_highlight") then
 		draw_with_blood_overlay(e, e:get("interactive_highlight"), ...)
 	else
@@ -25,7 +27,7 @@ local function draw(e, ...)
 end
 
 function Sprite.init(main_renderer, world)
-	assert(main_renderer.__isSystem)
+	assert:system(main_renderer)
 	assert(world.__isWorld)
 	Sprite.world = world
 	Sprite.overlay_highlighter = BloodHighlight.new()
@@ -35,7 +37,7 @@ end
 
 function Sprite.setup(e)
 	if not DEV then return end
-	assert(e.__isEntity)
+	assert:entity(e)
 	local sprite = e:get("sprite")
 	local s_id = sprite.resource_id
 	if not Sprite.debug_batched[s_id] then
@@ -45,7 +47,7 @@ end
 
 function Sprite.remove(e)
 	if not DEV then return end
-	assert(e.__isEntity)
+	assert:entity(e)
 	local sprite = e:get("sprite")
 	local s_id = sprite.resource_id
 	Sprite.debug_batched[s_id] = nil
@@ -77,7 +79,7 @@ function Sprite.render_bg()
 end
 
 function Sprite.render(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 	local rot, sx, sy, ox, oy, kx, ky
 	local pos = e:get("pos")
 	local sprite = e:get("sprite")
@@ -128,6 +130,7 @@ if DEV then
 	end
 
 	function Sprite.debug_batching_update(e)
+	assert:entity(e)
 		local resource_id = e:get("sprite").resource_id
 		local db = Sprite.debug_batched[resource_id]
 		if not db then
@@ -147,6 +150,7 @@ if DEV then
 	end
 
 	function Sprite.debug_update(dt)
+	assert:type(dt, "number")
 		if not Sprite.debug_show then
 			return
 		end

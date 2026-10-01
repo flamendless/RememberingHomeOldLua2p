@@ -24,6 +24,7 @@ function LoadingScreen.init()
 end
 
 function LoadingScreen.update(dt)
+	assert:type(dt, "number")
 	timer = timer + dt
 	local t = (math.sin(timer) + 1)/2
 

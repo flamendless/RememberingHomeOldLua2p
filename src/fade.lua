@@ -7,6 +7,8 @@ if DEV then
 		Fade.delay = 0
 	end
 	function Fade.dev_set(state, dur, delay)
+		assert:type_or_nil(dur, "number")
+		assert:type_or_nil(delay, "number")
 		Fade.state = state
 		Fade.duration = dur or 0
 		Fade.delay = delay or 0
@@ -19,13 +21,13 @@ local f_delay = 0.5
 local f_color = { 0, 0, 0, 0 }
 
 function Fade.fade_out(on_complete, duration, delay)
+	assert:type_or_nil(on_complete, "function")
+	assert:type_or_nil(duration, "number")
+	assert:type_or_nil(delay, "number")
 	if DEV then
 		Fade.dev_set(Enums.fade.fade_out, duration, delay)
 	end
 
-	assert:type_or_nil(on_complete, "function")
-	assert:type_or_nil(duration, "number")
-	assert:type_or_nil(delay, "number")
 	Flux.remove_by_object(f_color)
 	local f = Flux.to(f_color, duration or f_duration, { [4] = 1 }):delay(delay or f_delay)
 
@@ -35,13 +37,13 @@ function Fade.fade_out(on_complete, duration, delay)
 end
 
 function Fade.fade_in(on_complete, duration, delay)
+	assert:type_or_nil(on_complete, "function")
+	assert:type_or_nil(duration, "number")
+	assert:type_or_nil(delay, "number")
 	if DEV then
 		Fade.dev_set(Enums.fade.fade_in, duration, delay)
 	end
 
-	assert:type_or_nil(on_complete, "function")
-	assert:type_or_nil(duration, "number")
-	assert:type_or_nil(delay, "number")
 	Flux.remove_by_object(f_color)
 	local f = Flux.to(
 		f_color,

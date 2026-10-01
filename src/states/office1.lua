@@ -1,6 +1,7 @@
 local Office1 = Concord.system()
 
 function Office1:init(world)
+	assert:world(world)
 	self.id = "office1"
 	self.world = world
 end
@@ -55,6 +56,7 @@ function Office1:state_init()
 end
 
 function Office1:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end

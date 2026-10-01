@@ -4,6 +4,7 @@ local HoverEffect = Concord.system({
 })
 
 function HoverEffect:init(world)
+	assert:world(world)
 	self.world = world
 
 	self.pool_change_scale.onRemoved = function(pool, e)

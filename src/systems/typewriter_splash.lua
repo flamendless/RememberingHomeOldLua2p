@@ -3,6 +3,7 @@ local TypewriterSplash = Concord.system({
 })
 
 function TypewriterSplash:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -34,6 +35,7 @@ function TypewriterSplash:start_typewriter()
 end
 
 function TypewriterSplash:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local timer = e:get("typewriter_timer")
 		if timer.timer then

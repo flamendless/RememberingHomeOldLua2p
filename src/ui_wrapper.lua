@@ -1,6 +1,9 @@
 local UIWrapper = {}
 
 function UIWrapper.edit_number(id, value, is_int)
+	assert:type(id, "string")
+	assert:type(value, "boolean")
+	assert:type(is_int, "boolean")
 	local v = value
 	local initial = value
 	if is_int then
@@ -23,6 +26,9 @@ function UIWrapper.edit_number(id, value, is_int)
 end
 
 function UIWrapper.edit_range(id, value, min, max, is_int, disabled)
+	assert:type(id, "string")
+	assert:type(value, "boolean")
+	assert:type(is_int, "boolean")
 	local initial = value
 	Slab.Text(id .. ":")
 	Slab.SameLine()
@@ -54,6 +60,9 @@ function UIWrapper.color(color)
 end
 
 function UIWrapper.edit_range_table(id, range, min, max, is_int)
+	assert:type(id, "string")
+	assert:type(range, "table")
+	assert:type(is_int, "boolean")
 	local vmin, cmin = UIWrapper.edit_range(id .. ".min", range.min, min, max, is_int)
 	range.min = vmin
 	local vmax, cmax = UIWrapper.edit_range(id .. ".max", range.max, min, max, is_int)

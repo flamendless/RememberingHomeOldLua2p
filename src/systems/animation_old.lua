@@ -26,6 +26,8 @@ function AnimationOld:setup_animation_data(e, new_tag)
 end
 
 function AnimationOld:setup_on_loop(e, animation)
+	assert:entity(e)
+	assert:type(animation, "string")
 	assert(animation.__isComponent, animation)
 	local on_loop = e:get("animation_on_loop")
 	local on_finish = e:get("animation_on_finish")
@@ -50,7 +52,7 @@ function AnimationOld:setup_on_loop(e, animation)
 end
 
 function AnimationOld:setup_animation(e, data, on_loop)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(data, "table")
 	assert:type(on_loop, "function")
 
@@ -111,6 +113,7 @@ function AnimationOld:setup_animation(e, data, on_loop)
 end
 
 function AnimationOld:init(world)
+	assert:world(world)
 	self.world = world
 	self.cache_multi_animation = {}
 
@@ -168,7 +171,7 @@ function AnimationOld:init(world)
 end
 
 function AnimationOld:switch_animation_tag(e, new_tag, base_tag, override)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(new_tag, "string")
 	assert:type_or_nil(base_tag, "string")
 	assert:type_or_nil(override, "boolean")
@@ -196,6 +199,7 @@ function AnimationOld:switch_animation_tag(e, new_tag, base_tag, override)
 end
 
 function AnimationOld:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local animation = e:get("animation_old")
 		local anim8 = animation.anim8
@@ -259,7 +263,7 @@ function AnimationOld:anim_pause_at_end(e, signal)
 end
 
 function AnimationOld:anim_loop_over_to(e, frame)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert(type(frame) == "number" and frame > 0, frame)
 	local anim = e:get("animation_old")
 	anim.anim8:gotoFrame(frame)
@@ -276,6 +280,7 @@ if DEV then
 	}
 
 	function Animation:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			DevTools.debug_anim.tag = nil
 			return

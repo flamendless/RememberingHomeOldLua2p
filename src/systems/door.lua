@@ -3,11 +3,15 @@ local Door = Concord.system({
 })
 
 function Door:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Door:on_interact_door(e_player, e_door)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_door)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	assert(e_door.__isEntity and e_door:has("is_door"), e_door)
 
 	self.world:emit("toggle_component", e_player, Enums.player_cap.can_move, false)

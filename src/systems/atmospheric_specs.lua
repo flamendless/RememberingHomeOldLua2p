@@ -1,6 +1,7 @@
 local AtmosphericSpecs = Concord.system()
 
 function AtmosphericSpecs:init(world)
+	assert:world(world)
 	self.world = world
 	self.instances = {}
 end
@@ -10,6 +11,7 @@ function AtmosphericSpecs:clear()
 end
 
 local function zone_fields_from_config(config)
+	assert:type(config, "table")
 	return {
 		emission_mode = config.emission_mode,
 		direction = config.direction,
@@ -38,6 +40,7 @@ local function zone_fields_from_config(config)
 end
 
 local function build_zone(config, geometry)
+	assert:type(config, "table")
 	local zone = zone_fields_from_config(config)
 	zone.x = geometry.x
 	zone.y = geometry.y
@@ -47,6 +50,7 @@ local function build_zone(config, geometry)
 end
 
 local function build_zones(config)
+	assert:type(config, "table")
 	if config.zones then
 		return config.zones
 	end
@@ -74,6 +78,7 @@ local function build_zones(config)
 end
 
 function AtmosphericSpecs:setup_atmospheric_specs(config)
+	assert:type(config, "table")
 	self:clear()
 	if not config or not config.enabled then
 		return
@@ -101,7 +106,7 @@ function AtmosphericSpecs:setup_for_scene(w, h, opt)
 	assert:type(h, "number")
 	assert:type_or_nil(opt, "table")
 
-	local room_id = opt and opt.scene_id
+	local room_id = opt and (opt.scene_id or opt.room_id)
 	local config = Data.AtmosphericSpecs.get(room_id)
 	config.width = w
 	config.height = h
@@ -109,6 +114,9 @@ function AtmosphericSpecs:setup_for_scene(w, h, opt)
 end
 
 function AtmosphericSpecs:create_room_bounds(w, h, opt)
+	assert:type(w, "number")
+	assert:type(h, "number")
+	assert:type(opt, "table")
 	self:setup_for_scene(w, h, opt)
 end
 
@@ -131,10 +139,12 @@ if DEV then
 	local BLEND_MODES = { "alpha", "add", "multiply", "lighten" }
 
 	local function format_range(range)
+	assert:type(range, "table")
 		return string.format("{ min = %s, max = %s }", range.min, range.max)
 	end
 
 	local function format_color(color)
+	assert:type(color, "string")
 		return string.format(
 			"{ %s, %s, %s, %s }",
 			color[1],

@@ -12,6 +12,7 @@ local function get_glitch_timer()
 end
 
 function Pause:init(world)
+	assert:world(world)
 	self.world = world
 	self.is_paused = false
 	self.prev = {}
@@ -50,6 +51,7 @@ function Pause:create_pause_entities()
 end
 
 function Pause:update(dt)
+	assert:type(dt, "number")
 	if self.is_paused then
 		self.timer:update(dt)
 	end

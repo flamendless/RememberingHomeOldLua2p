@@ -3,6 +3,7 @@ local Rect = {
 }
 
 function Rect.render(e)
+	assert:entity(e)
 	local pos = e:get("pos")
 	local rect = e:get("rect")
 	local draw_mode = e:get("draw_mode").value

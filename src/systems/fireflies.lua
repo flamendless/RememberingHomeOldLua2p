@@ -5,6 +5,7 @@ local Fireflies = Concord.system({
 local col_target = Palette.get_diffuse("firefly")
 
 function Fireflies:init(world)
+	assert:world(world)
 	self.world = world
 
 	if DEV then
@@ -95,6 +96,7 @@ local flags = {
 }
 
 function Fireflies:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

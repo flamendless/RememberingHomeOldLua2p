@@ -31,6 +31,7 @@ AtmosphericSpecs.outside = {
 }
 
 function AtmosphericSpecs.get(room_id)
+	assert:type_or_nil(room_id, "string")
 	local config = tablex.copy(AtmosphericSpecs.defaults)
 	if not room_id or not AtmosphericSpecs[room_id] then
 		return config

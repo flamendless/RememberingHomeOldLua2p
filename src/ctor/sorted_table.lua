@@ -17,6 +17,7 @@ local function ctor(def)
 end
 
 function SortedTable:add(entity)
+	assert:entity(entity)
 	if entity:get("layer").id == self.layer_id then
 		table.insert(self, entity)
 		sort.insertion_sort(self, sort_by_id)
@@ -26,6 +27,7 @@ function SortedTable:add(entity)
 end
 
 function SortedTable:remove(entity)
+	assert:entity(entity)
 	for i, e in ipairs(self) do
 		if e == entity then
 			table.remove(self, i)
@@ -35,6 +37,7 @@ function SortedTable:remove(entity)
 end
 
 function SortedTable:has(entity)
+	assert:entity(entity)
 	for _, e in ipairs(self) do
 		if e == entity then
 			return true

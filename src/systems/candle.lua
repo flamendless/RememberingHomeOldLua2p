@@ -5,6 +5,7 @@ local Candle = Concord.system({
 local FLAME_OFFSET_Y = Assemblages.Candle.flame_offset_y()
 
 function Candle:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -18,6 +19,7 @@ function Candle:spawn_candle(x, y)
 end
 
 function Candle:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local candle = e:get("candle")
 		local e_flame = candle.e_flame
@@ -30,6 +32,7 @@ function Candle:update(dt)
 end
 
 function Candle:on_flame_blown_out(e_flame)
+	assert:entity(e_flame)
 	for _, e in ipairs(self.pool) do
 		local candle = e:get("candle")
 		if candle.e_flame == e_flame then
@@ -39,7 +42,10 @@ function Candle:on_flame_blown_out(e_flame)
 end
 
 function Candle:on_interact_candle(e_player, e_candle)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_candle)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	assert(e_candle.__isEntity and e_candle:has("candle"), e_candle)
 
 	local candle = e_candle:get("candle")

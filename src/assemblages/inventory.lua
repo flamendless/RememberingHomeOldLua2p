@@ -3,6 +3,9 @@ local Inventory = {}
 local CACHE_ID = "calculated"
 
 function Inventory.bg(e, x, y, scale)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "inventory_bg")
 		:give("pos", x, y)
 		:give("sprite", "bg_inventory")
@@ -12,6 +15,10 @@ function Inventory.bg(e, x, y, scale)
 end
 
 function Inventory.choice(e, str, x, y)
+	assert:entity(e)
+	assert:type(str, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "inventory_choice_" .. string.lower(str))
 		:give("font", "inventory_choice")
 		:give("static_text", str)
@@ -25,6 +32,11 @@ function Inventory.choice(e, str, x, y)
 end
 
 function Inventory.border(e, i, x, y, rw, rh, ih, is_horizontal)
+	assert:entity(e)
+	assert:type(i, "number")
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(is_horizontal, "boolean")
 	local id = "inventory_border" .. i
 	local cached = Cache.get(CACHE_ID, id)
 	local r, sy
@@ -50,6 +62,8 @@ function Inventory.border(e, i, x, y, rw, rh, ih, is_horizontal)
 end
 
 function Inventory.dline(e, i, x1, y1, x2, y2)
+	assert:entity(e)
+	assert:type(i, "number")
 	local id = "inventory_dline" .. i
 	local cached = Cache.get(CACHE_ID, id)
 	local r = cached
@@ -68,6 +82,12 @@ function Inventory.dline(e, i, x1, y1, x2, y2)
 end
 
 function Inventory.cell(e, i, x, y, w, h)
+	assert:entity(e)
+	assert:type(i, "number")
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	e:give("id", "cell_" .. i)
 		:give("list_item")
 		:give("list_group", Enums.list_group.inventory_cells)

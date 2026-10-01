@@ -1,6 +1,7 @@
 local LivingRoom = Concord.system()
 
 function LivingRoom:init(world)
+	assert:world(world)
 	self.id = "living_room"
 	self.world = world
 end
@@ -55,6 +56,7 @@ function LivingRoom:state_init()
 end
 
 function LivingRoom:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end

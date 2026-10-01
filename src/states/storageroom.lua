@@ -1,6 +1,7 @@
 local StorageRoom = Concord.system()
 
 function StorageRoom:init(world)
+	assert:world(world)
 	self.id = "storage_room"
 	self.world = world
 end
@@ -76,6 +77,7 @@ function StorageRoom:state_init()
 end
 
 function StorageRoom:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end
@@ -94,6 +96,7 @@ function StorageRoom:ev_draw_ex()
 end
 
 function StorageRoom:search_shelf(e, dialogues_t)
+	assert:entity(e)
 	local can_search = false
 	if not can_search then
 		local t = tablex.copy(Dialogues.get("common", "cant_search_yet"))
@@ -104,6 +107,7 @@ function StorageRoom:search_shelf(e, dialogues_t)
 end
 
 function StorageRoom:check_drawer_key(e, dialogues_t)
+	assert:entity(e)
 	local has_key = Items.has(Enums.item_id.storage_room_drawer_key)
 	if not has_key then
 		local t = tablex.copy(dialogues_t.no_key_yet)

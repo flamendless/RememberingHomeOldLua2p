@@ -33,6 +33,7 @@ local function prepare_clips(data, mods)
 end
 
 local function new(clips, first, is_multi, stop_on_last)
+	assert:type(is_multi, "boolean")
 	local self = setmetatable({}, Animation)
 	self.clips = clips
 	self.cache = {}
@@ -171,11 +172,13 @@ function Animation:once(event, fn)
 end
 
 function Animation:off(event)
+	assert:type(event, "string")
 	self.callbacks[event] = nil
 	return self
 end
 
 function Animation:emit(event, ...)
+	assert:type(event, "string")
 	local cbs = self.callbacks[event]
 	if not cbs then
 		return
@@ -208,6 +211,7 @@ function Animation:play(tag, base_tag, override)
 end
 
 function Animation:update(dt)
+	assert:type(dt, "number")
 	local a = self.anim8
 	a:update(dt)
 	self.frame = a.position
@@ -272,6 +276,15 @@ function Animation:get_quad()
 end
 
 function Animation:get_frame_info(x, y, r, sx, sy, ox, oy, kx, ky)
+	assert:type_or_nil(x, "number")
+	assert:type_or_nil(y, "number")
+	assert:type_or_nil(r, "number")
+	assert:type_or_nil(sx, "number")
+	assert:type_or_nil(sy, "number")
+	assert:type_or_nil(ox, "number")
+	assert:type_or_nil(oy, "number")
+	assert:type_or_nil(kx, "number")
+	assert:type_or_nil(ky, "number")
 	return self.anim8:getFrameInfo(x, y, r, sx, sy, ox, oy, kx, ky)
 end
 

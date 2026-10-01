@@ -10,10 +10,15 @@ local MIN_COORD = -1e6
 local MAX_COORD = 1e6
 
 local function is_sane_number(n)
+	assert:type(n, "number")
 	return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
 end
 
 local function is_sane_rect(x, y, w, h)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	return is_sane_number(x)
 		and is_sane_number(y)
 		and is_sane_number(w)
@@ -29,6 +34,7 @@ local function is_sane_rect(x, y, w, h)
 end
 
 local function bump_entity_label(e)
+	assert:entity(e)
 	local id = e:get("id")
 	if id then return id.value end
 	return tostring(e)
@@ -44,6 +50,7 @@ local function get_query_rect(self)
 	end
 
 	local function sane(n)
+	assert:type(n, "number")
 		return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
 	end
 
@@ -77,6 +84,7 @@ local function get_query_point(self)
 end
 
 local function filter(item, other)
+	assert:entity(other)
 	local collider = other:get("collider")
 	local filter_val = collider.filter
 	if not filter_val then
@@ -86,6 +94,8 @@ local function filter(item, other)
 end
 
 local function is_blocked_by_wall(pool, e, dir)
+	assert:entity(e)
+	assert:type(dir, "number")
 	local rx, ry, rw, rh = pool:getRect(e)
 	local qx, qy, qw, qh
 	if dir > 0 then
@@ -134,6 +144,9 @@ end
 
 
 local function is_in_interact_range(e, e_other, pool, reach_scale)
+	assert:entity(e)
+	assert:entity(e_other)
+	assert:type(reach_scale, "number")
 	if not (e:has("collider") and e_other:has("collider")) then
 		return false
 	end
@@ -145,6 +158,9 @@ local function is_in_interact_range(e, e_other, pool, reach_scale)
 end
 
 local function can_interact_with(e, e_other, pool, reach_scale)
+	assert:entity(e)
+	assert:entity(e_other)
+	assert:type(reach_scale, "number")
 	if not (e:has("can_interact") and e_other:has("interactive")) then
 		return false
 	end
@@ -161,10 +177,12 @@ function BumpCollision:is_move_blocked_by_wall(e, dir)
 end
 
 function BumpCollision:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function BumpCollision:preupdate(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool:getItems()) do
 		e:get("collider").is_hit = false
 		if e:has("hit_wall") then
@@ -176,6 +194,7 @@ function BumpCollision:preupdate(dt)
 end
 
 function BumpCollision:update(dt)
+	assert:type(dt, "number")
 	local x, y, w, h = get_query_rect(self)
 
 	local pool = self.pool
@@ -205,6 +224,7 @@ function BumpCollision:update(dt)
 end
 
 function BumpCollision:update_body(e)
+	assert:entity(e)
 	local body = e:get("body")
 	local pos = e:get("pos")
 	local pool = self.pool
@@ -259,6 +279,7 @@ function BumpCollision:update_body(e)
 end
 
 function BumpCollision:check_col(e)
+	assert:entity(e)
 	local cols, len = self:overlap_at(e)
 	local pool = self.pool
 	local has_collide_with = false
@@ -336,6 +357,7 @@ function BumpCollision:check_col(e)
 end
 
 function BumpCollision:overlap_at(e)
+	assert:entity(e)
 	-- pool:check() calls projectMove() and can spin when overlapping at rest.
 	local rx, ry, rw, rh = self.pool:getRect(e)
 	return self.pool:project(e, rx, ry, rw, rh, rx, ry, filter)
@@ -364,6 +386,7 @@ function BumpCollision:on_item_use(item)
 end
 
 function BumpCollision:update_collider(e)
+	assert:entity(e)
 	assert((e.__isEntity and e:has("collider") and e:has("animation")), e)
 	if e:has("skip_collider_update") then
 		return
@@ -432,6 +455,9 @@ if DEV then
 	fnt:setFilter("nearest", "nearest")
 
 	local function edit(id, value, t)
+	assert:type(id, "string")
+	assert:type(value, "boolean")
+	assert:type(t, "number")
 		Slab.Text(id .. ":")
 		Slab.SameLine()
 		if Slab.Input(id, {
@@ -448,6 +474,7 @@ if DEV then
 	local tbl_n = { Text = "", ReturnOnText = false, NumbersOnly = true }
 
 	function BumpCollision:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			flags.bodies = false
 			return

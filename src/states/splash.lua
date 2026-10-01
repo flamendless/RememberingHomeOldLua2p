@@ -3,6 +3,7 @@ local Splash = Concord.system()
 local DELAY_SKIP = 0.5
 
 function Splash:init(world)
+	assert:world(world)
 	self.id = "splash"
 	self.world = world
 end
@@ -145,6 +146,7 @@ function Splash:do_glitch(time, delay)
 end
 
 function Splash:state_update(dt)
+	assert:type(dt, "number")
 	if self.timer_skip then
 		self.timer_skip:update(dt)
 	end

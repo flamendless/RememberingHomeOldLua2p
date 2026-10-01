@@ -31,6 +31,7 @@ function c_anchor:serialize()
 end
 
 function c_anchor:deserialize(data)
+	assert:type(data, "table")
 	self.key = data.key
 	self.anchor_x = data.anchor_x
 	self.anchor_y = data.anchor_y

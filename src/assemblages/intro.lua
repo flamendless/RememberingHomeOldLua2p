@@ -85,6 +85,7 @@ function Intro.parallax(e, tag, scale)
 end
 
 function Intro.post_light(e, tag, scale)
+	assert:entity(e)
 	Intro.parallax(e, tag, scale)
 	e:give("transform")
 		:give("light", Enums.light_shape.custom, 1)
@@ -96,6 +97,7 @@ function Intro.post_light(e, tag, scale)
 end
 
 function Intro.bg_tree_cover(e)
+	assert:entity(e)
 	local item = Atlases.AtlasIntro.frames.bg_tree_cover
 	local ww, wh = love.graphics.getDimensions()
 	local w, h = item.w, item.h
@@ -112,6 +114,7 @@ function Intro.bg_tree_cover(e)
 end
 
 function Intro.car(e)
+	assert:entity(e)
 	e:give("id", "car")
 		:give("animation", Animation.new_single(Animation.get("car"), false))
 		:give("pos", 16, 325)
@@ -121,6 +124,7 @@ function Intro.car(e)
 end
 
 function Intro.car_reflect(e, car)
+	assert:entity(e)
 	local car_pos = car:get("pos")
 	e:give("id", "car_reflect")
 		:give("animation", Animation.new_single(Animation.get("car_reflect"), false))
@@ -132,6 +136,7 @@ function Intro.car_reflect(e, car)
 end
 
 function Intro.car_light(e, car)
+	assert:entity(e)
 	e:give("id", "car_light")
 		:give("pos", 0, 0)
 		:give("transform")
@@ -172,6 +177,7 @@ end
 -- end
 
 function Intro.sheet_title(e, ww, wh)
+	assert:entity(e)
 	local obj = Animation.new_single({
 		resource_id = "sheet_title",
 		frames = { "1-3", 1, "1-3", 1, "1-1", 1 },
@@ -194,6 +200,13 @@ function Intro.sheet_title(e, ww, wh)
 end
 
 function Intro.fog(e, id, w, h, color, x, y, fsx, fsy, fog_speed)
+	assert:entity(e)
+	assert:type(id, "string")
+	assert:type(w, "number")
+	assert:type(h, "number")
+	assert:type(color, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", id)
 		:give("sprite", "dummy")
 		:give("noise_texture", w, h)

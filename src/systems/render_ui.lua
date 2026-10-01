@@ -23,6 +23,7 @@ local RenderUI = Concord.system({
 })
 
 function RenderUI:init(world)
+	assert:world(world)
 	self.world = world
 	self.layers = {
 		self.pool_text,

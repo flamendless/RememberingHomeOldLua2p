@@ -37,10 +37,13 @@ function RainOutsideParticles:new(image, buffer, w)
 end
 
 function RainOutsideParticles:update(dt)
+	assert:type(dt, "number")
 	self.system:update(dt)
 end
 
 function RainOutsideParticles:draw(x, y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	lg.setBlendMode(self.blend_mode)
 	lg.draw(self.system, x, y)
 end

@@ -14,6 +14,7 @@ local list = {
 Log.debug("TODO: (Brandon)")
 
 function ItemsSystem:init(world)
+	assert:world(world)
 	self.world = world
 	self:initialize_entities()
 end
@@ -80,6 +81,7 @@ function ItemsSystem:item_response(dialogue_t, main, sub)
 end
 
 function ItemsSystem:on_item_use_with(item, other)
+	assert:entity(other)
 	assert((item.__isEntity and item:has("item")), item)
 	if other then
 		assert((other.__isEntity and other:has("interactive")), other)

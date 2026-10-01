@@ -80,6 +80,34 @@ function assert:type_or_nil(a, t, msg, stack_level)
 	return a
 end
 
+local function _extra(msg)
+	if not msg then
+		return ""
+	end
+	return "\n\n\t(note: " .. msg .. ")"
+end
+
+function assert:entity(e, msg, stack_level)
+	if not e or not e.__isEntity then
+		error(("assertion failed: not an entity %s"):format(_extra(msg)), 2 + (stack_level or 0))
+	end
+	return e
+end
+
+function assert:world(w, msg, stack_level)
+	if not w or not w.__isWorld then
+		error(("assertion failed: not a world %s"):format(_extra(msg)), 2 + (stack_level or 0))
+	end
+	return w
+end
+
+function assert:system(s, msg, stack_level)
+	if not s or not s.__isSystem then
+		error(("assertion failed: not a system %s"):format(_extra(msg)), 2 + (stack_level or 0))
+	end
+	return s
+end
+
 if not DEV and not TEST.mode then
 	assert:nop()
 end

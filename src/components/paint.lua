@@ -15,5 +15,6 @@ function c_twp:serialize()
 end
 
 function c_twp:deserialize(data)
+	assert:type(data, "table")
 	self.e_paint = self.__entity:getWorld():getEntityByKey(data.paint_key)
 end

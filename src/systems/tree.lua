@@ -9,6 +9,7 @@ function Tree:start_trees()
 end
 
 function Tree:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_bg_tree) do
 		if e:get("bg_tree").is_cover then
 			local pos = e:get("pos")

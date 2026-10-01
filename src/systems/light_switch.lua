@@ -3,6 +3,7 @@ local LightSwitch = Concord.system({
 })
 
 function LightSwitch:init(world)
+	assert:world(world)
 	self.world = world
 end
 

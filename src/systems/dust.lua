@@ -33,6 +33,7 @@ local CEILING_BURST_DEFAULTS = {
 }
 
 function Dust:init(world)
+	assert:world(world)
 	self.world = world
 	self.bursts = ParticleSystems.Dust()
 	self.active = {}
@@ -62,6 +63,7 @@ function Dust:resolve_entity(key)
 end
 
 function Dust:build_config(e)
+	assert:entity(e)
 	assert(e.__isEntity and e:has("dust") and e:has("pos") and e:has("size"), e)
 	local pos = e:get("pos")
 	local size = e:get("size")
@@ -81,6 +83,7 @@ function Dust:build_config(e)
 end
 
 function Dust:trigger_dust(e)
+	assert:entity(e)
 	assert(e.__isEntity and e:has("dust"), e)
 	if e:has("hidden") then
 		return
@@ -132,6 +135,7 @@ function Dust:floor_y_at(px)
 end
 
 function Dust:entity_move_dx(e)
+	assert:entity(e)
 	assert(e.__isEntity and e:has("body"), e)
 	local body = e:get("body")
 	if body.dx ~= 0 then
@@ -165,6 +169,7 @@ function Dust:entity_foot_direction(e, lift)
 end
 
 function Dust:entity_foot_region(e)
+	assert:entity(e)
 	assert(e.__isEntity and e:has("pos") and e:has("collider"), e)
 
 	local pos = e:get("pos")
@@ -197,7 +202,7 @@ function Dust:entity_foot_region(e)
 end
 
 function Dust:foot_strength(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	if e:has("is_running") then
 		local is_running = e:get("is_running")
 		if is_running.value then
@@ -409,6 +414,7 @@ if DEV then
 	end
 
 	function Dust.slab_dust(e)
+	assert:entity(e)
 		assert(e.__isEntity and e:has("dust"), e)
 		local dust = e:get("dust")
 		dust.size = UIWrapper.edit_range("dust size", dust.size, 0.1, 8, false)

@@ -6,6 +6,7 @@ local Camera = Concord.system({
 local DUR_TRANSITION = 0.15
 
 function Camera:init(world)
+	assert:world(world)
 	self.world = world
 	self.main_camera = nil
 	self.to_follow = nil
@@ -42,6 +43,7 @@ function Camera:init(world)
 end
 
 function Camera:update(dt)
+	assert:type(dt, "number")
 	if self.follow and self.to_follow then
 		local x, y = self:get_follow_coords(self.to_follow)
 		self.main_camera:setPosition(x, y)
@@ -253,6 +255,7 @@ if DEV then
 	end
 
 	function Camera:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end
@@ -454,6 +457,7 @@ if DEV then
 	end
 
 	function Camera:debug_on_toggle(event)
+	assert:type(event, "string")
 		if event ~= "camera" then return end
 		self.debug_show = not self.debug_show
 	end

@@ -3,6 +3,7 @@ local Text = {
 }
 
 function Text.render(e)
+	assert:entity(e)
 	local str
 	if e:has("text") then
 		str = e:get("text").value

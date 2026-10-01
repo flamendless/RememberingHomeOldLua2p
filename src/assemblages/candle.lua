@@ -3,7 +3,7 @@ local AsmCandle = {}
 local FLAME_OFFSET_Y = -12
 
 function AsmCandle.candle(e, x, y, e_flame)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	assert(e_flame.__isEntity, e_flame)

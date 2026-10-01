@@ -1,7 +1,7 @@
 local Light = {}
 
 function Light.point(e, x, y, z, size, diffuse, dir)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	assert:type(z, "number")
@@ -22,7 +22,7 @@ function Light.point(e, x, y, z, size, diffuse, dir)
 end
 
 function Light.spot(e, x, y, z, dir, size, diffuse)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	assert:type(z, "number")
@@ -38,8 +38,8 @@ function Light.spot(e, x, y, z, dir, size, diffuse)
 end
 
 function Light.fl_spot(e, e_player, sync_data)
-	assert(e.__isEntity, e)
-	assert(e_player.__isEntity, e_player)
+	assert:entity(e)
+	assert:entity(e_player)
 	assert:type(sync_data, "table")
 
 	local p = 16
@@ -65,7 +65,7 @@ function Light.fl_end(e) --away from the player
 end
 
 function Light.flame_stack(e, x, y, z, power, diffuse_key, max_health, consumption_rate, id)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	assert:type(z, "number")
@@ -89,7 +89,7 @@ function Light.flame_stack(e, x, y, z, power, diffuse_key, max_health, consumpti
 end
 
 function Light.lighter_flame(e, power)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(power, "number")
 
 	Light.flame_stack(e, 0, 0, 9, power, "lighter_flame", 100, 0.15, "lighter_flame_pl")
@@ -123,7 +123,7 @@ function Light.lighter_flame(e, power)
 end
 
 function Light.player_ambient(e, power, diffuse_key)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(power, "number")
 	assert:type(diffuse_key, "string")
 
@@ -133,7 +133,7 @@ function Light.player_ambient(e, power, diffuse_key)
 end
 
 function Light.candle_flame(e, x, y, power)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	power = power or 14

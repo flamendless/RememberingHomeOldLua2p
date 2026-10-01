@@ -16,6 +16,7 @@ local shows = { quad = true, sprite = true, rect = true, text = true, static_tex
 local STR_BORDER = "border_"
 
 function BoundingBox.debug_update(dt)
+	assert:type(dt, "number")
 	BoundingBox.debug_show = Slab.BeginWindow("bb", {
 		Title = BoundingBox.id,
 		IsOpen = BoundingBox.debug_show,
@@ -61,7 +62,7 @@ function BoundingBox.debug_draw_ui(camera)
 end
 
 function BoundingBox.render(e, camera)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	if camera then
 		assert(camera.__camera, camera)
 	end

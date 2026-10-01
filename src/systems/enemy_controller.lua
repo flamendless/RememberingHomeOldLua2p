@@ -10,6 +10,7 @@ local anim_mapping = {
 }
 
 function EnemyController:init(world)
+	assert:world(world)
 	self.world = world
 
 	self.pool.onAdded = function(_, e)
@@ -33,6 +34,7 @@ local function base_tag_for(anim_name)
 end
 
 function EnemyController:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local body = e:get("body")
 		body.dx = 0
@@ -73,6 +75,7 @@ end
 local cb_line_of_sight = true
 
 function EnemyController:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

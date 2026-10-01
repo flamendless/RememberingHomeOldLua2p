@@ -37,6 +37,8 @@ function RainIntroParticles:new(image, buffer, w)
 end
 
 function RainIntroParticles:draw(x, y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	lg.setBlendMode(self.blend_mode)
 	lg.draw(self.system, x, y)
 end

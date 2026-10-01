@@ -41,6 +41,7 @@ function GameStates.preload()
 end
 
 function GameStates.start(resources)
+	assert:type(resources, "table")
 	Resources.set_resources(resources)
 	GameStates.is_ready = true
 	GameStates.world = Concord.world()
@@ -151,6 +152,7 @@ function GameStates.switch_to_previous()
 end
 
 function GameStates.update(dt)
+	assert:type(dt, "number")
 	if not GameStates.is_ready then return end
 	JPROF.push("gs state update")
 	if DEV and DevTools.cli.show then return end
@@ -175,11 +177,13 @@ function GameStates.draw()
 end
 
 function GameStates.keypressed(key)
+	assert:type(key, "string")
 	if not GameStates.is_ready then return end
 	GameStates.world:emit("state_keypressed", key)
 end
 
 function GameStates.keyreleased(key)
+	assert:type(key, "string")
 	if not GameStates.is_ready then return end
 	GameStates.world:emit("state_keyreleased", key)
 end

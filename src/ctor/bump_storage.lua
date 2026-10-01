@@ -17,19 +17,19 @@ local ctor = function(def)
 end
 
 function BumpStorage:add(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local x, y, w, h = Helper.get_collider_rect(e)
 	self.super.add(self, e, x, y, w, h)
 end
 
 function BumpStorage:update(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local x, y, w, h = Helper.get_collider_rect(e)
 	self.super.update(self, e, x, y, w, h)
 end
 
 function BumpStorage:has(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	return self:hasItem(e)
 end
 
@@ -40,6 +40,10 @@ function BumpStorage:clear()
 end
 
 function BumpStorage:projectMove(item, x, y, w, h, goalX, goalY, filter)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	filter = filter or function(_, _)
 		return "slide"
 	end

@@ -65,6 +65,7 @@ local options = { "Play", "Settings", "About", "Exit" }
 local options_sub = { "Continue", "New Game" }
 
 local function color_to(color, target_color, dur)
+	assert:type(color, "string")
 	Flux.to(color.value, dur, {
 		[1] = target_color[1],
 		[2] = target_color[2],
@@ -74,6 +75,7 @@ local function color_to(color, target_color, dur)
 end
 
 local function sync_about_focus(self, e_focused)
+	assert:entity(e_focused)
 	for _, e in ipairs(self.pool_about) do
 		if e:has("hoverable") and e:get("hoverable").is_hovered then
 			return
@@ -172,6 +174,7 @@ local function generate_about()
 end
 
 function Menu:init(world)
+	assert:world(world)
 	self.id = "menu"
 	self.world = world
 	self.keys = {}
@@ -208,6 +211,7 @@ function Menu:state_init()
 end
 
 function Menu:state_update(dt)
+	assert:type(dt, "number")
 	if self.is_transition then
 		return
 	end

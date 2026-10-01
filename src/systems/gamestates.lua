@@ -1,6 +1,7 @@
 local GameStatesSystem = Concord.system()
 
 function GameStatesSystem:init(world)
+	assert:world(world)
 	self.world = world
 	self.is_switching = false
 end
@@ -42,6 +43,7 @@ if DEV then
 	local states = Enums.ordered.game_state
 
 	function GameStatesSystem:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end
@@ -62,6 +64,7 @@ if DEV then
 	end
 
 	function GameStatesSystem:state_keypressed(key)
+	assert:type(key, "string")
 		if not love.keyboard.isDown("lshift") then
 			return
 		end

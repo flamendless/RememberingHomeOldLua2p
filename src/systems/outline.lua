@@ -10,6 +10,7 @@ local HIGHLIGHT_CFG = {
 }
 
 function Outline:init(world)
+	assert:world(world)
 	self.world = world
 	self.highlighted = {}
 	self.fading_out = false
@@ -25,6 +26,7 @@ function Outline:cancel_highlight_tweens()
 end
 
 function Outline:fade_in_highlight(e)
+	assert:entity(e)
 	local highlight = e:get("interactive_highlight")
 	if not highlight then
 		return
@@ -34,6 +36,7 @@ function Outline:fade_in_highlight(e)
 end
 
 function Outline:tag_highlight(e)
+	assert:entity(e)
 	if not e:has("interactive_highlight") then
 		e:give("interactive_highlight", {
 			overlay_strength = HIGHLIGHT_CFG.overlay_strength,
@@ -61,6 +64,7 @@ function Outline:tag_highlight(e)
 end
 
 function Outline:untag_highlight(e)
+	assert:entity(e)
 	if not e:has("interactive_highlight") then
 		return
 	end
@@ -77,6 +81,7 @@ function Outline:clear_highlights()
 end
 
 function Outline:highlight_entity(e)
+	assert:entity(e)
 	if not (e.__isEntity and e.sprite) then
 		return
 	end
@@ -84,6 +89,8 @@ function Outline:highlight_entity(e)
 end
 
 function Outline:on_change_interactive(e, other)
+	assert:entity(e)
+	assert:entity(other)
 	self:cancel_highlight_tweens()
 	self.fade_seq = self.fade_seq + 1
 	self.fading_out = false
@@ -96,6 +103,7 @@ function Outline:on_change_interactive(e, other)
 end
 
 function Outline:on_collide_interactive(_, other)
+	assert:entity(other)
 	if other.grouped then
 		for _, e in ipairs(self.pool_grouped) do
 			if e.grouped.value == other.grouped.value then
@@ -144,6 +152,7 @@ function Outline:remove_outlines()
 	local remaining = #to_fade
 
 	local function on_fade_done(e)
+	assert:entity(e)
 		if self.fade_seq ~= fade_seq then
 			return
 		end
@@ -163,6 +172,7 @@ function Outline:remove_outlines()
 end
 
 function Outline:update(dt)
+	assert:type(dt, "number")
 	for e in pairs(self.highlighted) do
 		if e:has("interactive_highlight") then
 			local highlight = e:get("interactive_highlight")

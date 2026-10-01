@@ -160,6 +160,7 @@ function NGrading:get_shader()
 end
 
 function NGrading:set_dt(dt)
+	assert:type(dt, "number")
 	if self.is_multi and self.is_active then
 		self.shader:send("u_time", dt)
 	end

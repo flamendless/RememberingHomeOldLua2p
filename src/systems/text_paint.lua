@@ -8,6 +8,7 @@ local def_delay_task = 1
 local dur_flash = 0.15
 
 local function flash_to_color(source, target_a, target_b, dur, count, current)
+	assert:type(count, "number")
 	local n = current or 0
 
 	Flux.to(source, dur, {
@@ -23,6 +24,7 @@ local function flash_to_color(source, target_a, target_b, dur, count, current)
 end
 
 function TextPaint:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -36,7 +38,7 @@ function TextPaint:show_text_paint(e, dur, widest)
 end
 
 function TextPaint:fade_text_paint(e, dur, on_complete)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert(e:has("text_with_paint"), e)
 	assert(e:get("text_with_paint").e_paint:has("paint"), e)
 	assert:type(dur, "number")
@@ -65,7 +67,7 @@ function TextPaint:fade_text_paint(e, dur, on_complete)
 end
 
 function TextPaint:show_paint(e, dur_in, widest)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(dur_in, "number")
 	assert:type_or_nil(widest, "string")
 	if e:has("static_text") then

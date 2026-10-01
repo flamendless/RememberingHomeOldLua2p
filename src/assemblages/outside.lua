@@ -16,6 +16,9 @@ local bounds_w, bounds_h = 52, 72
 local bounds_l_w = 28
 
 function Outside.bg_house(e, x, y, quad)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	local use_gen = Data.BgAssets.get_use_gen(e.world)
 	local resource_id = Data.BgAssets.get_resource_id("bg_house", use_gen)
 	e:give("id", "bg_house")
@@ -27,6 +30,7 @@ function Outside.bg_house(e, x, y, quad)
 end
 
 function Outside.splashes(e)
+	assert:entity(e)
 	local splashes = Resources.data.images.splashes
 	local resource_id = "splashes"
 	local is_compatible = Info.is_texturesize_compatible(splashes:getWidth())
@@ -47,6 +51,9 @@ function Outside.splashes(e)
 end
 
 function Outside.firefly(e, x, y, size)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	e:give("id", "firefly")
 		:give("firefly")
 		:give("pos", x, y, 2)
@@ -55,10 +62,16 @@ function Outside.firefly(e, x, y, size)
 end
 
 function Outside.colliders.ground(e, w, h)
+	assert:entity(e)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	e:give("id", "col_ground"):give("pos", 0, h - ground_h):give("collider", w, ground_h):give("bump"):give("ground")
 end
 
 function Outside.colliders.left_bound(e, w, h)
+	assert:entity(e)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	e:give("id", "col_left_bound")
 		:give("pos", 0, h - ground_h - bounds_h)
 		:give("collider", bounds_l_w, bounds_h)
@@ -67,6 +80,9 @@ function Outside.colliders.left_bound(e, w, h)
 end
 
 function Outside.colliders.right_bound(e, w, h)
+	assert:entity(e)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	e:give("id", "col_right_bound")
 		:give("pos", w - bounds_w, h - ground_h - bounds_h)
 		:give("collider", bounds_w, bounds_h)
@@ -75,22 +91,30 @@ function Outside.colliders.right_bound(e, w, h)
 end
 
 function Outside.lights.pl_car_headlight(e, id)
+	assert:entity(e)
+	assert:type(id, "string")
 	e:assemble(Assemblages.Light.point, 785, 296, 4, 24, Palette.get_diffuse("car_headlight_pl"))
 		:give("id", id)
 		:give("car_lights")
 end
 
 function Outside.lights.sl_car_headlight(e, id)
+	assert:entity(e)
+	assert:type(id, "string")
 	e:assemble(Assemblages.Light.spot, 803, 290, 6, { -1, 0.25, 0, 0.95 }, 256, Palette.get_diffuse("car_headlight_sl"))
 		:give("id", id)
 		:give("car_lights")
 end
 
 function Outside.lights.pl_backdoor(e, id)
+	assert:entity(e)
+	assert:type(id, "string")
 	e:assemble(Assemblages.Light.point, 498, 292, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
 end
 
 function Outside.lights.sl_backdoor(e, id)
+	assert:entity(e)
+	assert:type(id, "string")
 	e:assemble(
 		Assemblages.Light.spot,
 		498,
@@ -104,10 +128,14 @@ function Outside.lights.sl_backdoor(e, id)
 end
 
 function Outside.lights.pl_frontdoor(e, id)
+	assert:entity(e)
+	assert:type(id, "string")
 	e:assemble(Assemblages.Light.point, 368, 262, 62, 72, Palette.get_diffuse("door_pl")):give("id", id)
 end
 
 function Outside.lights.sl_frontdoor(e, id)
+	assert:entity(e)
+	assert:type(id, "string")
 	e:assemble(Assemblages.Light.spot, 368, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl")):give("id", id)
 end
 

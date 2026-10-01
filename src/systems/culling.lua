@@ -9,6 +9,7 @@ local Culling = Concord.system({
 })
 
 function Culling:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -22,6 +23,7 @@ function Culling:get_query_rect()
 end
 
 function Culling:update(dt)
+	assert:type(dt, "number")
 	local x, y, w, h = self:get_query_rect()
 	x = x - 32
 	y = y - 32
@@ -44,6 +46,7 @@ function Culling:update(dt)
 end
 
 function Culling:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

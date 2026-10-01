@@ -179,6 +179,8 @@ function Rooms.get_bounds(room_id)
 end
 
 function Rooms.get_ceiling_bottom_y(room_id, zone_key)
+	assert:type(room_id, "string")
+	assert:type_or_nil(zone_key, "string")
 	local bounds = Rooms.get_bounds(room_id)
 	local ceiling = bounds.ceiling
 	if zone_key and ceiling.zones and ceiling.zones[zone_key] then
@@ -188,6 +190,7 @@ function Rooms.get_ceiling_bottom_y(room_id, zone_key)
 end
 
 function Rooms.ground_top_y(room_id, room_h)
+	assert:type(room_id, "string")
 	local ground = Rooms.get_bounds(room_id).ground
 	if ground.y then
 		return ground.y
@@ -196,18 +199,25 @@ function Rooms.ground_top_y(room_id, room_h)
 end
 
 function Rooms.player_foot_y(room_id, room_h)
+	assert:type(room_id, "string")
 	return Rooms.ground_top_y(room_id, room_h) - Data.Colliders.player.h
 end
 
 function Rooms.left_width(room_id, opt)
+	assert:type(room_id, "string")
+	assert:type(opt, "table")
 	return Rooms.get_bounds(room_id).left.width * (opt and opt.sx or 1)
 end
 
 function Rooms.right_width(room_id, opt)
+	assert:type(room_id, "string")
+	assert:type(opt, "table")
 	return Rooms.get_bounds(room_id).right.width * (opt and opt.sx or 1)
 end
 
 function Rooms.ground_x(room_id, opt)
+	assert:type(room_id, "string")
+	assert:type(opt, "table")
 	local ground = Rooms.get_bounds(room_id).ground
 	if ground.x ~= nil then
 		return ground.x
@@ -216,6 +226,8 @@ function Rooms.ground_x(room_id, opt)
 end
 
 function Rooms.ground_width(room_id, room_w, opt)
+	assert:type(room_id, "string")
+	assert:type(opt, "table")
 	local ground = Rooms.get_bounds(room_id).ground
 	if ground.width then
 		return ground.width * (opt and opt.sx or 1)
@@ -224,6 +236,8 @@ function Rooms.ground_width(room_id, room_w, opt)
 end
 
 function Rooms.emitter_rect(room_id, room_w, opts)
+	assert:type(room_id, "string")
+	assert:type(opts, "table")
 	local bounds = Rooms.get_bounds(room_id)
 	local c = bounds.ceiling
 	local h = opts and opts.h or c.emitter_h
@@ -254,6 +268,7 @@ function Rooms.get_spawn(current_id, prev_id)
 end
 
 function Rooms.get_default_spawn(room_id)
+	assert:type(room_id, "string")
 	local t = assert(spawn_index[room_id], "No spawn data for room_id " .. tostring(room_id))
 	return t.default
 end

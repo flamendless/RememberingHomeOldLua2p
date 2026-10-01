@@ -3,6 +3,7 @@ local Flies = Concord.system({
 })
 
 function Flies:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -60,6 +61,7 @@ function Flies:generate_flies_for_room_lights(room_id, motion)
 end
 
 function Flies:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local pos = e:get("pos")
 		local ref = e:get("ref_pos_vec2").value

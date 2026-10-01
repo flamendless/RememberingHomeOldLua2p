@@ -1,6 +1,8 @@
 local BgAssets = {}
 
 local function make_entry(key, label, rel_path, light_defaults, container)
+	assert:type(key, "string")
+	assert:type(label, "string")
 	return {
 		key = key,
 		label = label,
@@ -57,11 +59,13 @@ function BgAssets.base_key(id)
 end
 
 function BgAssets.get_use_gen(world)
-	if world then
-		local room = world:getSystem(ECS.get_system_class("room"))
-		if room then
-			return room.use_gen
-		end
+	if world == nil then
+		return true
+	end
+	assert:world(world)
+	local room = world:getSystem(ECS.get_system_class("room"))
+	if room then
+		return room.use_gen
 	end
 	return true
 end

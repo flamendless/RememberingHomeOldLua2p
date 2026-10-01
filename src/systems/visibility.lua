@@ -5,6 +5,7 @@ local Visibility = Concord.system({
 local PITCH_BLACK_AMBIANCE = { 0, 0, 0, 0 }
 
 function Visibility:init(world)
+	assert:world(world)
 	self.world = world
 	self.is_active = false
 	self.config = nil
@@ -64,6 +65,7 @@ function Visibility:destroy_light()
 end
 
 function Visibility:sync_light_to_player(e_player)
+	assert:entity(e_player)
 	if not self.e_light or not e_player then
 		return
 	end
@@ -123,6 +125,7 @@ function Visibility:set_visibility(active, config)
 end
 
 function Visibility:update(dt)
+	assert:type(dt, "number")
 	if not self.is_active then
 		return
 	end
@@ -142,6 +145,7 @@ end
 
 if DEV then
 	function Visibility:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

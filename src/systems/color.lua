@@ -13,6 +13,7 @@ local Color = Concord.system({
 Log.debug("TODO: (Brandon) implement checking for alpha_range")
 
 local function lerp_colors(lc, color)
+	assert:type(color, "string")
 	local duration = lc.duration
 	local delay = lc.delay
 	local next_value = lc.index + 1
@@ -48,6 +49,7 @@ local function lerp_colors(lc, color)
 end
 
 function Color:init(world)
+	assert:world(world)
 	self.world = world
 	self.pool_fade_in.onAdded = function(pool, e)
 		local c = e:get("color_fade_in")
@@ -190,6 +192,7 @@ function Color:init(world)
 end
 
 function Color:setup_blink(e)
+	assert:entity(e)
 	local blink = e:get("blink")
 	local color = e:get("color").value
 	Flux.to(color, blink.dur, {

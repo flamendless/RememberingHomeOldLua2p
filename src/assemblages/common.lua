@@ -21,14 +21,23 @@ function Common.bg(e, bg_id, w, h)
 end
 
 function Common.text(e, pos, str, font, color)
+	assert:entity(e)
+	assert:type(str, "string")
+	assert:type(color, "string")
 	e:give("id", "text"):give("text", str):give("font", font):give("pos", pos):give("color", color)
 end
 
 function Common.static_text(e, pos, str, font, color)
+	assert:entity(e)
+	assert:type(str, "string")
+	assert:type(color, "string")
 	e:give("id", "static_text"):give("static_text", str):give("font", font):give("pos", pos):give("color", color)
 end
 
 function Common.animated_sprite(e, clip, x, y, stop_on_last)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	local obj = Animation.new_single(clip, stop_on_last)
 	e:give("id", "animated_sprite")
 		:give("animation", obj)
@@ -36,6 +45,10 @@ function Common.animated_sprite(e, clip, x, y, stop_on_last)
 end
 
 function Common.camera(e, cam, scale, w, h, clip_col)
+	assert:entity(e)
+	assert:type(cam, "table")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	e:give("id", "camera")
 		:give("camera", cam, true)
 		:give("camera_transform", 0, scale)

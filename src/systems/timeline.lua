@@ -4,6 +4,7 @@ local HISTORY_LIMIT = 100
 local DEF = "<NONE>"
 
 function Timeline:init(world)
+	assert:world(world)
 	self.world = world
 	self.state = Enums.timeline.created
 	self.current_name = DEF
@@ -49,6 +50,7 @@ if DEV then
 		pause = Timeline.pause_timeline,
 	}
 	function Timeline:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

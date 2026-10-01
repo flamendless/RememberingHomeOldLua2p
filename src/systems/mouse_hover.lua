@@ -5,10 +5,12 @@ local MouseHover = Concord.system({
 })
 
 function MouseHover:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function MouseHover:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_bb_emit) do
 		local hoverable = e:get("hoverable")
 

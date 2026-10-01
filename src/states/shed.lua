@@ -4,6 +4,7 @@ local SHED_ANT_TRAIL_COUNT = 2
 local SHED_ANT_TRAIL_LANE_INSET = 0.2
 
 function Shed:init(world)
+	assert:world(world)
 	self.id = "shed"
 	self.world = world
 end
@@ -117,6 +118,7 @@ function Shed:state_init()
 end
 
 function Shed:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end

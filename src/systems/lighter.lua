@@ -43,6 +43,7 @@ local IGNITION_SEQUENCES = {
 }
 
 function Lighter:init(world)
+	assert:world(world)
 	self.world = world
 	self.e_lighter = nil
 	self.e_player = nil
@@ -56,7 +57,9 @@ function Lighter:init(world)
 end
 
 function Lighter:spawn_lighter(e_player)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	self.e_player = e_player
 	self.e_lighter = Concord.entity(self.world)
 		:assemble(Assemblages.Lighter.lighter, e_player)
@@ -76,7 +79,9 @@ function Lighter:spawn_lighter(e_player)
 end
 
 function Lighter:lighter_update_pos(e_player)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	local dir = e_player:get("body").dir
 	self.e_lighter:get("anchor").padding_x = 16 * dir
 	self.e_lighter:get("transform").sx = -dir
@@ -116,7 +121,9 @@ function Lighter:should_show_flame()
 end
 
 function Lighter:wick_world_pos(e_player)
-	assert(e_player.__isEntity and e_player:has("player") and e_player:has("pos"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player") and e_player:has("pos"), e_player)
 	local pos = e_player:get("pos")
 	local sx, sy, ox, oy = Helper.get_animation_draw_params(e_player)
 	return pos.x + (WICK_X - ox) * sx, pos.y + (WICK_Y - oy) * sy
@@ -249,6 +256,7 @@ function Lighter:play_ignition_sfx(sfx)
 end
 
 function Lighter:start_ignition(tier_id)
+	assert:type(tier_id, "string")
 	self.ignition_complete = false
 	self.ignition_timer = 0
 	self.ignition_steps = IGNITION_SEQUENCES[tier_id] or IGNITION_SEQUENCES[FT.full]
@@ -257,6 +265,7 @@ function Lighter:start_ignition(tier_id)
 end
 
 function Lighter:update_ignition(dt)
+	assert:type(dt, "number")
 	if self.ignition_complete or not self.ignition_steps then
 		return
 	end
@@ -299,6 +308,7 @@ function Lighter:trigger_flicker_boost()
 end
 
 function Lighter:update_instability(dt)
+	assert:type(dt, "number")
 	if not self.e_flame or not self.e_flame:has("flame_instability") then
 		return
 	end
@@ -350,7 +360,9 @@ function Lighter:update_instability(dt)
 end
 
 function Lighter:anim_open_lighter(e_player)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	if e_player ~= self.e_player or not self.e_flame then
 		return
 	end
@@ -374,7 +386,9 @@ function Lighter:anim_open_lighter(e_player)
 end
 
 function Lighter:anim_close_lighter(e_player)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	if e_player ~= self.e_player then
 		return
 	end
@@ -386,18 +400,21 @@ function Lighter:on_close_lighter()
 end
 
 function Lighter:on_flame_blown_out(e)
+	assert:entity(e)
 	if self.e_flame and e == self.e_flame then
 		self:request_close()
 	end
 end
 
 function Lighter:on_flame_health_empty(e)
+	assert:entity(e)
 	if self.e_flame and e == self.e_flame then
 		self:request_close()
 	end
 end
 
 function Lighter:update(dt)
+	assert:type(dt, "number")
 	if not self.e_player or not self.e_flame then
 		return
 	end
@@ -431,6 +448,7 @@ function Lighter:draw_lighter_sparks()
 end
 
 function Lighter:set_lighter_fuel(amount)
+	assert:type(amount, "number")
 	if not self.e_flame or not self.e_flame:has("flame_health") then
 		return
 	end
@@ -449,6 +467,7 @@ if DEV then
 		freeze_fuel = false,
 	}
 	function Lighter:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

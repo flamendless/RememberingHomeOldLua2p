@@ -1,6 +1,7 @@
 local Menu = {}
 
 function Menu.desk_fast(e, ww, wh)
+	assert:entity(e)
 	e:give("id", "desk_fast")
 		:give("animation", Animation.new_single({
 			resource_id = "sheet_desk",
@@ -17,6 +18,7 @@ function Menu.desk_fast(e, ww, wh)
 end
 
 function Menu.desk(e, ww, wh)
+	assert:entity(e)
 	e:give("id", "desk")
 		:give("animation", Animation.new_single({
 			resource_id = "sheet_desk",
@@ -33,14 +35,25 @@ function Menu.desk(e, ww, wh)
 end
 
 function Menu.bg_door(e, x, y, scale, ox, oy)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(ox, "number")
+	assert:type(oy, "number")
 	e:give("id", "bg_door"):give("sprite", "bg_door"):give("pos", x, y):give("transform", 0, scale, scale, ox, oy)
 end
 
 function Menu.bg_hallway(e, x, y, scale, ox, oy)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(ox, "number")
+	assert:type(oy, "number")
 	e:give("id", "bg_hallway"):give("sprite", "bg_hallway"):give("pos", x, y):give("transform", 0, scale, scale, ox, oy)
 end
 
 function Menu.sheet_title(e, ww, wh)
+	assert:entity(e)
 	e:give("id", "title")
 		:give("animation", Animation.new_single({
 			resource_id = "sheet_title",
@@ -60,6 +73,13 @@ function Menu.sheet_title(e, ww, wh)
 end
 
 function Menu.option_item(e, id, str, x, y, i, sub_i, list_id)
+	assert:entity(e)
+	assert:type(id, "string")
+	assert:type(str, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(i, "number")
+	assert:type(list_id, "string")
 	e:give("id", id)
 		:give("text", str)
 		:give("font", "menu")
@@ -71,6 +91,13 @@ function Menu.option_item(e, id, str, x, y, i, sub_i, list_id)
 end
 
 function Menu.about_text(e, id, resource_id, str, x, y, color)
+	assert:entity(e)
+	assert:type(id, "string")
+	assert:type(resource_id, "string")
+	assert:type(str, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(color, "string")
 	e:give("id", id)
 		:give("static_text", str)
 		:give("font", resource_id)
@@ -80,6 +107,11 @@ function Menu.about_text(e, id, resource_id, str, x, y, color)
 end
 
 function Menu.about_ext_link(e, id, resource_id, x, y)
+	assert:entity(e)
+	assert:type(id, "string")
+	assert:type(resource_id, "string")
+	assert:type(x, "number")
+	assert:type(y, "number")
 	local image = Resources.data.images[resource_id]
 	local w, h = image:getDimensions()
 	local sx, sy = 0.75, 0.75
@@ -97,6 +129,9 @@ function Menu.about_ext_link(e, id, resource_id, x, y)
 end
 
 function Menu.btn_back(e, x, y)
+	assert:entity(e)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	local w, h = 59, 45
 	e:give("id", "btn_back")
 		:give("sprite", "btn_back")

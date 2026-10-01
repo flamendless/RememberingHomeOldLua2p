@@ -1,6 +1,7 @@
 local TotallyDarkRoom = Concord.system()
 
 function TotallyDarkRoom:init(world)
+	assert:world(world)
 	self.id = "living_room" -- NOTE: (Brandon) intentional
 	self.world = world
 end
@@ -50,6 +51,7 @@ function TotallyDarkRoom:state_init()
 end
 
 function TotallyDarkRoom:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end

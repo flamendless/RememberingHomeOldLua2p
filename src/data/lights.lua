@@ -134,6 +134,9 @@ Lights[Enums.game_state.Office2] = {
 }
 
 function Lights.get_light_y(room_id, group_key, index)
+	assert:type(room_id, "string")
+	assert:type(group_key, "string")
+	assert:type(index, "number")
 	local room = Lights[room_id]
 	local group = room[group_key]
 	local pos = group.pos[index]

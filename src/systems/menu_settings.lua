@@ -29,6 +29,7 @@ local key_title = {
 }
 
 function MenuSettings:init(world)
+	assert:world(world)
 	self.world = world
 	Slab.Initialize()
 	if not Style.API.LoadStyle("slab.style", true, true) then
@@ -67,6 +68,7 @@ function MenuSettings:init_settings()
 end
 
 local function slab_title(title, text)
+	assert:type(text, "string")
 	Slab.BeginLayout(title, { AlignX = "center", AlignY = "top", Columns = 1 })
 	Slab.SetLayoutColumn(1)
 	if text then
@@ -81,6 +83,7 @@ function MenuSettings:draw_settings()
 end
 
 function MenuSettings:update_settings(dt)
+	assert:type(dt, "number")
 	local ww, wh = love.graphics.getDimensions()
 	local x, y = 64, 64
 	local width = ww - (x * 2)

@@ -1,6 +1,7 @@
 local Kitchen = Concord.system()
 
 function Kitchen:init(world)
+	assert:world(world)
 	self.id = "kitchen"
 	self.world = world
 end
@@ -50,6 +51,7 @@ function Kitchen:state_init()
 end
 
 function Kitchen:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end

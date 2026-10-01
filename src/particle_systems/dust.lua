@@ -24,6 +24,7 @@ local TEXTURE_SIZE = 4
 local BUFFER = 80
 
 local function dust_colors_from_base(color)
+	assert:type(color, "string")
 	local r, g, b = color[1], color[2], color[3]
 	local a = color[4] or 1
 	return

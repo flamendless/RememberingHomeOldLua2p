@@ -1,10 +1,20 @@
 local Helper = {}
 
 function Helper.check_point_rect(px, py, x, y, w, h)
+	assert:type(px, "number")
+	assert:type(py, "number")
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	return px > x and px < x + w and py > y and py < y + h
 end
 
 function Helper.horizontal_rect_gap(ax, aw, bx, bw)
+	assert:type(ax, "number")
+	assert:type(aw, "number")
+	assert:type(bx, "number")
+	assert:type(bw, "number")
 	if ax + aw < bx then
 		return bx - (ax + aw)
 	end
@@ -15,11 +25,23 @@ function Helper.horizontal_rect_gap(ax, aw, bx, bw)
 end
 
 function Helper.interact_range_margin(aw, _, bw, _, reach_scale)
+	assert:type(aw, "number")
+	assert:type(bw, "number")
+	assert:type_or_nil(reach_scale, "number")
 	reach_scale = reach_scale or 0.58
 	return math.max(2, math.min(aw, bw) * reach_scale * 0.5)
 end
 
 function Helper.is_in_interact_range(ax, ay, aw, ah, bx, by, bw, bh, reach_scale)
+	assert:type(ax, "number")
+	assert:type(ay, "number")
+	assert:type(aw, "number")
+	assert:type(ah, "number")
+	assert:type(bx, "number")
+	assert:type(by, "number")
+	assert:type(bw, "number")
+	assert:type(bh, "number")
+	assert:type_or_nil(reach_scale, "number")
 	if ay >= by + bh or ay + ah <= by then
 		return false
 	end
@@ -28,7 +50,7 @@ function Helper.is_in_interact_range(ax, ay, aw, ah, bx, by, bw, bh, reach_scale
 end
 
 function Helper.get_real_size(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local box = e:get("bounding_box")
 	local bw, bh = box.w, box.h
 	if e:has("transform") then
@@ -40,6 +62,7 @@ function Helper.get_real_size(e)
 end
 
 function Helper.get_frame_size(e)
+	assert:entity(e)
 	if e:has("animation") then
 		local anim = e:get("animation")
 		if anim.obj then
@@ -56,7 +79,7 @@ function Helper.get_frame_size(e)
 end
 
 function Helper.get_offset(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local transform = e:get("transform")
 	local fw, fh = Helper.get_frame_size(e)
 	local ox = transform.ox
@@ -80,7 +103,7 @@ function Helper.get_offset(e)
 end
 
 function Helper.get_animation_draw_params(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local rot, sx, sy, ox, oy = 0, 1, 1, 0, 0
 
 	if e:has("transform") then
@@ -102,7 +125,7 @@ function Helper.get_animation_draw_params(e)
 end
 
 function Helper.get_real_pos_box(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local box = e:get("bounding_box")
 	local pos = e:get("pos")
 	local x = pos.x
@@ -124,7 +147,7 @@ function Helper.get_real_pos_box(e)
 end
 
 function Helper.get_ltwh(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	--get the size
 	local sprite = e:get("sprite")
 	local w, h = sprite.iw, sprite.ih
@@ -179,7 +202,8 @@ function Helper.get_ltwh(e)
 end
 
 function Helper.get_collider_rect(e)
-	assert(e.__isEntity and e:has("collider"), e)
+	assert:entity(e)
+	assert(e:has("collider"), e)
 	local pos = e:get("pos")
 	local collider = e:get("collider")
 	local x, y = pos.x, pos.y
@@ -192,8 +216,10 @@ function Helper.get_collider_rect(e)
 end
 
 function Helper.interact_face_dir(e_player, e_target)
-	assert(e_player.__isEntity and e_player:has("collider"), e_player)
-	assert(e_target.__isEntity and e_target:has("collider"), e_target)
+	assert:entity(e_player)
+	assert(e_player:has("collider"), e_player)
+	assert:entity(e_target)
+	assert(e_target:has("collider"), e_target)
 
 	local px, _, pw = Helper.get_collider_rect(e_player)
 	local cx, _, cw = Helper.get_collider_rect(e_target)
@@ -210,6 +236,8 @@ function Helper.interact_face_dir(e_player, e_target)
 end
 
 function Helper.can_proceed_interact(e_player, e_target)
+	assert:entity(e_player)
+	assert:entity(e_target)
 	local face_dir = Helper.interact_face_dir(e_player, e_target)
 	if face_dir and e_player:has("body") then
 		if e_player:get("body").dir ~= face_dir then

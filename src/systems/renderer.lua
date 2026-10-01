@@ -31,8 +31,8 @@ end
 Renderer.draw_bg = Renderers.Sprite.render_bg
 
 local function get_list(self, e_or_bool)
-	if e_or_bool then
-		assert((type(e_or_bool) == "boolean" or e_or_bool.__isEntity), e_or_bool)
+	if e_or_bool ~= nil and type(e_or_bool) ~= "boolean" then
+		assert:entity(e_or_bool)
 	end
 	local is_ui = false
 	if e_or_bool then
@@ -62,6 +62,7 @@ local function fn_sort_z(a, b)
 end
 
 function Renderer:init(world)
+	assert:world(world)
 	self.world = world
 	self.list, self.list_ui = Ctor.CustomList(), Ctor.CustomList()
 
@@ -104,6 +105,7 @@ function Renderer:sort_by_z(list)
 end
 
 function Renderer:pool_on_added(pool, e)
+	assert:entity(e)
 	local should_sort = false
 	if pool == self.pool_layer or pool == self.pool_sprite then
 		Renderers.Sprite.setup(e)
@@ -131,6 +133,7 @@ function Renderer:pool_on_added(pool, e)
 end
 
 function Renderer:pool_on_removed(pool, e)
+	assert:entity(e)
 	local list = get_list(self, e)
 	if list:remove(e) then
 		self:sort_by_z(list)
@@ -143,6 +146,7 @@ function Renderer:pool_on_removed(pool, e)
 end
 
 function Renderer:update(dt)
+	assert:type(dt, "number")
 	for _, list in ipairs({ self.list, self.list_ui }) do
 		for _, e in ipairs(list) do
 			if e.renderer and e.renderer.update then
@@ -221,6 +225,7 @@ if DEV then
 	local search = ""
 
 	local function show_list(id, list)
+	assert:type(id, "string")
 		if Slab.BeginTree(id .. " size: " .. #list) then
 			Slab.Indent()
 			for i, e in ipairs(list) do
@@ -252,6 +257,7 @@ if DEV then
 	end
 
 	function Renderer:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then return end
 		self.debug_show = Slab.BeginWindow("renderer", {
 			Title = "Renderer",

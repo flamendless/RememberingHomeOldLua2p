@@ -1,7 +1,7 @@
 local AsmDust = {}
 
 function AsmDust.emitter(e, key, x, y, w, h, opts)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(key, "string")
 	assert:type(x, "number")
 	assert:type(y, "number")

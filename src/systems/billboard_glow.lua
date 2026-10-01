@@ -6,6 +6,7 @@ local BillboardGlow = Concord.system({
 })
 
 function BillboardGlow:init(world)
+	assert:world(world)
 	self.shader = love.graphics.newShader(Shaders.paths.billboard_glow)
 	self.groups = {}
 
@@ -31,6 +32,7 @@ function BillboardGlow:init(world)
 end
 
 function BillboardGlow:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_pulse) do
 		if not e:has("hidden") and not e:has("glow_disabled") then
 			local pulse = e:get("glow_pulse")
@@ -147,6 +149,7 @@ function BillboardGlow:draw_billboard_glow(camera)
 end
 
 function BillboardGlow:add_to_batch(e)
+	assert:entity(e)
 	local pos = e:get("pos")
 	local glow = e:get("billboard_glow")
 	local size = glow.size
@@ -179,11 +182,13 @@ if DEV then
 	}
 
 	function BillboardGlow:debug_on_toggle(event)
+	assert:type(event, "string")
 		if event ~= "billboard_glow" then return end
 		self.debug_show = not self.debug_show
 	end
 
 	function BillboardGlow:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then return end
 		self.debug_show = Slab.BeginWindow("billboard_glow", {
 			Title = "BillboardGlow",
@@ -221,6 +226,7 @@ if DEV then
 	end
 
 	function BillboardGlow:debug_edit(pool, group_id)
+	assert:type(group_id, "string")
 		for i, e in ipairs(pool) do
 			if group_id and i ~= 1 then
 				return

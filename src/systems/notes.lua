@@ -8,6 +8,7 @@ local NotesSystem = Concord.system({
 local c_on_hovered = Palette.get("note_on_hovered")
 
 function NotesSystem:init(world)
+	assert:world(world)
 	self.world = world
 	self.is_open = false
 	self:setEnabled(false)
@@ -40,6 +41,7 @@ function NotesSystem:close_notes(not_close)
 end
 
 function NotesSystem:update(dt)
+	assert:type(dt, "number")
 	if self.is_open then
 		if Inputs.pressed(Enums.input.inventory) then
 			Inputs.flush()

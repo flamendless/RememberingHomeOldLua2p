@@ -3,6 +3,7 @@ local BehaviorTree = Concord.system({
 })
 
 function BehaviorTree:init(world)
+	assert:world(world)
 	self.world = world
 
 	self.pool.onAdded = function(_, e)
@@ -12,6 +13,7 @@ function BehaviorTree:init(world)
 end
 
 function BehaviorTree:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local bt = e:get("behavior_tree")
 		bt.result = bt.beehive(self.world, e)

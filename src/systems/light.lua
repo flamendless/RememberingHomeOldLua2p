@@ -7,6 +7,7 @@ local function randomf(min, max)
 end
 
 local function generate_recolor(e)
+	assert:entity(e)
 	local light = e:get("light")
 	local color = e:get("color").value
 	local timer = e:get("light_timer")
@@ -24,6 +25,7 @@ local function generate_recolor(e)
 end
 
 local function generate_flicker(e)
+	assert:entity(e)
 	local flicker = e:get("light_flicker")
 	local color = e:get("color").value
 	local r = love.math.random()
@@ -48,6 +50,7 @@ local function manage_offset(shape, transform, sprite)
 end
 
 function Light:init(world)
+	assert:world(world)
 	self.world = world
 	self.ambient = { 0, 0, 0 }
 
@@ -85,6 +88,7 @@ function Light:create_light_map(x, y, w, h, scale)
 end
 
 function Light:update_light(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local light = e:get("light")
 		local timer = e:get("light_timer")
@@ -178,6 +182,8 @@ function Light:draw_light()
 end
 
 function Light:draw_light_end(x, y)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	love.graphics.setBlendMode("multiply", "premultiplied")
 	love.graphics.draw(self.light_map, x, y, 0, self.scale, self.scale)
 	love.graphics.setBlendMode("alpha")
@@ -191,6 +197,7 @@ function Light:cleanup()
 end
 
 function Light:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

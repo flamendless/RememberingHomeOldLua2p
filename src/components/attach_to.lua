@@ -9,6 +9,7 @@ function c_attach_to:serialize()
 end
 
 function c_attach_to:deserialize(data)
+	assert:type(data, "table")
 	self.key = data.key
 end
 

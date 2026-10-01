@@ -184,6 +184,7 @@ function Canvas:detach()
 end
 
 function Canvas:override_draw(fn)
+	assert:type(fn, "function")
 	self:attach()
 	fn()
 	self:detach()

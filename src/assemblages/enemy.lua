@@ -14,7 +14,7 @@ function Enemy.get_multi_anim_data(enemy_type)
 end
 
 function Enemy.base(e, enemy_type, x, y)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(enemy_type, "string")
 	assert:type(x, "number")
 	assert:type(y, "number")

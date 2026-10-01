@@ -21,6 +21,7 @@ function List:init(world)
 end
 
 function List:update(dt)
+	assert:type(dt, "number")
 	if not self.focused then
 		return
 	end
@@ -275,6 +276,7 @@ end
 local selected
 
 function List:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

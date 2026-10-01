@@ -128,6 +128,7 @@ end
 local MAX_UPDATE_STEP = 1 / 60
 
 function love.update(dt)
+	assert:type(dt, "number")
 	JPROF.push("frame")
 
 	if DEV and DevTools.pause then
@@ -258,6 +259,7 @@ function love.run()
 	local dt = 0
 
 	local function dispatch_event(name, a, b, c, d, e, f)
+		assert:type(name, "string")
 		if name == "quit" then
 			if not love.quit or not love.quit() then
 				return false, a or 0

@@ -1,6 +1,7 @@
 local UtilityRoom = Concord.system()
 
 function UtilityRoom:init(world)
+	assert:world(world)
 	self.id = "utility_room"
 	self.world = world
 end
@@ -49,6 +50,7 @@ function UtilityRoom:state_init()
 end
 
 function UtilityRoom:state_update(dt)
+	assert:type(dt, "number")
 	self.world:emit("preupdate", dt)
 	self.world:emit("update", dt)
 end

@@ -3,6 +3,7 @@ local RandomizeUV = Concord.system({
 })
 
 function RandomizeUV:init(world)
+	assert:world(world)
 	self.world = world
 	self.orig_data = {}
 	self.has_randomized = false
@@ -10,6 +11,7 @@ function RandomizeUV:init(world)
 end
 
 function RandomizeUV:update(dt)
+	assert:type(dt, "number")
 	if not self.has_randomized then
 		return
 	end
@@ -72,6 +74,7 @@ function RandomizeUV:multi_randomize_uv(dur, chance)
 end
 
 function RandomizeUV:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

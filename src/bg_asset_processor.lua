@@ -15,6 +15,8 @@ local buffer_w = 0
 local buffer_h = 0
 
 local function ensure_buffers(w, h)
+	assert:type(w, "number")
+	assert:type(h, "number")
 	if buffer_a and buffer_w == w and buffer_h == h then
 		return
 	end

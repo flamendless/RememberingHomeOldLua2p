@@ -1,7 +1,7 @@
 local BillboardGlow = {}
 
 function BillboardGlow.create(e, x, y, z, intensity, color, size)
-	assert(e.__isEntity)
+	assert:entity(e)
 	assert:type(x, "number")
 	assert:type(y, "number")
 	assert:type(z, "number")

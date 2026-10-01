@@ -4,6 +4,7 @@ local Movement = Concord.system({
 })
 
 function Movement:init(world)
+	assert:world(world)
 	self.world = world
 	self.pool.onRemoved = function(pool, e)
 		if e:has("body") then
@@ -15,6 +16,7 @@ function Movement:init(world)
 end
 
 function Movement:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_walk) do
 		local random_walk = e:get("random_walk")
 		local diff = random_walk.orig_pos:distance(e:get("pos_vec2").value)
@@ -63,6 +65,7 @@ local flags = {
 }
 
 function Movement:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

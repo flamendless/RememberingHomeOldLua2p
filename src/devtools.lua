@@ -199,12 +199,14 @@ local function rect_selector_finalize_press()
 end
 
 local function dev_hang_enter(label)
+	assert:type(label, "string")
 	if HANG_WATCH then
 		hang_watch("devtools:" .. label)
 	end
 end
 
 local function dev_hang_leave(label)
+	assert:type(label, "string")
 	if HANG_WATCH then
 		hang_watch("devtools:" .. label .. " ok")
 	end
@@ -229,6 +231,7 @@ function DevTools.blocks_input()
 end
 
 function DevTools.update(dt)
+	assert:type(dt, "number")
 	if room_map.show then
 		dev_hang_enter("skip room_map")
 		dev_hang_leave("skip room_map")
@@ -875,6 +878,7 @@ function DevTools.draw_debug_list()
 end
 
 function DevTools.slab_hidden(e)
+	assert:entity(e)
 	if not e:has("hidden") and not e:has("dev_hidden") then return end
 	if Slab.CheckBox(e:has("hidden"), "hidden") then
 		if e:has("hidden") then
@@ -886,6 +890,7 @@ function DevTools.slab_hidden(e)
 end
 
 function DevTools.slab_id(e)
+	assert:entity(e)
 	if not e:has("id") then return end
 	local id = e:get("id")
 	Slab.Text("id: " .. id.value)
@@ -895,11 +900,13 @@ function DevTools.slab_id(e)
 end
 
 function DevTools.slab_color(e)
+	assert:entity(e)
 	if not e:has("color") then return end
 	UIWrapper.color(e:get("color").value)
 end
 
 function DevTools.slab_z_index(e)
+	assert:entity(e)
 	if not e:has("z_index") then return end
 	local id = e:get("id").value
 	local z_index = e:get("z_index")
@@ -910,6 +917,7 @@ function DevTools.slab_z_index(e)
 end
 
 function DevTools.slab_sprite(e)
+	assert:entity(e)
 	if not e:has("sprite") then return end
 	if Slab.Button("Show Sprite") then
 		image_viewer.show = true
@@ -925,6 +933,7 @@ function DevTools.slab_sprite(e)
 end
 
 function DevTools.slab_attach_to(e)
+	assert:entity(e)
 	if not e:has("attach_to") then return end
 	local attach_to = e:get("attach_to")
 	local e_other = GameStates.world:getEntityByKey(attach_to.key)
@@ -938,6 +947,7 @@ function DevTools.slab_attach_to(e)
 end
 
 function DevTools.slab_pos(e)
+	assert:entity(e)
 	if not e:has("pos") then return end
 	local pos = e:get("pos")
 	pos.x = UIWrapper.edit_number("x", pos.x, true)
@@ -945,6 +955,7 @@ function DevTools.slab_pos(e)
 end
 
 function DevTools.slab_transform(e)
+	assert:entity(e)
 	if e:has("transform") then
 		local transform = e:get("transform")
 		if Slab.BeginTree("Transform") then
@@ -986,6 +997,8 @@ slab_components = {
 }
 
 function DevTools.register_slab_component(name, fn)
+	assert:type(name, "string")
+	assert:type(fn, "function")
 	slab_components[name] = fn
 end
 
@@ -1468,6 +1481,7 @@ function DevTools.end_draw()
 end
 
 function DevTools.keypressed(key)
+	assert:type(key, "string")
 	if not GameStates.world then return end
 
 	if DevTools.cli.show then

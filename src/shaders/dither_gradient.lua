@@ -76,6 +76,7 @@ if DEV then
 	end
 
 	function DitherGradient:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

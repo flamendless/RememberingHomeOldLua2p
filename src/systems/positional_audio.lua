@@ -4,6 +4,7 @@ local PositionalAudio = Concord.system({
 })
 
 function PositionalAudio:init(world)
+	assert:world(world)
 	self.world = world
 	self.oneshots = {}
 	self.e_player = nil
@@ -32,6 +33,7 @@ function PositionalAudio:init(world)
 end
 
 function PositionalAudio:start_emitter(e)
+	assert:entity(e)
 	local se = e:get("sound_emitter")
 	if se.active then
 		return
@@ -57,6 +59,7 @@ function PositionalAudio:start_emitter(e)
 end
 
 function PositionalAudio:stop_emitter(e)
+	assert:entity(e)
 	local se = e:get("sound_emitter")
 	if se.active then
 		Audio.stop_source(se.active)
@@ -76,6 +79,7 @@ function PositionalAudio:cleanup_oneshots()
 end
 
 function PositionalAudio:update(dt)
+	assert:type(dt, "number")
 	local listeners = self.pool_listener
 	if #listeners > 0 then
 		local e = listeners[1]
@@ -132,7 +136,7 @@ function PositionalAudio:play_positional_sound(source, x, y, opts)
 end
 
 function PositionalAudio:play_sound_on_entity(e, source, opts)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	Log.debug("playing sound", e:get("id").value, source)
 	opts = opts or {}
 
@@ -158,6 +162,7 @@ function PositionalAudio:play_sound_on_entity(e, source, opts)
 end
 
 function PositionalAudio:play_sound_on_player(source, opts)
+	assert:type(opts, "table")
 	local e_player = self:get_player()
 	if not e_player then
 		return
@@ -173,6 +178,7 @@ function PositionalAudio:resolve_event_source(source)
 end
 
 function PositionalAudio:play_event_sound(opts)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	local source = self:resolve_event_source(opts.source)
 	if not source then
@@ -193,7 +199,7 @@ function PositionalAudio:play_event_sound(opts)
 end
 
 function PositionalAudio:stop_sound_on_entity(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	if e:has("sound_emitter") then
 		self:stop_emitter(e)
 	end
@@ -214,11 +220,14 @@ if DEV or TEST.mode then
 
 	local orig_init = PositionalAudio.init
 	function PositionalAudio:init(world)
+	assert:world(world)
 		orig_init(self, world)
 		self.debug_entries = {}
 	end
 
 	function PositionalAudio:track_debug_sound(source, active, opts)
+	assert:type(active, "boolean")
+	assert:type_or_nil(opts, "table")
 		opts = opts or {}
 		if opts.relative then
 			return
@@ -233,6 +242,7 @@ if DEV or TEST.mode then
 	end
 
 	function PositionalAudio:update_debug_entries(dt)
+	assert:type(dt, "number")
 		for i = #self.debug_entries, 1, -1 do
 			local entry = self.debug_entries[i]
 			local active = entry.active
@@ -308,6 +318,7 @@ if DEV then
 	end
 
 	function PositionalAudio:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

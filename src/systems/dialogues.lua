@@ -3,6 +3,7 @@ local DialogueHandlers = require("dialogue_handlers")
 local DialoguesSystem = Concord.system()
 
 local function build_dialogue_cfg(cam)
+	assert:type(cam, "table")
 	local font = Resources.data.fonts.dialogue
 	local ww, wh = love.graphics.getDimensions()
 	local _, _, _, h = cam:getWindow()
@@ -54,6 +55,7 @@ local function create_choice_bloodbar_mid(cfg)
 end
 
 function DialoguesSystem:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -98,12 +100,13 @@ function DialoguesSystem:state_setup()
 end
 
 function DialoguesSystem:ev_main_camera_setup(cam)
+	assert:type(cam, "table")
 	self:setup_dialogue_ui(cam)
 end
 
 function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
-	assert(e.__isEntity)
-	assert(e_other.__isEntity)
+	assert:entity(e)
+	assert:entity(e_other)
 	assert:type_or_nil(override_dialogue_key, "string")
 	assert(self.ui, "dialogue ui not ready")
 	local dialogue_key = override_dialogue_key or e_other:get("dialogue_key").value
@@ -187,6 +190,7 @@ function DialoguesSystem:ev_advance()
 end
 
 function DialoguesSystem:state_update(dt)
+	assert:type(dt, "number")
 	if not self.dialogue then return end
 
 	-- if self.dialogue:getCurrentKnot() == Enums.dialogue_knot.fin then
@@ -285,6 +289,7 @@ function DialoguesSystem:draw_ui()
 end
 
 function DialoguesSystem:custom_textbox_ui_draw(component)
+	assert:type(component, "string")
 	if not component.visible then return end
 	local fh = component.font:getHeight()
 
@@ -328,6 +333,7 @@ function DialoguesSystem:custom_textbox_ui_draw(component)
 end
 
 function DialoguesSystem:custom_choicelist_ui_draw(component)
+	assert:type(component, "string")
 	if not component.visible or #component.choices == 0 then return end
 	local fh = component.font:getHeight()
 	local draw_y = component.y
@@ -400,6 +406,7 @@ end
 
 if DEV then
 	function DialoguesSystem:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then return end
 
 		self.debug_show = Slab.BeginWindow("dialogues", {

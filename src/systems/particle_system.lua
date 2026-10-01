@@ -1,6 +1,7 @@
 local ParticleSystem = Concord.system()
 
 function ParticleSystem:init(world)
+	assert:world(world)
 	self.world = world
 	self.ps = {}
 end
@@ -48,6 +49,7 @@ function ParticleSystem:set_particle_system(id_or_ids, mode, ...)
 end
 
 function ParticleSystem:update_particle_system(dt)
+	assert:type(dt, "number")
 	for _, ps in ipairs(self.ps) do
 		if ps.system:isActive() then
 			if ps.update_ex then

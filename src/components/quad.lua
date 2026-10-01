@@ -32,6 +32,7 @@ function c_quad:serialize()
 end
 
 function c_quad:deserialize(data)
+	assert:type(data, "table")
 	local quad = love.graphics.newQuad(unpack(data.data))
 	self:__populate(quad, data.info)
 end

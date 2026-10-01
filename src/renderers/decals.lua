@@ -9,11 +9,13 @@ local blacklist = {
 }
 
 function Decals.init(main_renderer, world)
+	assert:system(main_renderer)
+	assert:world(world)
 	for _, v in ipairs(blacklist) do
 		if v == GameStates.current_id then return end
 	end
 
-	assert(main_renderer.__isSystem)
+	assert:system(main_renderer)
 	assert(world.__isWorld)
 	Decals.world = world
 
@@ -38,7 +40,7 @@ function Decals.init(main_renderer, world)
 end
 
 function Decals.setup(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 
 	local c_decals_shaders
 	if e:has("decals_shaders") then
@@ -60,7 +62,7 @@ function Decals.setup(e)
 end
 
 function Decals.remove(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 	if DEV then
 		for i, e2 in ipairs(Decals.debug_list) do
 			if e == e2 then
@@ -72,6 +74,7 @@ function Decals.remove(e)
 end
 
 function Decals.send_uniforms(e)
+	assert:entity(e)
 	local c_decals_shaders
 	if not e:has("decals_shaders") then
 		return
@@ -100,7 +103,7 @@ function Decals.send_uniforms(e)
 end
 
 function Decals.update(dt, e)
-	assert(e.__isEntity)
+	assert:entity(e)
 
 	if e:has("decals_shaders") then
 		local c_decals_shaders = e:get("decals_shaders")
@@ -113,7 +116,7 @@ function Decals.update(dt, e)
 end
 
 function Decals.render_hand(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 	local c_decals = e:get("decals")
 	assert(c_decals.kind == Enums.decals.hand, c_decals.kind)
 
@@ -137,7 +140,7 @@ function Decals.render_hand(e)
 end
 
 function Decals.render(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 
 	local temp_shader
 	local c_decals_shaders
@@ -176,6 +179,7 @@ if DEV then
 	local debug_outline = false
 
 	function Decals.debug_update(dt)
+	assert:type(dt, "number")
 		if not Decals.debug_show then return end
 		Decals.debug_show = Slab.BeginWindow("renderer_decals", {
 			Title = "Decals",

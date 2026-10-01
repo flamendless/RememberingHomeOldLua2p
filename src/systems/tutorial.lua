@@ -19,6 +19,7 @@ local CLOSE_LIGHTER_TAGS = {
 }
 
 local function shed_interact_anchor(e_shed)
+	assert:entity(e_shed)
 	local x, y, w, h = Helper.get_collider_rect(e_shed)
 	local door_center_x = x + w * 0.5
 	local door_right_x = x + w
@@ -27,6 +28,7 @@ local function shed_interact_anchor(e_shed)
 end
 
 local function tutorial_reached_x(pos_x, target_x, dir)
+	assert:type(dir, "number")
 	if dir < 0 then
 		return pos_x <= target_x
 	end
@@ -38,6 +40,7 @@ local function shed_test_requires_center()
 end
 
 local function open_lighter_anim_progress(e_player)
+	assert:entity(e_player)
 	local animation = e_player:get("animation")
 	if not animation then
 		return 0
@@ -56,6 +59,7 @@ local function open_lighter_anim_progress(e_player)
 end
 
 local function close_lighter_anim_progress(e_player)
+	assert:entity(e_player)
 	local animation = e_player:get("animation")
 	if not animation then
 		return 0
@@ -86,6 +90,7 @@ local function action_label(action)
 end
 
 function Tutorial:init(world)
+	assert:world(world)
 	self.world = world
 
 	self.state = Settings.current.tutorial
@@ -160,6 +165,7 @@ function Tutorial:resume_timeline()
 end
 
 function Tutorial:wait_seconds(n)
+	assert:type(n, "number")
 	TLE.Event.Wait(n)
 end
 
@@ -210,7 +216,7 @@ function Tutorial:destroy_hand_key_label(duration)
 end
 
 function Tutorial:create_hand_key_label(hand, action)
-	assert(hand.__isEntity)
+	assert:entity(hand)
 	assert(Enums.input[action])
 
 	self:destroy_hand_key_label(0)
@@ -241,6 +247,9 @@ function Tutorial:sync_hand_key_label()
 end
 
 local function hand_trail_rotation(startx, targetx, step, count, settle_rot)
+	assert:type(startx, "number")
+	assert:type(targetx, "number")
+	assert:type(count, "number")
 	local t = step / count
 	local dx = targetx - startx
 	if dx > 0 then
@@ -380,6 +389,8 @@ function Tutorial:show_hands_trail(
 end
 
 function Tutorial:fade_hand_and_glow(duration, on_complete)
+	assert:type(duration, "number")
+	assert:type(on_complete, "function")
 	if self.e_last_hand then
 		local last_hand_pos = self.e_last_hand:get("pos")
 		self.prev_hx, self.prev_hy = last_hand_pos.x, last_hand_pos.y
@@ -605,6 +616,7 @@ function Tutorial:unblock_shed_exit_door()
 end
 
 function Tutorial:begin_shed_open_lighter(e_player)
+	assert:entity(e_player)
 	self.e_player = e_player
 	self.phase = "shed"
 	self:set_beat(Enums.tutorial_beat.open_lighter)
@@ -679,6 +691,7 @@ function Tutorial:after_shed_lit_dialogue()
 end
 
 function Tutorial:prompt_shed_hand_lighter(action, glow_opts)
+	assert:type(action, "string")
 	self.world:emit("toggle_component", self.e_player, Enums.player_cap.can_lighter, true)
 
 	local pos = self.e_player:get("pos")
@@ -715,6 +728,8 @@ function Tutorial:shed_tutorial_active()
 end
 
 function Tutorial:restore_player_controls(e_player, opts)
+	assert:entity(e_player)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	e_player = e_player or self.e_player
 	if not e_player or not e_player.__isEntity then
@@ -755,6 +770,7 @@ function Tutorial:complete_shed_open_lighter()
 end
 
 function Tutorial:resume_outside_after_shed(e_player)
+	assert:entity(e_player)
 	self.e_player = e_player
 	self.e_frontdoor = self.world:getEntityByKey("frontdoor")
 	self.e_shed = self.world:getEntityByKey("shed")
@@ -777,6 +793,7 @@ function Tutorial:resume_outside_after_shed(e_player)
 end
 
 function Tutorial:sync_player_bump(e)
+	assert:entity(e)
 	local bump_sys = self.world:getSystem(ECS.get_system_class("bump_collision"))
 	bump_sys.pool:update(e)
 end
@@ -836,6 +853,7 @@ function Tutorial:update(dt)
 end
 
 function Tutorial:state_update(dt)
+	assert:type(dt, "number")
 	if not self.state then return end
 
 	self:sync_hand_key_label()
@@ -968,8 +986,9 @@ function Tutorial:state_draw_ex()
 end
 
 function Tutorial:ev_tutorial_enter_shed(e_player, e_shed)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
-	assert(e_shed.__isEntity, e_shed)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
+	assert:entity(e_shed)
 	if self.wait_kind ~= Enums.tutorial_wait_kind.enter_shed then
 		return
 	end

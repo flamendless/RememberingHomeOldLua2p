@@ -81,7 +81,7 @@ local function has_component_bt(e, component)
 end
 
 local function get_distance(world, e, other_e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("ref_e_key"), e)
 	if other_e then
 		assert(other_e.__isEntity, other_e)
@@ -92,7 +92,7 @@ local function get_distance(world, e, other_e)
 end
 
 local function is_other_behind(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("ref_e_key"), e)
 	local other_e = world:getEntityByKey(e:get("ref_e_key").value)
 	local pos = e:get("pos")
@@ -151,7 +151,7 @@ local function wait_random_bt(e, min, max)
 end
 
 local function sees_other(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("ref_e_key"), e)
 	local distance = get_distance(world, e)
 	local line_of_sight = e:get("line_of_sight")
@@ -160,7 +160,7 @@ local function sees_other(world, e)
 end
 
 local function chase_other(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree") and e:has("ref_e_key"), e)
 	set_node(e, "chase")
 	local sees = sees_other(world, e)
@@ -174,7 +174,7 @@ local function chase_other(world, e)
 end
 
 local function has_collide_with(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	if e:has("collide_with") then
 		return "success"
@@ -183,14 +183,14 @@ local function has_collide_with(world, e)
 end
 
 local function skip_collider_update(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	e:give("skip_collider_update")
 	return "success"
 end
 
 local function caught_other(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	return Beehive.Sequence({
 		is_current_node_bt(e, bt_enemy.chase, bt_enemy.walk, bt_enemy.caught_other),
@@ -201,7 +201,7 @@ local function caught_other(world, e)
 end
 
 local function lean_return_back(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	return Beehive.Sequence({
 		is_current_anim_bt(e, bt_enemy.lean_back),
@@ -213,7 +213,7 @@ local function lean_return_back(world, e)
 end
 
 local function lean_back(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	return Beehive.Sequence({
 		is_other_behind,
@@ -222,7 +222,7 @@ local function lean_back(world, e)
 end
 
 local function chase(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	return Beehive.Sequence({
 		sees_other,
@@ -234,7 +234,7 @@ local function chase(world, e)
 end
 
 local function walk(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	return Beehive.Sequence({
 		has_component_bt(e, "random_walk"),
@@ -242,7 +242,7 @@ local function walk(world, e)
 end
 
 local function wait(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	local min = lm_random(0.5, 0.9)
 	local max = min + lm_random(0.5, 0.9)
@@ -257,7 +257,7 @@ local function wait(world, e)
 end
 
 return function(world, e)
-	assert(world.__isWorld, world)
+	assert:world(world)
 	assert(e.__isEntity and e:has("behavior_tree"), e)
 	return Beehive.Selector({
 		caught_other(world, e),

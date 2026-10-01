@@ -1,6 +1,7 @@
 local MovementDust = Concord.system()
 
 function MovementDust:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -22,7 +23,9 @@ function MovementDust:should_run()
 end
 
 function MovementDust:player_moving(e_player)
-	assert(e_player.__isEntity and e_player:has("player") and e_player:has("body"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player") and e_player:has("body"), e_player)
 	if e_player:has("hit_wall") or e_player:has("override_animation") then
 		return false
 	end
@@ -31,14 +34,17 @@ function MovementDust:player_moving(e_player)
 end
 
 function MovementDust:player_foot_x(e_player)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	local bump = self.world:getSystem(ECS.get_system_class("bump_collision"))
 	local rx, _, rw, _ = bump.pool:getRect(e_player)
 	return rx + rw / 2
 end
 
 function MovementDust:ceiling_on_walk(e_player, emitters)
-	assert(e_player.__isEntity and e_player:has("player"), e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 	assert:type(emitters, "table")
 	local px = self:player_foot_x(e_player)
 

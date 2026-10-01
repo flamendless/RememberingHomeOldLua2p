@@ -1,10 +1,12 @@
 local Lightning = Concord.system()
 
 function Lightning:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Lightning:lightning_flash(opts)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	local dl = self.world:getSystem(ECS.get_system_class("deferred_lighting"))
 	if not dl or not dl.ambiance then

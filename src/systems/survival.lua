@@ -10,6 +10,7 @@ local Survival = Concord.system()
 -- vignette slowly closes inward
 -- heartbeat sync begins
 function Survival:init(world)
+	assert:world(world)
 	self.world = world
 
 	self.state = Enums.survival_state.normal
@@ -98,6 +99,7 @@ function Survival:survival_off()
 end
 
 function Survival:update(dt)
+	assert:type(dt, "number")
 	if not self.is_active then return end
 	if self.timer_open_flashlight then
 		self.timer_open_flashlight:update(dt)
@@ -110,6 +112,7 @@ end
 
 if DEV then
 	function Survival:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then return end
 
 		self.debug_show = Slab.BeginWindow("survival", {

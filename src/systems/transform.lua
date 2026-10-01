@@ -14,6 +14,7 @@ local Transform = Concord.system({
 })
 
 function Transform:init(world)
+	assert:world(world)
 	self.world = world
 	self.pool.onAdded = function(pool, e)
 		if e:has("quad") and e:has("atlas") then
@@ -190,6 +191,7 @@ function Transform:canvas_resize(ww, wh, scale)
 end
 
 function Transform:update_position(l, t)
+	assert:type(t, "number")
 	for _, e in ipairs(self.pool_camera) do
 		local pos = e:get("pos")
 		pos.x = pos.x + l
@@ -200,6 +202,7 @@ function Transform:update_position(l, t)
 end
 
 function Transform:update_attachment(e)
+	assert:entity(e)
 	local attach = e:get("attach_to")
 	local pos = e:get("pos")
 	local offset = e:get("attach_to_offset")
@@ -217,6 +220,7 @@ function Transform:update_attachment(e)
 end
 
 function Transform:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_pos_vec2) do
 		local pv = e:get("pos_vec2").value
 		local pos = e:get("pos")
@@ -250,6 +254,7 @@ function Transform:update(dt)
 end
 
 function Transform:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

@@ -1,8 +1,9 @@
 local AsmLighter = {}
 
 function AsmLighter.lighter(e, e_player)
-	assert(e.__isEntity)
-	assert(e_player.__isEntity and e_player:has("player"))
+	assert:entity(e)
+	assert:entity(e_player)
+	assert(e_player:has("player"), e_player)
 
 	--TODO: parametrize lighter variation 1 or 2
 	Log.debug("TODO: parametrize lighter variation 1 or 2")

@@ -27,6 +27,7 @@ end
 
 function Utils.serial.write(filename, data)
 	assert:type(filename, "string")
+	assert:type(data, "table")
 	local to_write = Bitser.dumps(data)
 	Utils.file.write(filename, to_write)
 	return to_write
@@ -43,6 +44,7 @@ function Utils.serial.read(filename)
 end
 
 function Utils.serial.de(content)
+	assert:type(content, "string")
 	return Bitser.loads(content)
 end
 
@@ -99,6 +101,8 @@ function Utils.table.count_kv(t)
 end
 
 function Utils.table.pick_random_kv(t, count)
+	assert:type(t, "table")
+	assert:type_or_nil(count, "number")
 	count = count or Utils.table.count_kv(t)
 	local limit = math.floor(love.math.random() * (count - 1)) + 1
 	for k, v in pairs(t) do
@@ -110,6 +114,7 @@ function Utils.table.pick_random_kv(t, count)
 end
 
 function Utils.math.n_digits(x)
+	assert:type(x, "number")
 	return math.floor(math.log10(x)) + 1
 end
 
@@ -120,7 +125,7 @@ function Utils.math.lerp_range(range, t)
 end
 
 function Utils.math.calc_e_controller_origin(e)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	local fw = Helper.get_frame_size(e)
 	local transform = e:get("transform")
 	local pos = e:get("pos")

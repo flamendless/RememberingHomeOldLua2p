@@ -1,6 +1,7 @@
 local AsmItems = {}
 
 function AsmItems.flashlight(e)
+	assert:entity(e)
 	local info = Items.get_info(Enums.item_id.flashlight)
 	e:give("id", "item_flashlight")
 		:give("sprite", "flashlight")

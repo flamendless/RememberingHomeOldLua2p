@@ -5,6 +5,8 @@ local DEFAULT_EXCLUDE_GROUPS = {
 }
 
 local function group_allowed(e, opts)
+	assert:entity(e)
+	assert:type(opts, "table")
 	if e:has("flashlight") or e:has("flame") then
 		if not opts.include_flames then
 			return false
@@ -42,6 +44,7 @@ local function group_allowed(e, opts)
 end
 
 function LightWindPass:init(world)
+	assert:world(world)
 	self.world = world
 	self.pass_token = 0
 	self.active_pass = false
@@ -49,6 +52,7 @@ function LightWindPass:init(world)
 end
 
 function LightWindPass:collect_lights(dl, opts)
+	assert:type(opts, "table")
 	local lights = {}
 	for _, e in ipairs(dl.pool) do
 		if not e:has("light_disabled") and group_allowed(e, opts) then
@@ -80,6 +84,7 @@ function LightWindPass:dim_target(base, strength)
 end
 
 function LightWindPass:snapshot_light(e)
+	assert:entity(e)
 	if self.pass_restore[e] then
 		return
 	end
@@ -117,10 +122,12 @@ function LightWindPass:snapshot_light(e)
 end
 
 function LightWindPass:clear_flicker(dl, e)
+	assert:entity(e)
 	dl:stop_flicker(e)
 end
 
 function LightWindPass:restore_flicker(e, snapshot)
+	assert:entity(e)
 	if not snapshot.flicker then
 		return
 	end
@@ -172,6 +179,8 @@ function LightWindPass:restore_all_lights(dl)
 end
 
 function LightWindPass:apply_instant(dl, e, opts)
+	assert:entity(e)
+	assert:type(opts, "table")
 	local diffuse = e:get("diffuse")
 	local target = self:dim_target(diffuse.value, opts.strength)
 
@@ -182,6 +191,8 @@ function LightWindPass:apply_instant(dl, e, opts)
 end
 
 function LightWindPass:apply_dim(dl, e, opts)
+	assert:entity(e)
+	assert:type(opts, "table")
 	local diffuse = e:get("diffuse")
 	local target = self:dim_target(diffuse.value, opts.strength)
 	local ramp = opts.recover or 0.3
@@ -196,6 +207,8 @@ function LightWindPass:apply_dim(dl, e, opts)
 end
 
 function LightWindPass:apply_flicker(dl, e, opts)
+	assert:entity(e)
+	assert:type(opts, "table")
 	self:clear_flicker(dl, e)
 
 	local during = opts.flicker_during or 0.2
@@ -207,6 +220,8 @@ function LightWindPass:apply_flicker(dl, e, opts)
 end
 
 function LightWindPass:affect_light(dl, e, opts, mode)
+	assert:entity(e)
+	assert:type(opts, "table")
 	self:snapshot_light(e)
 
 	if mode == "instant" then
@@ -226,6 +241,7 @@ function LightWindPass:affect_light(dl, e, opts, mode)
 end
 
 function LightWindPass:play_pass_sound(opts)
+	assert:type(opts, "table")
 	local sound = opts.sound
 	if not sound then
 		return
@@ -234,6 +250,7 @@ function LightWindPass:play_pass_sound(opts)
 end
 
 function LightWindPass:wind_pass_lights(opts)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 
 	local dl = self.world:getSystem(ECS.get_system_class("deferred_lighting"))

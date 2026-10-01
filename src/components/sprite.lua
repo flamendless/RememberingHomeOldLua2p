@@ -25,6 +25,7 @@ function c_sprite:serialize()
 end
 
 function c_sprite:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.resource_id, data.container)
 end
 
@@ -48,5 +49,6 @@ function c_noise_tex:serialize()
 end
 
 function c_noise_tex:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.w, data.h)
 end

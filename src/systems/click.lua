@@ -4,6 +4,7 @@ local Click = Concord.system({
 })
 
 function Click:init(world)
+	assert:world(world)
 	self.world = world
 end
 

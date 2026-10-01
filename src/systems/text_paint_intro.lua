@@ -1,11 +1,12 @@
 local TextPaintIntro = Concord.system()
 
 function TextPaintIntro:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function TextPaintIntro:fade_text(e, dur, on_finish)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(dur, "number")
 	assert:type(on_finish, "function")
 	self:generate_paint(e, dur)
@@ -18,7 +19,7 @@ function TextPaintIntro:fade_text(e, dur, on_finish)
 end
 
 function TextPaintIntro:generate_paint(e, dur_in, dur_out)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(dur_in, "number")
 	assert:type_or_nil(dur_out, "number")
 	local transform

@@ -34,6 +34,7 @@ local MAX_LIGHTS = 64 -- TODO: we can lower this to 16, but for Outside must be 
 local OMNI_LIGHT_DIR = { 0, 0, -1, -1 }
 
 function DeferredLighting:init(world)
+	assert:world(world)
 	Log.debug("TODO: we can lower this to 16, but for Outside must be 64")
 	self.world = world
 	self.timer = Timer.new()
@@ -93,6 +94,7 @@ function DeferredLighting:init(world)
 end
 
 function DeferredLighting:cancel_flicker_timer(e)
+	assert:entity(e)
 	local handle = self.flicker_handles[e]
 	if handle then
 		self.timer:cancel(handle)
@@ -101,6 +103,7 @@ function DeferredLighting:cancel_flicker_timer(e)
 end
 
 function DeferredLighting:stop_flicker(e)
+	assert:entity(e)
 	self:cancel_flicker_timer(e)
 	if not e:has("d_light_flicker") then
 		return
@@ -124,6 +127,7 @@ function DeferredLighting:stop_flicker(e)
 end
 
 function DeferredLighting:start_flicker(e)
+	assert:entity(e)
 	local dlf = e:get("d_light_flicker")
 	if not dlf then
 		return
@@ -217,6 +221,7 @@ function DeferredLighting:set_ambiance(t)
 end
 
 function DeferredLighting:update(dt)
+	assert:type(dt, "number")
 	self.timer:update(dt)
 	self:update_light_fading(dt)
 end
@@ -226,6 +231,7 @@ function DeferredLighting:apply_ambiance()
 end
 
 function DeferredLighting:disable_all_lights(opts)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	for _, e in ipairs(self.pool) do
 		self:stop_flicker(e)
@@ -261,7 +267,7 @@ end
 function DeferredLighting:light_group_set_disable(group_id, is_d, e)
 	assert(Enums.light_group[group_id], group_id)
 	assert:type(is_d, "boolean")
-	assert(e.__isEntity)
+	assert:entity(e)
 
 	for _, other in ipairs(self.groups[group_id]) do
 		if e ~= other then
@@ -275,6 +281,7 @@ function DeferredLighting:light_group_set_disable(group_id, is_d, e)
 end
 
 function DeferredLighting:update_light_pos(e)
+	assert:entity(e)
 	if e:has("light_disabled") then
 		return
 	end
@@ -284,6 +291,8 @@ function DeferredLighting:update_light_pos(e)
 end
 
 function DeferredLighting:update_light_radius_group(group_id, e)
+	assert:type(group_id, "string")
+	assert:entity(e)
 	local pl = e:get("point_light")
 	for _, other in ipairs(self.groups[group_id]) do
 		local o_id = other:get("light_id").value
@@ -297,6 +306,8 @@ function DeferredLighting:update_light_radius_group(group_id, e)
 end
 
 function DeferredLighting:update_light_pos_group(group_id, e, prop)
+	assert:type(group_id, "string")
+	assert:entity(e)
 	local pos = e:get("pos")
 	for _, other in ipairs(self.groups[group_id]) do
 		local o_id = other:get("light_id").value
@@ -311,6 +322,7 @@ function DeferredLighting:update_light_pos_group(group_id, e, prop)
 end
 
 function DeferredLighting:update_light_diffuse(e)
+	assert:entity(e)
 	if e:has("light_disabled") then
 		return
 	end
@@ -319,6 +331,8 @@ function DeferredLighting:update_light_diffuse(e)
 end
 
 function DeferredLighting:update_light_diff_group(group_id, e, prop)
+	assert:type(group_id, "string")
+	assert:entity(e)
 	local diff = e:get("diffuse").value
 	for _, other in ipairs(self.groups[group_id]) do
 		local o_id = other:get("light_id").value
@@ -331,6 +345,7 @@ function DeferredLighting:update_light_diff_group(group_id, e, prop)
 end
 
 function DeferredLighting:update_light_dir(e)
+	assert:entity(e)
 	if e:has("light_disabled") then
 		return
 	end
@@ -342,6 +357,7 @@ function DeferredLighting:update_light_dir(e)
 end
 
 function DeferredLighting:update_light_fading(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_fading) do
 		if not e:has("light_disabled") then
 			local lp = e:get("point_light")
@@ -523,12 +539,14 @@ if DEV then
 	end
 
 	function DeferredLighting:debug_on_toggle(event)
+	assert:type(event, "string")
 		if event ~= "deferred_lighting" then return end
 		self.debug_show = not self.debug_show
 		flags.ambiance = not self.debug_show
 	end
 
 	function DeferredLighting:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then return end
 		self.debug_show = Slab.BeginWindow("deferred_lighting", {
 			Title = "DeferredLighting",
@@ -603,6 +621,7 @@ if DEV then
 	end
 
 	function DeferredLighting:debug_edit(pool, group_id)
+	assert:type(group_id, "string")
 		for i, e in ipairs(pool) do
 			if group_id and i ~= 1 then
 				return

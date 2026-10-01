@@ -4,6 +4,7 @@ local TEXTURE_SIZE = 4
 local BUFFER = 256
 
 local function colors_from_base(color)
+	assert:type(color, "table")
 	local r, g, b = color[1], color[2], color[3]
 	local a = color[4] or 1
 	return
@@ -33,6 +34,7 @@ local function generate_texture(size)
 end
 
 local function resolve_range(range, fallback)
+	assert:type(range, "table")
 	if type(range) == "table" then
 		return range.min or fallback.min, range.max or fallback.max
 	end
@@ -55,6 +57,7 @@ function PSAtmosphericSpecs:new(config)
 end
 
 function PSAtmosphericSpecs:configure(config)
+	assert:type(config, "table")
 	local defs = Data.AtmosphericSpecs.defaults
 	local zone = config
 	local speed = zone.speed or config.speed or defs.speed
@@ -143,6 +146,8 @@ function PSAtmosphericSpecs:update(dt)
 end
 
 function PSAtmosphericSpecs:draw(x, y)
+	assert:type_or_nil(x, "number")
+	assert:type_or_nil(y, "number")
 	if not self.system or self.system:getCount() == 0 then
 		return
 	end

@@ -1,6 +1,7 @@
 local LogsSystem = Concord.system()
 
 function LogsSystem:init(world)
+	assert:world(world)
 	self.world = world
 	self.logs = {
 		all = {},
@@ -12,6 +13,7 @@ function LogsSystem:init(world)
 end
 
 function LogsSystem:on_add_entity(e)
+	assert:entity(e)
 	local id = e:get("id")
 	local str = "on_add_entity: " .. id.value
 	table.insert(self.logs.all, str)
@@ -20,6 +22,7 @@ function LogsSystem:on_add_entity(e)
 end
 
 function LogsSystem:on_remove_entity(e)
+	assert:entity(e)
 	local id = e:get("id")
 	local str = "on_remove_entity: " .. id.value
 	table.insert(self.logs.all, str)
@@ -28,6 +31,8 @@ function LogsSystem:on_remove_entity(e)
 end
 
 function LogsSystem:on_collide_interactive(e, other)
+	assert:entity(e)
+	assert:entity(other)
 	local e_id = e:get("id")
 	local other_id = other:get("id")
 	local str = string.format("on_col: %s, %s", e_id.value, other_id.value)
@@ -37,6 +42,7 @@ function LogsSystem:on_collide_interactive(e, other)
 end
 
 function LogsSystem:on_leave_interactive(e)
+	assert:entity(e)
 	local id = e:get("id")
 	local str = "on_leave_col: " .. id.value
 	table.insert(self.logs.all, str)
@@ -45,6 +51,7 @@ function LogsSystem:on_leave_interactive(e)
 end
 
 function LogsSystem:debug_update(dt)
+	assert:type(dt, "number")
 	if not self.debug_show then
 		return
 	end

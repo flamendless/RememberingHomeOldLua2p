@@ -26,6 +26,7 @@ local function untrack(obj, tween)
 end
 
 function Flux.to(obj, time, vars)
+	assert:type(time, "number")
 	local tween = BaseFlux.to(obj, time, vars)
 	track(obj, tween)
 	tween:oncomplete(function()
@@ -35,10 +36,12 @@ function Flux.to(obj, time, vars)
 end
 
 function Flux.update(dt)
+	assert:type(dt, "number")
 	return BaseFlux.update(dt)
 end
 
 function Flux.remove(x)
+	assert:type(x, "number")
 	return BaseFlux.remove(x)
 end
 

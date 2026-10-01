@@ -5,10 +5,12 @@ local Notification = Concord.system({
 })
 
 function Notification:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Notification:create_speech_bubble(e_player)
+	assert:entity(e_player)
 	assert((e_player.__isEntity and e_player:has("player")), e_player)
 	local pos = e_player:get("pos")
 	local _ = Concord.entity(self.world):assemble(Assemblages.ui.speech_bubble, e_player, pos.x, pos.y)

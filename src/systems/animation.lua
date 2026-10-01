@@ -3,6 +3,7 @@ local AnimationSystem = Concord.system({
 })
 
 function AnimationSystem:init(world)
+	assert:world(world)
 	self.world = world
 
 	self.pool.onAdded = function(_, e)
@@ -17,6 +18,7 @@ function AnimationSystem:init(world)
 end
 
 function AnimationSystem:refresh_render(e)
+	assert:entity(e)
 	local obj = e:get("animation").obj
 	local clip = obj:current_clip()
 	local quad, _, _, r, sx, sy, ox, oy = obj:get_frame_info()
@@ -38,6 +40,7 @@ function AnimationSystem:refresh_render(e)
 end
 
 function AnimationSystem:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool) do
 		local obj = e:get("animation").obj
 		local entity_dt = dt
@@ -83,6 +86,7 @@ if DEV then
 	end
 
 	function AnimationSystem:debug_play(e, tag)
+	assert:entity(e)
 		local obj = e:get("animation").obj
 		obj:invalidate_tag(tag)
 		obj:play(tag, base_tag_for(tag), true)
@@ -94,6 +98,7 @@ if DEV then
 	end
 
 	function AnimationSystem:debug_slab(e)
+	assert:entity(e)
 		if not e:has("animation") then return end
 		local obj = e:get("animation").obj
 		Slab.Text("tag: " .. (obj.current_tag or ""))
@@ -105,6 +110,7 @@ if DEV then
 	end
 
 	function AnimationSystem:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			DevTools.debug_anim.tag = nil
 			return

@@ -16,6 +16,7 @@ local function ctor_multi(c, ...)
 end
 
 local function callback(name, ctor)
+	assert:type(name, "string")
 	return Concord.component(name, ctor)
 end
 

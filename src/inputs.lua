@@ -65,6 +65,7 @@ local key_display = {
 }
 
 local function format_key(scancode)
+	assert:type(scancode, "string")
 	if key_display[scancode] then
 		return key_display[scancode]
 	end
@@ -198,6 +199,7 @@ function Inputs.keyreleased(_, scancode)
 end
 
 local function inputs_update_core(dt)
+	assert:type(dt, "number")
 	for k, v in pairs(Inputs.current) do
 		Inputs.previous[k] = v
 		if v then
@@ -209,6 +211,7 @@ local function inputs_update_core(dt)
 end
 
 function Inputs.update(dt)
+	assert:type(dt, "number")
 	inputs_update_core(dt)
 end
 
@@ -244,6 +247,7 @@ if TEST.mode then
 	local debug_entries = {}
 
 	local function track_debug_input(action)
+	assert:type(action, "string")
 		debug_entries[#debug_entries + 1] = {
 			action = action,
 			stopped = false,
@@ -252,6 +256,7 @@ if TEST.mode then
 	end
 
 	local function mark_debug_input_released(action)
+	assert:type(action, "string")
 		for i = #debug_entries, 1, -1 do
 			local entry = debug_entries[i]
 			if entry.action == action and not entry.stopped then
@@ -263,6 +268,7 @@ if TEST.mode then
 	end
 
 	local function update_debug_entries(dt)
+	assert:type(dt, "number")
 		for i = #debug_entries, 1, -1 do
 			local entry = debug_entries[i]
 			if Inputs.current[entry.action] and not entry.stopped then
@@ -423,6 +429,7 @@ if TEST.mode then
 	end
 
 	function Inputs.update(dt)
+	assert:type(dt, "number")
 		inputs_update_core(dt)
 		update_debug_entries(dt)
 	end

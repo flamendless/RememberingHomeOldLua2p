@@ -4,7 +4,7 @@ local UI = {
 }
 
 function UI.init(main_renderer, world)
-	assert(main_renderer.__isSystem)
+	assert:system(main_renderer)
 	assert(world.__isWorld)
 	UI.world = world
 

@@ -63,6 +63,7 @@ function Glitch:reset_glitch()
 end
 
 function Glitch:update(dt)
+	assert:type(dt, "number")
 	if self.timer then
 		self.timer:update(dt)
 	end
@@ -76,6 +77,7 @@ if DEV then
 	}
 
 	function Glitch:debug_slider(id, min, max)
+	assert:type(id, "string")
 		local val = debug_values[id]
 		Slab.Text(id)
 		Slab.SameLine()
@@ -87,6 +89,7 @@ if DEV then
 	end
 
 	function Glitch:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show or not self.is_active then return end
 		self.debug_show = Slab.BeginWindow("glitch_shader", {
 			Title = self:type(),

@@ -46,6 +46,7 @@ function c_lc:serialize()
 end
 
 function c_lc:deserialize(data)
+	assert:type(data, "table")
 	self.index = data.index
 	self.colors = data.colors
 	self.duration = data.duration

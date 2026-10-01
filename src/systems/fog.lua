@@ -3,6 +3,7 @@ local Fog = Concord.system({
 })
 
 function Fog:init(world)
+	assert:world(world)
 	self.world = world
 	self.pool.onAdded = function(pool, e)
 		e:get("sprite").image = e:get("noise_texture").texture
@@ -20,6 +21,7 @@ function Fog:update()
 end
 
 function Fog:draw_fog(e)
+	assert:entity(e)
 	if DEV and DevTools.show and not DevTools.flags.fog then
 		return
 	end

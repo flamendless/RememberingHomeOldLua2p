@@ -20,6 +20,7 @@ function c_anim:serialize()
 end
 
 function c_anim:deserialize(data)
+	assert:type(data, "table")
 	self:__populate(data.stop_on_last)
 end
 

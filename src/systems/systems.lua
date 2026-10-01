@@ -8,6 +8,7 @@ local classes = {
 local system_classes = {}
 
 function Systems:init(world)
+	assert:world(world)
 	self.world = world
 	for _, class in ipairs(classes) do
 		system_classes[class] = ECS.get_system_class(class)

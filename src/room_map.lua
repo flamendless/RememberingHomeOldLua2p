@@ -6,10 +6,17 @@ local RoomMap = {
 }
 
 local function rect_center(rect)
+	assert:type(rect, "table")
+	assert:type(rect.x, "number")
+	assert:type(rect.w, "number")
+	assert:type(rect.y, "number")
+	assert:type(rect.h, "number")
 	return rect.x + rect.w / 2, rect.y + rect.h / 2
 end
 
 local function rect_edge(rect, tx, ty)
+	assert:type(tx, "number")
+	assert:type(ty, "number")
 	local cx, cy = rect_center(rect)
 	local dx = tx - cx
 	local dy = ty - cy
@@ -28,6 +35,12 @@ local function rect_edge(rect, tx, ty)
 end
 
 local function draw_dashed_line(x1, y1, x2, y2, dash_len, gap_len)
+	assert:type(x1, "number")
+	assert:type(y1, "number")
+	assert:type(x2, "number")
+	assert:type(y2, "number")
+	assert:type(dash_len, "number")
+	assert:type(gap_len, "number")
 	local dx = x2 - x1
 	local dy = y2 - y1
 	local len = math.sqrt(dx * dx + dy * dy)
@@ -52,6 +65,8 @@ local function draw_dashed_line(x1, y1, x2, y2, dash_len, gap_len)
 end
 
 local function draw_arrowhead_dir(ax, ay, dir_x, dir_y, size)
+	assert:type(ax, "number")
+	assert:type(ay, "number")
 	local len = math.sqrt(dir_x * dir_x + dir_y * dir_y)
 	if len < 0.001 then
 		return
@@ -236,6 +251,8 @@ local function edge_line(layout, edge)
 end
 
 function RoomMap.build(nodes, opts)
+	assert:type(nodes, "table")
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	local node_w = opts.node_w or RoomMap.NODE_W
 	local node_h = opts.node_h or RoomMap.NODE_H
@@ -412,6 +429,8 @@ function RoomMap.build(nodes, opts)
 end
 
 function RoomMap.build_from_rooms(rooms)
+	assert:type(rooms, "table")
+	assert:type(rooms.nodes, "table")
 	return RoomMap.build(rooms.nodes, {
 		root = Enums.game_state.Outside,
 		dark_room_id = Enums.game_state.TotallyDarkRoom,
@@ -420,6 +439,9 @@ function RoomMap.build_from_rooms(rooms)
 end
 
 function RoomMap.get_bounds(graph, font, padding)
+	assert:type(graph, "table")
+	assert:type(font, "userdata")
+	assert:type_or_nil(padding, "number")
 	padding = padding or 0
 	local layout = graph.layout
 	local edges = graph.edges
@@ -459,6 +481,8 @@ function RoomMap.get_bounds(graph, font, padding)
 end
 
 function RoomMap.draw(graph, opts)
+	assert:type(graph, "table")
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	local layout = graph.layout
 	local edges = graph.edges
@@ -584,6 +608,9 @@ function RoomMap.draw(graph, opts)
 end
 
 function RoomMap.export_png(graph, filepath, opts)
+	assert:type(graph, "table")
+	assert:type_or_nil(filepath, "string")
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	local font = opts.font or love.graphics.getFont()
 	local padding = opts.padding or 48

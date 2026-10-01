@@ -425,6 +425,8 @@ local hang_watch_methods = {
 }
 
 local function wrap_hang_watch(sys, name, method)
+	assert:type(name, "string")
+	assert:type(method, "string")
 	if sys.__hang_watch_wrapped and sys.__hang_watch_wrapped[method] then
 		return
 	end
@@ -456,10 +458,12 @@ local function wrap_hang_watch(sys, name, method)
 end
 
 function ECS.load_systems(id, world, prev_id)
-	assert((type(id) == "string" and state_systems[id]), id)
-	assert(world.__isWorld, world)
+	assert:type(id, "string")
+	assert(state_systems[id], id)
+	assert:world(world)
 	if prev_id then
-		assert((type(prev_id) == "string" and state_systems[prev_id]), prev_id)
+		assert:type(prev_id, "string")
+		assert(state_systems[prev_id], prev_id)
 	end
 	local l_id = string.lower(id)
 	assert(states[l_id], l_id .. " state system does not exist")

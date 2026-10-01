@@ -4,6 +4,7 @@ local Room = Concord.system({
 })
 
 function Room:init(world)
+	assert:world(world)
 	self.world = world
 	self.current_res = nil
 	self.use_gen = true

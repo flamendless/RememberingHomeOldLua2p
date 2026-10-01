@@ -12,6 +12,7 @@ local Inventory = Concord.system({
 })
 
 function Inventory:init(world)
+	assert:world(world)
 	self.world = world
 	self.is_open = false
 	self.in_choices = false
@@ -79,6 +80,7 @@ end
 local added = false
 
 function Inventory:update(dt)
+	assert:type(dt, "number")
 	--TODO: do we need inventory screen?
 	Log.debug("TODO: do we need inventory screen?")
 	if DEV then return end

@@ -5,6 +5,7 @@ local ID = Concord.system({
 })
 
 function ID:init(world)
+	assert:world(world)
 	self.world = world
 	self.ref_id = {}
 
@@ -55,11 +56,13 @@ if DEV then
 	fnt:setFilter("nearest", "nearest")
 
 	function ID:debug_e_right_clicked(e)
+	assert:entity(e)
 		e_right_clicked = e
 		flags.right_clicked = true
 	end
 
 	function ID:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

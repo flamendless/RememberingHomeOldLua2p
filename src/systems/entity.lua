@@ -3,23 +3,24 @@ local Entity = Concord.system({
 })
 
 function Entity:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Entity:hide_entity(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 	e:give("hidden")
 end
 
 function Entity:destroy_entity(e)
-	assert(e.__isEntity)
+	assert:entity(e)
 	e:destroy()
 end
 
 --INFO: I realize it's bad naming. Apt would be "set_component_value"...
 --      This is the reason why we have flip_component now...
 function Entity:toggle_component(e, prop, bool)
-	assert(e.__isEntity)
+	assert:entity(e)
 	assert(Enums.player_cap[prop], prop)
 	assert:type(bool, "boolean")
 	if bool then
@@ -30,7 +31,7 @@ function Entity:toggle_component(e, prop, bool)
 end
 
 function Entity:flip_e_component(e, component)
-	assert(e.__isEntity, e)
+	assert:entity(e)
 	assert:type(component, "string")
 	if e:has(component) then
 		e:remove(component)

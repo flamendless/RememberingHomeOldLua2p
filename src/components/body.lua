@@ -27,7 +27,7 @@ Concord.component("body", function(c)
 end)
 
 Concord.component("prev_can", function(c, e_player)
-	assert(e_player.__isEntity, e_player)
+	assert:entity(e_player)
 	c.value = {
 		move = e_player:has("can_move"),
 		run = e_player:has("can_run"),

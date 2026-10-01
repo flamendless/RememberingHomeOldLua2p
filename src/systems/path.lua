@@ -4,10 +4,12 @@ local Path = Concord.system({
 })
 
 function Path:init(world)
+	assert:world(world)
 	self.world = world
 end
 
 function Path:get_points(e)
+	assert:entity(e)
 	local path = e:get("path")
 	local has_bezier = e:has("apply_bezier_curve")
 	local low = path.current_point
@@ -36,6 +38,8 @@ function Path:get_points(e)
 end
 
 function Path:move_linear(dt, e, points)
+	assert:type(dt, "number")
+	assert:entity(e)
 	local pos = e:get("pos")
 	local speed = e:get("path_speed").value
 
@@ -63,6 +67,8 @@ function Path:move_linear(dt, e, points)
 end
 
 function Path:move_curve(dt, e, points)
+	assert:type(dt, "number")
+	assert:entity(e)
 	local pos = e:get("pos")
 	local speed = e:get("path_speed").value
 	local bz = e:get("apply_bezier_curve")
@@ -81,6 +87,7 @@ function Path:move_curve(dt, e, points)
 end
 
 function Path:update(dt)
+	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_move) do
 		local path = e:get("path")
 		local points, _ = self:get_points(e)
@@ -133,6 +140,7 @@ if DEV then
 	end
 
 	function Path:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

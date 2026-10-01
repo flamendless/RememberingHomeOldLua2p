@@ -49,6 +49,7 @@ function Flashlight:create_flashlight()
 end
 
 function Flashlight:update(dt)
+	assert:type(dt, "number")
 	if self.flashlight == nil or self.player == nil then
 		return
 	end
@@ -112,6 +113,7 @@ function Flashlight:update_flashlight_pos()
 end
 
 function Flashlight:update_battery(dt)
+	assert:type(dt, "number")
 	if not self.flashlight then
 		return
 	end
@@ -159,6 +161,7 @@ if DEV then
 	}
 
 	function Flashlight:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

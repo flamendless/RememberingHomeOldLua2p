@@ -8,6 +8,7 @@ local FOOT_DUST = {
 }
 
 local function stop_body_motion(e)
+	assert:entity(e)
 	local body = e:get("body")
 	body.dx = 0
 	body.vel_x = 0
@@ -19,6 +20,7 @@ local function stop_body_motion(e)
 end
 
 function PlayerController:init(world)
+	assert:world(world)
 	self.world = world
 	self.turn_cooldown = 0
 	self.on_lighter = false
@@ -82,6 +84,7 @@ function PlayerController:anim_idle(e, should_stop)
 end
 
 function PlayerController:anim_face_left(e)
+	assert:entity(e)
 	if not e then return end
 	local animation = e:get("animation")
 	if not animation then return end
@@ -92,6 +95,7 @@ function PlayerController:anim_face_left(e)
 end
 
 function PlayerController:anim_face_right(e)
+	assert:entity(e)
 	if not e then return end
 	local animation = e:get("animation")
 	if not animation then return end
@@ -102,6 +106,7 @@ function PlayerController:anim_face_right(e)
 end
 
 function PlayerController:anim_open_door(e)
+	assert:entity(e)
 	if not e then return end
 	local animation = e:get("animation")
 	if not animation then return end
@@ -122,10 +127,13 @@ function PlayerController:anim_open_door(e)
 end
 
 function PlayerController:anim_open_locked_door(e_player, opts)
+	assert:entity(e_player)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	TODO("play door locked sound")
 	local animation = e_player:get("animation")
-	assert(e_player.__isEntity and e_player:has("player") and animation, e_player)
+	assert:entity(e_player)
+	assert(e_player:has("player") and animation, e_player)
 	stop_body_motion(e_player)
 
 	local tag
@@ -164,6 +172,7 @@ function PlayerController:anim_open_locked_door(e_player, opts)
 end
 
 function PlayerController:anim_open_lighter(e)
+	assert:entity(e)
 	if not e then return end
 	local animation = e:get("animation")
 	if not animation then return end
@@ -185,6 +194,7 @@ function PlayerController:anim_open_lighter(e)
 end
 
 function PlayerController:anim_close_lighter(e)
+	assert:entity(e)
 	if not e then return end
 	local animation = e:get("animation")
 	if not animation then return end
@@ -346,6 +356,7 @@ function PlayerController:player_is_walking_or_running()
 end
 
 function PlayerController:update_foot_dust(dt)
+	assert:type(dt, "number")
 	if not self:player_is_walking_or_running() then
 		self.foot_dust_timer = 0
 		return
@@ -369,6 +380,7 @@ function PlayerController:update_foot_dust(dt)
 end
 
 function PlayerController:update(dt)
+	assert:type(dt, "number")
 	if not self.player then return end
 
 	local skip_lighter_input = self.lighter_opened_this_frame
@@ -539,8 +551,12 @@ function PlayerController:player_update_animation(override_name, override_varian
 end
 
 function PlayerController:on_player_interact(player, e_interactive)
-	assert((player.__isEntity and player:has("player")), player)
-	assert((e_interactive.__isEntity and e_interactive:has("interactive")), e_interactive)
+	assert:entity(player)
+	assert:entity(e_interactive)
+	assert:entity(player)
+	assert(player:has("player"), player)
+	assert:entity(e_interactive)
+	assert(e_interactive:has("interactive"), e_interactive)
 	self.player:get("is_interacting").value = true
 	-- self.world:emit("on_interact_or_inventory")
 	-- self.world:emit("create_speech_bubble", player)
@@ -591,6 +607,8 @@ end
 
 if DEV then
 	local function view_number(id, value, sameline)
+	assert:type(id, "string")
+	assert:type(value, "boolean")
 		Slab.Text(id)
 		Slab.SameLine()
 		Slab.Input(id, { Text = value, ReadOnly = true, NumbersOnly = true })
@@ -600,6 +618,8 @@ if DEV then
 	end
 
 	local function capability_checkbox(player, cap, label)
+	assert:entity(player)
+	assert:type(label, "string")
 		local has = player:has(cap)
 		if Slab.CheckBox(has, label) then
 			if has then
@@ -611,6 +631,7 @@ if DEV then
 	end
 
 	function PlayerController:debug_update(dt)
+	assert:type(dt, "number")
 		if not self.debug_show then
 			return
 		end

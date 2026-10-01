@@ -6,7 +6,7 @@ function DialogueHandlers.is_dunder_dialogue_key(key)
 end
 
 local function room_switch_lights_off(world, switch_id)
-	assert:type(world, "table")
+	assert:world(world)
 	assert:type_or_nil(switch_id, "string")
 	switch_id = switch_id or "room"
 	local ls = world:getSystem(ECS.get_system_class("light_switch"))
@@ -32,7 +32,7 @@ local function room_switch_lights_off(world, switch_id)
 end
 
 function DialogueHandlers.resolve_interact_dialogue_key(world, dialogue_key)
-	assert:type(world, "table")
+	assert:world(world)
 	assert:type(dialogue_key, "string")
 	if dialogue_key == Enums.dialogue_knot.__light_switch__ then
 		local lights_off = room_switch_lights_off(world, "room")

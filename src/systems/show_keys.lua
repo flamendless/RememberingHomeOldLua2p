@@ -1,12 +1,15 @@
 local ShowKeys = Concord.system()
 
 local function asm(e, key)
+	assert:entity(e)
+	assert:type(key, "string")
 	e:give("atlas", Atlases.AtlasKeys.frames[key])
 	:give("sprite", "atlas_keys")
 	:give("ui_element")
 end
 
 function ShowKeys:init(world)
+	assert:world(world)
 	self.world = world
 	self.keys = {}
 	self.texts = {}
@@ -46,6 +49,9 @@ local SPLASH_HAND_EFFECTS = Assemblages.HandDecal.SPLASH_HAND_EFFECTS
 local SKIP_HAND_TEX = Assemblages.HandDecal.HAND_TEX
 
 local function fade_ui_color(e, duration, on_complete)
+	assert:entity(e)
+	assert:type(duration, "number")
+	assert:type(on_complete, "function")
 	Flux.to(e:get("color").value, duration, { [4] = 0 }):oncomplete(function()
 		e:destroy()
 		if on_complete then
@@ -117,6 +123,7 @@ function ShowKeys:show_skip()
 end
 
 function ShowKeys:fade_skip_hand(duration)
+	assert:type(duration, "number")
 	duration = duration or 0.5
 
 	local hand = self.skip_hand or self.world:getEntityByKey("skip_hand")
@@ -238,6 +245,7 @@ function ShowKeys:show_key_at(id, bool, pos)
 end
 
 function ShowKeys:destroy_key(id)
+	assert:type(id, "string")
 	if id == "skip" then
 		self:fade_skip_hand(0)
 		return
@@ -252,6 +260,7 @@ function ShowKeys:destroy_key(id)
 end
 
 function ShowKeys:update(dt)
+	assert:type(dt, "number")
 	self:sync_skip_labels()
 
 	if not Settings.current.show_keys then return end

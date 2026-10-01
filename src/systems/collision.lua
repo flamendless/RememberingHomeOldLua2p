@@ -57,6 +57,7 @@ function Collision:check_rect_to_circle(rx, ry, rw, rh)
 end
 
 function Collision:check_collision(e)
+	assert:entity(e)
 	local pos = e:get("pos").pos
 	local col
 	if e:has("collider") then

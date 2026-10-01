@@ -3,6 +3,7 @@ local ANIM_STATE = Enums.anim_state
 local AnimationState = Concord.system()
 
 function AnimationState:init(world)
+	assert:world(world)
 	self.world = world
 end
 
@@ -27,6 +28,7 @@ function AnimationState:anim_idle(e, should_stop)
 end
 
 function AnimationState:anim_face_left(e)
+	assert:entity(e)
 	if not (e.__isEntity and e:has("animation") and e:has("body") and e:has("animation_ev_update")) then return end
 	if e:has("override_animation") then
 		return
@@ -37,6 +39,7 @@ function AnimationState:anim_face_left(e)
 end
 
 function AnimationState:anim_face_right(e)
+	assert:entity(e)
 	if not (e.__isEntity and e:has("animation") and e:has("body") and e:has("animation_ev_update")) then return end
 	if e:has("override_animation") then
 		return
@@ -47,6 +50,7 @@ function AnimationState:anim_face_right(e)
 end
 
 function AnimationState:anim_open_door(e)
+	assert:entity(e)
 	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
 	local body = e:get("body")
 	local tag
@@ -59,6 +63,7 @@ function AnimationState:anim_open_door(e)
 end
 
 function AnimationState:anim_open_locked_door(e)
+	assert:entity(e)
 	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
 	local body = e:get("body")
 	local tag
@@ -71,6 +76,7 @@ function AnimationState:anim_open_locked_door(e)
 end
 
 function AnimationState:anim_open_lighter(e)
+	assert:entity(e)
 	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
 	local body = e:get("body")
 	local tag
@@ -89,6 +95,7 @@ function AnimationState:anim_open_lighter(e)
 end
 
 function AnimationState:anim_close_lighter(e)
+	assert:entity(e)
 	if not (e.__isEntity and e:has("animation") and e:has("body")) then return end
 	local body = e:get("body")
 	local tag

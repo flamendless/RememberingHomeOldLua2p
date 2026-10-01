@@ -11,6 +11,7 @@ function BloodBar.init()
 end
 
 function BloodBar:new(opts)
+	assert:type_or_nil(opts, "table")
 	opts = opts or {}
 	self.shader = love.graphics.newShader(Shaders.paths.blood_bar)
 	if opts.enabled then
@@ -29,11 +30,16 @@ function BloodBar:new(opts)
 end
 
 function BloodBar:update(dt)
+	assert:type(dt, "number")
 	if not self.enabled then return end
 	self.data.time = self.data.time + dt * self.data.speed
 end
 
 function BloodBar:draw(x, y, w, h)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(w, "number")
+	assert:type(h, "number")
 	if not self.enabled then return end
 	self.shader:send("time", self.data.time)
 	self.shader:send("opacity", self.data.opacity)

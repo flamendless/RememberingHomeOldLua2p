@@ -94,6 +94,7 @@ function PSLighterSpark:create_system()
 end
 
 function PSLighterSpark:configure(tier_color, dir, preset)
+	assert:type(dir, "number")
 	self.system = self:create_system()
 	local ps = self.system
 
@@ -113,6 +114,9 @@ function PSLighterSpark:configure(tier_color, dir, preset)
 end
 
 function PSLighterSpark:burst(x, y, dir)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(dir, "number")
 	self.x = x + HP.emitter_offset_x * (dir or 1)
 	self.y = y + HP.emitter_offset_y
 	self.system:emit(self.emit_count)
@@ -128,6 +132,7 @@ function PSLighterSpark:burst(x, y, dir)
 end
 
 function PSLighterSpark:update(dt)
+	assert:type(dt, "number")
 	if not self.system or self.system:getCount() == 0 then
 		return
 	end
@@ -140,6 +145,8 @@ function PSLighterSpark:is_alive()
 end
 
 function PSLighterSpark:draw(x, y)
+	assert:type_or_nil(x, "number")
+	assert:type_or_nil(y, "number")
 	if not self:is_alive() then
 		return
 	end
@@ -165,18 +172,25 @@ function LighterSparkPool:acquire()
 end
 
 function LighterSparkPool:burst_subtle(x, y, dir, tier_color)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(dir, "number")
 	local burst = self:acquire()
 	burst:configure(tier_color, dir, PRESETS[Enums.lighter_spark_intensity.subtle])
 	burst:burst(x, y, dir)
 end
 
 function LighterSparkPool:burst_strong(x, y, dir, tier_color)
+	assert:type(x, "number")
+	assert:type(y, "number")
+	assert:type(dir, "number")
 	local burst = self:acquire()
 	burst:configure(tier_color, dir, PRESETS[Enums.lighter_spark_intensity.strong])
 	burst:burst(x, y, dir)
 end
 
 function LighterSparkPool:update(dt)
+	assert:type(dt, "number")
 	for _, burst in ipairs(self.pool) do
 		burst:update(dt)
 	end

@@ -13,6 +13,8 @@ function MotionBlur:new(canvas, config)
 end
 
 function MotionBlur:store_previous(x, y, angle)
+	assert:type(x, "number")
+	assert:type(y, "number")
 	self.previous.target = vec2(x, y)
 	self.previous.angle = angle
 end
