@@ -96,6 +96,7 @@ function DialoguesSystem:state_setup()
 	self.choices_history = {}
 	self.bars_shown_for_dialogue = false
 	self.await_interact_release = false
+	self.require_interact_release_before_use = false
 	self.dialogue_advance_pending = false
 end
 
@@ -115,6 +116,10 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 
 	local restart = e_other == self.e_simple_dialogue
 	if restart or self.dialogue:getCurrentKnot() ~= dialogue_key then
+		if dialogue_key == Enums.dialogue_knot.__light_switch_on__
+			or dialogue_key == Enums.dialogue_knot.__light_switch_off__ then
+			self.world:emit("toggle_light_switch")
+		end
 		self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
 
 		self.e_dialogue = e_other
@@ -122,6 +127,10 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 		self.current_content = self.dialogue:getNext()
 		self.ui:showContent(self.current_content)
 		self.await_interact_release = Inputs.down(Enums.input.interact)
+		if dialogue_key == Enums.dialogue_knot.__light_switch_on__
+			or dialogue_key == Enums.dialogue_knot.__light_switch_off__ then
+			self.require_interact_release_before_use = true
+		end
 		self.dialogue_advance_pending = false
 
 		local cam = self.world:getSystem(ECS.get_system_class("camera"))
@@ -200,6 +209,10 @@ function DialoguesSystem:state_update(dt)
 	if self.await_interact_release then
 		if not Inputs.down(Enums.input.interact) then
 			self.await_interact_release = false
+		end
+	elseif self.require_interact_release_before_use then
+		if not Inputs.down(Enums.input.interact) then
+			self.require_interact_release_before_use = false
 		end
 	elseif self.current_content and self.current_content.type == "text" then
 		if Inputs.pressed(Enums.input.interact) then

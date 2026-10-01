@@ -472,7 +472,9 @@ function PlayerController:update(dt)
 
 	if within_int and self.player:has("can_interact") and Inputs.pressed(Enums.input.interact) then
 		local dialogues = self.world:getSystem(ECS.get_system_class("dialogues"))
-		if not dialogues or not dialogues.current_content then
+		if dialogues and dialogues.require_interact_release_before_use then
+			-- ignore held interact after light switch until key is released once
+		elseif not dialogues or not dialogues.current_content then
 			local other = within_int.entity
 
 			if Helper.can_proceed_interact(self.player, other) then

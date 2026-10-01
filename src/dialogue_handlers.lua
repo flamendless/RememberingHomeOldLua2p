@@ -35,9 +35,7 @@ function DialogueHandlers.resolve_interact_dialogue_key(world, dialogue_key)
 	assert:world(world)
 	assert:type(dialogue_key, "string")
 	if dialogue_key == Enums.dialogue_knot.__light_switch__ then
-		local lights_off = room_switch_lights_off(world, "room")
-		world:emit("toggle_light_switch")
-		if lights_off then
+		if room_switch_lights_off(world, "room") then
 			return Enums.dialogue_knot.__light_switch_on__
 		end
 		return Enums.dialogue_knot.__light_switch_off__

@@ -8,6 +8,7 @@ local Data = {
 	},
 	{
 		id = "light_switch",
+		key = "light_switch",
 		x = 10,
 		y = 50,
 		z = 4,

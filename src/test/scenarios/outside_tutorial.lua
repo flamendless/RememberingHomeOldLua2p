@@ -11,26 +11,33 @@ local function tap_lighter()
 	tap("lighter")
 end
 
-local SHED_EXIT_X = 200
 local BACKDOOR_X = 485
-local BACKDOOR_SLOW_RADIUS = 96
+local FRONTDOOR_X = 351
+local DOOR_APPROACH_SLOW_RADIUS = 96
 local DEFAULT_TEST_SPEED = 20
+local use_normal_game_speed = false
 
-local function at_shed_tutorial_phase()
-	if TestHooks.state_is(Enums.game_state.Shed) then
-		return true
+local function explore_door_approach_slow()
+	if use_normal_game_speed then
+		return false
 	end
-	return TestHooks.tutorial_wait_is("reach_shed")
-		or TestHooks.tutorial_wait_is("enter_shed")
+	if not TestHooks.state_is(Enums.game_state.Outside) then
+		return false
+	end
+	if not TestHooks.tutorial_wait_is("reach_shed") then
+		return false
+	end
+	return TestHooks.player_near_x(BACKDOOR_X, DOOR_APPROACH_SLOW_RADIUS)
+		or TestHooks.player_near_x(FRONTDOOR_X, DOOR_APPROACH_SLOW_RADIUS)
 end
 
 local function sync_test_game_speed()
-	if at_shed_tutorial_phase() then
+	if not TEST.mode then
+		return
+	end
+	if use_normal_game_speed or explore_door_approach_slow() then
 		GAME_SPEED_MULT = 1
-	elseif TestHooks.state_is(Enums.game_state.Outside)
-		and TestHooks.player_near_x(BACKDOOR_X, BACKDOOR_SLOW_RADIUS) then
-		GAME_SPEED_MULT = 1
-	elseif TEST.mode then
+	else
 		GAME_SPEED_MULT = DEFAULT_TEST_SPEED
 	end
 end
@@ -119,6 +126,16 @@ return {
 			label = "move to backdoor (explore)",
 			hold = "left",
 			until_fn = function()
+				if TestHooks.player_ready_to_interact_door("backdoor") then
+					return true
+				end
+				return TestHooks.player_west_of_key("backdoor")
+			end,
+		},
+		{
+			label = "align at backdoor (explore)",
+			hold = "right",
+			until_fn = function()
 				return TestHooks.player_ready_to_interact_door("backdoor")
 			end,
 		},
@@ -140,6 +157,16 @@ return {
 			label = "move to frontdoor (explore)",
 			hold = "left",
 			until_fn = function()
+				if TestHooks.player_ready_to_interact_door("frontdoor") then
+					return true
+				end
+				return TestHooks.player_west_of_key("frontdoor")
+			end,
+		},
+		{
+			label = "align at frontdoor (explore)",
+			hold = "right",
+			until_fn = function()
 				return TestHooks.player_ready_to_interact_door("frontdoor")
 			end,
 		},
@@ -153,8 +180,12 @@ return {
 		{
 			label = "frontdoor locked (explore)",
 			until_fn = function()
-				return TestHooks.door_is_locked("frontdoor")
-					and not TestHooks.dialogue_active()
+				if TestHooks.door_is_locked("frontdoor")
+					and not TestHooks.dialogue_active() then
+					use_normal_game_speed = true
+					return true
+				end
+				return false
 			end,
 		},
 		{
@@ -216,23 +247,40 @@ return {
 			label = "close lighter",
 			do_fn = tap_lighter,
 			until_fn = function()
-				return TestHooks.tutorial_beat_is("close_lighter")
-					and TestHooks.tutorial_wait_is("null")
+				local tutorial = TestHooks.get_tutorial()
+				return tutorial ~= nil and tutorial.shed_lighter_done
 			end,
 		},
 		{
-			label = "move to shed exit",
-			hold = "right",
+			label = "move to light switch",
+			hold = "left",
 			until_fn = function()
-				return TestHooks.player_near_x(SHED_EXIT_X, 48)
+				if TestHooks.player_ready_to_interact_key("light_switch") then
+					return true
+				end
+				return TestHooks.player_west_of_key("light_switch")
 			end,
 		},
 		{
-			label = "face shed exit",
+			label = "align at light switch",
 			hold = "right",
-			min_frames = 3,
 			until_fn = function()
-				return TestHooks.player_faces_dir(1)
+				return TestHooks.player_ready_to_interact_key("light_switch")
+			end,
+		},
+		{
+			label = "interact light switch",
+			do_fn = tap_interact,
+			until_fn = function()
+				return TestHooks.shed_room_lights_on()
+					and not TestHooks.dialogue_active()
+			end,
+		},
+		{
+			label = "move to shed exit door",
+			hold = "right",
+			until_fn = function()
+				return TestHooks.player_ready_to_interact_key("door_right")
 			end,
 		},
 		{
@@ -254,7 +302,17 @@ return {
 			label = "move to frontdoor",
 			hold = "right",
 			until_fn = function()
-				return TestHooks.player_near_x(351, 48)
+				if TestHooks.player_ready_to_interact_door("frontdoor") then
+					return true
+				end
+				return TestHooks.player_east_of_key("frontdoor")
+			end,
+		},
+		{
+			label = "align at frontdoor",
+			hold = "left",
+			until_fn = function()
+				return TestHooks.player_ready_to_interact_door("frontdoor")
 			end,
 		},
 		{
@@ -276,15 +334,17 @@ return {
 			label = "move to backdoor",
 			hold = "right",
 			until_fn = function()
-				return TestHooks.player_near_x(485, 48)
+				if TestHooks.player_ready_to_interact_door("backdoor") then
+					return true
+				end
+				return TestHooks.player_east_of_key("backdoor")
 			end,
 		},
 		{
-			label = "face backdoor",
+			label = "align at backdoor",
 			hold = "left",
-			min_frames = 3,
 			until_fn = function()
-				return TestHooks.player_faces_dir(-1)
+				return TestHooks.player_ready_to_interact_door("backdoor")
 			end,
 		},
 		{

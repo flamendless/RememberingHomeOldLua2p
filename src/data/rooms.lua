@@ -31,7 +31,7 @@ Rooms.nodes[G.Shed] = {
 	},
 	default = { 197, 48 },
 	doors = {
-		door_right = { to = G.Outside, spawn = { 197, 48 } },
+		door_right = { to = G.Outside, spawn = { 73, 258, R } },
 	},
 }
 

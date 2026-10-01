@@ -165,25 +165,72 @@ function TestHooks.player_near_x(x, tolerance)
 	return math.abs(player:get("pos").x - x) <= tolerance
 end
 
+function TestHooks.get_entity_by_key(key)
+	local world = GameStates.world
+	if not world then
+		return nil
+	end
+	local e = world:getEntityByKey(key)
+	if e then
+		return e
+	end
+	local room = world:getSystem(ECS.get_system_class("room"))
+	if not room or not room.pool then
+		return nil
+	end
+	for _, ent in ipairs(room.pool) do
+		if ent:has("id") and ent:get("id").value == key then
+			return ent
+		end
+	end
+	return nil
+end
+
+function TestHooks.player_ready_to_interact_key(key)
+	if not GameStates.is_ready or not GameStates.world then
+		return false
+	end
+	local player = TestHooks.get_player()
+	if not player then
+		return false
+	end
+	local target = TestHooks.get_entity_by_key(key)
+	if not target then
+		return false
+	end
+	local px, py, pw, ph = Helper.get_collider_rect(player)
+	local tx, ty, tw, th = Helper.get_collider_rect(target)
+	if not Helper.is_in_interact_range(px, py, pw, ph, tx, ty, tw, th) then
+		return false
+	end
+	return Helper.can_proceed_interact(player, target)
+end
+
 function TestHooks.player_ready_to_interact_door(key)
 	if not TestHooks.state_is("Outside") then
 		return false
 	end
-	local player = TestHooks.get_player()
+	return TestHooks.player_ready_to_interact_key(key)
+end
+
+function TestHooks.shed_room_lights_on()
+	if not TestHooks.state_is("Shed") then
+		return false
+	end
 	local world = GameStates.world
-	if not player or not world then
+	if not world then
 		return false
 	end
-	local door = world:getEntityByKey(key)
-	if not door then
+	local ls = world:getSystem(ECS.get_system_class("light_switch"))
+	if not ls or not ls.pool_lights then
 		return false
 	end
-	local px, py, pw, ph = Helper.get_collider_rect(player)
-	local dx, dy, dw, dh = Helper.get_collider_rect(door)
-	if not Helper.is_in_interact_range(px, py, pw, ph, dx, dy, dw, dh) then
-		return false
+	for _, e in ipairs(ls.pool_lights) do
+		if e:has("light_switch_id") and e:get("light_switch_id").value == "room" then
+			return not e:has("light_disabled")
+		end
 	end
-	return Helper.can_proceed_interact(player, door)
+	return false
 end
 
 function TestHooks.player_ready_to_interact_shed()
@@ -207,21 +254,40 @@ function TestHooks.player_ready_to_interact_shed()
 	return Helper.can_proceed_interact(player, shed)
 end
 
-function TestHooks.player_west_of_shed_door()
+function TestHooks.player_east_of_key(key)
 	local player = TestHooks.get_player()
-	local world = GameStates.world
-	if not player or not world then
+	if not player then
 		return false
 	end
-	local shed = world:getEntityByKey("shed")
-	if not shed then
+	local target = TestHooks.get_entity_by_key(key)
+	if not target then
 		return false
 	end
 	local px, _, pw = Helper.get_collider_rect(player)
-	local sx, _, sw = Helper.get_collider_rect(shed)
+	local tx, _, tw = Helper.get_collider_rect(target)
 	local player_cx = px + pw * 0.5
-	local door_cx = sx + sw * 0.5
-	return player_cx < door_cx
+	local target_cx = tx + tw * 0.5
+	return player_cx > target_cx
+end
+
+function TestHooks.player_west_of_key(key)
+	local player = TestHooks.get_player()
+	if not player then
+		return false
+	end
+	local target = TestHooks.get_entity_by_key(key)
+	if not target then
+		return false
+	end
+	local px, _, pw = Helper.get_collider_rect(player)
+	local tx, _, tw = Helper.get_collider_rect(target)
+	local player_cx = px + pw * 0.5
+	local target_cx = tx + tw * 0.5
+	return player_cx < target_cx
+end
+
+function TestHooks.player_west_of_shed_door()
+	return TestHooks.player_west_of_key("shed")
 end
 
 function TestHooks.player_in_shed_interact_range()
