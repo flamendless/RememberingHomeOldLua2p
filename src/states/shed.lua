@@ -99,12 +99,14 @@ function Shed:state_init()
 		self.world:emit("toggle_component", e_player, Enums.player_cap.can_run, true)
 
 		local bag = Session.take("tutorial")
+		local tutorial = self.world:getSystem(ECS.get_system_class("tutorial"))
 		if bag then
-			local tutorial = self.world:getSystem(ECS.get_system_class("tutorial"))
 			tutorial:import_session(bag)
 			if bag.phase == "shed" then
 				tutorial:begin_shed_open_lighter(e_player)
 			end
+		elseif DEV and Settings.current.tutorial then
+			tutorial:begin_shed_open_lighter(e_player)
 		end
 
 		spawn_shed_bugs(self.world)

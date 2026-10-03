@@ -2,12 +2,6 @@
 -- check run.sh create_atlas
 local Data = {
 	frames = {
-		["shed"] = {
-			x = 4,
-			y = 4,
-			w = 154,
-			h = 98
-		},
 		["backdoor"] = {
 			x = 166,
 			y = 4,
@@ -25,6 +19,12 @@ local Data = {
 			y = 110,
 			w = 33,
 			h = 67
+		},
+		["shed"] = {
+			x = 4,
+			y = 4,
+			w = 154,
+			h = 98
 		}
 	},
 	meta = {

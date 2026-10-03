@@ -2,35 +2,11 @@
 -- check run.sh create_atlas
 local Data = {
 	frames = {
-		["table"] = {
-			x = 111,
-			y = 252,
-			w = 87,
-			h = 11
-		},
-		["fireplace_inner"] = {
-			x = 4,
-			y = 230,
-			w = 34,
-			h = 33
-		},
-		["plant"] = {
-			x = 83,
-			y = 78,
-			w = 16,
-			h = 29
-		},
 		["fireplace"] = {
 			x = 4,
 			y = 4,
 			w = 66,
 			h = 107
-		},
-		["clock"] = {
-			x = 83,
-			y = 4,
-			w = 23,
-			h = 66
 		},
 		["door"] = {
 			x = 68,
@@ -38,17 +14,11 @@ local Data = {
 			w = 38,
 			h = 70
 		},
-		["stool"] = {
-			x = 83,
-			y = 115,
-			w = 22,
-			h = 16
-		},
-		["chair"] = {
-			x = 68,
+		["table"] = {
+			x = 111,
 			y = 252,
-			w = 35,
-			h = 31
+			w = 87,
+			h = 11
 		},
 		["painting"] = {
 			x = 4,
@@ -61,6 +31,36 @@ local Data = {
 			y = 4,
 			w = 17,
 			h = 23
+		},
+		["stool"] = {
+			x = 83,
+			y = 115,
+			w = 22,
+			h = 16
+		},
+		["plant"] = {
+			x = 83,
+			y = 78,
+			w = 16,
+			h = 29
+		},
+		["fireplace_inner"] = {
+			x = 4,
+			y = 230,
+			w = 34,
+			h = 33
+		},
+		["chair"] = {
+			x = 68,
+			y = 252,
+			w = 35,
+			h = 31
+		},
+		["clock"] = {
+			x = 83,
+			y = 4,
+			w = 23,
+			h = 66
 		},
 		["table2"] = {
 			x = 4,

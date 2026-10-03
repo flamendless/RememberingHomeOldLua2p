@@ -113,7 +113,7 @@ function Outside.lights.pl_backdoor(e, id)
 	assert:type(id, "string")
 	e:assemble(Assemblages.Light.point, 498, 292, 62, 72, Palette.get_diffuse("door_pl"))
 		:give("id", id)
-		:give("light_rings")
+		-- :give("light_rings")
 end
 
 function Outside.lights.sl_backdoor(e, id)
@@ -129,7 +129,7 @@ function Outside.lights.sl_backdoor(e, id)
 		Palette.get_diffuse("door_sl")
 	)
 		:give("id", id)
-		:give("light_rings")
+		-- :give("light_rings")
 end
 
 function Outside.lights.pl_frontdoor(e, id)
@@ -137,7 +137,7 @@ function Outside.lights.pl_frontdoor(e, id)
 	assert:type(id, "string")
 	e:assemble(Assemblages.Light.point, 368, 262, 62, 72, Palette.get_diffuse("door_pl"))
 		:give("id", id)
-		:give("light_rings")
+		-- :give("light_rings")
 end
 
 function Outside.lights.sl_frontdoor(e, id)
@@ -145,7 +145,7 @@ function Outside.lights.sl_frontdoor(e, id)
 	assert:type(id, "string")
 	e:assemble(Assemblages.Light.spot, 368, 221, 4, { 0, 1, -1, 0.73 }, 64, Palette.get_diffuse("door_sl"))
 		:give("id", id)
-		:give("light_rings")
+		-- :give("light_rings")
 end
 
 Outside.glows.car = function(world)

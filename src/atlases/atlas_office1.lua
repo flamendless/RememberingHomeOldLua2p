@@ -2,17 +2,35 @@
 -- check run.sh create_atlas
 local Data = {
 	frames = {
-		["bookshelf"] = {
-			x = 4,
-			y = 4,
-			w = 111,
-			h = 58
+		["plants_2"] = {
+			x = 372,
+			y = 84,
+			w = 37,
+			h = 36
 		},
-		["plants"] = {
-			x = 376,
+		["door"] = {
+			x = 299,
 			y = 4,
-			w = 34,
-			h = 35
+			w = 39,
+			h = 70
+		},
+		["glasswindow2"] = {
+			x = 4,
+			y = 84,
+			w = 144,
+			h = 34
+		},
+		["desk"] = {
+			x = 308,
+			y = 84,
+			w = 56,
+			h = 36
+		},
+		["pc"] = {
+			x = 376,
+			y = 47,
+			w = 18,
+			h = 14
 		},
 		["door_right"] = {
 			x = 346,
@@ -20,17 +38,29 @@ local Data = {
 			w = 22,
 			h = 70
 		},
-		["ceiling_light"] = {
+		["bookshelf"] = {
 			x = 4,
-			y = 70,
-			w = 102,
-			h = 5
+			y = 4,
+			w = 111,
+			h = 58
 		},
-		["plants_2"] = {
-			x = 372,
-			y = 84,
-			w = 37,
-			h = 36
+		["desk_plant"] = {
+			x = 402,
+			y = 47,
+			w = 8,
+			h = 12
+		},
+		["plants"] = {
+			x = 376,
+			y = 4,
+			w = 34,
+			h = 35
+		},
+		["trash"] = {
+			x = 255,
+			y = 42,
+			w = 11,
+			h = 14
 		},
 		["glasswindow"] = {
 			x = 156,
@@ -44,47 +74,11 @@ local Data = {
 			w = 92,
 			h = 30
 		},
-		["glasswindow2"] = {
-			x = 4,
-			y = 84,
-			w = 144,
-			h = 34
-		},
-		["trash"] = {
-			x = 255,
-			y = 42,
-			w = 11,
-			h = 14
-		},
 		["main_door"] = {
 			x = 123,
 			y = 4,
 			w = 68,
 			h = 72
-		},
-		["desk_plant"] = {
-			x = 402,
-			y = 47,
-			w = 8,
-			h = 12
-		},
-		["office_chair"] = {
-			x = 418,
-			y = 68,
-			w = 21,
-			h = 35
-		},
-		["dispenser"] = {
-			x = 418,
-			y = 4,
-			w = 17,
-			h = 56
-		},
-		["pc"] = {
-			x = 376,
-			y = 47,
-			w = 18,
-			h = 14
 		},
 		["table"] = {
 			x = 199,
@@ -92,17 +86,23 @@ local Data = {
 			w = 48,
 			h = 21
 		},
-		["door"] = {
-			x = 299,
-			y = 4,
-			w = 39,
-			h = 70
+		["ceiling_light"] = {
+			x = 4,
+			y = 70,
+			w = 102,
+			h = 5
 		},
-		["desk"] = {
-			x = 308,
-			y = 84,
-			w = 56,
-			h = 36
+		["dispenser"] = {
+			x = 418,
+			y = 4,
+			w = 17,
+			h = 56
+		},
+		["office_chair"] = {
+			x = 418,
+			y = 68,
+			w = 21,
+			h = 35
 		}
 	},
 	meta = {
