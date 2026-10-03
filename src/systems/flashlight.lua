@@ -9,6 +9,19 @@ local END_LIGHT_CLOSENESS = 0.8 --how close should end light be to the start lig
 local MIN_LIGHT_POWER = 48
 local consumption_rate = 0.1
 
+local function flashlight_is_off(e)
+	if e:has("light_disabled") then
+		return true
+	end
+	if e:has("light_ramp") then
+		local ramp = e:get("light_ramp")
+		if ramp.active and ramp.to_on then
+			return true
+		end
+	end
+	return false
+end
+
 function Flashlight:init(world)
 	self.world = world
 	self.player = nil
@@ -62,15 +75,13 @@ function Flashlight:update(dt)
 
 	if Inputs.released(Enums.input.flashlight) then
 		local pl = self.start_l:get("point_light")
-		if self.flashlight:has("light_disabled") then
-			self.flashlight:remove("light_disabled")
-			-- self.start_l:remove("light_disabled")
-			self.end_l:remove("light_disabled")
+		if flashlight_is_off(self.flashlight) then
+			self.world:emit("set_light_enabled", self.flashlight, true)
+			self.world:emit("set_light_enabled", self.end_l, true)
 			pl.value = pl.orig_value
 		else
-			self.flashlight:give("light_disabled")
-			-- self.start_l:give("light_disabled")
-			self.end_l:give("light_disabled")
+			self.world:emit("set_light_enabled", self.flashlight, false)
+			self.world:emit("set_light_enabled", self.end_l, false)
 			pl.value = MIN_LIGHT_POWER
 		end
 	end
@@ -129,9 +140,15 @@ function Flashlight:update_battery(dt)
 	local f_pl = self.flashlight:get("point_light")
 	if f_pl.value <= 0 then
 		bs:set(Enums.battery_state.empty)
-		self.flashlight:give("light_disabled"):remove("battery"):remove("d_light_flicker")
-		self.end_l:give("light_disabled")
+		self.world:emit("set_light_enabled", self.flashlight, false)
+		self.flashlight:remove("battery"):remove("d_light_flicker")
+		self.world:emit("set_light_enabled", self.end_l, false)
 		self.start_l:give("point_light", MIN_LIGHT_POWER)
+		return
+	end
+
+	local ramp = self.flashlight:get("light_ramp")
+	if ramp and ramp.active then
 		return
 	end
 

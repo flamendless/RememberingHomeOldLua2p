@@ -82,6 +82,7 @@ function GameStates.start(resources)
 			spawn_candle = true,
 			draw_dust = true,
 			draw_atmospheric_specs = true,
+			set_light_enabled = true,
 		}
 
 		local function is_draw_emit(event)

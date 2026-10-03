@@ -24,6 +24,14 @@ local DeferredLighting = Concord.system({
 		"diffuse",
 		"d_light_flicker",
 	},
+	pool_ramp = {
+		"id",
+		"light_id",
+		"point_light",
+		"pos",
+		"diffuse",
+		"light_ramp",
+	},
 })
 
 local lvfp = { { "u_lpos", "float", 4 } }    -- pos.xyz, scale
@@ -35,6 +43,31 @@ local RING_MESH_OFF = { 0, 0, 1, 0.06 }
 local RA = { 0.9951847266722, 0.098017140329561 }
 local MAX_LIGHTS = 64 -- TODO: we can lower this to 16, but for Outside must be 64
 local OMNI_LIGHT_DIR = { 0, 0, -1, -1 }
+local flux_easing = require("modules.flux.flux").easing
+
+local function ramp_ease(ramp, progress)
+	local ease_name = ramp.ease or Enums.ease.expoout
+	local fn = flux_easing[ease_name] or flux_easing.linear
+	return fn(math.min(1, progress))
+end
+
+local function restore_light_from_orig(e)
+	local pl = e:get("point_light")
+	local diff = e:get("diffuse")
+	pl.value = pl.orig_value
+	diff.value[1] = diff.orig_value[1]
+	diff.value[2] = diff.orig_value[2]
+	diff.value[3] = diff.orig_value[3]
+end
+
+local function zero_light_values(e)
+	local pl = e:get("point_light")
+	local diff = e:get("diffuse")
+	pl.value = 0
+	diff.value[1] = 0
+	diff.value[2] = 0
+	diff.value[3] = 0
+end
 
 function DeferredLighting:init(world)
 	assert:world(world)
@@ -86,6 +119,12 @@ function DeferredLighting:init(world)
 	end
 
 	self.pool_disabled.onRemoved = function(pool, e)
+		if e:has("light_ramp") then
+			local ramp = e:get("light_ramp")
+			if ramp.active and ramp.to_on then
+				return
+			end
+		end
 		local diffuse = e:get("diffuse")
 		self.mesh.diffuse:setVertex(e:get("light_id").value, diffuse.value)
 	end
@@ -229,6 +268,7 @@ end
 function DeferredLighting:update(dt)
 	assert:type(dt, "number")
 	self.timer:update(dt)
+	self:update_light_ramp(dt)
 	self:update_light_fading(dt)
 end
 
@@ -258,15 +298,109 @@ function DeferredLighting:shutdown_lights()
 	self:disable_all_lights({ play_sound = true })
 end
 
+function DeferredLighting:set_light_enabled(e, enabled)
+	assert:entity(e)
+	assert:type(enabled, "boolean")
+	if e:has("light_ramp") then
+		local ramp = e:get("light_ramp")
+		if not enabled and ramp.instant_off then
+			ramp.active = false
+			restore_light_from_orig(e)
+			e:give("light_disabled")
+			return
+		end
+		self:begin_light_ramp(e, enabled)
+		return
+	end
+	if enabled then
+		e:remove("light_disabled")
+	else
+		e:give("light_disabled")
+	end
+end
+
+function DeferredLighting:begin_light_ramp(e, to_on)
+	assert:entity(e)
+	assert:type(to_on, "boolean")
+	local ramp = e:get("light_ramp")
+	if not ramp then
+		return
+	end
+
+	local pl = e:get("point_light")
+	local diff = e:get("diffuse")
+
+	ramp.to_on = to_on
+	ramp.elapsed = 0
+	ramp.active = true
+
+	if to_on then
+		if e:has("light_disabled") then
+			e:remove("light_disabled")
+			zero_light_values(e)
+			ramp.from_pl = 0
+			ramp.from_diff = { 0, 0, 0 }
+		else
+			ramp.from_pl = pl.value
+			ramp.from_diff = { diff.value[1], diff.value[2], diff.value[3] }
+		end
+		self:update_light_pos(e)
+		self:update_light_diffuse(e)
+	else
+		ramp.from_pl = pl.value
+		ramp.from_diff = { diff.value[1], diff.value[2], diff.value[3] }
+	end
+end
+
+function DeferredLighting:update_light_ramp(dt)
+	assert:type(dt, "number")
+	for _, e in ipairs(self.pool_ramp) do
+		local ramp = e:get("light_ramp")
+		if ramp.active then
+			ramp.elapsed = ramp.elapsed + dt
+			local raw_t = ramp.duration > 0 and (ramp.elapsed / ramp.duration) or 1
+			local t = ramp_ease(ramp, raw_t)
+
+			local pl = e:get("point_light")
+			local diff = e:get("diffuse")
+			local orig = diff.orig_value
+
+			if ramp.to_on then
+				pl.value = ramp.from_pl + (pl.orig_value - ramp.from_pl) * t
+				diff.value[1] = ramp.from_diff[1] + (orig[1] - ramp.from_diff[1]) * t
+				diff.value[2] = ramp.from_diff[2] + (orig[2] - ramp.from_diff[2]) * t
+				diff.value[3] = ramp.from_diff[3] + (orig[3] - ramp.from_diff[3]) * t
+			else
+				local inv = 1 - t
+				pl.value = ramp.from_pl * inv
+				diff.value[1] = ramp.from_diff[1] * inv
+				diff.value[2] = ramp.from_diff[2] * inv
+				diff.value[3] = ramp.from_diff[3] * inv
+			end
+
+			self:update_light_pos(e)
+			self:update_light_diffuse(e)
+
+			if raw_t >= 1 then
+				ramp.active = false
+				if ramp.to_on then
+					restore_light_from_orig(e)
+					self:update_light_pos(e)
+					self:update_light_diffuse(e)
+				else
+					restore_light_from_orig(e)
+					e:give("light_disabled")
+				end
+			end
+		end
+	end
+end
+
 function DeferredLighting:toggle_light_group(group_id, state)
 	assert(Enums.light_group[group_id], group_id)
 	assert:type(state, "boolean")
 	for _, other in ipairs(self.groups[group_id]) do
-		if state then
-			other:remove("light_disabled")
-		else
-			other:give("light_disabled")
-		end
+		self:set_light_enabled(other, state)
 	end
 end
 
@@ -277,11 +411,7 @@ function DeferredLighting:light_group_set_disable(group_id, is_d, e)
 
 	for _, other in ipairs(self.groups[group_id]) do
 		if e ~= other then
-			if is_d then
-				other:give("light_disabled")
-			else
-				other:remove("light_disabled")
-			end
+			self:set_light_enabled(other, not is_d)
 		end
 	end
 end
@@ -366,7 +496,8 @@ end
 function DeferredLighting:update_light_fading(dt)
 	assert:type(dt, "number")
 	for _, e in ipairs(self.pool_fading) do
-		if not e:has("light_disabled") then
+		local ramping = e:has("light_ramp") and e:get("light_ramp").active
+		if not ramping and not e:has("light_disabled") then
 			local lp = e:get("point_light")
 			local f = e:get("light_fading")
 			if lp.value >= lp.orig_value then
@@ -676,11 +807,11 @@ if DEV then
 				if Slab.CheckBox(ld, "Disabled", { Id = "disabled" }) then
 					local is_d
 					if ld then
-						e:remove("light_disabled")
 						is_d = false
+						self:set_light_enabled(e, true)
 					else
-						e:give("light_disabled")
 						is_d = true
+						self:set_light_enabled(e, false)
 					end
 					if group_id then
 						self:light_group_set_disable(group_id, is_d, e)

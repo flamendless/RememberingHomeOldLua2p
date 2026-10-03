@@ -7,6 +7,19 @@ function LightSwitch:init(world)
 	self.world = world
 end
 
+local function light_is_off(e)
+	if e:has("light_disabled") then
+		return true
+	end
+	if e:has("light_ramp") then
+		local ramp = e:get("light_ramp")
+		if ramp.active and ramp.to_on then
+			return true
+		end
+	end
+	return false
+end
+
 function LightSwitch:toggle_light_switch(_, _, choice)
 	for _, e in ipairs(self.pool_lights) do
 		local valid = true
@@ -17,11 +30,7 @@ function LightSwitch:toggle_light_switch(_, _, choice)
 
 		if valid then
 			self.world:emit("play_sound_on_entity", e, Enums.sfx.light_switch)
-			if e:has("light_disabled") then
-				e:remove("light_disabled")
-			else
-				e:give("light_disabled")
-			end
+			self.world:emit("set_light_enabled", e, light_is_off(e))
 		end
 	end
 end

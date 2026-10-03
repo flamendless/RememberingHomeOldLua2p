@@ -97,6 +97,9 @@ end
 
 function Flame:update_flame_strength(e)
 	assert:entity(e)
+	if e:has("light_ramp") and e:get("light_ramp").active then
+		return
+	end
 	local pl = e:get("point_light")
 	local diffuse = e:get("diffuse")
 	local color_ratio = 1
@@ -190,9 +193,25 @@ function Flame:update_flame_pos(e)
 	end
 
 	if self:is_lit(e) then
-		e:remove("light_disabled")
+		if e:has("light_ramp") then
+			local ramp = e:get("light_ramp")
+			local ramping_off = ramp.active and not ramp.to_on
+			if e:has("light_disabled") or ramping_off then
+				self.world:emit("set_light_enabled", e, true)
+			end
+		else
+			e:remove("light_disabled")
+		end
 	else
-		e:give("light_disabled")
+		if e:has("light_ramp") then
+			local ramp = e:get("light_ramp")
+			local ramping_on = ramp.active and ramp.to_on
+			if not e:has("light_disabled") or ramping_on then
+				self.world:emit("set_light_enabled", e, false)
+			end
+		else
+			e:give("light_disabled")
+		end
 	end
 
 	self.world:emit("update_light_pos", e)

@@ -46,6 +46,7 @@ function Light.fl_spot(e, e_player, sync_data)
 	e:assemble(Light.spot, 0, 0, 1, { 1, 0, 0, 0.85 }, 164, { p, p, p })
 		:give("id", "flashlight_fl")
 		:give("flashlight")
+		:give("light_ramp")
 		:give("anim_sync_with", e_player)
 		:give("anim_sync_data", "fl_spawn_offset", { "x", "y", "dy" }, sync_data)
 end
@@ -62,6 +63,7 @@ function Light.fl_end(e) --away from the player
 	e:assemble(Light.point, 0, 0, 7, 64, { p, p, p })
 		:give("id", "flashlight_end_pl")
 		:give("flashlight_light")
+		:give("light_ramp")
 end
 
 function Light.flame_stack(e, x, y, z, power, diffuse_key, max_health, consumption_rate, id)
@@ -84,6 +86,7 @@ function Light.flame_stack(e, x, y, z, power, diffuse_key, max_health, consumpti
 		:give("flame_windable")
 		:give("flame_anchor", x, y, 1)
 		:give("light_disabled")
+		:give("light_ramp")
 
 	return e
 end
@@ -120,6 +123,7 @@ function Light.lighter_flame(e, power)
 				strength_cap = 0.28,
 			},
 		})
+		:give("light_ramp")
 end
 
 function Light.player_ambient(e, power, diffuse_key)

@@ -10,6 +10,7 @@ for i, pos in ipairs(pl.pos) do
 			:give("id", "pl" .. i)
 			:give("light_group", Enums.light_group.side_pl)
 			:give("light_switch_id", "top")
+			:give("light_ramp")
 			:give("light_fading", pl.fade, -1)
 			:give("light_rings")
 	end
@@ -23,6 +24,7 @@ for i, pos in ipairs(pl_mid.pos) do
 			:give("id", "pl_mid" .. i)
 			:give("light_group", Enums.light_group.pl_mid)
 			:give("light_switch_id", "bottom")
+			:give("light_ramp")
 			:give("light_fading", pl_mid.fade, -1)
 			:give("light_rings")
 	end
