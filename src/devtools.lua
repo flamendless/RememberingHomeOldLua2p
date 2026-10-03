@@ -212,6 +212,14 @@ local function dev_hang_leave(label)
 	end
 end
 
+function DevTools.slab_scope(id, fn)
+	assert:type(id, "string")
+	assert:type(fn, "function")
+	Slab.PushID(id)
+	fn()
+	Slab.PopID()
+end
+
 if DEV then
 	DevTools.cli.font = love.graphics.newFont(32)
 	room_map.font = love.graphics.newFont(14)
@@ -824,22 +832,27 @@ function DevTools.draw_component_list()
 			local id = e:get("id").value
 			if id then
 				if Slab.BeginTree(id) then
-					local components = e:getComponents()
-					if Slab.Button("Debug Pos") then
-						table.insert(DevTools.debug_pos, e)
-					end
-					Slab.SameLine()
-					if Slab.Button("Clear Debug Pos") then
-						tablex.clear(DevTools.debug_pos)
-					end
-					for k in pairs(components) do
-						if Slab.BeginTree(k) then
-							local fn = slab_components[k]
-							if fn then fn(e) end
-							Slab.EndTree()
+					DevTools.slab_scope(id, function()
+						local components = e:getComponents()
+						if Slab.Button("Debug Pos", { Id = "debug_pos" }) then
+							table.insert(DevTools.debug_pos, e)
 						end
-					end
-
+						Slab.SameLine()
+						if Slab.Button("Clear Debug Pos", { Id = "clear_debug_pos" }) then
+							tablex.clear(DevTools.debug_pos)
+						end
+						for k in pairs(components) do
+							if Slab.BeginTree(k) then
+								DevTools.slab_scope(k, function()
+									local fn = slab_components[k]
+									if fn then
+										fn(e)
+									end
+								end)
+								Slab.EndTree()
+							end
+						end
+					end)
 					Slab.EndTree()
 				end
 			end
@@ -893,7 +906,7 @@ end
 function DevTools.slab_hidden(e)
 	assert:entity(e)
 	if not e:has("hidden") and not e:has("dev_hidden") then return end
-	if Slab.CheckBox(e:has("hidden"), "hidden") then
+	if Slab.CheckBox(e:has("hidden"), "hidden", { Id = "hidden" }) then
 		if e:has("hidden") then
 			e:remove("hidden"):give("dev_hidden")
 		else
@@ -951,7 +964,7 @@ function DevTools.slab_attach_to(e)
 	local attach_to = e:get("attach_to")
 	local e_other = GameStates.world:getEntityByKey(attach_to.key)
 	Slab.Text("Attached to ID: " .. e_other:get("id").value)
-	if e:has("attach_to_offset") and Slab.BeginTree("Attach to offset") then
+	if e:has("attach_to_offset") and Slab.BeginTree("attach_to_offset", { Title = "Attach to offset" }) then
 		local ato = e:get("attach_to_offset")
 		ato.ox = UIWrapper.edit_number("ox", ato.ox, true)
 		ato.oy = UIWrapper.edit_number("oy", ato.oy, true)
@@ -1081,7 +1094,7 @@ function DevTools.draw_designer()
 
 	Slab.Text("Select Entity:")
 	Slab.SameLine()
-	if Slab.CheckBox(designer.show_outline, "outline") then
+	if Slab.CheckBox(designer.show_outline, "outline", { Id = "designer.outline" }) then
 		designer.show_outline = not designer.show_outline
 	end
 	Slab.SameLine()
@@ -1110,11 +1123,11 @@ function DevTools.draw_designer()
 		pos.x = UIWrapper.edit_number("x", pos.x, true)
 		pos.y = UIWrapper.edit_number("y", pos.y, true)
 		z_index.value = UIWrapper.edit_number("z", z_index.value, true)
-		if Slab.CheckBox(z_index.sortable, "sortable") then
+		if Slab.CheckBox(z_index.sortable, "sortable", { Id = "designer.sortable" }) then
 			z_index.sortable = not z_index.sortable
 		end
 
-		if Slab.Button("Print") then
+		if Slab.Button("Print", { Id = "designer.print" }) then
 			print("id", designer.selected_e:get("id").value)
 			print("x", pos.x)
 			print("y", pos.y)

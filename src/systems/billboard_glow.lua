@@ -195,15 +195,15 @@ if DEV then
 			IsOpen = self.debug_show,
 		})
 
-		if Slab.CheckBox(flags.group, "group") then
+		if Slab.CheckBox(flags.group, "group", { Id = "billboard_glow.group" }) then
 			flags.group = not flags.group
 		end
 		Slab.SameLine()
-		if Slab.CheckBox(flags.blockers, "blockers") then
+		if Slab.CheckBox(flags.blockers, "blockers", { Id = "billboard_glow.blockers" }) then
 			flags.blockers = not flags.blockers
 		end
 		Slab.SameLine()
-		if Slab.CheckBox(flags.outline, "outline") then
+		if Slab.CheckBox(flags.outline, "outline", { Id = "billboard_glow.outline" }) then
 			flags.outline = not flags.outline
 		end
 
@@ -226,7 +226,7 @@ if DEV then
 	end
 
 	function BillboardGlow:debug_edit(pool, group_id)
-	assert:type(group_id, "string")
+		assert:type_or_nil(group_id, "string")
 		for i, e in ipairs(pool) do
 			if group_id and i ~= 1 then
 				return
@@ -235,8 +235,9 @@ if DEV then
 			local id = e:get("id").value
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
+				Slab.PushID(id)
 				local gd = e:get("glow_disabled")
-				if Slab.CheckBox(gd, "Disabled") then
+				if Slab.CheckBox(gd, "Disabled", { Id = "disabled" }) then
 					local is_d
 					if gd then
 						e:remove("glow_disabled")
@@ -297,14 +298,15 @@ if DEV then
 					color[3] = nb
 				end
 
-				Slab.EndTree()
+				Slab.PopID()
 				Slab.Unindent()
+				Slab.EndTree()
 			end
 		end
 	end
 
 	function BillboardGlow:debug_edit_blockers()
-		for _, e in ipairs(self.pool_blocker_rect) do
+		for ri, e in ipairs(self.pool_blocker_rect) do
 			local id_comp = e:get("id")
 			local id
 			if id_comp then
@@ -312,10 +314,12 @@ if DEV then
 			else
 				id = "rect_blocker"
 			end
-			if Slab.BeginTree(id, { Title = id }) then
+			local tree_id = id .. ".rect." .. ri
+			if Slab.BeginTree(tree_id, { Title = id }) then
 				Slab.Indent()
+				Slab.PushID(tree_id)
 				local gd = e:get("glow_blocker_disabled")
-				if Slab.CheckBox(gd, "Disabled") then
+				if Slab.CheckBox(gd, "Disabled", { Id = "disabled" }) then
 					if gd then
 						e:remove("glow_blocker_disabled")
 					else
@@ -340,12 +344,13 @@ if DEV then
 				rect.half_w = rect.w / 2
 				rect.half_h = rect.h / 2
 
-				Slab.EndTree()
+				Slab.PopID()
 				Slab.Unindent()
+				Slab.EndTree()
 			end
 		end
 
-		for _, e in ipairs(self.pool_blocker_circle) do
+		for ci, e in ipairs(self.pool_blocker_circle) do
 			local id_comp = e:get("id")
 			local id
 			if id_comp then
@@ -353,8 +358,10 @@ if DEV then
 			else
 				id = "circle_blocker"
 			end
-			if Slab.BeginTree(id, { Title = id }) then
+			local tree_id = id .. ".circle." .. ci
+			if Slab.BeginTree(tree_id, { Title = id }) then
 				Slab.Indent()
+				Slab.PushID(tree_id)
 				local pos = e:get("pos")
 				local nx, _, _ = UIWrapper.edit_number("x", pos.x, true)
 				local ny, _, _ = UIWrapper.edit_number("y", pos.y, true)
@@ -369,8 +376,9 @@ if DEV then
 				circle.radius = nr
 				circle.segments = circle.radius
 
-				Slab.EndTree()
+				Slab.PopID()
 				Slab.Unindent()
+				Slab.EndTree()
 			end
 		end
 	end

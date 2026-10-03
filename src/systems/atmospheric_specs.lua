@@ -233,7 +233,7 @@ if DEV then
 			print_config(cfg)
 		end
 
-		if Slab.CheckBox(cfg.enabled, "enabled") then
+		if Slab.CheckBox(cfg.enabled, "enabled", { Id = "atmospheric_specs.enabled" }) then
 			cfg.enabled = not cfg.enabled
 			changed = true
 		end

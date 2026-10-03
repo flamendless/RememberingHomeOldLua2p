@@ -238,16 +238,16 @@ if DEV then
 			self:move_ants()
 		end
 
-		if Slab.CheckBox(flags.show, "show") then
+		if Slab.CheckBox(flags.show, "show", { Id = "ants.show" }) then
 			flags.show = not flags.show
 			self:set_ants_visibility(flags.show)
 		end
 
-		if Slab.CheckBox(flags.path_repeat, "repeat") then
+		if Slab.CheckBox(flags.path_repeat, "repeat", { Id = "ants.repeat" }) then
 			flags.path_repeat = not flags.path_repeat
 		end
 
-		if Slab.CheckBox(flags.show_distance, "scatter away from") then
+		if Slab.CheckBox(flags.show_distance, "scatter away from", { Id = "ants.scatter" }) then
 			flags.show_distance = not flags.show_distance
 		end
 

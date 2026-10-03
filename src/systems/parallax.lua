@@ -127,7 +127,7 @@ function Parallax:debug_update(dt)
 		Title = "Parallax",
 		IsOpen = self.debug_show,
 	})
-	if Slab.CheckBox(is_running, "run") then
+	if Slab.CheckBox(is_running, "run", { Id = "parallax.run" }) then
 		is_running = not is_running
 		if is_running then
 			self:start_parallax()

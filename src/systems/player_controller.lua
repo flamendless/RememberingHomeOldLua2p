@@ -631,7 +631,7 @@ if DEV then
 	assert:entity(player)
 	assert:type(label, "string")
 		local has = player:has(cap)
-		if Slab.CheckBox(has, label) then
+		if Slab.CheckBox(has, label, { Id = "player_cap." .. label }) then
 			if has then
 				player:remove(cap)
 			else

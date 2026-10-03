@@ -186,7 +186,7 @@ if DEV then
 			Title = "Flashlight",
 			IsOpen = self.debug_show,
 		})
-		if Slab.CheckBox(flags.pos, "draw") then
+		if Slab.CheckBox(flags.pos, "draw", { Id = "flashlight.draw" }) then
 			flags.pos = not flags.pos
 		end
 

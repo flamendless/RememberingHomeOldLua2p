@@ -208,7 +208,7 @@ if DEV then
 					end
 
 					local has_override = selected_e:has("override_animation")
-					if Slab.CheckBox(has_override, "Override") then
+					if Slab.CheckBox(has_override, "Override", { Id = "animation.override" }) then
 						if has_override then
 							selected_e:remove("override_animation")
 						else

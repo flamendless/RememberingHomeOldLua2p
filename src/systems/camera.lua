@@ -328,7 +328,7 @@ if DEV then
 			Slab.Text(str_window)
 			Slab.Text(str_visible)
 
-			if Slab.CheckBox(self.follow, "Follow") then
+			if Slab.CheckBox(self.follow, "Follow", { Id = "camera.follow" }) then
 				self.follow = not self.follow
 			end
 
@@ -338,10 +338,10 @@ if DEV then
 				Slab.Unindent()
 			end
 
-			if Slab.CheckBox(self.clip, "Clip") then
+			if Slab.CheckBox(self.clip, "Clip", { Id = "camera.clip" }) then
 				self.clip = not self.clip
 			end
-			if Slab.CheckBox(flags.clip, "Debug Clip") then
+			if Slab.CheckBox(flags.clip, "Debug Clip", { Id = "camera.debug_clip" }) then
 				flags.clip = not flags.clip
 				for _, e in ipairs(self.pool_clip) do
 					local clip = e:get("camera_clip")
@@ -354,17 +354,17 @@ if DEV then
 				end
 			end
 			Slab.SameLine()
-			if Slab.CheckBox(flags.center, "Center") then
+			if Slab.CheckBox(flags.center, "Center", { Id = "camera.center" }) then
 				flags.center = not flags.center
 			end
-			if Slab.CheckBox(flags.world, "World") then
+			if Slab.CheckBox(flags.world, "World", { Id = "camera.world" }) then
 				flags.world = not flags.world
 			end
 			Slab.SameLine()
-			if Slab.CheckBox(flags.window, "Window") then
+			if Slab.CheckBox(flags.window, "Window", { Id = "camera.window" }) then
 				flags.window = not flags.window
 			end
-			if Slab.CheckBox(flags.visible, "Visible") then
+			if Slab.CheckBox(flags.visible, "Visible", { Id = "camera.visible" }) then
 				flags.visible = not flags.visible
 			end
 		else

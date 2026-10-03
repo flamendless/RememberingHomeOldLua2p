@@ -146,11 +146,11 @@ if DEV then
 		end
 		self.debug_show = Slab.BeginWindow("Path", { Title = "Path", IsOpen = self.debug_show })
 
-		if Slab.CheckBox(flags.path, "Path") then
+		if Slab.CheckBox(flags.path, "Path", { Id = "path.path" }) then
 			flags.path = not flags.path
 		end
 
-		if Slab.CheckBox(flags.bezier, "Bezier") then
+		if Slab.CheckBox(flags.bezier, "Bezier", { Id = "path.bezier" }) then
 			flags.bezier = not flags.bezier
 		end
 

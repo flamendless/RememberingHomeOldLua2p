@@ -32,7 +32,7 @@ local mode = "RELEASE"
 if DEV then mode = "DEV" end
 if PROF then mode = mode .. " PROF" end
 
--- Temporary: set HANG_WATCH false to disable. Last console line before a freeze shows where the loop stopped.
+-- Per-frame trace to hang_watch.log when true. Set HANG_WATCH false below for normal DEV play; keep on when hunting freezes.
 local hang_watch_frame = 0
 local hang_watch_file
 local hang_watch_last

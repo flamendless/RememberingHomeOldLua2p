@@ -119,7 +119,7 @@ if DEV then
 			Title = "Survival",
 			IsOpen = self.debug_show,
 		})
-		if Slab.CheckBox(self.is_active, "state") then
+		if Slab.CheckBox(self.is_active, "state", { Id = "survival.state" }) then
 			self.is_active = not self.is_active
 			if self.is_active then
 				self:survival_on()

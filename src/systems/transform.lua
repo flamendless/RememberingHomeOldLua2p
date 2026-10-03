@@ -266,31 +266,54 @@ function Transform:debug_update(dt)
 		local id = e:get("id").value
 		if Slab.BeginTree(id, { Title = id }) then
 			Slab.Indent()
+			Slab.PushID(id)
 			local pos = e:get("pos")
 			local t = e:get("transform")
 			if not t then
 				t = e:get("quad_transform")
 			end
-			pos.x = UIWrapper.edit_number("x", pos.x, true)
-			pos.y = UIWrapper.edit_number("y", pos.y, true)
+			local changed = false
+			local bx
+			pos.x, bx = UIWrapper.edit_number("x", pos.x, true)
+			changed = bx
+			local cy
+			pos.y, cy = UIWrapper.edit_number("y", pos.y, true)
+			changed = changed or cy
 			local z_index = e:get("z_index")
 			if z_index and z_index.sortable then
-				z_index.value = UIWrapper.edit_number("z", z_index.value, true)
+				local cz
+				z_index.value, cz = UIWrapper.edit_number("z", z_index.value, true)
+				changed = changed or cz
 			end
 			if t then
-				t.rotation = UIWrapper.edit_number("r", t.rotation)
-				t.sx = UIWrapper.edit_number("sx", t.sx)
-				t.sy = UIWrapper.edit_number("sy", t.sy)
-				t.ox = UIWrapper.edit_number("ox", t.ox)
-				t.oy = UIWrapper.edit_number("oy", t.oy)
-				t.kx = UIWrapper.edit_number("kx", t.kx)
-				t.ky = UIWrapper.edit_number("ky", t.ky)
+				local cr
+				t.rotation, cr = UIWrapper.edit_number("r", t.rotation)
+				changed = changed or cr
+				local csx
+				t.sx, csx = UIWrapper.edit_number("sx", t.sx)
+				changed = changed or csx
+				local csy
+				t.sy, csy = UIWrapper.edit_number("sy", t.sy)
+				changed = changed or csy
+				local cox
+				t.ox, cox = UIWrapper.edit_number("ox", t.ox)
+				changed = changed or cox
+				local coy
+				t.oy, coy = UIWrapper.edit_number("oy", t.oy)
+				changed = changed or coy
+				local ckx
+				t.kx, ckx = UIWrapper.edit_number("kx", t.kx)
+				changed = changed or ckx
+				local cky
+				t.ky, cky = UIWrapper.edit_number("ky", t.ky)
+				changed = changed or cky
 			end
-			if e:has("point_light") then
+			if changed and e:has("point_light") then
 				self.world:emit("update_light_pos", e)
 			end
-			Slab.EndTree()
+			Slab.PopID()
 			Slab.Unindent()
+			Slab.EndTree()
 		end
 	end
 	Slab.EndWindow()

@@ -105,7 +105,7 @@ function Fireflies:debug_update(dt)
 		IsOpen = self.debug_show,
 	})
 
-	if Slab.CheckBox(self.debug_fireflies, "Show") then
+	if Slab.CheckBox(self.debug_fireflies, "Show", { Id = "fireflies.show" }) then
 		self.debug_fireflies = not self.debug_fireflies
 		if self.debug_fireflies then
 			self:show_fireflies(5)
@@ -114,7 +114,7 @@ function Fireflies:debug_update(dt)
 		end
 	end
 
-	if Slab.CheckBox(self.debug_move, "Move") then
+	if Slab.CheckBox(self.debug_move, "Move", { Id = "fireflies.move" }) then
 		self.debug_move = not self.debug_move
 		if self.debug_move then
 			self:move_fireflies()
@@ -123,7 +123,7 @@ function Fireflies:debug_update(dt)
 		end
 	end
 
-	if Slab.CheckBox(flags.path, "Path") then
+	if Slab.CheckBox(flags.path, "Path", { Id = "fireflies.path" }) then
 		flags.path = not flags.path
 		self.world:emit("debug_toggle_path", flags.path, "firefly")
 	end

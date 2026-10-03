@@ -290,7 +290,7 @@ if DEV then
 			end
 		end
 
-		if Slab.CheckBox(flags.show_radius, "show radius") then
+		if Slab.CheckBox(flags.show_radius, "show radius", { Id = "flame.show_radius" }) then
 			flags.show_radius = not flags.show_radius
 		end
 

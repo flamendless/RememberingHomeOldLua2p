@@ -495,7 +495,7 @@ if DEV then
 			end
 		end
 
-		if self.e_flame and Slab.CheckBox(flags.freeze_fuel, "freeze fuel") then
+		if self.e_flame and Slab.CheckBox(flags.freeze_fuel, "freeze fuel", { Id = "lighter.freeze_fuel" }) then
 			flags.freeze_fuel = not flags.freeze_fuel
 			if flags.freeze_fuel then
 				self.e_flame:remove("flame_fuel_drain")

@@ -99,17 +99,17 @@ function PostProcessing:debug_update(dt)
 		local b
 		local str = effect.get_type and effect:get_type() or effect:type()
 
-		if Slab.CheckBox(effect.debug_show, str) then
+		if Slab.CheckBox(effect.debug_show, str, { Id = "pp.effect." .. str }) then
 			effect.is_active = not effect.is_active
 		end
 		Slab.SameLine()
 
-		if Slab.Button("up") then
+		if Slab.Button("up", { Id = "pp.up." .. i }) then
 			b = mathx.wrap_index(i - 1, self.effects)
 		end
 
 		Slab.SameLine()
-		if Slab.Button("down") then
+		if Slab.Button("down", { Id = "pp.down." .. i }) then
 			b = mathx.wrap_index(i + 1, self.effects)
 		end
 

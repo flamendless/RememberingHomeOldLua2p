@@ -73,7 +73,7 @@ function Movement:debug_update(dt)
 		Title = self.debug_title,
 		IsOpen = self.debug_show,
 	})
-	if Slab.CheckBox(flags.gravity, "gravity") then
+	if Slab.CheckBox(flags.gravity, "gravity", { Id = "movement.gravity" }) then
 		flags.gravity = not flags.gravity
 		for _, e in ipairs(self.pool) do
 			local gravity = e:get("gravity")
@@ -91,15 +91,20 @@ end
 function Movement:debug_on_drag(bool)
 	assert:type(bool, "boolean")
 	for _, e in ipairs(self.pool) do
+		if not e:has("gravity") then
+			goto continue
+		end
 		local gravity = e:get("gravity")
 		if bool then
 			gravity.temp = gravity.value
 			gravity.value = 0
-		else
+		elseif gravity.temp ~= nil then
 			gravity.value = gravity.temp
+			gravity.temp = nil
 		end
-		flags.gravity = not bool
+		::continue::
 	end
+	flags.gravity = not bool
 end
 
 return Movement

@@ -83,7 +83,7 @@ function EnemyController:debug_update(dt)
 		Title = "EnemyController",
 		IsOpen = self.debug_show,
 	})
-	if Slab.CheckBox(cb_line_of_sight, "Line of Sight") then
+	if Slab.CheckBox(cb_line_of_sight, "Line of Sight", { Id = "enemy_controller.los" }) then
 		cb_line_of_sight = not cb_line_of_sight
 	end
 	if Slab.Button("flip") then

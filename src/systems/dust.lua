@@ -341,7 +341,7 @@ if DEV then
 			IsOpen = self.debug_show,
 		})
 
-		if Slab.CheckBox(self.debug_show_bbox, "draw bounding box") then
+		if Slab.CheckBox(self.debug_show_bbox, "draw bounding box", { Id = "dust.bbox" }) then
 			self.debug_show_bbox = not self.debug_show_bbox
 		end
 

@@ -237,7 +237,7 @@ if DEV then
 				local is_not_drawn = e:has("nf_renderer") or e:has("hidden") or culled
 				local e_id = e:get("id").value
 				if #search == 0 or stringx.contains(e_id, search) then
-					if Slab.CheckBox(not is_not_drawn, i) then
+					if Slab.CheckBox(not is_not_drawn, e_id, { Id = id .. ".vis." .. e_id }) then
 						is_not_drawn = not is_not_drawn
 						if is_not_drawn then
 							e:give("hidden")
@@ -264,7 +264,7 @@ if DEV then
 			IsOpen = self.debug_show,
 		})
 
-		if Slab.Input("search", { Text = search }) then
+		if Slab.Input("renderer.search", { Text = search }) then
 			search = Slab.GetInputText()
 		end
 
@@ -273,7 +273,7 @@ if DEV then
 
 		for _, v in pairs(Renderers) do
 			if v.debug_update then
-				if Slab.CheckBox(v.debug_show, v.id) then
+				if Slab.CheckBox(v.debug_show, v.id, { Id = "renderer.sub." .. v.id }) then
 					v.debug_show = not v.debug_show
 				end
 				if v.debug_show then

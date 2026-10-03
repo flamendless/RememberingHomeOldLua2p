@@ -155,7 +155,7 @@ if DEV then
 			IsOpen = self.debug_show,
 		})
 
-		if Slab.CheckBox(self.is_active, "active") then
+		if Slab.CheckBox(self.is_active, "active", { Id = "visibility.active" }) then
 			if self.is_active then
 				self:set_visibility(false)
 			else
