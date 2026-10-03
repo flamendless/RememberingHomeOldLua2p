@@ -34,6 +34,16 @@ Concord.component("diffuse", function(c, t)
 	c.orig_value = tablex.copy(t)
 end)
 
+Concord.component("light_rings", function(c, opts)
+	assert:type_or_nil(opts, "table")
+	opts = opts or {}
+	c.count = opts.count or 5
+	c.strength = opts.strength or 0.35
+	c.power = opts.power or 1.0
+	c.inner = opts.inner or 0.06
+	c.outer = opts.outer or 0.92
+end)
+
 Concord.component("light_fading", function(c, amount, dir)
 	assert:type(amount, "number")
 	assert((type(dir) == "number" and (dir == -1 or dir == 1)), dir)

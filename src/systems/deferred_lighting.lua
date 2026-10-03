@@ -29,6 +29,9 @@ local DeferredLighting = Concord.system({
 local lvfp = { { "u_lpos", "float", 4 } }    -- pos.xyz, scale
 local lvft = { { "u_ldir", "float", 4 } }    -- dir.xyz, angle
 local lvfd = { { "u_diffuse", "float", 3 } } -- color
+local lvfr = { { "u_lrings", "float", 4 } }  -- count, strength, power, inner
+local lvfro = { { "u_lring_outer", "float", 1 } }
+local RING_MESH_OFF = { 0, 0, 1, 0.06 }
 local RA = { 0.9951847266722, 0.098017140329561 }
 local MAX_LIGHTS = 64 -- TODO: we can lower this to 16, but for Outside must be 64
 local OMNI_LIGHT_DIR = { 0, 0, -1, -1 }
@@ -60,6 +63,9 @@ function DeferredLighting:init(world)
 		if ld then
 			self.mesh.dir:setVertex(id, ld.value)
 		end
+		local rings, outer = self:ring_mesh_values(e)
+		self.mesh.rings:setVertex(id, rings)
+		self.mesh.ring_outer:setVertex(id, { outer })
 		e:give("light_id", id)
 
 		local light_group = e:get("light_group")
@@ -374,6 +380,31 @@ function DeferredLighting:update_light_fading(dt)
 	end
 end
 
+function DeferredLighting:ring_mesh_values(e)
+	assert:entity(e)
+	local rings = e:get("light_rings")
+	if not rings then
+		return RING_MESH_OFF, 0.92
+	end
+	return {
+		rings.count,
+		rings.strength,
+		rings.power,
+		rings.inner,
+	}, rings.outer
+end
+
+function DeferredLighting:update_light_rings(e)
+	assert:entity(e)
+	if e:has("light_disabled") then
+		return
+	end
+	local id = e:get("light_id").value
+	local rings, outer = self:ring_mesh_values(e)
+	self.mesh.rings:setVertex(id, rings)
+	self.mesh.ring_outer:setVertex(id, { outer })
+end
+
 function DeferredLighting:begin_deferred_lighting(camera, canvas)
 	camera:attach()
 	love.graphics.setCanvas(self.buffers[1].canvas, self.buffers[2].canvas)
@@ -464,6 +495,9 @@ function DeferredLighting:cull_and_draw_lights(camera)
 		self.mesh.pos:setVertex(i, { pos.x, pos.y, pos.z, pl.value })
 		self.mesh.diffuse:setVertex(i, diff.value)
 		self.mesh.dir:setVertex(i, ld and ld.value or OMNI_LIGHT_DIR)
+		local rings, outer = self:ring_mesh_values(e)
+		self.mesh.rings:setVertex(i, rings)
+		self.mesh.ring_outer:setVertex(i, { outer })
 	end
 
 	love.graphics.drawInstanced(self.mesh.light, #visible)
@@ -488,14 +522,20 @@ function DeferredLighting:create_mesh_point()
 	local m_position = love.graphics.newMesh(lvfp, MAX_LIGHTS)
 	local m_diffuse = love.graphics.newMesh(lvfd, MAX_LIGHTS)
 	local m_direction = love.graphics.newMesh(lvft, MAX_LIGHTS)
+	local m_rings = love.graphics.newMesh(lvfr, MAX_LIGHTS)
+	local m_ring_outer = love.graphics.newMesh(lvfro, MAX_LIGHTS)
 	light:attachAttribute("u_lpos", m_position, "perinstance")
 	light:attachAttribute("u_diffuse", m_diffuse, "perinstance")
 	light:attachAttribute("u_ldir", m_direction, "perinstance")
+	light:attachAttribute("u_lrings", m_rings, "perinstance")
+	light:attachAttribute("u_lring_outer", m_ring_outer, "perinstance")
 	return {
 		light = light,
 		pos = m_position,
 		diffuse = m_diffuse,
 		dir = m_direction,
+		rings = m_rings,
+		ring_outer = m_ring_outer,
 	}
 end
 
@@ -693,6 +733,33 @@ if DEV then
 
 				if b_v then
 					pl.orig_value = pl.value
+				end
+
+				Slab.Separator()
+				local light_rings = e:get("light_rings")
+				if light_rings then
+					if Slab.Button("Remove rings", { Id = "rings_remove" }) then
+						e:remove("light_rings")
+						self:update_light_rings(e)
+						light_rings = nil
+					end
+				else
+					if Slab.Button("Add rings", { Id = "rings_add" }) then
+						e:give("light_rings")
+						self:update_light_rings(e)
+						light_rings = e:get("light_rings")
+					end
+				end
+				if light_rings then
+					local b_rc, b_rs, b_rp, b_ri, b_ro
+					light_rings.count, b_rc = UIWrapper.edit_range("ring count", light_rings.count, 0, 12)
+					light_rings.strength, b_rs = UIWrapper.edit_range("ring strength", light_rings.strength, 0, 1)
+					light_rings.power, b_rp = UIWrapper.edit_range("ring power", light_rings.power, 0.25, 4)
+					light_rings.inner, b_ri = UIWrapper.edit_range("ring inner", light_rings.inner, 0, 0.5)
+					light_rings.outer, b_ro = UIWrapper.edit_range("ring outer", light_rings.outer, 0.5, 1)
+					if b_rc or b_rs or b_rp or b_ri or b_ro then
+						self:update_light_rings(e)
+					end
 				end
 
 				if flags.group then

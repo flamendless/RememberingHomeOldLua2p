@@ -12,6 +12,7 @@ for i, pos in ipairs(pl.pos) do
 			:give("light_switch_id", "room")
 			:give("light_fading", pl.fade, -1)
 			:give("light_disabled")
+			:give("light_rings")
 	end
 end
 

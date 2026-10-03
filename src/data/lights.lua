@@ -2,7 +2,7 @@ local Lights = {}
 
 Lights[Enums.game_state.Shed] = {
 	pl = {
-		lz = 26,
+		lz = 90,
 		ls = 190,
 		fade = 12,
 		fixture_drop = 17,
