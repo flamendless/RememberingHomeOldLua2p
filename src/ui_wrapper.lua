@@ -2,8 +2,8 @@ local UIWrapper = {}
 
 function UIWrapper.edit_number(id, value, is_int)
 	assert:type(id, "string")
-	assert:type(value, "boolean")
-	assert:type(is_int, "boolean")
+	assert:type(value, "number")
+	assert:type_or_nil(is_int, "boolean")
 	local v = value
 	local initial = value
 	if is_int then
@@ -27,8 +27,8 @@ end
 
 function UIWrapper.edit_range(id, value, min, max, is_int, disabled)
 	assert:type(id, "string")
-	assert:type(value, "boolean")
-	assert:type(is_int, "boolean")
+	assert:type(value, "number")
+	assert:type_or_nil(is_int, "boolean")
 	local initial = value
 	Slab.Text(id .. ":")
 	Slab.SameLine()

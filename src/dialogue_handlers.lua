@@ -8,6 +8,7 @@ end
 local function room_switch_lights_off(world, switch_id)
 	assert:world(world)
 	assert:type_or_nil(switch_id, "string")
+
 	switch_id = switch_id or "room"
 	local ls = world:getSystem(ECS.get_system_class("light_switch"))
 	if not ls or not ls.pool_lights then
@@ -34,11 +35,18 @@ end
 function DialogueHandlers.resolve_interact_dialogue_key(world, dialogue_key)
 	assert:world(world)
 	assert:type(dialogue_key, "string")
-	if dialogue_key == Enums.dialogue_knot.__light_switch__ then
-		if room_switch_lights_off(world, "room") then
-			return Enums.dialogue_knot.__light_switch_on__
+	if dialogue_key == Enums.dialogue_knot.__light_switch__
+		or dialogue_key == Enums.dialogue_knot.__light_switch_min__ then
+		local on_knot = Enums.dialogue_knot.__light_switch_on__
+		local off_knot = Enums.dialogue_knot.__light_switch_off__
+		if dialogue_key == Enums.dialogue_knot.__light_switch_min__ then
+			on_knot = Enums.dialogue_knot.__light_switch_on_min__
+			off_knot = Enums.dialogue_knot.__light_switch_off_min__
 		end
-		return Enums.dialogue_knot.__light_switch_off__
+		if room_switch_lights_off(world, "room") then
+			return on_knot
+		end
+		return off_knot
 	end
 	return dialogue_key
 end

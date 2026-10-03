@@ -300,6 +300,7 @@ function DeferredLighting:update_light_radius_group(group_id, e)
 		local o_pos = other:get("pos")
 		if e ~= other then
 			o_pl.value = pl.value
+			o_pl.orig_value = pl.orig_value
 		end
 		self.mesh.pos:setVertex(o_id, { o_pos.x, o_pos.y, o_pos.z, o_pl.value })
 	end
@@ -561,12 +562,12 @@ if DEV then
 			ac[4] = 1
 		end
 
-		if Slab.CheckBox(flags.group, "group") then
+		if Slab.CheckBox(flags.group, "group", { Id = "deferred_lighting.group" }) then
 			flags.group = not flags.group
 		end
 		Slab.SameLine()
 
-		if Slab.CheckBox(flags.ambiance, "ambiance") then
+		if Slab.CheckBox(flags.ambiance, "ambiance", { Id = "deferred_lighting.ambiance" }) then
 			flags.ambiance = not flags.ambiance
 			if not flags.ambiance then
 				self:set_ambiance({ 0, 0, 0, 0 })
@@ -621,7 +622,7 @@ if DEV then
 	end
 
 	function DeferredLighting:debug_edit(pool, group_id)
-	assert:type(group_id, "string")
+		assert:type_or_nil(group_id, "string")
 		for i, e in ipairs(pool) do
 			if group_id and i ~= 1 then
 				return
@@ -630,8 +631,9 @@ if DEV then
 			local id = e:get("id").value
 			if Slab.BeginTree(id, { Title = id }) then
 				Slab.Indent()
+				Slab.PushID(id)
 				local ld = e:get("light_disabled")
-				if Slab.CheckBox(ld, "Disabled") then
+				if Slab.CheckBox(ld, "Disabled", { Id = "disabled" }) then
 					local is_d
 					if ld then
 						e:remove("light_disabled")
@@ -651,7 +653,7 @@ if DEV then
 						cache[id] = { flicker.during, flicker.on_chance, flicker.off_chance }
 					end
 					Slab.SameLine()
-					if Slab.CheckBox(flicker, "Flicker") then
+					if Slab.CheckBox(flicker, "Flicker", { Id = "flicker" }) then
 						if flicker then
 							e:remove("d_light_flicker")
 						else
@@ -689,6 +691,10 @@ if DEV then
 					Flux.remove_by_object(diffuse)
 				end
 
+				if b_v then
+					pl.orig_value = pl.value
+				end
+
 				if flags.group then
 					local prop_pos = (b_x and "x") or (b_y and "y") or (b_z and "z")
 					if prop_pos then
@@ -713,7 +719,7 @@ if DEV then
 					end
 				end
 
-				if Slab.Button("Print") then
+				if Slab.Button("Print", { Id = "print" }) then
 					print("id", id)
 					print("x", pos.x)
 					print("y", pos.y)
@@ -730,6 +736,7 @@ if DEV then
 					print("b", diffuse[3])
 				end
 
+				Slab.PopID()
 				Slab.EndTree()
 				Slab.Unindent()
 			end

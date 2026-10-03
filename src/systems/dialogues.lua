@@ -2,6 +2,11 @@ local DialogueHandlers = require("dialogue_handlers")
 
 local DialoguesSystem = Concord.system()
 
+local function is_light_switch_dialogue_knot(dialogue_key)
+	return dialogue_key == Enums.dialogue_knot.__light_switch_on__
+		or dialogue_key == Enums.dialogue_knot.__light_switch_off__
+end
+
 local function build_dialogue_cfg(cam)
 	assert:type(cam, "table")
 	local font = Resources.data.fonts.dialogue
@@ -114,10 +119,17 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 	assert:type(dialogue_key, "string")
 	dialogue_key = DialogueHandlers.resolve_interact_dialogue_key(self.world, dialogue_key)
 
+	if dialogue_key == Enums.dialogue_knot.__light_switch_on_min__
+		or dialogue_key == Enums.dialogue_knot.__light_switch_off_min__ then
+		self.world:emit("toggle_light_switch")
+		self.await_interact_release = Inputs.down(Enums.input.interact)
+		self.require_interact_release_before_use = true
+		return
+	end
+
 	local restart = e_other == self.e_simple_dialogue
 	if restart or self.dialogue:getCurrentKnot() ~= dialogue_key then
-		if dialogue_key == Enums.dialogue_knot.__light_switch_on__
-			or dialogue_key == Enums.dialogue_knot.__light_switch_off__ then
+		if is_light_switch_dialogue_knot(dialogue_key) then
 			self.world:emit("toggle_light_switch")
 		end
 		self.blood_bar_mid = create_choice_bloodbar_mid(self.cfg)
@@ -127,9 +139,10 @@ function DialoguesSystem:start_dialogue(e, e_other, override_dialogue_key)
 		self.current_content = self.dialogue:getNext()
 		self.ui:showContent(self.current_content)
 		self.await_interact_release = Inputs.down(Enums.input.interact)
-		if dialogue_key == Enums.dialogue_knot.__light_switch_on__
-			or dialogue_key == Enums.dialogue_knot.__light_switch_off__ then
+		if is_light_switch_dialogue_knot(dialogue_key) then
 			self.require_interact_release_before_use = true
+			self.world:emit("lock_player_capabilities")
+			self.light_switch_movement_locked = true
 		end
 		self.dialogue_advance_pending = false
 
@@ -169,6 +182,10 @@ end
 
 function DialoguesSystem:check_if_fin()
 	if self.dialogue:getCurrentKnot() == Enums.dialogue_knot.fin then
+		if self.light_switch_movement_locked then
+			self.world:emit("unlock_player_capabilities")
+			self.light_switch_movement_locked = false
+		end
 		self.world:emit("ev_dialogue_fin")
 		self.current_content = nil
 		self.e_dialogue = nil

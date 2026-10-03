@@ -27,11 +27,17 @@ local common = {
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	[Enums.dialogue_knot.__light_switch_on__] = {
-		LoveInk.Helpers.text("There. That's better."),
+		LoveInk.Helpers.text("Let there be light..."),
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 	[Enums.dialogue_knot.__light_switch_off__] = {
-		LoveInk.Helpers.text("Lights out."),
+		LoveInk.Helpers.text("Lights out..."),
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
+	[Enums.dialogue_knot.__light_switch_on_min__] = {
+		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
+	},
+	[Enums.dialogue_knot.__light_switch_off_min__] = {
 		LoveInk.Helpers.divert(Enums.dialogue_knot.fin),
 	},
 }

@@ -48,7 +48,7 @@ local Data = {
 	{
 		id = "door_right",
 		key = "door_right",
-		x = 221,
+		x = 224,
 		y = 57,
 		z = 4,
 		req_col_dir = 1,

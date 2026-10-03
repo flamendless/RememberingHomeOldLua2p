@@ -569,7 +569,7 @@ function PlayerController:on_player_interact(player, e_interactive)
 	self.world:emit("start_dialogue", player, e_interactive)
 end
 
-function PlayerController:on_interact_or_inventory()
+function PlayerController:lock_player_capabilities()
 	if not self.player:has("prev_can") then
 		self.player:give("prev_can", self.player)
 		self.world:emit("anim_idle", self.player, true)
@@ -577,6 +577,14 @@ function PlayerController:on_interact_or_inventory()
 	self.world:emit("toggle_component", self.player, Enums.player_cap.can_move, false)
 	self.world:emit("toggle_component", self.player, Enums.player_cap.can_interact, false)
 	self.world:emit("toggle_component", self.player, Enums.player_cap.can_run, false)
+end
+
+function PlayerController:on_interact_or_inventory()
+	self:lock_player_capabilities()
+end
+
+function PlayerController:unlock_player_capabilities()
+	self:on_leave_interact_or_inventory()
 end
 
 function PlayerController:on_leave_interact_or_inventory()
