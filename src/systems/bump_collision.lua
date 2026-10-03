@@ -454,21 +454,22 @@ if DEV then
 	local fnt = love.graphics.newFont(8)
 	fnt:setFilter("nearest", "nearest")
 
-	local function edit(id, value, t)
-	assert:type(id, "string")
-	assert:type(value, "boolean")
-	assert:type(t, "number")
-		Slab.Text(id .. ":")
+	local function edit(field_key, value, t)
+		assert:type(field_key, "string")
+		assert:type(value, "number")
+		assert:type(t, "table")
+		Slab.Text(field_key .. ":")
 		Slab.SameLine()
-		if Slab.Input(id, {
-				Text = tostring(value),
-				ReturnOnText = false,
-				NumbersOnly = true,
-			}) then
+		local changed = Slab.Input(field_key, {
+			Text = tostring(value),
+			ReturnOnText = false,
+			NumbersOnly = true,
+		})
+		if changed then
 			value = Slab.GetInputNumber()
-			t[id] = math.floor(value)
+			t[field_key] = math.floor(value)
 		end
-		return value
+		return value, changed
 	end
 
 	local tbl_n = { Text = "", ReturnOnText = false, NumbersOnly = true }
@@ -484,66 +485,85 @@ if DEV then
 			IsOpen = self.debug_show,
 		})
 		tbl_n.Text = tostring(self.pool:countItems())
-		Slab.Input("bump_n", tbl_n)
-		if Slab.CheckBox(flags.bodies, "Bodies") then
+		Slab.Input("bump_collision.count", tbl_n)
+		if Slab.CheckBox(flags.bodies, "Bodies", { Id = "bump_collision.bodies" }) then
 			flags.bodies = not flags.bodies
 		end
 		Slab.SameLine()
-		if Slab.CheckBox(flags.ids, "IDs") then
+		if Slab.CheckBox(flags.ids, "IDs", { Id = "bump_collision.ids" }) then
 			flags.ids = not flags.ids
 		end
 		Slab.SameLine()
-		if Slab.CheckBox(flags.drag, "Drag") then
+		if Slab.CheckBox(flags.drag, "Drag", { Id = "bump_collision.drag" }) then
 			flags.drag = not flags.drag
 			DevTools.debug_bump_drag = flags.drag
 			self.world:emit("debug_on_drag", flags.drag)
 		end
-		if Slab.CheckBox(flags.visible_only, "Visible Only") then
+		if Slab.CheckBox(flags.visible_only, "Visible Only", { Id = "bump_collision.visible_only" }) then
 			flags.visible_only = not flags.visible_only
 		end
 		Slab.SameLine()
-		if Slab.CheckBox(flags.fill, "Fill") then
+		if Slab.CheckBox(flags.fill, "Fill", { Id = "bump_collision.fill" }) then
 			flags.fill = not flags.fill
 		end
 
-		if Slab.BeginTree("List", { Title = "List" }) then
+		if Slab.BeginTree("bump_collision.list", { Title = "List" }) then
 			Slab.Indent()
-			local items, len
+			local items, len, queried
 			if flags.visible_only then
 				local x, y, w, h = get_query_rect(self)
 				items, len = self.pool:queryRect(x, y, w, h)
+				queried = true
 			else
-				items, len = self.pool:getItems()
+				items = self.pool:getItems()
+				len = #items
+				queried = false
 			end
 
 			for i = 1, len do
 				local e = items[i]
 				local id = e:get("id").value
-				if Slab.BeginTree(id, { Title = id, IsOpen = e:get("bump").debug_selected }) then
+				local bump = e:get("bump")
+				if Slab.BeginTree(id, { Title = id, IsOpen = bump.debug_selected }) then
 					Slab.Indent()
+					Slab.PushID(id)
 					local pos = e:get("pos")
 					local collider = e:get("collider")
-					edit("x", pos.x, pos)
-					edit("y", pos.y, pos)
-					edit("w", collider.w, collider)
-					edit("h", collider.h, collider)
-					self.pool:update(e)
+					local _, cx = edit("x", pos.x, pos)
+					local _, cy = edit("y", pos.y, pos)
+					local _, cw = edit("w", collider.w, collider)
+					local _, ch = edit("h", collider.h, collider)
+					if cx or cy or cw or ch then
+						self.pool:update(e)
+					end
+					Slab.PopID()
+					Slab.Unindent()
 					Slab.EndTree()
 				end
 			end
+			if queried then
+				self.pool.freeTable(items)
+			end
+			Slab.Unindent()
 			Slab.EndTree()
 		end
 
 		local mx, my = get_query_point(self)
-		local items, len = self.pool:queryPoint(mx, my)
-		for i = 1, len do
-			local e = items[i]
-			e:get("bump").debug_hovered = true
-			e:get("bump").debug_selected = love.mouse.isDown(2)
-			if love.keyboard.isDown("lshift") and e:get("bump").debug_selected then
-				self.world:emit("debug_e_right_clicked", e)
+		local hover_items, hover_len = self.pool:queryPoint(mx, my)
+		for i = 1, hover_len do
+			local e = hover_items[i]
+			local bump = e:get("bump")
+			bump.debug_hovered = true
+			if love.mouse.isDown(2) and not bump.debug_selected then
+				bump.debug_selected = true
+				if love.keyboard.isDown("lshift") then
+					self.world:emit("debug_e_right_clicked", e)
+				end
+			elseif not love.mouse.isDown(2) then
+				bump.debug_selected = false
 			end
 		end
+		self.pool.freeTable(hover_items)
 		Slab.EndWindow()
 	end
 
@@ -580,6 +600,7 @@ if DEV then
 				love.graphics.print(id, rx, ry)
 			end
 		end
+		self.pool.freeTable(items)
 	end
 
 	function BumpCollision:debug_mousemoved(_, _, dx, dy)
@@ -597,6 +618,7 @@ if DEV then
 					self.pool:update(e)
 				end
 			end
+			self.pool.freeTable(items)
 		end
 	end
 
@@ -616,6 +638,7 @@ if DEV then
 				bump.debug_clicked = true
 			end
 		end
+		self.pool.freeTable(items)
 	end
 
 	function BumpCollision:debug_mousereleased(_, _, mb)
@@ -634,6 +657,7 @@ if DEV then
 					self.pool:update(e)
 				end
 			end
+			self.pool.freeTable(items)
 		end
 	end
 end

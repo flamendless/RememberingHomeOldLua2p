@@ -1,8 +1,8 @@
 local Data = {
 	{
 		id = "bulb",
-		x = 116,
-		y = 20,
+		x = 112,
+		y = 6,
 		z = 7,
 		no_col = true,
 	},
@@ -22,8 +22,8 @@ local Data = {
 	},
 	{
 		id = "shelf1",
-		x = 172,
-		y = 26,
+		x = 36,
+		y = 32,
 		z = 5,
 	},
 	{

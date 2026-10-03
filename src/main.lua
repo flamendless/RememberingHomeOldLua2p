@@ -224,6 +224,8 @@ function love.draw()
 		Inputs.draw_test_input_overlay()
 	end
 
+	Screenshot.flush_queued()
+
 	love.graphics.setColor(1, 1, 1, 1)
 
 	JPROF.pop("frame")

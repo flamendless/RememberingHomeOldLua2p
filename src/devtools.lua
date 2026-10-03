@@ -545,6 +545,19 @@ function DevTools.draw_stats()
 	)
 	dev_hang_leave("stats:speed")
 
+	dev_hang_enter("stats:screenshot")
+	if Slab.Button("Screenshot (Shift+S)", { Disabled = slab_disabled }) then
+		Screenshot.request_capture()
+	end
+	if Screenshot.last_result then
+		if Screenshot.last_result.error then
+			Slab.Text("Last: " .. tostring(Screenshot.last_result.error))
+		elseif Screenshot.last_result.relative_path then
+			Slab.Text("Last: " .. Screenshot.last_result.relative_path)
+		end
+	end
+	dev_hang_leave("stats:screenshot")
+
 	dev_hang_enter("stats:gfx")
 	for _, k in ipairs(gfx_stat_keys) do
 		local v = stats.stats[k]
@@ -1565,7 +1578,11 @@ function DevTools.keypressed(key)
 	elseif key == "t" then
 		GameStates.world:emit("survival_toggle")
 	elseif key == "s" then
-		DevTools.show_fps = not DevTools.show_fps
+		if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
+			Screenshot.request_capture()
+		else
+			DevTools.show_fps = not DevTools.show_fps
+		end
 	elseif key == "f" then
 		fade.show = not fade.show
 	elseif key == "u" and DevTools.show then

@@ -8,8 +8,8 @@ Lights[Enums.game_state.Shed] = {
 		fixture_drop = 17,
 		pos = {
 			{
-				x = 118,
-				y = 36,
+				x = 114,
+				y = 22,
 				bulb_quad_w = 5,
 				bulb_quad_h = 18,
 			},
